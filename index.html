@@ -1724,7 +1724,7 @@ button.hs { cursor: pointer; } button.hs:hover, button.hs:focus-visible { border
 /* 보상·상점·장면 화면도 같은 왼쪽 서랍을 쓴다 */
 .gate.stmap:not(.sm2) { position: relative; }
 .gate.stmap:not(.sm2) > .sdr { --dw: min(340px, 86vw); }
-#app:has(> .stmap:not(.sm2)) { padding-left: max(46px, env(safe-area-inset-left, 0px)); }
+#app:has(> .stmap:not(.sm2):not(.ssum)) { padding-left: max(46px, env(safe-area-inset-left, 0px)); }
 /* 이 화면들의 상자는 넘침을 감추므로 서랍은 창에 붙인다 */
 .gate.stmap:not(.sm2) > .sdr { position: fixed; z-index: 30; }
 .sm2 .a3-on { top: auto; bottom: 10px; right: 10px; }
@@ -1819,6 +1819,78 @@ html:not(.a3on) .sm2 .smap .mnode.off { opacity: 1; } html:not(.a3on) .sm2 .smap
   .shelf-l > small { display: none; } .shelf-l > span { font-size: 13px; }
   .shelf.items { flex-wrap: wrap; } .shelf.items .sslot { flex: 0 1 calc(50% - 6px); }
   .good { width: 100%; } .good .im { width: 72px; } .gname { font-size: 12px; margin-top: -6px; } .gnote { padding: 4px 6px; margin-top: 4px; } .gdesc { font-size: 11px; } .gtype { font-size: 10px; }
+}
+/* ===== 지도: 마우스를 댄 칸까지 가는 길 ===== */
+.smap.pt-on line.hl { stroke: #f0b429; opacity: 1; stroke-width: 5; stroke-dasharray: none; animation: none; }
+html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f0b429; border-color: var(--amber-d); }
+.smap.pt-on .mnode.pth .ml { box-shadow: 0 0 0 2px #f0b429; }
+
+/* ===== 덱 구성 막대(보상·상점) ===== */
+.dmix { --mv: var(--blue); --at: var(--red); --spc: var(--amber); display: grid; gap: 4px; min-width: 220px; max-width: 360px; padding: 6px 10px; font-size: 12px; }
+.dm-h { margin: 0; display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; } .dm-h b { font-size: 14px; }
+.dm-to { font-weight: 700; color: #ffd75e; } .dm-plusn { display: none; font-weight: 700; color: #8fd17a; }
+.dmix.hv .dm-plusn { display: inline; }
+.dm-bar { display: flex; height: 10px; gap: 2px; } .dm-bar span { flex-basis: 0; min-width: 2px; transition: flex-grow .2s; }
+.dm-bar .dm-move { background: var(--mv); } .dm-bar .dm-atk { background: var(--at); } .dm-bar .dm-sp { background: var(--spc); }
+.dm-leg { margin: 0; display: flex; gap: 10px; flex-wrap: wrap; }
+.dm-leg span { display: inline-flex; align-items: center; gap: 4px; } .dm-leg i { width: 9px; height: 9px; }
+.dm-leg .dm-move i { background: var(--mv); } .dm-leg .dm-atk i { background: var(--at); } .dm-leg .dm-sp i { background: var(--spc); }
+.dm-leg em { display: none; font-style: normal; font-weight: 700; padding: 0 4px; background: #8fd17a; color: #1b3a12; }
+.dmix.hv-move .dm-leg .dm-move em, .dmix.hv-atk .dm-leg .dm-atk em, .dmix.hv-sp .dm-leg .dm-sp em { display: inline; }
+.dmix.hv-move .dm-bar .dm-move, .dmix.hv-atk .dm-bar .dm-atk, .dmix.hv-sp .dm-bar .dm-sp { box-shadow: 0 0 0 2px #fff, 0 0 8px 2px currentColor; }
+.mystic .dmix { position: relative; justify-self: center; color: #e8dcff; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px #6a55a8; }
+.stall .dmix { color: #f6ead8; background: rgba(58, 36, 22, .55); border: 2px solid var(--ink); margin-inline: auto; }
+.stall .dm-to { color: #ffd75e; }
+@media (max-width: 640px) { .dmix { min-width: 0; max-width: none; width: 100%; box-sizing: border-box; padding: 4px 8px; } .stall .st-head .dmix { order: 3; } .dm-leg { gap: 6px; } }
+
+/* ===== 상점: 카드 제거 서비스 ===== */
+.svc-ic { display: grid; place-items: center; color: #f6ead8; } .svc-ic .pxi { width: 46%; height: auto; }
+.cutp { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(30, 18, 10, .62); }
+.cutp-in { display: grid; gap: 8px; width: min(440px, 100%); max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 14px 16px; background: #fffbe9; color: var(--ink); border: 3px solid var(--ink); box-shadow: 5px 5px 0 rgba(58, 36, 22, .7); }
+.cutp-in h3 { margin: 0; font-size: 18px; } .cutp-in .cap { margin: 0; color: var(--wood-d); } .cutp-n { margin: 0; font-size: 12px; color: var(--red-d); }
+.cutl li { padding: 0; } .cutl button { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%; min-height: 30px; padding: 2px 8px 2px 4px; cursor: pointer; }
+.cutl li:hover, .cutl li:focus-within { box-shadow: inset 0 0 0 2px var(--red); background: #fff; } .cutl li:hover .ds, .cutl li:focus-within .ds { display: block; }
+.cutp-in > .woodb { justify-self: start; }
+.stall { position: relative; }
+
+/* ===== 도전 결과 화면 ===== */
+#app > .gate.ssum { grid-template-rows: auto auto auto; align-content: start; gap: 14px; max-width: 1180px; width: 100%; margin-inline: auto; }
+.ss-top { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border: 2px solid var(--sil); box-shadow: 4px 4px 0 var(--line); background: var(--paper); }
+.ss-top > i.px { width: 84px; height: 84px; flex: none; background-color: var(--wash); }
+.ss-top > div { flex: 1 1 auto; min-width: 0; } .ss-top .cap { margin: 0; } .ss-top h2 { margin: 2px 0; font-size: 28px; }
+.ssum.lost .ss-top { border-color: var(--red-d); box-shadow: 4px 4px 0 var(--red); } .ssum.lost .ss-top h2 { color: var(--red-d); }
+.ssum.won .ss-top { box-shadow: 4px 4px 0 var(--amber); }
+.ss-where { margin: 0; color: var(--sil); }
+.ss-score { margin: 0; display: grid; justify-items: end; } .ss-score b { font-size: 44px; line-height: 1; color: var(--red); } .ss-score span { font-size: 12px; color: var(--amber-d); font-weight: 700; }
+.ss-body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); gap: 14px; min-height: 0; }
+.ss-body section { min-height: 0; } .ss-body h3 { margin: 0 0 8px; font-size: 16px; } .ss-body h4 { margin: 0; display: flex; align-items: center; gap: 6px; font-size: 14px; } .ss-body h4 span { color: var(--ash); font-weight: 400; }
+.ss-body h4 .pxi { width: 14px; height: 14px; color: var(--sand-d); }
+.ss-route { padding: 12px 14px; border: 2px solid var(--line); background: var(--paper); }
+.sr-acts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.sr-act { padding: 8px 10px; background: var(--tint, var(--wash)); border-left: 4px solid var(--sil); }
+.sr-act.th-forest { --tint: #e3eedb; } .sr-act.th-snow { --tint: #e2ecf7; } .sr-act.th-desert { --tint: #f6e6c8; } .sr-act.th-castle { --tint: #e9e4e2; }
+.sr-act > p { margin: 0 0 6px; } .sr-act.fut { opacity: .55; border-left-color: var(--line); } .sr-act.fut > p { margin: 0; }
+.sr-ok { color: var(--green-d); font-weight: 700; }
+.sr-path { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: flex-end; }
+.sr-path > li { position: relative; display: grid; justify-items: center; gap: 1px; min-width: 52px; font-size: 11px; }
+.sr-path > li + li::before { content: ''; position: absolute; left: -12px; top: 22px; width: 10px; height: 2px; background: var(--ash); }
+.sr-path i.px { width: 44px; height: 44px; } .sr-ic { display: grid; place-items: center; width: 44px; height: 44px; } .sr-ic .pxi { width: 26px; height: 26px; }
+.sr-path .k-rest .sr-ic { color: var(--ember); } .sr-path .k-treasure .sr-ic { color: var(--sand-d); } .sr-path .k-shop .sr-ic { color: var(--amber-d); } .sr-path .k-event .sr-ic { color: var(--teal-d); }
+.sr-path .k-elite .sr-n, .sr-path .k-boss .sr-n { color: var(--amber-d); font-weight: 700; }
+.sr-path li.dead { background: #fde8eb; box-shadow: inset 0 0 0 2px var(--red); padding: 2px 4px; } .sr-x { color: var(--red-d); font-size: 11px; }
+.ss-side { display: grid; gap: 12px; align-content: start; }
+.ss-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 6px; }
+.sm-t { display: grid; gap: 0; padding: 6px 10px; background: var(--wash); border: 2px solid var(--line); } .sm-t span { font-size: 11px; color: var(--ash); } .sm-t b { font-size: 22px; line-height: 1.2; }
+.sm-t.bad b { color: var(--red-d); }
+.ss-best { padding: 10px 12px; border: 2px solid var(--amber); box-shadow: 4px 4px 0 var(--amber); background: #fffaf0; display: grid; gap: 4px; }
+.ss-best .cap { margin: 0; } .ss-best .st-row > i { width: 56px; height: 56px; } .ss-best h4 { font-size: 16px; } .ss-best p { margin: 0; } .ss-best .ok { color: var(--green-d); }
+.ss-loot { display: grid; gap: 6px; padding: 10px 12px; border: 2px solid var(--line); background: var(--paper); } .ss-loot .chipr { margin: 0; justify-content: flex-start; } .ss-route { align-self: start; }
+.ss-loot .chip.add { box-shadow: inset 0 0 0 1px var(--green); } .ss-loot .chip.cut { text-decoration: line-through; color: var(--ash); }
+.ss-go { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+@media (max-width: 760px) {
+  .ss-body { grid-template-columns: 1fr; } .ss-top { padding: 10px; gap: 10px; flex-wrap: wrap; } .ss-top > i.px { width: 56px; height: 56px; } .ss-top h2 { font-size: 20px; } .ss-score b { font-size: 32px; }
+  .sr-path i.px, .sr-ic { width: 34px; height: 34px; } .sr-path > li { min-width: 44px; } .sr-path > li + li::before { top: 16px; }
+  .ss-go .btn { flex: 1 1 140px; }
 }
 </style>
 <main id="app"></main>
@@ -6983,7 +7055,7 @@ const rlOwned = id => (RL[id] ? run.rl.includes(id) : (run.cards || []).includes
 const rlPool = () => [...Object.keys(RL), ...RL_CARDS].filter(id => !rlOwned(id));
 function rlGive(id) { if (RL[id]) { run.rl.push(id); if (id === 'heart') { run.maxHp += 1; run.hp += 1; } } else if (id === 'turret') run.cards.push('turret', 'turret'); else run.cards.push(id); }
 const ABUP = ['능력 강화', '능력을 쓴 턴에는 마나 1을 돌려받는다', 'Ability Boost', 'Get 1 mana back on any turn you use your ability'];
-const PRICE3 = { card: 4, relic: 7, heal: 3, pass: 6 };
+const PRICE3 = { card: 4, relic: 7, heal: 3, pass: 6, cut: 5 };
 const price3 = k => Math.max(1, PRICE3[k] - (run.rl.includes('seal') ? 1 : 0));
 const NODE_N = { fight: ['결투', 'Duel'], elite: ['정예', 'Elite'], boss: ['보스', 'Boss'], shop: ['상점', 'Shop'], rest: ['쉼터', 'Rest'], event: ['사건', 'Event'], treasure: ['보물', 'Treasure'] };
 const nodeN = t => L(NODE_N[t][0], NODE_N[t][1]);
@@ -7001,7 +7073,7 @@ const PXI = {
 const pxi = t => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${PXI[t].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
 
 function newRun2() { return Object.assign(newRun(), { v: 4, gold: 0, cards: [], cut: [], rl: [], abup: false, map: null, act: 0, row: -1, col: 0, sel: null, cur: null, scene: null, shop: null, path: [], elite: 0, fights: 0, score: 0 }); }
-function stSave() { try { if (run && run.map && !run.cleared) localStorage.setItem('ssd-run', JSON.stringify(run)); else localStorage.removeItem('ssd-run'); } catch (e) { /* 저장소 없음 */ } }
+function stSave() { try { if (run && run.map && !run.cleared && !run.over) localStorage.setItem('ssd-run', JSON.stringify(run)); else localStorage.removeItem('ssd-run'); } catch (e) { /* 저장소 없음 */ } }
 function stLoad() { try { const r = JSON.parse(localStorage.getItem('ssd-run') || 'null'); return r && r.v === 4 && r.map && CLS[r.cls] && !r.cleared ? r : null; } catch (e) { return null; } }
 function stLost() { try { localStorage.removeItem('ssd-run'); } catch (e) { /* 저장소 없음 */ } return ''; }
 function startStage() {
@@ -7071,6 +7143,7 @@ function stageWin() {
   const ov = ovEl(); if (ov) ov.innerHTML = '';
   const n = stCurNode(); if (!n) return; const has = id => run.rl.includes(id), left = Math.max(1, G.P.a.hp), clean = left >= (run.hp0 || 0);
   const gain = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? 2 : 0) + (has('purse') ? 2 : 0), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
+  (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
   run.hp = Math.min(run.maxHp, left + heal); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
   if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
   const spoil = shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, spoil ? 2 : 3);
@@ -7093,7 +7166,7 @@ function takePerk(p) {
 /* 보상과 상점에서 같이 쓰는 표시: 덱에 이미 몇 장 있는지, 유물의 3D 모형 */
 const ownN = id => stDeck().filter(x => x === id).length;
 const ownTag = id => { const k = ownN(id); return `<em class="mc-own${k ? '' : ' nw'}">${k ? L(`덱에 ${k}장`, `${k} in deck`) : L('새 카드', 'New')}</em>`; };
-const withOwn = (html, id) => html.replace('<span class="mc-art">', `<span class="mc-art">${ownTag(id)}`);
+const withOwn = (html, id) => html.replace('<span class="mc-art">', `<span class="mc-art">${ownTag(id)}`).replace('class="mcard', `data-id="${id}" class="mcard`);
 const RL_MODEL = id => (id === 'spring' ? 'mana' : id === 'turret' ? '' : id);
 const rlType = id => (RL[id] ? L('유물 · 남은 도전 내내', 'Relic · rest of the run') : L('유물 카드 · 판마다 한 번', 'Relic card · once per duel'));
 const rlShort = id => (RL[id] ? D2(RL[id][1], RL[id][3]) : id === 'turret' ? rlDesc(id) : `${L('마나', 'Mana')} ${CARDS[id].c}. ${hl(CARDS[id].d)}`);
@@ -7114,7 +7187,7 @@ function rewardHTML() {
       ${perk ? `<div class="mcards">${(o.perks || []).map(perkCard).join('')}</div>
         <p class="my-note">${L('유물은 하나만 고를 수 있습니다. 카드에 그려진 것이 이번 도전 내내 함께합니다.', 'You can take only one relic. It stays with you for the rest of the run.')}</p><div class="my-skip"></div>`
       : `<div class="mcards">${(o.cards || []).map((id, i) => withOwn(mcardHTML(id, i), id).replace('class="mcard', (i === o.spoil ? `data-rb="${L('전리품', 'Spoils')}" ` : '') + 'class="mcard' + (i === o.spoil ? ' spoil' : ''))).join('')}</div>
-        <p class="my-note">${o.spoil === 0 ? L(`첫 장은 방금 쓰러뜨린 ${fn}의 카드입니다. `, `The first card belongs to the ${TR(fn)} you just beat. `) : ''}${L('고른 카드는 남은 판 내내 덱에 섞입니다.', 'The card you pick stays in your deck for the rest of the run.')}</p>
+        ${deckMix()}<p class="my-note">${o.spoil === 0 ? L(`첫 장은 방금 쓰러뜨린 ${fn}의 카드입니다. `, `The first card belongs to the ${TR(fn)} you just beat. `) : ''}${L('고른 카드는 남은 판 내내 덱에 섞입니다.', 'The card you pick stays in your deck for the rest of the run.')}</p>
         <div class="my-skip"><button type="button" class="btn ghost" data-a="rcard" data-i="">${L('고르지 않고 지나간다', 'Skip without picking')}</button></div>`}</div>
     ${stBag()}</div>`;
 }
@@ -7124,7 +7197,13 @@ function openShop() {
   stSave(); W({ phase: 'shop' });
 }
 function shopBuy(kind, key) {
-  const s = run.shop; if (!s) return; const tag = kind + ':' + key, cost = price3(kind);
+  const s = run.shop; if (!s) return;
+  /* 카드 제거: 값을 치르기 전에 뺄 카드를 고른다. 고르지 않고 물러나면 금화는 그대로 */
+  if (kind === 'cutx') { s.cutting = false; SND.play('tap'); return render(); }
+  if (kind === 'cutc') { const c = price3('cut'); if (!s.cutting || s.sold['cut:x'] || run.gold < c || !stDeck().includes(key) || stDeck().length <= 8) return;
+    stCut(key); run.gold -= c; s.sold['cut:x'] = 1; s.cutting = false; SND.play('coin'); toast(L(`${CARDS[key].n} 1장을 덱에서 뺐습니다`, `Removed 1 ${TR(CARDS[key].n)} from your deck`)); stSave(); return render(); }
+  if (kind === 'cut') { if (s.sold['cut:x']) return; if (stDeck().length <= 8) return toast(L('덱이 8장 이하라 뺄 수 없습니다', "Your deck is at 8 cards; you can't remove more")); if (run.gold < price3('cut')) return toast(L('금화가 부족합니다', 'Not enough Gold')); s.cutting = true; SND.play('tap'); return render(); }
+  const tag = kind + ':' + key, cost = price3(kind);
   if (kind !== 'heal' && s.sold[tag]) return;
   if (run.gold < cost) return toast(L('금화가 부족합니다', 'Not enough Gold'));
   if (kind === 'heal') { if (run.hp >= run.maxHp) return toast(L('체력이 이미 가득합니다', 'HP is already full')); run.hp += 1; }
@@ -7139,7 +7218,7 @@ function shopHTML() {
   const buy = (kind, key, cost, off, note) => { const sold = !!s.sold[kind + ':' + key], short = !sold && !off && !can(cost);
     return `<button type="button" class="ptag${sold ? ' sold' : ''}${short ? ' short' : ''}" data-a="buy" data-kind="${kind}" data-key="${key}" ${sold || off || short ? 'disabled' : ''} aria-label="${sold ? L('구매함', 'Bought') : note || (short ? L(`금화 ${cost}, ${cost - run.gold} 부족`, `${cost} Gold, ${cost - run.gold} short`) : L('금화 ' + cost + '에 사기', 'Buy for ' + cost + ' Gold'))}">${sold ? L('팔림', 'Sold') : note || `${GOLD}${cost}`}</button>${short ? `<span class="pshort">${L(`${cost - run.gold} 부족`, `${cost - run.gold} short`)}</span>` : ''}`; };
   const card = (id, i) => { const c = CARDS[id], sold = !!s.sold['card:' + i];
-    return `<div class="sslot${sold ? ' sold' : ''}"><div class="scard t-${c.t}" tabindex="0"><span class="tipn" role="tooltip"><b>${c.n}</b> · ${TYPE_N[c.t] || '특수'} · ${cardOwner(id)}<br>${hl(c.d)}</span><span class="mc-f"><span class="mc-top"><span class="cost" title="마나">${c.c}</span><b>${c.n}</b></span>
+    return `<div class="sslot${sold ? ' sold' : ''}"><div class="scard t-${c.t}" data-id="${id}" tabindex="0"><span class="tipn" role="tooltip"><b>${c.n}</b> · ${TYPE_N[c.t] || '특수'} · ${cardOwner(id)}<br>${hl(c.d)}</span><span class="mc-f"><span class="mc-top"><span class="cost" title="마나">${c.c}</span><b>${c.n}</b></span>
       <span class="mc-art">${ownTag(id)}${cardIc(id)}${cardGrid(id, null)}</span><span class="mc-type">${TYPE_N[c.t] || '특수'} · ${cardOwner(id)}</span><span class="mc-ds">${hl(c.d)}</span></span></div>${buy('card', i, price3('card'))}</div>`; };
   /* 물건은 이름, 종류, 설명을 늘 보여 준다(마우스를 대지 않아도 읽힌다) */
   const goods = (kind, key, model, name, type, desc, cost, off, note) => { const sold = !!s.sold[kind + ':' + key];
@@ -7148,14 +7227,23 @@ function shopHTML() {
   const full = run.hp >= run.maxHp;
   return `<div class="gate stmap"><div class="stall">
       <div class="awning" aria-hidden="true"></div>
-      <div class="st-head"><div class="plaque"><span class="cap">${stLab()}</span><h2>${L('떠돌이 상인의 가판대', "The Wandering Merchant's Stall")}</h2></div><div class="mygold" aria-label="${L('가진 금화', 'Your gold')} ${run.gold}">${GOLD}<b>${run.gold}</b></div></div>
+      <div class="st-head"><div class="plaque"><span class="cap">${stLab()}</span><h2>${L('떠돌이 상인의 가판대', "The Wandering Merchant's Stall")}</h2></div>${deckMix()}<div class="mygold" aria-label="${L('가진 금화', 'Your gold')} ${run.gold}">${GOLD}<b>${run.gold}</b></div></div>
       <p class="shelf-l"><span>${L('카드 선반', 'Card shelf')}</span><small>${L('산 카드는 덱에 섞입니다', 'Cards you buy join your deck')}</small></p>
       <div class="shelf cards">${s.cards.map(card).join('')}</div>
       <p class="shelf-l"><span>${L('물건 진열대', 'Goods')}</span><small>${L('유물은 남은 도전 내내 효과가 이어집니다', 'Relics last for the rest of the run')}</small></p>
       <div class="shelf items">
         ${goods('heal', 'h', 'herb', L('약초', 'Herb'), L('회복 · 여러 번 살 수 있음', 'Healing · repeatable'), L(`체력 <b>+1</b>. 지금 ${run.hp} / ${run.maxHp}`, `HP <b>+1</b>. Now ${run.hp} / ${run.maxHp}`), price3('heal'), full, full ? L('체력 가득', 'HP full') : '')}
         ${s.relic ? goods('relic', 'r', s.relic, rlName(s.relic), rlType(s.relic), rlShort(s.relic), price3('relic')) : ''}
-        ${s.pass.map(k => goods('pass', k, RL_MODEL(k), rlName(k), rlType(k), rlShort(k), price3('pass'))).join('')}</div>
+        ${s.pass.map(k => goods('pass', k, RL_MODEL(k), rlName(k), rlType(k), rlShort(k), price3('pass'))).join('')}
+        ${(() => { const sold = !!s.sold['cut:x'], few = stDeck().length <= 8;
+          return `<div class="sslot svc${sold ? ' sold' : ''}"><div class="good"><span class="im svc-ic" aria-hidden="true">${pxi('cut')}</span><b class="gname">${L('카드 제거', 'Card Removal')}</b>
+            <span class="gnote"><span class="gtype">${L('서비스 · 가판대마다 한 번', 'Service · once per stall')}</span><span class="gdesc">${L('덱에서 카드 1장을 뺍니다. 고른 뒤에 값을 치릅니다.', 'Remove 1 card from your deck. You pay after choosing.')}</span></span></div>${buy('cut', 'x', price3('cut'), few, few ? L('덱 8장', '8 cards') : '')}</div>`; })()}</div>
+      ${s.cutting ? (() => { const cnt = {}; stDeck().forEach(id => { cnt[id] = (cnt[id] || 0) + 1; }); const ord = { move: 0, atk: 1, sp: 2 };
+        const ids = Object.keys(cnt).sort((a, b) => (ord[CARDS[a].t] || 0) - (ord[CARDS[b].t] || 0) || CARDS[a].c - CARDS[b].c);
+        return `<div class="cutp" role="dialog" aria-label="${L('뺄 카드 고르기', 'Choose a card to remove')}"><div class="cutp-in"><p class="cap">${L('카드 제거', 'Card Removal')} · ${GOLD}${price3('cut')}</p><h3>${L('덱에서 뺄 카드를 고르세요', 'Choose a card to remove')}</h3>
+          <p class="cutp-n">${L('되돌릴 수 없습니다. 고르면 그때 금화를 치릅니다.', "This can't be undone. You pay when you choose.")}</p>
+          <ul class="sb-deck cutl">${ids.map(id => { const k = CARDS[id]; return `<li class="k-${k.relic ? 'relic' : k.t}"><button type="button" data-a="buy" data-kind="cutc" data-key="${id}"><b class="cost">${k.c}</b><span class="nm">${k.n}</span>${cnt[id] > 1 ? `<em>×${cnt[id]}</em>` : ''}<span class="ds">${hl(k.d)}</span></button></li>`; }).join('')}</ul>
+          <button type="button" class="btn woodb" data-a="buy" data-kind="cutx" data-key="x">${L('그만두기', 'Never mind')}</button></div></div>`; })() : ''}
       <div class="st-foot"><button type="button" class="btn woodb" data-a="shopout">${L('가판대를 떠난다', 'Leave the stall')}</button><span>${L('떠나면 다시 돌아올 수 없습니다.', "You can't come back once you leave.")}</span></div></div>
     ${stBag()}</div>`;
 }
@@ -7233,6 +7321,7 @@ function sceneHTML() {
 Object.assign(PXI, {
   heart: ['...........', '.###...###.', '#####.#####', '###########', '###########', '###########', '.#########.', '..#######..', '...#####...', '....###....', '.....#.....'],
   deck: ['...#######.', '...#.....#.', '.#######.#.', '.#.....#.#.', '.#.###.#.#.', '.#.....#.#.', '.#.###.#.#.', '.#.....#.#.', '.#.....###.', '.#.....#...', '.#######...'],
+  cut: ['.##.....##.', '#..#...#..#', '#..#...#..#', '.##.#.#.##.', '....#.#....', '.....#.....', '....#.#....', '...#...#...', '..#.....#..', '.#.......#.', '#.........#'],
   relic: ['...........', '..#######..', '.##.#.#.##.', '###########', '.#.......#.', '..#.....#..', '...#...#...', '....#.#....', '.....#.....', '...........', '...........'],
 });
 let stDr = { l: false, r: false }, stDrShown = { l: false, r: false };
@@ -7294,11 +7383,95 @@ function stBag() {
       <ul class="sb-deck">${deck}</ul><p class="cap sb-tip">${L('카드에 마우스를 대면 설명이 나옵니다.', 'Hover a card to read it.')}</p></section>`;
   return stDrawer('l', L('내 상태', 'My status'), `<i class="px a-${run.cls} sdr-ic" aria-hidden="true"></i>`, body);
 }
+/* ===== 지도: 칸에 마우스를 대면 지금 자리에서 그 칸까지 가는 길을 밝힌다 =====
+   지금 자리에서 닿을 수 있고, 그 칸으로 이어지는 칸만 고른다(갈림길이 여럿이면 모두) */
+function stPathSet(tr, tc) {
+  if (!run || !run.map || run.cleared || run.over || tr <= run.row) return null;
+  const rows = run.map[run.act].rows, fwd = {};
+  let fr = run.row < 0 ? rows[0].map((_, c) => c) : stNode(run.row, run.col).to.slice();
+  for (let r = run.row + 1; r <= tr; r++) { const nx = []; fr.forEach(c => { fwd[r + '-' + c] = 1; (rows[r][c].to || []).forEach(t => { if (!nx.includes(t)) nx.push(t); }); }); fr = nx; }
+  if (!fwd[tr + '-' + tc]) return null;
+  const set = { [tr + '-' + tc]: 1 };
+  for (let r = tr - 1; r > run.row; r--) rows[r].forEach((n, c) => { if (fwd[r + '-' + c] && (n.to || []).some(t => set[(r + 1) + '-' + t])) set[r + '-' + c] = 1; });
+  set[run.row < 0 ? 's' : run.row + '-' + run.col] = 1;
+  return set;
+}
+function stPathShow(m) {
+  const map = document.querySelector('#app .sm2 .smap'); if (!map) return;
+  const set = m ? stPathSet(+m.dataset.r, +m.dataset.c) : null;
+  map.classList.toggle('pt-on', !!set);
+  map.querySelectorAll('.mnode').forEach(e => e.classList.toggle('pth', !!set && !!set[e.dataset.r + '-' + e.dataset.c]));
+  map.querySelectorAll('line[data-b]').forEach(e => e.classList.toggle('hl', !!set && !!set[e.dataset.a] && !!set[e.dataset.b]));
+}
+document.addEventListener('pointerover', e => { const m = e.target.closest && e.target.closest('.sm2 .mnode'); if (m) stPathShow(m); });
+document.addEventListener('pointerout', e => { const m = e.target.closest && e.target.closest('.sm2 .mnode'); if (m && !(e.relatedTarget && m.contains(e.relatedTarget))) stPathShow(null); });
+document.addEventListener('focusin', e => { const m = e.target.closest && e.target.closest('.sm2 .mnode'); stPathShow(m || null); });
+
+/* ===== 보상·상점: 내 덱의 구성(이동·공격·특수)과 평균 마나. 카드에 마우스를 대면 넣었을 때를 미리 보여 준다 ===== */
+const DM_T = ['move', 'atk', 'sp'], DM_N = { move: ['이동', 'Move'], atk: ['공격', 'Attack'], sp: ['특수', 'Special'] };
+function deckMix() {
+  const d = stDeck(), cnt = { move: 0, atk: 0, sp: 0 }; let sum = 0;
+  d.forEach(id => { const c = CARDS[id]; cnt[DM_T.includes(c.t) ? c.t : 'sp'] += 1; sum += c.c; });
+  return `<div class="dmix" data-n="${d.length}" data-sum="${sum}" aria-label="${L('내 덱 구성', 'My deck mix')}">
+    <p class="dm-h">${L('내 덱', 'My deck')} <b>${d.length}${L('장', '')}</b><span class="dm-plusn">+1</span> · ${L('평균 마나', 'Avg mana')} <b>${(sum / Math.max(1, d.length)).toFixed(1)}</b><span class="dm-to"></span></p>
+    <div class="dm-bar" aria-hidden="true">${DM_T.map(t => `<span class="dm-${t}" style="flex-grow:${cnt[t]}"></span>`).join('')}</div>
+    <p class="dm-leg">${DM_T.map(t => `<span class="dm-${t}"><i aria-hidden="true"></i>${L(DM_N[t][0], DM_N[t][1])} <b>${cnt[t]}</b><em>+1</em></span>`).join('')}</p></div>`;
+}
+function dmHover(card) {
+  document.querySelectorAll('#app .dmix').forEach(x => {
+    DM_T.forEach(t => x.classList.remove('hv-' + t)); x.classList.toggle('hv', !!card);
+    const to = x.querySelector('.dm-to'); if (to) to.textContent = '';
+    if (!card) return; const c = CARDS[card.dataset.id]; if (!c) return;
+    x.classList.add('hv-' + (DM_T.includes(c.t) ? c.t : 'sp'));
+    if (to) to.textContent = ' → ' + ((+x.dataset.sum + c.c) / (+x.dataset.n + 1)).toFixed(1);
+  });
+}
+document.addEventListener('pointerover', e => { if (!e.target.closest || !document.querySelector('#app .dmix')) return; dmHover(e.target.closest('[data-id].mcard, [data-id].scard')); });
+document.addEventListener('focusin', e => { if (document.querySelector('#app .dmix')) dmHover(e.target.closest && e.target.closest('[data-id].mcard, [data-id].scard')); });
+
+/* ===== 도전 결과: 지나온 길, 쓰러진 곳, 가장 잘 싸운 판, 모은 것 ===== */
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-a="stsum"]'); if (!b || !run || !stageOn()) return;
+  const ov = ovEl(); if (ov) ov.innerHTML = '';
+  if (G && !run.over) run.turns += Math.max(0, G.turn - 1);
+  run.over = true; SND.play('tap'); W({ phase: 'map' });
+});
+function stSumHTML() {
+  const won = !!run.cleared, ln = won ? null : stCurNode(), rec = stageRec3(), c = CLS[run.cls], log = run.log || [];
+  const ar = m => L(ARENAS[m.ar] || m.ar, TR(ARENAS[m.ar] || m.ar));
+  const best = log.slice().sort((x, y) => x.lost - y.lost || x.turns - y.turns || (y.t === 'boss') - (x.t === 'boss') || (y.t === 'elite') - (x.t === 'elite'))[0];
+  const step = (n, dead) => `<li class="k-${n.t}${dead ? ' dead' : ''}">${n.foe ? `<i class="px a-${n.foe}${dead ? '' : '-ko'} flip" aria-hidden="true"></i>` : `<span class="sr-ic">${pxi(n.t)}</span>`}<span class="sr-n">${n.foe ? CLS[n.foe].n : nodeN(n.t)}</span>${dead ? `<b class="sr-x">${L('패배', 'Defeat')}</b>` : ''}</li>`;
+  const route = run.map.map((m, a) => {
+    if (a > run.act) return `<li class="sr-act fut th-${m.ar}"><p><b>${L(`${a + 1}막`, `Act ${a + 1}`)}</b> ${ar(m)}</p><p class="cap">${L('닿지 못했습니다', 'Not reached')}</p></li>`;
+    const steps = run.path.filter(p => p.split('-')[0] === String(a)).map(p => { const q = p.split('-').map(Number); return step(m.rows[q[1]][q[2]], false); });
+    if (!won && a === run.act && ln) steps.push(step(ln, true));
+    return `<li class="sr-act th-${m.ar}"><p><b>${L(`${a + 1}막`, `Act ${a + 1}`)}</b> ${ar(m)}${a < run.act || won ? ' <span class="sr-ok">✓</span>' : ''}</p><ol class="sr-path">${steps.join('') || `<li class="cap">${L('첫 걸음에서 멈췄습니다', 'Stopped at the first step')}</li>`}</ol></li>`; }).join('');
+  const tile = (k, v, cls) => `<div class="sm-t${cls ? ' ' + cls : ''}"><span>${k}</span><b>${v}</b></div>`;
+  const cnt = {}; (run.cards || []).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; });
+  const chips = (ids, cls) => ids.map(id => `<span class="chip ${cls}" title="${esc(CARDS[id].d)}">${CARDS[id].n}${cnt[id] > 1 && cls === 'add' ? ' ×' + cnt[id] : ''}</span>`).join('');
+  const rls = run.rl.map(k => `<li><b>${rlName(k)}</b><span>${L(RL[k][1], RL[k][3])}</span></li>`).join('') + (run.abup ? `<li><b>${L(ABUP[0], ABUP[2])}</b><span>${L(ABUP[1], ABUP[3])}</span></li>` : '');
+  const where = ln ? L(`${run.act + 1}막 ${nodeN(ln.t)}에서 ${ln.foe ? CLS[ln.foe].n + '에게 ' : ''}쓰러졌습니다`, `Fell at Act ${run.act + 1} ${nodeN(ln.t)}${ln.foe ? ' to the ' + TR(CLS[ln.foe].n) : ''}`) : '';
+  return `<div class="gate stmap ssum${won ? ' won' : ' lost'}">
+    <header class="ss-top c-${run.cls}"><i class="px a-${run.cls}${won ? '-act' : '-ko'}" aria-hidden="true"></i>
+      <div><p class="cap">${L('스테이지 모드 · 도전 결과', 'Stage Mode · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
+      ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
+    <div class="ss-body">
+      <section class="ss-route"><h3>${L('지나온 길', 'Your route')}</h3><ol class="sr-acts">${route}</ol></section>
+      <section class="ss-side">
+        <div class="ss-tiles">${tile(L('이긴 결투', 'Duels won'), run.fights || 0)}${tile(L('정예', 'Elites'), run.elite || 0)}${tile(L('누적 턴', 'Turns'), run.turns || 0)}${tile(L('금화', 'Gold'), run.gold)}${tile(L('남은 체력', 'HP left'), won ? run.hp : 0, won ? '' : 'bad')}</div>
+        ${best ? `<div class="ss-best"><p class="cap">${L('가장 잘 싸운 판', 'Best duel')}</p><div class="st-row"><i class="px a-${best.foe}-ko flip" aria-hidden="true"></i><div><h4>${CLS[best.foe].n} <span class="cap">${L(`${best.a + 1}막 ${nodeN(best.t)}`, `Act ${best.a + 1} ${nodeN(best.t)}`)}</span></h4><p>${best.lost ? L(`잃은 체력 ${best.lost}`, `Lost ${best.lost} HP`) : `<b class="ok">${L('무피해', 'Flawless')}</b>`} · ${L(`${best.turns}턴 만에`, `in ${best.turns} turns`)}</p></div></div></div>` : ''}
+        <div class="ss-loot"><h4>${pxi('relic')}${L('모은 유물', 'Relics')} <span>${run.rl.length + (run.abup ? 1 : 0)}</span></h4>${rls ? `<ul class="sb-rl">${rls}</ul>` : `<p class="cap">${L('없음', 'None')}</p>`}
+          <h4>${pxi('deck')}${L('더한 카드', 'Cards added')} <span>${(run.cards || []).length}</span></h4><p class="chipr">${chips(Object.keys(cnt), 'add') || `<span class="cap">${L('없음', 'None')}</span>`}</p>
+          ${(run.cut || []).length ? `<h4>${L('뺀 카드', 'Cards removed')} <span>${run.cut.length}</span></h4><p class="chipr">${chips(run.cut, 'cut')}</p>` : ''}</div>
+      </section></div>
+    <div class="ss-go"><button type="button" class="btn red big" data-a="strestart">${won ? L('다른 직업으로 다시 도전', 'Try another class') : L('처음부터 다시 도전', 'Start a new run')}</button><button type="button" class="btn ghost big" data-a="leave">${L('메뉴로', 'Main menu')}</button></div></div>`;
+}
 /* 지도 */
 const MX = [13, 28, 43, 58, 73, 90], MY = { 3: [19, 50, 81], 2: [34, 66], e: [19, 60], 1: [50] };
 function stageMapHTML() {
   if (!run.map) stInit();
   if (run.scene && !run.cleared) return sceneHTML();
+  if (run.cleared || run.over) return stSumHTML();
   const act = run.map[run.act], rows = act.rows, av = stAvail(), isAv = (r, c) => av.some(x => x[0] === r && x[1] === c), was = (r, c) => run.path.includes(run.act + '-' + r + '-' + c), sel = run.sel && isAv(run.sel[0], run.sel[1]) ? run.sel : null;
   const pos = (r, c) => [MX[r], MY[rows[r][0].t === 'elite' ? 'e' : rows[r].length][c]], key = (r, c) => run.act + '-' + r + '-' + c, seen = (n, r, c) => n.t === 'boss' || isAv(r, c) || was(r, c) || !!(run.seenK || {})[key(r, c)] || run.rl.includes('compass') || run.scout === run.act || run.cleared;
   run.seenK = run.seenK || {}; av.forEach(x => { run.seenK[key(x[0], x[1])] = 1; });
@@ -7306,9 +7479,9 @@ function stageMapHTML() {
   const reach = {}; let fr = av.map(x => x[1]); for (let r = run.row + 1; r < rows.length && !run.cleared; r++) { const nx = []; fr.forEach(c => { reach[r + '-' + c] = 1; (rows[r][c].to || []).forEach(t => { if (!nx.includes(t)) nx.push(t); }); }); fr = nx; }
   const off = (r, c) => !run.cleared && !was(r, c) && !reach[r + '-' + c];
   let lines = '';
-  if (run.row < 0 && !run.cleared) rows[0].forEach((n, c) => { const [x, y] = pos(0, c); lines += `<line class="open" x1="1" y1="50" x2="${x}" y2="${y}"/>`; });
+  if (run.row < 0 && !run.cleared) rows[0].forEach((n, c) => { const [x, y] = pos(0, c); lines += `<line class="open" data-a="s" data-b="0-${c}" x1="1" y1="50" x2="${x}" y2="${y}"/>`; });
   rows.forEach((row, r) => { if (r < rows.length - 1) row.forEach((n, c) => n.to.forEach(t => { const [x1, y1] = pos(r, c), [x2, y2] = pos(r + 1, t);
-    lines += `<line class="${was(r, c) && was(r + 1, t) ? 'done' : r === run.row && c === run.col && !run.cleared ? 'open' : off(r, c) || off(r + 1, t) ? 'off' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; })); });
+    lines += `<line data-a="${r}-${c}" data-b="${r + 1}-${t}" class="${was(r, c) && was(r + 1, t) ? 'done' : r === run.row && c === run.col && !run.cleared ? 'open' : off(r, c) || off(r + 1, t) ? 'off' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; })); });
   /* 칸에 마우스를 대면 뜨는 말풍선: 무엇이 있는지, 갈 수 있는지 */
   const TIPD = { shop: ['금화로 카드·유물·회복을 산다', 'Spend Gold on cards, relics, healing'], rest: ['체력 +2, 카드 제거, 능력 강화 가운데 하나', 'HP +2, remove a card, or Ability Boost'], event: ['결투 없음. 무슨 일이 생길지는 가 봐야 안다', 'No duel. Find out when you get there'], treasure: ['유물 둘 가운데 하나를 가져간다', 'Take one of two relics'] };
   const tipOf = (n, r, c, a, d, here, show) => {
@@ -7327,12 +7500,7 @@ function stageMapHTML() {
   const sn = sel ? stNode(sel[0], sel[1]) : null, rec = stageRec3(), ar = n => L(ARENAS[n] || n, TR(ARENAS[n] || n));
   /* 오른쪽 서랍: 고른 곳의 정보. 아무것도 안 골랐으면 안내와 이번 막의 보스 */
   let info;
-  if (run.cleared) info = `<p class="cap">${L('결과', 'Result')}</p><h3>${L(`${CLS[run.cls].n}(으)로 세 막을 모두 돌파`, `Cleared all three acts as ${TR(CLS[run.cls].n)}`)}</h3>
-      <p class="sd-score"><b>${run.score}</b>${L('점', ' pts')}</p>
-      <dl class="sd-kv"><dt>${L('결투', 'Duels')}</dt><dd>${run.fights}${L('판', '')} (${L('정예', 'elite')} ${run.elite})</dd><dt>${L('턴', 'Turns')}</dt><dd>${run.turns}</dd><dt>${L('남은 체력', 'HP left')}</dt><dd>${run.hp}</dd><dt>${L('금화', 'Gold')}</dt><dd>${run.gold}</dd></dl>
-      <p class="cap">${rec[run.cls] === run.score ? L('이 직업의 최고 점수입니다.', 'Your best score with this class.') : L(`이 직업의 최고 점수는 ${rec[run.cls]}점입니다.`, `Your best with this class is ${rec[run.cls]} pts.`)}<br>${L('점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수', 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns')}</p>
-      <button type="button" class="btn red big" data-a="strestart">${L('다른 직업으로 다시 도전', 'Try again with another class')}</button>`;
-  else if (!sn) { const bn = rows[rows.length - 1][0], bs = stSpec(bn);
+  if (!sn) { const bn = rows[rows.length - 1][0], bs = stSpec(bn);
     info = `<p class="cap">${L('다음 장소', 'Next stop')}</p><h3>${L('갈 곳을 고르세요', 'Choose where to go')}</h3>
       <p>${L('붉게 빛나는 곳 가운데 하나로 갈 수 있습니다. 지나온 길로는 돌아갈 수 없습니다.', 'You can move to any glowing red spot. There is no going back.')}</p>
       <p class="cap">${L('결투에서 이기면 금화와 카드 한 장(한 장은 쓰러뜨린 상대의 카드). 정예와 보스는 유물도 줍니다. 지면 처음부터 다시 합니다.', "Win a duel for Gold and a card (one is always the beaten foe's). Elites and bosses also give a relic. Lose and you start over.")}</p>
@@ -7350,7 +7518,6 @@ function stageMapHTML() {
     info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe k-${sn.t}"><span class="st-ic">${pxi(sn.t)}</span><div><h3>${L(T[0], T[2])}</h3></div></div><p>${L(T[1], T[3])}</p>
       <button type="button" class="btn red big" data-a="stgo">${L('들어간다', 'Enter')}</button>`; }
   /* 서랍은 고르면 저절로 열리고, 직접 닫거나 연 상태는 다음 그리기까지 이어진다 */
-  if (run.cleared) stDr.r = true;
   const hint = run.cleared || sn ? '' : `<p class="sm-hint" aria-hidden="true">${L('붉게 빛나는 곳을 눌러 다음 장소를 고르세요', 'Tap a glowing red spot to choose your next stop')}</p>`;
   return `<div class="gate stmap sm2">${stHud()}
     <div class="sm-stage${stDrShown.l ? ' pin-l' : ''}${stDrShown.r ? ' pin-r' : ''}">
@@ -7368,7 +7535,7 @@ function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.qu
 function stOverHTML(won) {
   const n = stCurNode(), last = n && n.t === 'boss' && run.act === run.map.length - 1;
   return won ? `<p class="vscore">${stLab()} ${L('승리', 'won')}</p><button type="button" class="btn red" data-a="stwin">${last ? L('결과 보기', 'See result') : L('보상 받기', 'Claim reward')}</button>`
-    : `${stLost()}<p class="vscore">${L(`도전 실패 · ${stLab()}에서 멈췄습니다`, `Run over · stopped at ${stLab()}`)}</p><button type="button" class="btn red" data-a="strestart">${L('처음부터 다시', 'Start over')}</button>`;
+    : `${stLost()}<p class="vscore">${L(`도전 실패 · ${stLab()}에서 멈췄습니다`, `Run over · stopped at ${stLab()}`)}</p><button type="button" class="btn red" data-a="stsum">${L('도전 결과 보기', 'See run result')}</button>`;
 }
 </script>
 <script>
@@ -8210,6 +8377,7 @@ function stOverHTML(won) {
       mapEl.addEventListener('click', function (e) { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true); }
     const bob = still ? 0 : Math.floor(tSec * 2) % 2 * 0.12, pulse = still ? 0 : Math.floor(tSec * 3) % 2;
     let heroEl = mapEl.querySelector('.mstart .hero'), hx = SX, hz = 0.6;
+    const ptOn = mapEl.classList.contains('pt-on');
     mapNodes.forEach(function (n) {
       const e = n.el, cl = e.classList, av = cl.contains('av'), sel = cl.contains('sel'), here = cl.contains('here'), off = cl.contains('off'), done = cl.contains('done'), big = n.kind === 'boss';
       const dim = off ? 0.62 : done && !here ? 0.82 : 1;
@@ -8217,7 +8385,7 @@ function stOverHTML(won) {
       n.g.position.y = sel && !still ? 0.18 + pulse * 0.1 : 0;
       if (n.spin) { n.spin.rotation.y = still ? 0.4 : tSec * 1.4; n.spin.position.y = (n.kind === 'event' ? 1.3 : 2.6) + (still ? 0 : Math.sin(tSec * 2.2) * 0.14); }
       if (n.glow && !still) { const f = Math.floor(tSec * 8); n.glow.children.forEach(function (m, i) { m.scale.set(1 + ((f + i) % 3) * 0.08, 0.84 + ((f * 3 + i * 2) % 5) * 0.09, 1); }); }
-      n.ring.visible = av || here; n.ring.material.color.setHex(av ? 0xd8475a : 0x5a4644); const rs = (big ? 1.25 : 1) * (sel ? 1.12 : 1) * (av && !sel ? 1 + pulse * 0.05 : 1); n.ring.scale.set(rs, rs, sel ? 2 : 1);
+      const pth = ptOn && cl.contains('pth'); n.ring.visible = av || here || pth; n.ring.material.color.setHex(av ? 0xd8475a : pth ? 0xe3a33b : 0x5a4644); const rs = (big ? 1.25 : 1) * (sel ? 1.12 : 1) * (av && !sel ? 1 + pulse * 0.05 : 1); n.ring.scale.set(rs, rs, sel ? 2 : 1);
       setSprite(n.foe, e.querySelector('.mt > i.px'), n.x + (here ? 0.55 : 0), 0.36 + n.g.position.y, n.z + 0.2, big ? 2.3 : 1.9, true);
       if (here) { heroEl = e.querySelector('.hero'); const flat = n.kind !== 'fight' && n.kind !== 'elite' && n.kind !== 'boss'; hx = n.x - (flat ? 2.5 : 0.75); hz = n.z + (flat ? 1.7 : 0.45); }
       /* 글자표와 누르는 자리 */
@@ -8229,9 +8397,11 @@ function stOverHTML(won) {
     const st = mapEl.querySelector('.mstart'); if (st) { ndc(SX, 0, 2); st.style.left = Math.round((_p.x * 0.5 + 0.5) * vw) + 'px'; st.style.top = Math.round((-_p.y * 0.5 + 0.5) * vh) + 'px'; }
     mapEdges.forEach(function (e) {
       const b = e.b.el.classList, a = e.a ? e.a.el.classList : null, started = !!hn || mapNodes.some(function (n) { return n.el.classList.contains('done'); });
-      const s = a ? (a.contains('done') && b.contains('done') ? 'done' : a.contains('here') && b.contains('av') ? 'open' : a.contains('off') || b.contains('off') ? 'off' : '') : (!started && b.contains('av') ? 'open' : started ? (b.contains('done') ? 'done' : 'off') : '');
-      if (s !== e.st) { e.st = s; e.mesh.material.color.setHex(s === 'open' ? 0xd8475a : s === 'done' ? 0x5a4644 : P.path); e.mesh.material.opacity = s === 'off' ? 0.3 : 1; }
-      e.mesh.position.y = s === 'open' && !still ? pulse * 0.06 : 0;
+      let s = a ? (a.contains('done') && b.contains('done') ? 'done' : a.contains('here') && b.contains('av') ? 'open' : a.contains('off') || b.contains('off') ? 'off' : '') : (!started && b.contains('av') ? 'open' : started ? (b.contains('done') ? 'done' : 'off') : '');
+      /* 칸에 마우스를 대면 그 칸까지 가는 길을 노랗게 */
+      if (ptOn && b.contains('pth') && (a ? a.contains('pth') : !started)) s = 'hl';
+      if (s !== e.st) { e.st = s; e.mesh.material.color.setHex(s === 'open' ? 0xd8475a : s === 'hl' ? 0xf0b429 : s === 'done' ? 0x5a4644 : P.path); e.mesh.material.opacity = s === 'off' ? 0.3 : 1; }
+      e.mesh.position.y = (s === 'open' || s === 'hl') && !still ? pulse * 0.06 + (s === 'hl' ? 0.04 : 0) : 0;
     });
     curCam = camB;
     renderer.setRenderTarget(rt); renderer.setClearColor(P.bg, 1); renderer.clear(); renderer.render(ms, camM);
@@ -8517,7 +8687,9 @@ function stOverHTML(won) {
     if (!arena) { active = false; return; }
     if (shopSized) { shopSized = false; resize(); }
     if (on) { if (onBtn.parentNode) onBtn.remove(); if (host.parentNode !== arena) arena.prepend(host); lab.querySelectorAll('.subm').forEach(function (e) { e.remove(); }); active = true; resize(); }
-    else { if (host.parentNode) host.remove(); if (onBtn.parentNode !== arena) arena.append(onBtn); active = false; }
+    else { if (host.parentNode) host.remove(); if (onBtn.parentNode !== arena) arena.append(onBtn); active = false;
+      /* 3D가 칸 위치를 픽셀로 적어 두었으므로, 2D로 바꾸면 지워서 원래 자리(%)로 돌려놓는다 */
+      if (mode === 'map') arena.querySelectorAll('.mnode, .mstart').forEach(function (e) { e.style.left = e.style.top = e.style.visibility = ''; }); }
   }
   new MutationObserver(attach).observe(appEl, { childList: true });
   function frame(now) {
