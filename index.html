@@ -2058,8 +2058,8 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
   /* 이번 턴 계획 */
   #app > .play.v2 .dk-l .sum { display: grid; gap: 3px; width: min(270px, 100%); min-width: 0; box-sizing: border-box; margin: 0; padding: 6px 8px 8px; background: #fffdfb; border: 2px solid #1d1413; box-shadow: 0 3px 0 #1d1413; }
   #app > .play.v2 .dk-l .sum .sum-h { display: block; font-size: 11px; color: var(--ash); letter-spacing: 1px; padding: 0 0 3px; border: 0; border-bottom: 1px dashed var(--line); background: none; white-space: nowrap; }
-  #app > .play.v2 .dk-l .sum > span:not(.sum-h) { display: flex; align-items: baseline; gap: 8px; min-width: 0; padding: 2px 6px; font-size: 14px; line-height: 1.3; background: var(--wash); border: 0; border-left: 5px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #app > .play.v2 .dk-l .sum > span > b { flex: none; width: 34px; margin: 0; font-size: 12px; color: var(--ash); font-weight: 400; }
+  #app > .play.v2 .dk-l .sum > span:not(.sum-h) { display: block; min-width: 0; padding: 2px 6px; font-size: 14px; line-height: 1.3; background: var(--wash); border: 0; border-left: 5px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #app > .play.v2 .dk-l .sum > span > b { display: inline-block; width: 34px; margin: 0 8px 0 0; font-size: 12px; color: var(--ash); font-weight: 400; }
   #app > .play.v2 .dk-l .sum .k-mv { border-left-color: var(--blue); }
   #app > .play.v2 .dk-l .sum .k-mv.need { background: #fff1f3; } #app > .play.v2 .dk-l .sum .k-mv.need em { animation: ufLow .8s steps(2) infinite; }
   #app > .play.v2 .dk-l .sum .t-atk { border-left-color: var(--red); font-weight: 700; } #app > .play.v2 .dk-l .sum .t-sp, #app > .play.v2 .dk-l .sum .t-ab { border-left-color: var(--amber); font-weight: 700; }
@@ -2070,6 +2070,57 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
 @media (min-width: 720px) and (min-height: 560px) and (max-height: 760px) {
   #app > .play.v2 .dk-l .sum { padding: 4px 6px 5px; gap: 2px; } #app > .play.v2 .dk-l .sum > span:not(.sum-h) { font-size: 12px; padding: 1px 5px; } #app > .play.v2 .dk-l .sum .sum-h { display: none; }
   #app > .play.v2 .uf-por { width: 44px; height: 44px; } #app > .play.v2 .uf-por > i.px { width: 40px; height: 40px; }
+}
+/* ===== 능력 아이콘과 스킬 버튼 ===== */
+.abi { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.abi .f-k { fill: #2b1d1c; } .abi .f-a { fill: var(--ac, #4f7fd0); } .abi .f-d { fill: var(--ac-d, #3b62a8); } .abi .f-w { fill: #fff; } .abi .f-y { fill: #ffd75e; } .abi .f-o { fill: #f08a24; } .abi .f-r { fill: #d8475a; }
+.abi .f-b { fill: #4f7fd0; } .abi .f-c { fill: #8fd3ff; } .abi .f-g { fill: #5b9a4a; } .abi .f-s { fill: #a89c9c; } .abi .f-p { fill: #8a6fd0; } .abi .f-n { fill: #8a5a2b; } .abi .f-m { fill: #d24f9a; }
+.uf-k > .abi { flex: none; width: 13px; height: 13px; align-self: center; margin-right: -1px; }
+.abb { position: relative; display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 44px; padding: 4px 10px 4px 4px; box-sizing: border-box; font: inherit; text-align: left; color: var(--sil);
+  background: linear-gradient(#fffdfb, #efe6df); border: 2px solid #1d1413; box-shadow: 0 3px 0 #1d1413; cursor: pointer; transition: translate .12s, box-shadow .12s; }
+.abb-ic { position: relative; flex: none; width: 44px; height: 44px; padding: 4px; box-sizing: border-box; overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, #fff 0 30%, color-mix(in srgb, var(--ac) 30%, #fff) 70%); border: 2px solid #1d1413; box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ac) 55%, #fff); }
+.abb-tx { display: grid; min-width: 0; line-height: 1.2; }
+.abb-tx em { font-style: normal; font-size: 10px; color: var(--ash); letter-spacing: 1px; } .abb-tx b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.abb-tx > span { font-size: 11px; color: var(--ac-d, var(--sil)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.abb-cd { position: absolute; inset: 0; display: grid; place-items: center; font-size: 22px; color: #fff; text-shadow: 2px 2px 0 #1d1413; background: rgba(29, 20, 19, .62); }
+.abb-n { position: absolute; right: 1px; bottom: 1px; min-width: 14px; padding: 0 2px; font-size: 11px; line-height: 14px; text-align: center; color: #fff; background: #1d1413; }
+.abb.ok:hover:not(:disabled), .abb.ok:focus-visible { translate: 0 -2px; box-shadow: 0 5px 0 #1d1413; } .abb.ok:hover:not(:disabled) .abb-ic { box-shadow: inset 0 0 0 2px var(--ac), 0 0 10px 2px color-mix(in srgb, var(--ac) 60%, transparent); }
+.abb.on { background: linear-gradient(#fff8dc, #ffe9a8); border-color: #7a5410; box-shadow: 0 3px 0 #7a5410, 0 0 0 2px #ffd75e; }
+.abb.on .abb-ic { box-shadow: inset 0 0 0 2px #ffd75e, 0 0 14px 4px rgba(255, 215, 94, .8); } .abb.on .abb-tx em { color: #946a10; font-weight: 700; }
+@media (prefers-reduced-motion: no-preference) { .abb.on .abb-ic { animation: abGlow 1s steps(2) infinite; } }
+@keyframes abGlow { 50% { box-shadow: inset 0 0 0 2px #fff, 0 0 20px 6px rgba(255, 215, 94, .95); } }
+.abb.blk .abb-ic .abi { filter: grayscale(1); opacity: .55; } .abb.blk .abb-tx b { color: #7d6e6c; }
+.abb:disabled { cursor: default; opacity: .65; }
+.abb:active:not(:disabled) { translate: 0 2px; box-shadow: 0 1px 0 #1d1413; }
+/* 설명 말풍선 */
+.abb-tip { position: absolute; right: 0; bottom: calc(100% + 12px); z-index: 30; width: 290px; display: none; gap: 6px; padding: 10px 12px; text-align: left; font-size: 12px; line-height: 1.5; color: var(--sil);
+  background: #fffbe9; border: 2px solid #1d1413; box-shadow: 0 4px 0 #1d1413, 0 10px 24px rgba(0, 0, 0, .35); white-space: normal; pointer-events: none; }
+.abb-tip::after { content: ''; position: absolute; right: 40px; bottom: -8px; width: 12px; height: 12px; background: #fffbe9; border-right: 2px solid #1d1413; border-bottom: 2px solid #1d1413; rotate: 45deg; }
+@media (hover: hover) { .abb:hover .abb-tip { display: grid; } }
+.abb:focus-visible .abb-tip { display: grid; }
+.abb-th { display: flex; align-items: center; gap: 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--line); }
+.abb-ti { flex: none; width: 40px; height: 40px; padding: 3px; box-sizing: border-box; background: radial-gradient(circle at 50% 42%, #fff 0 30%, color-mix(in srgb, var(--ac) 30%, #fff) 70%); border: 2px solid #1d1413; }
+.abb-th b { display: block; font-size: 16px; } .abb-th em { font-style: normal; font-size: 11px; color: var(--ash); }
+.abb-d { display: block; } .abb-s { display: block; font-weight: 700; font-size: 12px; padding: 3px 8px; }
+.abb-s.s-ok { color: var(--green-d); background: #eaf5e4; } .abb-s.s-on { color: #946a10; background: #fff3c4; } .abb-s.s-blk { color: var(--red-d); background: #fdecef; }
+/* 넓은 화면 독: 위 줄은 스킬 버튼, 아래 줄은 이모트와 계획 확정 */
+@media (min-width: 720px) and (min-height: 560px) {
+  #app > .play.v2 .acts:not(.one) { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "ab ab" "em lk"; }
+  #app > .play.v2 .acts:not(.one) > .abb { grid-area: ab; min-height: 56px; }
+  #app > .play.v2 .acts:not(.one) > .emb { grid-area: em; }
+  #app > .play.v2 .acts:not(.one) > :last-child:not(:first-child) { grid-area: lk; grid-column: auto; }
+  #app > .play.v2 .abb-ic { width: 48px; height: 48px; }
+}
+@media (min-width: 720px) and (min-height: 560px) and (max-height: 760px) {
+  #app > .play.v2 .acts:not(.one) > .abb { min-height: 44px; padding-block: 2px; } #app > .play.v2 .abb-ic { width: 38px; height: 38px; padding: 3px; }
+  #app > .play.v2 .acts:not(.one) > :last-child:not(:first-child) { min-height: 42px; font-size: 16px; }
+}
+/* 폰: 아이콘과 이름만 */
+@media (max-width: 719px), (max-height: 559px) {
+  .abb { gap: 6px; padding: 2px 6px 2px 2px; min-height: 40px; } .abb-ic { width: 32px; height: 32px; padding: 2px; border-width: 1px; }
+  .abb-tx em { display: none; } .abb-tx b { font-size: 12px; } .abb-tx > span { font-size: 10px; } .abb-cd { font-size: 16px; }
+  .abb-tip { width: min(290px, 80vw); }
 }
 </style>
 <main id="app"></main>
@@ -3832,37 +3883,45 @@ function clickCard(i) {
   if (plan.ab && p.cls === 'mage' && burnNow(plan) < 2) { plan = JSON.parse(prev); return toast('마력 방출에는 마나가 2 이상 남아야 합니다'); }
   SND.play('tap'); render();
 }
+/* 능력을 지금 켤 수 없는 이유(켤 수 있으면 빈 문자열). 버튼 표시와 누를 때 둘 다 쓴다 */
+function abBlock(p) {
+  const pl = plan;
+    if (p.cls === 'vampire' && p.hp - (cost(pl) > p.mana ? 1 : 0) < 2) return ('체력이 모자랍니다');
+    if (p.cls === 'grave' && (p.digs || 0) >= 3) return ('삽질은 판마다 3번까지입니다');
+    if (p.cls === 'mirror' && !echoId()) return ('비출 카드가 없습니다. 상대가 지난 턴에 마나 3 이하 공격 카드를 내야 합니다');
+    if (p.cls === 'chrono' && p.prev == null) return ('첫 턴에는 되감을 수 없습니다');
+    if (p.cls === 'chrono' && G.turn < (p.rwCd || 0)) return (`${p.rwCd - G.turn}턴 뒤에 다시 쓸 수 있습니다`);
+    if (p.cls === 'chrono' && G.blk[seat].includes(p.prev)) return ('돌아갈 칸이 막혀 있습니다');
+    if (p.silenced === G.turn) return ('봉인되어 이번 턴은 능력을 쓸 수 없습니다');
+    if (p.cls === 'archaeologist' && actId(pl) !== 'dig') return ('땅 파기 카드를 먼저 고르세요');
+    if (['dullahan', 'gambler', 'blacksmith'].includes(p.cls) && (!actId(pl) || CARDS[actId(pl)].t !== 'atk')) return ('공격 카드를 먼저 고르세요');
+    if (p.cls === 'bard' && p.beat < 1) return ('쌓인 박자가 없습니다');
+    if (p.cls === 'onmyoji' && !abReady(G, p, actId(pl))) return ('음양사 전용 카드를 먼저 고르세요');
+    if (p.cls === 'chicken' && !abReady(G, p, actId(pl))) return ('쪼기나 홰치기를 먼저 고르세요');
+    if (p.cls === 'scarecrow' && !abReady(G, p, actId(pl))) return ('ㄱ자 베기나 ㄴ자 베기를 먼저 고르세요');
+    if (p.cls === 'merfolk' && p.dive) return ('솟아오르는 턴에는 잠수할 수 없습니다');
+    if (p.cls === 'merfolk' && !abReady(G, p, null)) return ('솟아오른 다음 턴에는 잠수할 수 없습니다');
+    if (p.cls === 'mage' && burnNow(pl) < 2) return ('마나가 2 이상 남아 있어야 합니다');
+    if (p.cls === 'clown' && !abReady(G, p, actId(pl))) return ('즉발 공격 카드를 먼저 고르세요');
+    if (p.cls === 'balloon' && p.air >= 3) return ('공기가 이미 가득합니다');
+    if (p.cls === 'shaman' && !p.weather) return ('떠 있는 날씨가 없습니다');
+    if (p.cls === 'astronomer' && !p.stars.length) return ('떠 있는 별이 없습니다');
+    if (p.cls === 'samurai') {
+      if (p.ki < KI_MAX) return ('기가 3 모여야 합니다');
+      if (!actId(pl) || CARDS[actId(pl)].t !== 'atk') return ('공격 카드를 먼저 고르세요');
+    }
+    if (p.cls === 'mechanic' && !p.mines.length) return ('설치한 지뢰가 없습니다');
+    if (p.cls === 'druid' && G.turn < p.cd) return (`${p.cd - G.turn}턴 뒤에 다시 쓸 수 있습니다`);
+  const t = JSON.parse(JSON.stringify(pl)), A = CLS[p.cls].ab; t.ab = true; if (A.slot) { t.act = null; t.tg = null; } if (p.cls === 'merfolk') { t.mv = null; t.dest = null; }
+  if (cost(t) > p.mana && !(p.cls === 'vampire' && p.hp >= 2)) return '마나가 부족합니다';
+  return '';
+}
 function clickAbility() {
   if (locked) return;
   const p = myP(), A = CLS[p.cls].ab, prev = JSON.stringify(plan);
   if (plan.ab) { plan.ab = false; if (A.slot) plan.tg = null; if (p.cls === 'vampire' || p.cls === 'chrono') plan.dest = null; }
   else {
-    if (p.cls === 'vampire' && p.hp - (cost(plan) > p.mana ? 1 : 0) < 2) return toast('체력이 모자랍니다');
-    if (p.cls === 'grave' && (p.digs || 0) >= 3) return toast('삽질은 판마다 3번까지입니다');
-    if (p.cls === 'mirror' && !echoId()) return toast('비출 카드가 없습니다. 상대가 지난 턴에 마나 3 이하 공격 카드를 내야 합니다');
-    if (p.cls === 'chrono' && p.prev == null) return toast('첫 턴에는 되감을 수 없습니다');
-    if (p.cls === 'chrono' && G.turn < (p.rwCd || 0)) return toast(`${p.rwCd - G.turn}턴 뒤에 다시 쓸 수 있습니다`);
-    if (p.cls === 'chrono' && G.blk[seat].includes(p.prev)) return toast('돌아갈 칸이 막혀 있습니다');
-    if (p.silenced === G.turn) return toast('봉인되어 이번 턴은 능력을 쓸 수 없습니다');
-    if (p.cls === 'archaeologist' && actId(plan) !== 'dig') return toast('땅 파기 카드를 먼저 고르세요');
-    if (['dullahan', 'gambler', 'blacksmith'].includes(p.cls) && (!actId(plan) || CARDS[actId(plan)].t !== 'atk')) return toast('공격 카드를 먼저 고르세요');
-    if (p.cls === 'bard' && p.beat < 1) return toast('쌓인 박자가 없습니다');
-    if (p.cls === 'onmyoji' && !abReady(G, p, actId(plan))) return toast('음양사 전용 카드를 먼저 고르세요');
-    if (p.cls === 'chicken' && !abReady(G, p, actId(plan))) return toast('쪼기나 홰치기를 먼저 고르세요');
-    if (p.cls === 'scarecrow' && !abReady(G, p, actId(plan))) return toast('ㄱ자 베기나 ㄴ자 베기를 먼저 고르세요');
-    if (p.cls === 'merfolk' && p.dive) return toast('솟아오르는 턴에는 잠수할 수 없습니다');
-    if (p.cls === 'merfolk' && !abReady(G, p, null)) return toast('솟아오른 다음 턴에는 잠수할 수 없습니다');
-    if (p.cls === 'mage' && burnNow(plan) < 2) return toast('마나가 2 이상 남아 있어야 합니다');
-    if (p.cls === 'clown' && !abReady(G, p, actId(plan))) return toast('즉발 공격 카드를 먼저 고르세요');
-    if (p.cls === 'balloon' && p.air >= 3) return toast('공기가 이미 가득합니다');
-    if (p.cls === 'shaman' && !p.weather) return toast('떠 있는 날씨가 없습니다');
-    if (p.cls === 'astronomer' && !p.stars.length) return toast('떠 있는 별이 없습니다');
-    if (p.cls === 'samurai') {
-      if (p.ki < KI_MAX) return toast('기가 3 모여야 합니다');
-      if (!actId(plan) || CARDS[actId(plan)].t !== 'atk') return toast('공격 카드를 먼저 고르세요');
-    }
-    if (p.cls === 'mechanic' && !p.mines.length) return toast('설치한 지뢰가 없습니다');
-    if (p.cls === 'druid' && G.turn < p.cd) return toast(`${p.cd - G.turn}턴 뒤에 다시 쓸 수 있습니다`);
+    const why = abBlock(p); if (why) return toast(why);
     plan.ab = true; if (p.cls === 'vampire') plan.dest = null; if (p.cls === 'chrono') { plan.mv = null; plan.dest = p.prev; }
     if (A.slot) { plan.act = null; plan.tg = null; }
     if (p.cls === 'merfolk') { plan.mv = null; plan.dest = null; }
@@ -4082,7 +4141,7 @@ function statHTML(k) {
       <span class="uf-name"><span class="uf-who">${mine ? '나' : '상대'}</span><b>${c.n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${c.n} 설명 보기">설명</button></span>
       <span class="uf-bar uf-hp" role="img" aria-label="체력 ${hp} / ${hm}"><span class="uf-ic" aria-hidden="true">♥</span>${pips('hp', hp, hm)}<b>${hp}<small>/${hm}</small></b></span>
       <span class="uf-bar uf-mp" role="img" aria-label="마나 ${p.mana} / ${mm}${sp ? ', 이번 계획에 ' + Math.min(sp, p.mana) + ' 사용' : ''}"><span class="uf-ic" aria-hidden="true">◆</span>${pips('mp', p.mana, mm, sp)}<b>${p.mana}<small>/${mm}</small></b></span>
-      <span class="uf-ks"><span class="uf-k pas" tabindex="0"><em>패시브</em><b>${c.pas[0]}</b><span class="uf-tip" role="tooltip">${hl(c.pas[1])}</span></span><span class="uf-k act" tabindex="0"><em>능력</em><b>${c.act[0]}</b><span class="uf-tip" role="tooltip">${hl(c.act[1])}</span></span></span>
+      <span class="uf-ks"><span class="uf-k pas" tabindex="0"><em>패시브</em><b>${c.pas[0]}</b><span class="uf-tip" role="tooltip">${hl(c.pas[1])}</span></span><span class="uf-k act" tabindex="0">${abIcon(p.cls)}<em>능력</em><b>${c.act[0]}</b><span class="uf-tip" role="tooltip">${hl(c.act[1])}</span></span></span>
       <span class="chipr">${chipsOf(p, k)}</span></span></div>`;
 }
 const TAGS = { leap: '내 진영 · 이동', blink: '내 진영 · 이동', guard: '나 자신', parry: '나 자신', scry: '상대 손패', frost: '상대 진영 · 2칸 선택',
@@ -4228,6 +4287,51 @@ function cardHTML(id, extra) {
 }
 /* 음양사 카드 설명: 지금 기운에 해당하는 쪽을 밝게, 반대쪽을 흐리게 */
 function yyDesc(d, yang) { const i = d.indexOf(' 음:'); if (i < 0) return hl(d); return `<span class="${yang ? 'yy-on' : 'yy-off'}">${hl(d.slice(0, i))}</span> <span class="${yang ? 'yy-off' : 'yy-on'}">${hl(d.slice(i + 1))}</span>`; }
+/* 능력 아이콘: 16×16 도트. k 윤곽, a·d 직업색(밝게·어둡게), 나머지는 고정색 */
+const AB_IC = {
+  mage: ".......................y..........y....y....y......y.......y..........kkkk...........kccbbk.........kcwcbbbk....yy..kcbbbbbk..yy....kbbbbbdk........kbbbbddk.........kbdddk...........kkkk.........y.......y......y....y....y..........y........................",
+  samurai: "..............kk.............kwk............kwsk..s........kwsk..s........kwsk..s..s.....kwsk.....s.....kwsk.....s..s..kwsk........s..kwsk........s..kwsk.........kk.kwk...........kkkk.............rkk............rrk.k..........rrk.............kk............",
+  mechanic: "......kkkkk...........kssk..............k...y...........k..yoy..........k...y..........kkk.........kkkkkkkkkk......koooooooak......kowwwwwwak......koooooooak......kddddddddk......kkkkkkkkkk.......k......k.......yk.....ky......yoy....yoy.......y......y.....",
+  druid: "......gg.............gwgg...........ggggg............ggg..gg..........kn.gwgg.........kn.gggg.........knk.gg....sssssskkksssssssnnnnnnknknnnnnnnnnnnnknnknnnnnnnnnnnknnnnkknnnnnnnnknnnnnnnknnnnnnknnnknnnnnknnnnnnnnnknnnnnnkknnnnnnkknnnnnnnnnnnnnnnnnnnnnnnnn",
+  slime: "...................................kkk............kpppk..........kpwppk..........kpppppk....kkk.kppkppkpk..kpppkkppppppppk.kwppkkppppppppkkppkpk.kpppppppkkppppk..kkkkkkk..kkkk....................p.p.p..p.p...................................................",
+  archaeologist: "....................kkkkk..........kccccck........kcwccccck.......kcwcyycck.......kccyoycck.......kcccyycck.......kccccccck........kccccck..........kkkkkkk...............kkk..............kkk..............kkk..............kk.................................",
+  shaman: "....kkkk..........kksssskkkk.....kssswssssssk...kssssssssssssk..kssssssssssssk...kkkkkkkkkkkk......yy...yy........yy...yy........yyyy.yyyy.........yy...yy........yy...yy........yy...yy.........y....y.........................................................",
+  dullahan: "..kkkkkkkkkkkk....ksssskkssssk....kswsssksssdk....kssssskssddk....kssssksssddk....ksssskksssdk.....ksssskkssk......kssskssssk.......ksskssdk........kssskssk.........ksskdk...........kkkk........r..........r.....r...rr...r.............r.....................",
+  statue: "....................kkkkkkkk........kwwsssssk........kwssssk.........kwssssk.........kwssssk.........kwssssk.........kwssssk.........kwssssk........kkkkkkkkk......kwwwssssssk....kkkkkkkkkkkkk...kssssssssssdk...kddddddddddddk..kkkkkkkkkkkkkk................",
+  astronomer: "..y..............yyy..............y.s...............s.......y........s.....yyy........s.....y..........y...s..........yyy.s............y.s..............s..............s..............s..............y..............yyy..............y..........................",
+  clown: ".....................mmmmmm........mm......mm.....m..........m...m....y.......m..m...yyy.......mm..yyyyyyy.....mm...yyyyy......mm...yy.yy....mmm.m.y.....y...mm..m...........m....m................mm......mm........mmmmmm.....................................",
+  balloon: "......kkkk..........kkooook........koowooook......koowoooooook....kowoooooooook...koooooooooook...koooooooooook....kooooooodk.......kooooodk.........kkookk............kk...............k.........w....k....w....www...k...www....w.....k...w...................",
+  gambler: ".................kkkkkkk.........kwwwwwk.........kwkwwwk.........kwwwwwk.kkkkkkk.kwwwkwk.kwwwwwk.kwwwwwk.kwkwkwk.kkkkkkk.kwwwwwk..........kwkwk..........kwwwwwk.........kwkwkwk.........kwwwwwk.........kkkkkkk..................yy...yy.......................",
+  blacksmith: "....y..o..y..........o..y..........y..o....o........kkkkkkkk.......kyyoooooork.....kooorrrrrrk......kkkkkkkkk....kkkkkkkkkkkkkk.kssssssssssssssk.kssssssssssssk....kssssssssk.......kssssssk........kssssssk.......kkkkkkkkkk......kddddddddk......kkkkkkkkkk...",
+  bard: "...........kk..........kkkkkk......kkkkkkk..k......k...k....k......k...k....k......k...k....k......k...k...kkk.....k...k..kaaak....k..kkk.kaaak...kkkkaaak.kkk...kaaakaaak.......kaaak.kk.........kkk...........................................................",
+  onmyoji: ".....kkkkkk........kkwwwwwkkk.....kwwwwwwwwkkk...kwwwwkkwwwkkkk..kwwwwkkwwkkkkk.kwwwwwwwwkkkkkkkkwwwwwwwkkkkkkkkkwwwwwwkkkkkkkkkkwwwwwwkkkkkkkkkkwwwwwkkkkkkkkkkkwwwwkkkkkkwwkkk.kwwwkkkkkwwkkk..kwwwwkkkkkkkkk...kwwwwkkkkkkk.....kkwwwkkkkk........kkkkkk.....",
+  chicken: "......r.r............rrrrr..........kkkkkkk........kwwwwwwwk......kwwkkwwwwk......kwkykwwwwk......kwwkkwwwwkk....kkwwwwwwwwwyy..kyykwwwwwwkyyyy..kyyyywwwwkyyy....kkrkwwwwwk........rkwwwwwk.........kwwwwwk..........kkkkk..........yk...ky........yy.....yy...",
+  merfolk: "......kkk.............kak.............kak.............kak...........kkkakkk..........kaaak............kak..............k........cc..cc..cc..cc..bccbbccbbccbbccbbbbbbbbbbbbbbbbbccbbccbbccbbccbbbbbbbbbbbbbbbbbbbbbbdbbbbbbdbbbbbbbbbbbbbbbbbbbb................",
+  scarecrow: "kkkkkkkkkkkkk...kwwwwwwwwwwwk...kkkkkkkkkkkwk..............wk..............wk.....k........wk.....wk.......wk.....wk.......wk.....wk.......wk.....wk.......kk.....wk..............wk..............wkkkkkkkkkkkkk..wwwwwwwwwwwwwk..kkkkkkkkkkkkkk................",
+  vampire: "..................................k..........k...kk...k..k...kk..kpk..kkkk..kpk.kppk.kkkkkk.kppkkpppkkrkkrkkpppkkppppkkkkkkppppkkpppppkkkkpppppkkpk.pkk..kkp.kpkk.k..k....k..k.k................................................................................",
+  hunter: ".......................k.............kkrkk..........k..r..k........k...r...k.......k...r...k......k...rrr...k.....rrrrrwrrrrr.....k...rrr...k......k...r...k.......k...r...k........k..r..k..........kkrkk.............k........................................",
+  grave: "............kk.............kwnk...........kwnk...........knnk...........knnk.......kk..knnk.......kssk.knk.......ksswskkk........kssssk...........ksssk............kkk..........nnnnnnnknnnnnnnnnnnnnnkknnnnnnnnnnnnnnnkknnnnnnnnnnnnnnnknnnnnnn................",
+  mirror: "....kkkkkk.........kccccwck.......kcccccwwck......kccccccwck......kcccccccck......kcccccccck.......kcccccck.........kkkkkk............kk..............kk.............kddk........................r.........r....rrrrrrrrrrrrr....r..........r...................",
+  chrono: "..kkkkkkkkkk.......kwwwwwwk........kyyyyyyk.........kyyyyk...........kyyk.............kk.............kwwk...........kwwywk.........kwwyyywk........kyyyyyyk.......kkkkkkkkkk................a..............aaa...a.......a.a.a..aaaaaaaaaa..a....a.............."
+};
+function abIcon(cls) {
+  const s = AB_IC[cls]; if (!s) return '';
+  const by = {};
+  for (let y = 0; y < 16; y++) { let x = 0; while (x < 16) { const ch = s[y * 16 + x]; if (ch === '.') { x++; continue; } let w = 1; while (x + w < 16 && s[y * 16 + x + w] === ch) w++; (by[ch] = by[ch] || []).push(`M${x} ${y}h${w}v1h-${w}z`); x += w; } }
+  return `<svg class="abi" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">${Object.keys(by).map(ch => `<path class="f-${ch}" d="${by[ch].join('')}"/>`).join('')}</svg>`;
+}
+/* 능력 버튼 아래 줄: 비용이나 지금 상태(재사용 대기, 마나에 따른 피해 등) */
+function abState(p) { return p.cls === 'druid' && G.turn < p.cd ? (p.cd - G.turn) + '턴 뒤' : p.cls === 'merfolk' && p.dive ? '솟아오르는 중' : p.cls === 'mage' ? (p.mana >= 2 ? '마나 ' + p.mana + ' → 피해 ' + Math.floor(p.mana / 2) : '마나 2 이상') : p.cls === 'mirror' ? (echoId() ? CARDS[echoId()].n + ' · 마나 ' + echoCost() : '비출 카드 없음') : p.cls === 'chrono' && G.turn < (p.rwCd || 0) ? (p.rwCd - G.turn) + '턴 뒤' : CLS[p.cls].ab.label; }
+/* 스킬 버튼: 아이콘 칸, 이름, 비용·상태. 마우스를 대면 설명과 지금 쓸 수 있는지(못 쓰면 이유)를 보여 준다 */
+function abBtnHTML(p, on) {
+  const c = CLS[p.cls], why = on ? '' : abBlock(p);
+  const cd = p.cls === 'druid' && G.turn < p.cd ? p.cd - G.turn : p.cls === 'chrono' && G.turn < (p.rwCd || 0) ? p.rwCd - G.turn : 0, left = p.cls === 'grave' ? 3 - (p.digs || 0) : null;
+  const st = on ? ['on', '켜짐 · 다시 누르면 끕니다'] : why ? ['blk', why] : ['ok', '누르면 이번 턴에 씁니다'];
+  return `<button type="button" class="abb ${st[0]} c-${p.cls}" data-a="ab" ${locked ? 'disabled' : ''} aria-pressed="${on}" aria-label="능력 ${c.act[0]}, ${esc(abState(p))}. ${esc(c.act[1])} ${esc(st[1])}">
+    <span class="abb-ic">${abIcon(p.cls)}${cd ? `<b class="abb-cd">${cd}</b>` : ''}${left != null ? `<b class="abb-n">${left}</b>` : ''}</span>
+    <span class="abb-tx"><em>${on ? '능력 · 켜짐' : '능력'}</em><b>${c.act[0]}</b><span>${abState(p)}</span></span>
+    <span class="abb-tip" aria-hidden="true"><span class="abb-th"><span class="abb-ti">${abIcon(p.cls)}</span><span><b>${c.act[0]}</b><em>${c.n}의 능력 · ${c.ab.label}</em></span></span><span class="abb-d">${hl(c.act[1])}</span><span class="abb-s s-${st[0]}">${st[1]}</span></span></button>`;
+}
 /* 마나 구슬: 이번 계획을 치르고 남는 마나 / 지금 마나 */
 function orbHTML(pl) {
   const p = myP(), use = Math.min(cost(pl), p.mana), left = p.mana - use;
@@ -4288,7 +4392,7 @@ function playHTML() {
       ${handHTML()}
       <div class="dk-r">${over || RP ? '<div class="acts one"><button type="button" class="btn ghost" data-a="emt" aria-expanded="' + emOpen + '">이모트</button></div>' : `<div class="acts">
         <button type="button" class="btn ghost emb${emOpen ? ' on' : ''}" data-a="emt" aria-expanded="${emOpen}">이모트</button>
-        <button type="button" class="btn ghost${abOn ? ' on' : ''}" data-a="ab" ${locked ? 'disabled' : ''} aria-pressed="${abOn}">능력: ${ab} (${p.cls === 'druid' && G.turn < p.cd ? (p.cd - G.turn) + '턴 뒤' : p.cls === 'merfolk' && p.dive ? '솟아오르는 중' : p.cls === 'mage' ? (p.mana >= 2 ? '마나 ' + p.mana + ' → 피해 ' + Math.floor(p.mana / 2) : '마나 2 이상') : p.cls === 'mirror' ? (echoId() ? CARDS[echoId()].n + ' · 마나 ' + echoCost() : '비출 카드 없음') : p.cls === 'chrono' && G.turn < (p.rwCd || 0) ? (p.rwCd - G.turn) + '턴 뒤' : CLS[p.cls].ab.label})</button>
+        ${abBtnHTML(p, abOn)}
         ${locked ? `<button type="button" class="btn" data-a="unlock" ${doc.lock[o] === curTag ? 'disabled' : ''}>${doc.lock[o] === curTag ? '확정됨' : '확정 취소'}</button>` : '<button type="button" class="btn red" data-a="lock">계획 확정</button>'}</div>`}</div></div>
       ${emOpen ? `<div class="emp" role="group" aria-label="이모트">${EMOTES.map((t, i) => `<button type="button" class="btn ghost${i >= 5 ? ' tn' : ''}" data-a="emo" data-i="${i}">${t}</button>`).join('')}</div>` : ''}
       </div><div class="panel logp"><button type="button" class="logtab" data-a="logp" aria-label="전투 기록 열고 닫기">기록</button><div class="lg-in"><button type="button" class="btn ghost logx" data-a="logp">닫기</button><p class="cap">결투장 · ${ARENAS[G.arena] || ARENAS.castle}</p><p class="arule">${ARENA_RULE[G.arena] || ARENA_RULE.castle}${G.bless ? ` <b>축복의 칸(${BLESS[G.bless.t][1]})이 ${G.bless.until - G.turn + 1}턴 남았습니다.</b>` : ''}</p><p class="cap">최근 3턴에 낸 카드</p>${histHTML() || '<div class="log"><div>아직 기록이 없습니다.</div></div>'}
