@@ -2122,6 +2122,47 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
   .abb-tx em { display: none; } .abb-tx b { font-size: 12px; } .abb-tx > span { font-size: 10px; } .abb-cd { font-size: 16px; }
   .abb-tip { width: min(290px, 80vw); }
 }
+/* ===== 카드 뽑기와 카드 내기 연출 ===== */
+/* 뽑을 더미 */
+.pile { display: none; }
+@media (min-width: 720px) and (min-height: 560px) {
+  #app > .play.v2 .pile { position: relative; display: block; flex: none; width: 46px; height: 64px; margin-right: 4px; }
+  #app > .play.v2 .pile i { position: absolute; inset: 0; border: 2px solid #1d1413; background: repeating-linear-gradient(45deg, #3b2370 0 5px, #2e1a5c 5px 10px); box-shadow: inset 0 0 0 2px #6a55a8; }
+  #app > .play.v2 .pile i:nth-child(1) { translate: -4px 4px; rotate: -6deg; } #app > .play.v2 .pile i:nth-child(2) { translate: -2px 2px; rotate: -3deg; }
+  #app > .play.v2 .pile i:nth-child(3)::after { content: ''; position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; translate: -50% -50%; rotate: 45deg; background: #c9a8ff; box-shadow: 0 0 0 2px #1b0b4a, 0 0 10px 2px rgba(201, 168, 255, .6); }
+  #app > .play.v2 .pile b { position: absolute; right: -8px; bottom: -8px; z-index: 1; min-width: 20px; padding: 1px 4px; text-align: center; font-size: 12px; color: #fff; background: #1d1413; border: 2px solid #c9a8ff; }
+  #app > .play.v2 .pile.empty i { opacity: .25; }
+  #app > .play.v2 .pile.give i:nth-child(3) { animation: pileGive .5s steps(5) 2; }
+}
+@keyframes pileGive { 40% { translate: 4px -6px; rotate: 4deg; } }
+/* 뽑기: 더미에서 날아와(--fx, --fy) 손패 자리에서 뒤집힌다. 앞 절반은 뒷면이 보인다 */
+.play .hand .card.draw { animation: dealIn .62s cubic-bezier(.22, .8, .3, 1) backwards; animation-delay: calc(var(--d) * 120ms + 60ms); }
+.play .hand .card::after { content: ''; position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, #c9a8ff 0 9%, transparent 10%), repeating-linear-gradient(45deg, #3b2370 0 6px, #2e1a5c 6px 12px); box-shadow: inset 0 0 0 3px #6a55a8; }
+.play .hand .card.draw::after { animation: dealBack .62s linear backwards; animation-delay: calc(var(--d) * 120ms + 60ms); }
+@keyframes dealIn {
+  0% { translate: var(--fx, 60px) var(--fy, -70px); scale: .42; opacity: 0; }
+  8% { opacity: 1; }
+  48% { translate: calc(var(--fx, 60px) * .25) calc(var(--fy, -70px) * .25 - 34px); scale: .04 .92; }
+  76% { translate: 0 -10px; scale: 1.06; }
+  100% { translate: 0 0; scale: 1; opacity: 1; }
+}
+@keyframes dealBack { 0%, 47% { opacity: 1; } 48%, 100% { opacity: 0; } }
+/* 내기: 결투장 가운데로 날아가 빛나며 사라진다 */
+.play .card.flyc { position: fixed; z-index: 40; margin: 0; pointer-events: none; transform: none; transform-origin: 50% 50%; box-sizing: border-box; animation: cardFly .5s cubic-bezier(.45, .05, .55, 1) forwards; }
+@keyframes cardFly {
+  0% { translate: 0 0; scale: 1; }
+  35% { translate: calc(var(--tx) * .3) calc(var(--ty) * .3 - 40px); scale: 1.18; filter: brightness(1.05); }
+  75% { translate: var(--tx) var(--ty); scale: var(--ts, 1); opacity: 1; filter: brightness(1.25) drop-shadow(0 0 14px #ffd75e); }
+  100% { translate: var(--tx) var(--ty); scale: var(--ts, 1); opacity: 0; filter: brightness(2) drop-shadow(0 0 24px #ffd75e); }
+}
+.flyback { position: fixed; z-index: 40; pointer-events: none; box-sizing: border-box; transform-origin: 50% 50%; background: var(--sil); border: 4px solid var(--paper); box-shadow: 0 0 0 2px var(--sil); animation: flyBack .55s cubic-bezier(.45, .05, .55, 1) backwards; animation-fill-mode: both; }
+@keyframes flyBack {
+  0% { translate: 0 0; scale: var(--s0, .2); }
+  75% { translate: var(--tx) var(--ty); scale: 1; opacity: 1; filter: drop-shadow(0 0 10px #8fd3ff); }
+  100% { translate: var(--tx) var(--ty); scale: 1; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .play .hand .card.draw, .play .hand .card.draw::after, .pile.give i { animation: none !important; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -4332,6 +4373,34 @@ function abBtnHTML(p, on) {
     <span class="abb-tx"><em>${on ? '능력 · 켜짐' : '능력'}</em><b>${c.act[0]}</b><span>${abState(p)}</span></span>
     <span class="abb-tip" aria-hidden="true"><span class="abb-th"><span class="abb-ti">${abIcon(p.cls)}</span><span><b>${c.act[0]}</b><em>${c.n}의 능력 · ${c.ab.label}</em></span></span><span class="abb-d">${hl(c.act[1])}</span><span class="abb-s s-${st[0]}">${st[1]}</span></span></button>`;
 }
+/* 뽑을 더미: 카드 뒷면 몇 장과 남은 장수. 새 카드는 여기서 날아온다 */
+function pileHTML() { const n = myP().deck.length; return `<div class="pile${n ? '' : ' empty'}" role="img" aria-label="덱 ${n}장 남음"><i></i><i></i><i></i><b>${n}</b></div>`; }
+/* 카드를 낼 때: 고른 카드가 손패에서 결투장 가운데로 날아가 빛나며 사라지고, 상대 손패에서도 뒷면이 날아간다.
+   대결 컷이 열리는 순간 겹쳐서 '낸 카드가 컷이 된다'처럼 보이게 한다 */
+function cardFly(rp, cut) {
+  const mine = [...app.querySelectorAll('.hand .card.sel')], calm = SKIP || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (calm || !cut) { mine.forEach(c => c.classList.add('played')); return; }
+  const play = app.querySelector('.play');
+  const sides = cut.querySelectorAll('.cut-s'), slots = k => [...(sides[k] ? sides[k].querySelectorAll('.cc') : [])];
+  /* 컷 속 같은 이름의 카드 칸으로, 그 칸 크기까지 줄어들며 날아간다 */
+  const free = slots(0);
+  mine.forEach(c => { const nm = (c.querySelector('.nm') || {}).textContent, k = free.findIndex(x => (x.querySelector('.nm') || {}).textContent === nm), t = free.splice(k < 0 ? 0 : k, 1)[0]; if (!t) return c.classList.add('played');
+    /* 손패 카드를 그대로 본떠 맨 위층에 띄운다(독은 컷 아래에 그대로 둔다). 원래 카드는 숨긴다 */
+    const r = c.getBoundingClientRect(), q = t.getBoundingClientRect(), w = c.offsetWidth, h = c.offsetHeight, cx = r.left + r.width / 2, cy = r.top + r.height / 2, f = c.cloneNode(true);
+    f.classList.remove('sel', 'draw', 'no'); f.classList.add('flyc'); f.removeAttribute('data-a'); f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1;
+    Object.assign(f.style, { left: Math.round(cx - w / 2) + 'px', top: Math.round(cy - h / 2) + 'px', width: w + 'px', height: h + 'px' });
+    f.style.setProperty('--tx', Math.round(q.left + q.width / 2 - cx) + 'px'); f.style.setProperty('--ty', Math.round(q.top + q.height / 2 - cy) + 'px'); f.style.setProperty('--ts', (q.width / Math.max(1, w)).toFixed(3));
+    (play || document.body).appendChild(f); c.style.visibility = 'hidden'; setTimeout(() => f.remove(), 900); });
+  const tgo = slots(1), o = rp.P[opp(seat)], n = Math.min([o.mvId, o.actId].filter(Boolean).length, tgo.length), backs = app.querySelectorAll('.side.op .backs i');
+  for (let i = 0; i < Math.min(n, backs.length); i++) {
+    const b = backs[backs.length - 1 - i], r = b.getBoundingClientRect(), q = tgo[i].getBoundingClientRect(), f = document.createElement('i'); if (!r.width) continue;
+    /* 컷 칸 크기로 만들어 손패 뒷면 크기에서 시작한다(작은 것을 키우면 테두리가 뭉개진다) */
+    const sx = r.left + r.width / 2, sy = r.top + r.height / 2;
+    f.className = 'flyback'; Object.assign(f.style, { left: Math.round(sx - q.width / 2) + 'px', top: Math.round(sy - q.height / 2) + 'px', width: q.width + 'px', height: q.height + 'px', animationDelay: i * 90 + 'ms' });
+    f.style.setProperty('--tx', Math.round(q.left + q.width / 2 - sx) + 'px'); f.style.setProperty('--ty', Math.round(q.top + q.height / 2 - sy) + 'px');
+    f.style.setProperty('--s0', (r.width / q.width).toFixed(3)); document.body.appendChild(f); b.style.visibility = 'hidden'; setTimeout(() => f.remove(), 900);
+  }
+}
 /* 마나 구슬: 이번 계획을 치르고 남는 마나 / 지금 마나 */
 function orbHTML(pl) {
   const p = myP(), use = Math.min(cost(pl), p.mana), left = p.mana - use;
@@ -4388,7 +4457,7 @@ function playHTML() {
       ${tutOn() && !over && !RP ? tutHTML() : ''}
       <p class="hint" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>
       ${sd ? `<p class="seldesc"><b>${CARDS[sd].n}</b> ${hl(CARDS[sd].d)}</p>` : over || RP ? '' : '<p class="seldesc empty">카드를 누르면 설명이 여기에 나옵니다.</p>'}
-      <div class="dock"><div class="dk-l">${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
+      <div class="dock"><div class="dk-l">${pileHTML()}${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
       ${handHTML()}
       <div class="dk-r">${over || RP ? '<div class="acts one"><button type="button" class="btn ghost" data-a="emt" aria-expanded="' + emOpen + '">이모트</button></div>' : `<div class="acts">
         <button type="button" class="btn ghost emb${emOpen ? ' on' : ''}" data-a="emt" aria-expanded="${emOpen}">이모트</button>
@@ -5442,7 +5511,7 @@ async function cutIn(k, cls, name) {
 }
 /* 동시 공개: 양쪽 카드가 가운데에서 함께 뒤집힌다 */
 async function revealCut(old, rp) {
-  if (SKIP) return; const a = app.querySelector('.arena'); if (!a) return;
+  if (SKIP) return cardFly(rp, null); const a = app.querySelector('.arena'); if (!a) return cardFly(rp, null);
   const side = k => {
     const p = rp.P[k], c = old.P[k].cls, ids = [p.mvId, p.actId].filter(Boolean);
     const cards = ids.length ? ids.map(id => `<span class="cc"><span class="cc-in"><span class="cc-b"></span><span class="cc-f card mini t-${CARDS[id].t}">${cardHTML(id)}</span></span></span>`).join('')
@@ -5450,8 +5519,8 @@ async function revealCut(old, rp) {
     return `<div class="cut-s c-${c}"><span class="cut-n">${k === seat ? '나' : '상대'} · ${CLS[c].n}</span><span class="cut-c">${cards}</span><span class="cut-ab">${p.ab ? '능력 · ' + CLS[c].act[0] : ''}</span></div>`;
   };
   const e = document.createElement('div'); e.className = 'cut'; e.innerHTML = side(seat) + '<b class="cut-vs">VS</b>' + side(opp(seat));
-  a.appendChild(e); play('deal');
-  await sleep(380); e.classList.add('open'); play('flip');
+  a.appendChild(e); play('deal'); cardFly(rp, e);
+  await sleep(420); e.classList.add('open'); play('flip');
   await sleep(1050); e.classList.add('out');
   await sleep(200); e.remove();
 }
@@ -5468,11 +5537,10 @@ async function runReplay(old, neu) {
   const rp = neu.rp, KS = ['a', 'b'], cls = k => old.P[k].cls, mine = k => k === seat, fin = k => (rp.P[k].final != null ? rp.P[k].final : rp.P[k].to);
   SKIP = false; FXD = 0; setSpeed(SPD);
   const cutDone = {}, ult = async k => { if (!cutDone[k] && ULT(rp.P[k])) { cutDone[k] = 1; await cutIn(k, cls(k), rp.P[k].surge ? '마력 방출' : rp.P[k].actId ? CARDS[rp.P[k].actId].n : '앙상블'); } };
-  // 1. 공개
+  // 1. 공개: 낸 카드가 결투장으로 날아가고, 그 자리에서 대결 컷이 열린다
   await revealCut(old, rp);
   play('reveal');
   for (const k of KS) reveal(k, rp.P[k], cls(k));
-  app.querySelectorAll('.hand .card.sel').forEach(c => c.classList.add('played'));
   for (const k of KS) if (rp.P[k].ab && cls(k) === 'mechanic') floatText(opp(k), 4, '원격 기폭', 'f-warn', 300);
   await sleep(450);
   // 2. 특수
@@ -7228,6 +7296,11 @@ const PVSET = {
 /* ---------- 카드 뽑기: 덱 표시에서 뽑은 장수가 튀어나온다 ---------- */
 function dealFx(nMine, nOpp) {
   if (!seat || !G) return;
+  /* 새 카드마다 뽑을 더미(없으면 상단 덱 칩)에서 손패 자리까지의 거리를 적어 둔다. 카드는 그 자리에서 뒤집히며 날아온다 */
+  if (nMine) { const pile = app.querySelector('.dock .pile'), chip = app.querySelector('.side.me .chip[data-t="deck"]'), src = pile && pile.offsetParent ? pile : chip;
+    if (src) { const r0 = src.getBoundingClientRect(), x0 = r0.left + r0.width / 2, y0 = r0.top + r0.height / 2;
+      app.querySelectorAll('.hand .card.draw').forEach(c => { const r = c.getBoundingClientRect(); c.style.setProperty('--fx', Math.round(x0 - r.left - r.width / 2) + 'px'); c.style.setProperty('--fy', Math.round(y0 - r.top - r.height / 2) + 'px'); });
+      if (pile) { pile.classList.remove('give'); void pile.offsetWidth; pile.classList.add('give'); } } }
   [[seat, nMine], [opp(seat), nOpp]].forEach(([k, n]) => { if (!n) return; const b = bEl(k), side = b && b.closest('.side'), chip = side && side.querySelector('.chip[data-t="deck"]'); if (!chip) return;
     chip.classList.remove('drawp'); void chip.offsetWidth; chip.classList.add('drawp'); const e = document.createElement('span'); e.className = 'dfl'; e.textContent = '-' + n; e.setAttribute('data-notr', ''); chip.appendChild(e); setTimeout(() => { e.remove(); chip.classList.remove('drawp'); }, 900); });
 }
