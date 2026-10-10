@@ -6620,10 +6620,12 @@ function fitOne(e) {
   /* 손패 상자는 카드가 날아드는 동안 넘침 값이 흔들리므로, 움직임과 무관한 배치 높이로 잰다 */
   const lay = e.matches('.play > .ctrl');
   const over = lay ? () => { let m = 0; for (const c of e.children) { if (getComputedStyle(c).position === 'absolute') continue; m = Math.max(m, c.offsetTop + c.offsetHeight); } return m > e.clientHeight - parseFloat(getComputedStyle(e).paddingBottom) + 1; }
+    /* 타이틀 메뉴는 마우스를 올리면 항목이 옆으로 밀리고 등장할 때 잠깐 커지므로, 세로 넘침만 본다 */
+    : e.matches('.menu.t2 > .m-ui') ? () => e.scrollHeight > e.clientHeight + 1
     : () => e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1;
   if (!e.clientHeight || !over()) return;
   /* 줄여도 넘치면 크기 문제가 아니라 움직이는 중인 요소 탓이다. 그대로 두고 잠시 뒤 다시 잰다 */
-  e.style.zoom = 0.2; if (over()) { e.fitN = (e.fitN || 0) + 1; if (e.fitN < 4) { e.style.zoom = ''; clearTimeout(fitOne.tm); fitOne.tm = setTimeout(fitAll, 450); } return; }
+  e.style.zoom = 0.2; if (over()) { e.fitN = (e.fitN || 0) + 1; e.style.zoom = ''; if (e.fitN < 4) { clearTimeout(fitOne.tm); fitOne.tm = setTimeout(fitAll, 450); } return; }
   e.fitN = 0; let lo = 0.2, hi = 1;
   for (let i = 0; i < 7; i++) { const z = (lo + hi) / 2; e.style.zoom = z; if (over()) hi = z; else lo = z; }
   e.style.zoom = lo;
