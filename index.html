@@ -8441,49 +8441,38 @@ function stOverHTML(won) {
     return g;
   }
 
-  /* 도트 → 복셀. 불투명한 점마다 기둥을 세우고, 윤곽에서 멀수록 두껍게 해서 둥근 입체로 만든다 */
-  const VOX = new Map(), HT = [0, 0.9, 1.8, 2.6, 3.2, 3.6], VS = 1.6 / 32, EMPTY = new T.BufferGeometry();
+  /* 도트 → 세워진 판(2.5D). 캐릭터는 입체로 바꾸지 않고 도트 그림을 그대로 붙여 3D 결투장 위에 세운다.
+     판의 바닥은 그림의 가장 아래 칠해진 줄(발끝)에 맞추고, 픽셀은 번지지 않게 그대로 키운다 */
+  const VOX = new Map(), VS = 1.6 / 32, EMPTY = new T.BufferGeometry();
   function voxOf(url) {
-    let v = VOX.get(url); if (v) return v; v = { geo: null, top: 1 }; VOX.set(url, v);
+    let v = VOX.get(url); if (v) return v; v = { geo: null, tex: null, top: 1 }; VOX.set(url, v);
     const im = new Image(); im.onload = function () { try { voxBuild(v, im); } catch (e) { /* 무시 */ } }; im.src = url; return v;
   }
   function voxBuild(v, im) {
     const w = im.width, h = im.height, c = mkCanvas(w, h), g = c.getContext('2d'); g.drawImage(im, 0, 0);
-    const d = g.getImageData(0, 0, w, h).data, dist = new Uint8Array(w * h), op = (x, y) => x >= 0 && y >= 0 && x < w && y < h && d[(y * w + x) * 4 + 3] >= 200;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (op(x, y)) dist[y * w + x] = 9;
-    for (let k = 1; k <= 5; k++) { const nx = []; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (dist[y * w + x] === 9) {
-      const lo = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(function (q) { const X = x + q[0], Y = y + q[1]; return X < 0 || Y < 0 || X >= w || Y >= h || dist[Y * w + X] < k; });
-      if (lo || k === 5) nx.push(y * w + x); } nx.forEach(function (i) { dist[i] = k; }); }
-    let yb = 0, yt = h; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (dist[y * w + x]) { if (y > yb) yb = y; if (y < yt) yt = y; }
-    const P = [], N = [], Cc = [], s = VS;
-    const quad = function (a, b, c2, e, n, col) { [a, b, c2, a, c2, e].forEach(function (p) { P.push(p[0], p[1], p[2]); N.push(n[0], n[1], n[2]); Cc.push(col[0], col[1], col[2]); }); };
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const k = dist[y * w + x]; if (!k) continue;
-      const i = (y * w + x) * 4, col = [d[i] / 255, d[i + 1] / 255, d[i + 2] / 255], sd = col.map(function (q) { return q * 0.8; }), dk = col.map(function (q) { return q * 0.62; });
-      const x0 = (x - w / 2) * s, x1 = x0 + s, y1 = (yb + 1 - y) * s, y0 = y1 - s, z = HT[k] * s;
-      quad([x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z], [0, 0, 1], col);
-      quad([x1, y0, -z], [x0, y0, -z], [x0, y1, -z], [x1, y1, -z], [0, 0, -1], sd);
-      [[1, 0], [-1, 0], [0, -1], [0, 1]].forEach(function (q) {
-        const X = x + q[0], Y = y + q[1], nk = X < 0 || Y < 0 || X >= w || Y >= h ? 0 : dist[Y * w + X], nz = HT[nk] * s; if (nk >= k) return;
-        const cc = q[1] === -1 ? col : q[1] === 1 ? dk : sd, n = [q[0], -q[1], 0];
-        const wall = function (za, zb) {
-          if (q[0] === 1) quad([x1, y0, zb], [x1, y0, za], [x1, y1, za], [x1, y1, zb], n, cc);
-          else if (q[0] === -1) quad([x0, y0, za], [x0, y0, zb], [x0, y1, zb], [x0, y1, za], n, cc);
-          else if (q[1] === -1) quad([x0, y1, zb], [x1, y1, zb], [x1, y1, za], [x0, y1, za], n, cc);
-          else quad([x0, y0, za], [x1, y0, za], [x1, y0, zb], [x0, y0, zb], n, cc);
-        };
-        if (!nk) wall(-z, z); else { wall(nz, z); wall(-z, -nz); }
-      }); }
-    const geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(P, 3)); geo.setAttribute('normal', new T.Float32BufferAttribute(N, 3)); geo.setAttribute('color', new T.Float32BufferAttribute(Cc, 3));
-    v.geo = geo; v.top = (yb + 1 - yt) * s;
+    const d = g.getImageData(0, 0, w, h).data; let yb = 0, yt = h;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] >= 128) { if (y > yb) yb = y; if (y < yt) yt = y; }
+    const geo = new T.PlaneGeometry(w * VS, h * VS); geo.translate(0, (yb + 1) * VS - h * VS / 2, 0);
+    v.tex = pixelTex(c); v.geo = geo; v.top = (yb + 1 - yt) * VS;
   }
+  /* 메시에 판과 그림을 입힌다. 그림이 아직 안 불러졌으면 false */
+  function useVox(mesh, v) {
+    if (!v || !v.geo) return false; if (mesh.geometry !== v.geo) mesh.geometry = v.geo;
+    if (mesh.material.map !== v.tex) { const had = !!mesh.material.map; mesh.material.map = v.tex; if (!had) mesh.material.needsUpdate = true; }
+    return true;
+  }
+  /* 그림의 빈 칸만 버린다. alphaTest를 쓰면 깜빡임·잠수처럼 재질 투명도를 낮출 때 캐릭터 전체가 버려지므로, 그림 알파만 따로 본다 */
+  const sprCut = function (sh) { sh.fragmentShader = sh.fragmentShader.replace('#include <map_fragment>', '#include <map_fragment>\n\tif ( texelColor.a < 0.5 ) discard;'); };
+  const sprMat = function () { const m = new T.MeshLambertMaterial({ side: T.DoubleSide }); m.onBeforeCompile = sprCut; m.customProgramCacheKey = function () { return 'spr'; }; return m; };
   const shTex = (function () { const c = mkCanvas(16, 16), g = c.getContext('2d'); g.fillStyle = 'rgba(30,18,40,.5)'; for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if ((x - 7.5) * (x - 7.5) + (y - 7.5) * (y - 7.5) * 2.2 < 52) g.fillRect(x, y, 1, 1); return pixelTex(c); })();
   function mkUnit(b) {
-    const mat = new T.MeshLambertMaterial({ vertexColors: true }), mesh = new T.Mesh(EMPTY, mat), g = new T.Group();
+    const mat = sprMat(), mesh = new T.Mesh(EMPTY, mat), g = new T.Group();
     const sh = new T.Mesh(ovGeo, new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); sh.renderOrder = 3;
-    const crown = new T.Mesh(EMPTY, new T.MeshLambertMaterial({ vertexColors: true })); crown.visible = false;
-    g.add(mesh, crown); boardG[b].add(g, sh);
-    return { g: g, mesh: mesh, mat: mat, sh: sh, crown: crown, bg: '', vox: null };
+    const crown = new T.Mesh(EMPTY, sprMat()); crown.visible = false;
+    /* 뒷판: 같은 그림을 어둡게 해 살짝 뒤에 겹친다. 비스듬히 보면 종이 인형처럼 두께가 보인다 */
+    const back = new T.Mesh(EMPTY, sprMat()); back.material.color.setHex(0x1d1413); back.position.set(0.012, -0.004, -0.045);
+    g.add(back, mesh, crown); boardG[b].add(g, sh);
+    return { g: g, mesh: mesh, mat: mat, back: back, sh: sh, crown: crown, bg: '', vox: null };
   }
   const units = [[], []];
   /* --- 이펙트 ---
@@ -8632,13 +8621,13 @@ function stOverHTML(won) {
   const cWOOD = [0.45, 0.3, 0.2], cWOOD2 = [0.58, 0.4, 0.26], cGOLD = [1, 0.8, 0.3], cRED = [0.85, 0.28, 0.35], cCREAM = [0.98, 0.94, 0.86], cINK = [0.35, 0.27, 0.27], cAMB = [0.89, 0.64, 0.23];
   function ico(k, r, x, y, z, t, sy) { const g = new T.IcosahedronGeometry(r, 0); if (sy) g.scale(1, sy, 1); B.add(k, g, t, TM(x, y, z)); }
   function tilt(k, w, h, d, x, y, z, t, rx, ry) { const m = new T.Matrix4().makeRotationY(ry || 0).multiply(new T.Matrix4().makeRotationX(rx)); m.setPosition(x, y, z); B.add(k, new T.BoxGeometry(w, h, d), t, m); }
-  function mkSprite() { const m = new T.Mesh(EMPTY, new T.MeshLambertMaterial({ vertexColors: true })); m.visible = false; ms.add(m); return { mesh: m, url: '', vox: null }; }
+  function mkSprite() { const m = new T.Mesh(EMPTY, sprMat()); m.visible = false; ms.add(m); return { mesh: m, url: '', vox: null }; }
   function setSprite(s, el, x, y, z, sc, flip) {
     if (!el) { s.mesh.visible = false; return; }
     const url = urlOf(getComputedStyle(el).backgroundImage);
     if (url && url !== s.url) { s.url = url; s.vox = voxOf(url); }
-    if (s.vox && s.vox.geo) { if (s.mesh.geometry !== s.vox.geo) s.mesh.geometry = s.vox.geo; s.mesh.visible = true; } else s.mesh.visible = false;
-    s.mesh.position.set(x, y, z); s.mesh.scale.set(flip ? -sc : sc, sc, sc); s.mesh.rotation.x = -0.42;
+    s.mesh.visible = useVox(s.mesh, s.vox);
+    s.mesh.position.set(x, y, z); s.mesh.scale.set(flip ? -sc : sc, sc, sc); s.mesh.rotation.x = -0.62;
   }
   /* 소품 자리: 칸과 길, 보스 건물 터는 비운다 */
   function mFree(x, z, rad) {
@@ -9095,7 +9084,7 @@ function stOverHTML(won) {
   function syncUnit(u, el, b, cs32, cellIdx) {
     const cs = getComputedStyle(el), cl = el.classList, url = urlOf(cs.backgroundImage);
     if (url && url !== u.bg) { u.bg = url; u.vox = voxOf(url); }
-    if (u.vox && u.vox.geo && u.mesh.geometry !== u.vox.geo) u.mesh.geometry = u.vox.geo;
+    useVox(u.mesh, u.vox); useVox(u.back, u.vox);
     let col, row, tx = 0, ty = 0, sc = 1, op = parseFloat(cs.opacity);
     if (cellIdx != null) { col = cellIdx % 3; row = Math.floor(cellIdx / 3); }
     else { col = parseFloat(cs.left) / cs32; row = parseFloat(cs.top) / cs32; if (isNaN(col)) col = 1; if (isNaN(row)) row = 1; }
@@ -9103,10 +9092,10 @@ function stOverHTML(won) {
     const s = cs.scale; if (s && s !== 'none') sc = parseFloat(s) || 1;
     if (isNaN(op)) op = 1;
     const flip = cl.contains('flip'), x = BX[b] + (col - 1) + tx / cs32, y = Math.max(-0.95, -ty / cs32), z = (row - 1) + 0.1;
-    u.g.position.set(x, TY + y, z); u.g.scale.set((flip ? -1 : 1) * sc, sc, sc); u.g.rotation.x = -0.36;
+    u.g.position.set(x, TY + y, z); u.g.scale.set((flip ? -1 : 1) * sc, sc, sc); u.g.rotation.x = -0.55;
     const red = cl.contains('hurt') || cl.contains('white'), after = cl.contains('after');
     u.mat.color.setHex(red ? 0x000000 : 0xffffff); u.mat.emissive.setHex(red ? 0xd8475a : after ? 0x3560c8 : 0);
-    u.mat.transparent = op < 0.99; u.mat.opacity = op; u.mat.depthWrite = op > 0.6; u.g.visible = op > 0.02;
+    u.mat.transparent = op < 0.99; u.mat.opacity = op; u.mat.depthWrite = op > 0.6; u.g.visible = op > 0.02; u.back.material.transparent = u.mat.transparent; u.back.material.opacity = op * 0.9;
     const koNow = cl.contains('ko'), cellI = Math.max(0, Math.min(2, Math.round(row))) * 3 + Math.max(0, Math.min(2, Math.round(col)));
     if (koNow && u.el === el && !u.wasKo && GM) burst(b, cellI, 16, [GM.K.gray, GM.K.ash, GM.K.wht, GM.K.sil], 2.6, 2.8);
     u.wasKo = koNow; u.el = el;
@@ -9115,7 +9104,7 @@ function stOverHTML(won) {
     u.sh.visible = op > 0.4 && y > -0.1 && cellIdx == null; u.sh.position.set(x, TY + 0.02, z + 0.02); u.sh.scale.set(0.85 * k, 1, 0.85 * k);
     if (cl.contains('boss')) {
       if (!u.crownUrl) { u.crownUrl = urlOf(getComputedStyle(el, '::after').backgroundImage) || 'x'; if (u.crownUrl !== 'x') u.cv = voxOf(u.crownUrl); }
-      if (u.cv && u.cv.geo) { if (u.crown.geometry !== u.cv.geo) u.crown.geometry = u.cv.geo; const mid = cl.contains('b-mid');
+      if (useVox(u.crown, u.cv)) { const mid = cl.contains('b-mid');
         u.crown.visible = true; u.crown.position.set(0, (u.vox ? u.vox.top : 1) - 0.06, 0); u.crown.scale.setScalar(mid ? 0.82 : 1); u.crown.material.color.setHex(mid ? 0xb8b8c4 : 0xffffff); }
     } else u.crown.visible = false;
   }
