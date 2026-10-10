@@ -2163,6 +2163,38 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
   100% { translate: var(--tx) var(--ty); scale: 1; opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .play .hand .card.draw, .play .hand .card.draw::after, .pile.give i { animation: none !important; } }
+/* ===== 잔상 체력, 피해 숫자 ===== */
+.uf-hp { position: relative; }
+.uf-bar .pips i.g { background: #fff; box-shadow: inset 0 0 0 1px var(--red); animation: hpGhost .9s ease-in .35s forwards; }
+@keyframes hpGhost { to { background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); } }
+.uf-bar .pips i.h { animation: hpHeal .7s steps(4) 2; }
+@keyframes hpHeal { 50% { background: #8fd17a; box-shadow: 0 0 6px 2px rgba(143, 209, 122, .9); } }
+.uf-pop { position: absolute; top: -6px; z-index: 3; font-size: 18px; font-weight: 700; line-height: 1; pointer-events: none; text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff; animation: ufPop 1.1s cubic-bezier(.2, .8, .3, 1) forwards; }
+.side.me .uf-pop { right: 40px; } .side.op .uf-pop { left: 40px; }
+.uf-pop.dmg { color: var(--red-d); } .uf-pop.heal { color: var(--green-d); }
+@keyframes ufPop { 0% { translate: 0 6px; scale: .6; opacity: 0; } 15% { translate: 0 -6px; scale: 1.3; opacity: 1; } 70% { translate: 0 -14px; scale: 1; opacity: 1; } 100% { translate: 0 -22px; opacity: 0; } }
+.stat.uf.bump { animation: ufHit .35s steps(4) 1; }
+@keyframes ufHit { 25% { translate: -3px 0; } 50% { translate: 3px 0; } 75% { translate: -2px 0; } }
+/* ===== 턴 시작 배너 ===== */
+.tbanner { position: absolute; left: 0; right: 0; top: 38%; z-index: 12; display: grid; justify-items: center; gap: 2px; padding: 10px 0 12px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(43, 29, 28, .82) 18%, rgba(43, 29, 28, .82) 82%, transparent); color: #fff; animation: tbIn 1.5s cubic-bezier(.2, .8, .3, 1) forwards; }
+.tbanner b { font-size: 34px; line-height: 1.1; letter-spacing: 2px; text-shadow: 3px 3px 0 var(--red-d); } .tbanner span { font-size: 13px; color: #f6efe9; }
+.tbanner.late b { text-shadow: 3px 3px 0 #b5562d; } .tbanner.late span { color: #ffd0a8; }
+@keyframes tbIn { 0% { opacity: 0; clip-path: inset(0 50% 0 50%); } 18% { opacity: 1; clip-path: inset(0 0 0 0); } 75% { opacity: 1; } 100% { opacity: 0; translate: 0 -10px; } }
+@media (max-width: 719px) { .tbanner { top: 30%; padding: 6px 0 8px; } .tbanner b { font-size: 24px; } .tbanner span { font-size: 11px; } }
+/* ===== 폰: 손패 살짝 부채꼴, 길게 눌러 크게 보기 ===== */
+@media (max-width: 719px), (max-height: 559px) {
+  .play .hand .card[data-id] { --o: calc(var(--i) - (var(--n) - 1) / 2); transform-origin: 50% 100%; transform: translateY(calc(var(--o) * var(--o) * 2px)) rotate(calc(var(--o) * 2deg)); -webkit-touch-callout: none; user-select: none; }
+  .play .hand .card[data-id].sel { transform: translateY(-6px); }
+}
+.cpeek { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(29, 20, 19, .55); pointer-events: none; animation: cpIn .16s ease-out; }
+.cpeek > .play { display: block; gap: 0; }
+.cpeek .card { width: min(260px, 72vw); min-height: 0; aspect-ratio: 5 / 7; box-sizing: border-box; font-size: 15px; box-shadow: 0 4px 0 #2b1d1c, 0 16px 40px rgba(0, 0, 0, .5); }
+.cpeek .card .ds, .cpeek .card .tag { display: block !important; } .cpeek .card .ds { font-size: 14px; padding-inline: 10px; } .cpeek .card .glare { display: none; }
+.cpeek .card .top { padding: 6px 8px 6px 34px; min-height: 30px; } .cpeek .card .cost { width: 26px; height: 26px; font-size: 15px; left: 4px; } .cpeek .card .nm { font-size: 16px; white-space: normal; }
+.cpeek .card .g3 { grid-template-columns: repeat(3, 22px); grid-auto-rows: 22px; gap: 3px; }
+@keyframes cpIn { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .tbanner, .uf-pop { display: none; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -3835,7 +3867,7 @@ async function startReplay(job) {
   dealN = drawn(seat); dealOpp = drawn(opp(seat));
   replaying = false; rpLocked = null; deadline = Date.now() + TURN_MS;
   render();
-  if (doc && doc.phase === 'over') SND.play(neu.winner === seat ? 'win' : neu.winner === 'draw' ? 'turn' : 'lose'); else SND.play('turn');
+  if (doc && doc.phase === 'over') SND.play(neu.winner === seat ? 'win' : neu.winner === 'draw' ? 'turn' : 'lose'); else { SND.play('turn'); turnBanner(); }
   if (doc && doc.phase === 'play' && neu.P[seat].hp === 1 && job.old.P[seat].hp > 1) crisis();
   if (local && Math.random() < 0.3) { const r = neu.rp.R, hitMe = r.a && r.a.dmg > 0, hitBot = r.b && r.b.dmg > 0; W({ emote: { b: { i: hitMe ? 5 + Math.floor(Math.random() * 5) : hitBot ? 2 : 3, n: Date.now() } } }); }
 }
@@ -4180,7 +4212,7 @@ function statHTML(k) {
     <span class="uf-por" aria-hidden="true"><i class="px a-${p.cls}${mine ? '' : ' flip'}"></i></span>
     <span class="uf-main">
       <span class="uf-name"><span class="uf-who">${mine ? '나' : '상대'}</span><b>${c.n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${c.n} 설명 보기">설명</button></span>
-      <span class="uf-bar uf-hp" role="img" aria-label="체력 ${hp} / ${hm}"><span class="uf-ic" aria-hidden="true">♥</span>${pips('hp', hp, hm)}<b>${hp}<small>/${hm}</small></b></span>
+      <span class="uf-bar uf-hp" role="img" aria-label="체력 ${hp} / ${hm}"><span class="uf-ic" aria-hidden="true">♥</span>${hpBar(k, hp, hm)}<b>${hp}<small>/${hm}</small></b></span>
       <span class="uf-bar uf-mp" role="img" aria-label="${L(`마나 ${p.mana} / ${mm}${sp ? ', 이번 계획에 ' + Math.min(sp, p.mana) + ' 사용' : ''}`, `Mana ${p.mana} / ${mm}${sp ? ', spending ' + Math.min(sp, p.mana) + ' this plan' : ''}`)}"><span class="uf-ic" aria-hidden="true">◆</span>${pips('mp', p.mana, mm, sp)}<b>${p.mana}<small>/${mm}</small></b></span>
       <span class="uf-ks"><span class="uf-k pas" tabindex="0"><em>패시브</em><b>${c.pas[0]}</b><span class="uf-tip" role="tooltip">${hl(c.pas[1])}</span></span><span class="uf-k act" tabindex="0">${abIcon(p.cls)}<em>능력</em><b>${c.act[0]}</b><span class="uf-tip" role="tooltip">${hl(c.act[1])}</span></span></span>
       <span class="chipr">${chipsOf(p, k)}</span></span></div>`;
@@ -4373,6 +4405,51 @@ function abBtnHTML(p, on) {
     <span class="abb-tx"><em>${on ? '능력 · 켜짐' : '능력'}</em><b>${c.act[0]}</b><span>${abState(p)}</span></span>
     <span class="abb-tip" aria-hidden="true"><span class="abb-th"><span class="abb-ti">${abIcon(p.cls)}</span><span><b>${c.act[0]}</b><em>${L(`${c.n}의 능력`, `${TR(c.n)} ability`)} · ${c.ab.label}</em></span></span><span class="abb-d">${hl(c.act[1])}</span><span class="abb-s s-${st[0]}">${st[1]}</span></span></button>`;
 }
+/* ===== 전투 연출 보강: 손패 재정렬, 잔상 체력, 턴 배너, 폰 손패 ===== */
+/* 손패 재정렬: 다시 그리기 전 카드 자리를 적어 두었다가, 남은 카드가 새 자리로 미끄러지게 한다(같은 카드는 이름과 몇 번째인지로 짝짓는다) */
+const calmMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+function handKeys(list) { const n = {}; return list.map(c => { const id = c.dataset.id; n[id] = (n[id] || 0) + 1; return id + '#' + n[id]; }); }
+function handSnap() {
+  const cs = [...document.querySelectorAll('#app .hand .card[data-id]')]; if (!cs.length) return null;
+  const ks = handKeys(cs), m = {}; cs.forEach((c, i) => { const r = c.getBoundingClientRect(); m[ks[i]] = r.left + r.width / 2; }); return m;
+}
+function handFlip(m) {
+  if (!m || calmMotion()) return;
+  const cs = [...document.querySelectorAll('#app .hand .card[data-id]')], ks = handKeys(cs);
+  cs.forEach((c, i) => { if (c.classList.contains('draw') || m[ks[i]] == null) return; const r = c.getBoundingClientRect(), dx = m[ks[i]] - (r.left + r.width / 2);
+    if (Math.abs(dx) > 2 && c.animate) c.animate([{ translate: `${Math.round(dx)}px 0` }, { translate: '0 0' }], { duration: 360, easing: 'cubic-bezier(.2, .8, .3, 1)' }); });
+}
+/* 잔상 체력: 깎인 칸은 잠깐 하얗게 남았다가 줄어들고, 숫자가 튀어 오른다. 회복한 칸은 초록으로 번쩍인다 */
+let ufHp = { gid: null };
+function hpBar(k, hp, hm) {
+  const gid = doc && doc.gid, prev = ufHp.gid === gid && ufHp[k] != null ? ufHp[k] : hp; if (ufHp.gid !== gid) ufHp = { gid };
+  ufHp[k] = hp; const d = hp - prev, calm = calmMotion();
+  let h = `<span class="pips hp" role="img" aria-label="${hp}/${hm}">`;
+  for (let i = 0; i < hm; i++) h += `<i class="${i < hp ? 'f' : ''}${!calm && d < 0 && i >= hp && i < prev ? ' g' : ''}${!calm && d > 0 && i >= prev && i < hp ? ' h' : ''}"></i>`;
+  return h + '</span>' + (d && !calm ? `<span class="uf-pop ${d < 0 ? 'dmg' : 'heal'}" aria-hidden="true">${d > 0 ? '+' : ''}${d}</span>` : '');
+}
+/* 턴 시작 배너: 결투장 가운데에 'N턴'과 한 줄 안내를 잠깐 띄운다 */
+function turnBanner() {
+  if (!G || !doc || doc.phase !== 'play' || G.turn < 2 || calmMotion()) return;
+  const a = app.querySelector('.play > .arena'); if (!a) return;
+  const late = G.turn >= COLLAPSE_FROM, warn = late ? L('바닥이 무너지고 있습니다', 'The floor is collapsing') : G.turn === COLLAPSE_FROM - 1 ? L('다음 턴부터 바닥이 무너집니다', 'The floor starts collapsing next turn') : L('이동과 카드를 정하세요', 'Choose a move and a card');
+  const e = document.createElement('div'); e.className = 'tbanner' + (late ? ' late' : ''); e.setAttribute('aria-hidden', 'true');
+  e.innerHTML = `<b>${L(`${G.turn}턴`, `Turn ${G.turn}`)}</b><span>${warn}</span>`; a.appendChild(e); setTimeout(() => e.remove(), 1500);
+}
+/* 폰: 카드를 길게 누르면 크게 펼쳐 설명을 보여 주고, 손을 떼면 닫는다(그때는 카드를 고르지 않는다) */
+{ let tm = 0, peek = null, until = 0;
+  const close = () => { clearTimeout(tm); if (peek) { peek.remove(); peek = null; until = Date.now() + 400; } };
+  document.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse') return; const c = e.target.closest && e.target.closest('.play .hand .card[data-id]'); if (!c) return;
+    clearTimeout(tm); tm = setTimeout(() => { const id = c.dataset.id, k = CARDS[id]; if (!k) return;
+      peek = document.createElement('div'); peek.className = 'cpeek'; peek.setAttribute('role', 'tooltip');
+      peek.innerHTML = `<div class="play"><div class="card t-${k.t}${k.relic ? ' relic' : ''}">${c.innerHTML}</div></div>`; document.body.appendChild(peek);
+      if (navigator.vibrate) try { navigator.vibrate(12); } catch (x) { /* 진동 없음 */ } }, 420);
+  }, { passive: true });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => document.addEventListener(t, close, { passive: true }));
+  document.addEventListener('click', e => { if (Date.now() < until && e.target.closest && e.target.closest('.play .hand .card')) { e.stopPropagation(); e.preventDefault(); } }, true);
+  document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.play .hand .card')) e.preventDefault(); });
+}
 /* 뽑을 더미: 카드 뒷면 몇 장과 남은 장수. 새 카드는 여기서 날아온다 */
 function pileHTML() { const n = myP().deck.length; return `<div class="pile${n ? '' : ' empty'}" role="img" aria-label="덱 ${n}장 남음"><i></i><i></i><i></i><b>${n}</b></div>`; }
 /* 카드를 낼 때: 고른 카드가 손패에서 결투장 가운데로 날아가 빛나며 사라지고, 상대 손패에서도 뒷면이 날아간다.
@@ -4412,7 +4489,7 @@ function handHTML() {
     const c = CARDS[id], sel = pl.mv === i || pl.act === i, no = !RP && !sel && ((c.c > p.mana - cost(pl) && !(p.cls === 'vampire' && p.hp >= 2)) || (c.t !== 'move' && p.silenced === G.turn) || (id === 'feast' && p.hp < 3));
     const live = { pos: p.pos, dest: pl.dest, sel, tg: pl.tg, ab: pl.ab && p.cls === 'samurai', abAny: pl.ab, o2: p.cls === 'slime' ? p.clone : null };
     const yang = c.yy ? lvOf(G, p, sel && pl.ab) === 1 : null;
-    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}" style="--d:${Math.max(0, i - n0)};--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" aria-pressed="${sel}"><span class="glare" aria-hidden="true"></span>
+    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}" style="--d:${Math.max(0, i - n0)};--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" data-id="${id}" aria-pressed="${sel}"><span class="glare" aria-hidden="true"></span>
       <span class="top"><span class="cost" title="마나">${c.c}</span><span class="nm">${c.n}</span></span>
       <span class="cg">${cardIc(id)}${cardGrid(id, live)}<span class="tag">${c.relic ? '유물 · ' : ''}${TAGS[id]}${(p.temper || {})[id] && c.t === 'atk' ? ` · <b class="k k-d">담금질 +${p.temper[id]}</b>` : ''}</span></span>
       <span class="ds">${c.yy ? yyDesc(c.d, yang) : hl(c.d)}</span></button>`;
@@ -4650,7 +4727,9 @@ function renderNow() {
   else if (doc.phase === 'shop' && run) h = shopHTML();
   else if (doc.phase === 'select' || doc.phase === 'ban' || !G) h = selectHTML();
   else h = playHTML();
+  const hs = handSnap();
   app.innerHTML = h;
+  handFlip(hs);
   SND.music(doc && G && seat && doc.phase === 'play' ? (G.P.b && G.P.b.boss ? 'boss' : (ARENAS[G.arena] ? G.arena : 'castle') + (G.turn >= COLLAPSE_FROM - 1 ? ':late' : '')) : !doc && menuSt === 'main' ? 'menu' : doc && doc.phase !== 'over' && doc.phase !== 'play' ? 'lobby' : 'off');
   if (doc && G && doc.phase !== 'select' && doc.phase !== 'ban') { for (let i = 0; i < dealN; i++) setTimeout(() => SND.play('deal'), 100 + i * 130); if (typeof dealFx === 'function') dealFx(dealN, dealOpp); dealN = 0; dealOpp = 0; }
   tick();
