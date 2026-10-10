@@ -1892,6 +1892,118 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
   .sr-path i.px, .sr-ic { width: 34px; height: 34px; } .sr-path > li { min-width: 44px; } .sr-path > li + li::before { top: 16px; }
   .ss-go .btn { flex: 1 1 140px; }
 }
+/* ===== 전투 화면 v2: 카드 앞면(모든 화면) =====
+   색 띠 머리, 둥근 마나 보석, 그림 칸, 종류 띠, 설명. 아래쪽 두께 그림자로 카드가 판 위에 놓인 느낌을 준다 */
+.play .card { position: relative; overflow: hidden; border: 2px solid #2b1d1c; background: linear-gradient(#fffdfb, #f6efe9); box-shadow: 0 3px 0 #2b1d1c, 0 5px 0 rgba(43, 29, 28, .25); gap: 4px; padding-bottom: 6px; }
+.play .card .top { position: relative; background: var(--tc); color: #fff; border-bottom: 2px solid #2b1d1c; padding: 3px 6px 3px 30px; min-height: 22px; }
+.play .card .nm { text-shadow: 1px 1px 0 rgba(0, 0, 0, .35); line-height: 1.2; }
+.play .card .cost { position: absolute; left: 3px; top: 50%; translate: 0 -50%; width: 22px; height: 22px; min-width: 0; padding: 0; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #8fb6ff, var(--blue) 55%, var(--blue-d)); border: 2px solid #1b2c55; font-weight: 700; font-size: 13px; color: #fff; text-shadow: 1px 1px 0 #1b2c55; box-sizing: border-box; }
+.play .card .cg { margin-inline: 6px; padding: 6px 4px 4px; background: color-mix(in srgb, var(--tc) 10%, #fff); border: 1px solid color-mix(in srgb, var(--tc) 40%, #fff); }
+.play .card .tag { display: block; margin-top: 2px; font-size: 11px; color: color-mix(in srgb, var(--tc) 70%, #3a2a28); }
+.play .card .ds { color: var(--sil); line-height: 1.4; }
+.play .card.relic { background: linear-gradient(#fffaf0, #f7ead0); } .play .card.relic .top { background: var(--sand-d); }
+.play .card.sel { box-shadow: 0 3px 0 #2b1d1c, 0 0 0 3px #ffd75e, 0 0 18px 4px rgba(255, 215, 94, .7); }
+.play .card.no { opacity: 1; filter: grayscale(.85) brightness(.92); } .play .card.no .cost { background: #9a9a9a; border-color: #555; }
+.play .card .glare { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 55%); mix-blend-mode: soft-light; transition: opacity .2s; }
+.logtab, .orb { display: none; }
+/* 좁은 카드(폰): 보석과 이름을 작게, 이름은 한 줄 */
+@media (max-width: 719px), (max-height: 559px) {
+  .play .card .top, .play .hand .card .top { padding: 2px 3px 2px 21px; min-height: 18px; } .play .card .cost { left: 2px; width: 17px; height: 17px; font-size: 11px; border-width: 1px; }
+  .play .card .nm { white-space: nowrap; overflow: hidden; text-overflow: clip; font-size: 11px; letter-spacing: -.3px; }
+  .play .card .cg { margin-inline: 3px; padding: 3px 2px 2px; } .play .card .tag { font-size: 10px; }
+}
+.play .seldesc { display: none; }
+
+/* ===== 전투 화면 v2: 넓은 화면 배치 =====
+   위 띠 / 결투장(남는 높이 전부) / 손패 독. 손패는 독 위로 살짝 솟은 부채꼴이고, 기록은 오른쪽에서 밀려 나온다 */
+@media (min-width: 720px) and (min-height: 560px) {
+  #app:has(> .play.v2) { max-width: none; padding: 0; gap: 0; }
+  #app > .play.v2 { --cw2: clamp(116px, min(10vw, 16.5vh), 170px); --ch2: calc(var(--cw2) * 1.42); --dock: calc(var(--ch2) * .72 + 20px); --lw: min(360px, 30vw);
+    --u: clamp(1px, min(calc((100dvh - 64px - var(--dock)) / 290), calc((100vw - 80px) / 432)), 3.2px);
+    position: relative; height: 100dvh; display: grid; gap: 0; grid-template-columns: minmax(0, 1fr) var(--lwc, 0px); grid-template-rows: auto minmax(0, 1fr) var(--dock); transition: grid-template-columns .28s ease; overflow: clip; }
+  body.logopen #app > .play.v2 { --lwc: var(--lw); }
+  /* 위 띠 */
+  #app > .play.v2 > .bar { grid-column: 1 / -1; grid-row: 1; position: relative; z-index: 8; flex-wrap: nowrap; gap: 14px; padding: 6px 14px; background: var(--paper); border-bottom: 2px solid var(--sil); box-shadow: 0 3px 0 var(--line); }
+  #app > .play.v2 > .bar .turn { display: inline-flex; align-items: center; gap: 6px; font-size: 20px; padding: 2px 12px 2px 8px; background: var(--sil); color: var(--paper); }
+  #app > .play.v2 > .bar .turn::before { margin: 0; background: var(--red); box-shadow: 0 0 0 2px var(--paper); }
+  #app > .play.v2 > .bar > span:nth-child(2) { flex: 1 1 auto; min-width: 0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ash); }
+  #app > .play.v2 > .bar .timer { color: var(--red); font-size: 1.15em; }
+  #app > .play.v2 > .bar [data-a=snd], #app > .play.v2 > .bar [data-a=bgm], #app > .play.v2 > .bar .vol { display: none; }
+  #app > .play.v2 > .bar .optb { display: inline-block; }
+  #app > .play.v2 > .bar .row { flex-wrap: nowrap; gap: 6px; } #app > .play.v2 > .bar .btn { min-height: 34px; padding: 4px 12px; font-size: 13px; }
+  /* 결투장: 남는 자리를 모두 쓴다 */
+  #app > .play.v2 > .arena, .a3on #app > .play.v2 > .arena { grid-column: 1; grid-row: 2; align-self: stretch; height: auto; min-height: 0; margin: 0; border: 0; }
+  #app > .play.v2 > .arena .abar { bottom: calc(var(--ch2) * .3 + 58px); }
+  /* 손패 독: 나무 탁자 */
+  #app > .play.v2 > .ctrl { grid-column: 1; grid-row: 3; position: relative; z-index: 6; display: block; min-height: 0; overflow: visible; padding: 0; gap: 0;
+    background: repeating-linear-gradient(90deg, rgba(0, 0, 0, .12) 0 2px, transparent 2px 90px), linear-gradient(#4a3532, #2f2120); border-top: 3px solid #1d1413; box-shadow: 0 -3px 0 rgba(255, 255, 255, .08) inset; }
+  #app > .play.v2 .dock { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr); grid-template-rows: 100%; align-items: end; column-gap: 18px; padding: 0 16px; }
+  #app > .play.v2 .dk-l { align-self: center; display: flex; align-items: center; gap: 12px; min-width: 0; }
+  #app > .play.v2 .dk-r { align-self: center; justify-self: end; min-width: 0; }
+  /* 마나 구슬 */
+  .orb { position: relative; flex: none; width: 76px; height: 76px; border-radius: 50%; display: grid; place-content: center; justify-items: center; line-height: 1; color: #fff;
+    background: radial-gradient(circle at 35% 30%, #9cc0ff 0 8%, #4f7fd0 30%, #2a4f96 70%, #17305f); border: 3px solid #0f1f3f; box-shadow: 0 0 0 3px #d8c3a8, 0 0 18px 2px rgba(79, 127, 208, .6); }
+  .orb b { font-size: 30px; text-shadow: 2px 2px 0 #0f1f3f; } .orb span { position: absolute; right: 10px; bottom: 18px; font-size: 12px; opacity: .85; }
+  .orb em { position: absolute; left: 50%; bottom: -10px; translate: -50% 0; font-style: normal; font-size: 11px; padding: 0 6px; background: #d8c3a8; color: #2f2120; font-weight: 700; }
+  .orb.spend { box-shadow: 0 0 0 3px #ffd75e, 0 0 18px 2px rgba(255, 215, 94, .6); }
+  #app > .play.v2 .dk-l .sum { display: grid; gap: 3px; min-width: 0; }
+  #app > .play.v2 .dk-l .sum span { background: #fffdfb; border: 0; border-left: 5px solid var(--line); padding: 1px 8px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #app > .play.v2 .dk-l .sum .t-atk { border-left-color: var(--red); } #app > .play.v2 .dk-l .sum .t-sp, #app > .play.v2 .dk-l .sum .t-ab { border-left-color: var(--amber); } #app > .play.v2 .dk-l .sum .t-move { border-left-color: var(--blue); }
+  /* 오른쪽: 능력·이모트·확정 */
+  #app > .play.v2 .acts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; width: clamp(220px, 22vw, 320px); }
+  #app > .play.v2 .acts .btn { min-height: 38px; padding: 4px 10px; font-size: 13px; }
+  #app > .play.v2 .acts > :last-child:not(:first-child) { grid-column: 1 / -1; min-height: 54px; font-size: 18px; letter-spacing: 1px; }
+  #app > .play.v2 .acts [data-a=lock] { background: var(--red); box-shadow: 0 4px 0 var(--red-d), 0 0 0 2px #1d1413; }
+  #app > .play.v2 .acts [data-a=lock]:hover { background: #e55a6c; } #app > .play.v2 .acts [data-a=lock]:active { translate: 0 3px; box-shadow: 0 1px 0 var(--red-d), 0 0 0 2px #1d1413; }
+  #app > .play.v2 .acts .btn.ghost { background: #f6efe9; }
+  #app > .play.v2 .acts.one { width: auto; grid-template-columns: auto; }
+  /* 손패: 3D 부채꼴 */
+  #app > .play.v2 .hand { display: flex; justify-content: center; align-items: flex-end; gap: 0; align-self: stretch; height: 100%; min-height: 0; box-sizing: border-box; padding: 0 0 16px; box-sizing: border-box; perspective: 1100px; perspective-origin: 50% 0; }
+  #app > .play.v2 .hand .card { --o: calc(var(--i) - (var(--n) - 1) / 2); flex: none; width: var(--cw2); height: var(--ch2); margin-inline: calc(var(--cw2) * -.05); align-content: start; font-size: clamp(11px, calc(var(--cw2) * .085), 14px);
+    transform-origin: 50% 100%; transform-style: preserve-3d; will-change: transform;
+    transform: translateY(calc(var(--o) * var(--o) * 3px + var(--lift, 0px))) rotate(calc(var(--o) * 3deg * var(--fan, 1))) scale(var(--sc, 1)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform .2s cubic-bezier(.2, .8, .3, 1), box-shadow .2s, filter .2s; }
+  #app > .play.v2 .hand .card .g3 { grid-template-columns: repeat(3, calc(var(--cw2) * .085)); grid-auto-rows: calc(var(--cw2) * .085); }
+  #app > .play.v2 .hand .card .ds { font-size: .92em; }
+  #app > .play.v2 .hand .card.sel { --lift: calc(var(--ch2) * -.14); z-index: 4; translate: none; }
+  @media (hover: hover) {
+    #app > .play.v2 .hand .card:hover, #app > .play.v2 .hand .card:focus-visible { --lift: calc(var(--ch2) * -.34); --sc: 1.22; --fan: 0; z-index: 6; box-shadow: 0 3px 0 #2b1d1c, 0 18px 24px rgba(0, 0, 0, .45); }
+    #app > .play.v2 .hand .card.sel:hover { box-shadow: 0 3px 0 #2b1d1c, 0 0 0 3px #ffd75e, 0 18px 24px rgba(0, 0, 0, .45); }
+    #app > .play.v2 .hand .card:hover .glare { opacity: 1; }
+  }
+  #app > .play.v2 .hand .card:focus-visible { outline: 3px dashed #ffd75e; outline-offset: 3px; }
+  #app > .play.v2 .legend { position: absolute; left: 16px; bottom: 4px; margin: 0; font-size: 11px; color: #d8c3a8; gap: 4px 10px; display: none; }
+  /* 독 위에 떠 있는 것들: 안내, 튜토리얼, 결과, 이모트 */
+  #app > .play.v2 > .ctrl > .hint { position: absolute; left: 50%; bottom: calc(100% + var(--ch2) * .3 + 10px); translate: -50% 0; z-index: 3; width: max-content; max-width: min(780px, 72%); min-height: 0; margin: 0; padding: 6px 14px;
+    background: rgba(255, 255, 255, .95); border: 2px solid var(--sil); border-left: 6px solid var(--red); box-shadow: 3px 3px 0 rgba(43, 29, 28, .3); text-align: center; }
+  #app > .play.v2 > .ctrl > .tutb { position: absolute; left: 16px; bottom: calc(100% + var(--ch2) * .3 + 10px); z-index: 4; max-width: min(380px, 30%); margin: 0; box-shadow: 3px 3px 0 rgba(43, 29, 28, .3); }
+  #app > .play.v2 > .ctrl > .verdict { position: absolute; left: 50%; bottom: calc(100% + 16px); translate: -50% 0; z-index: 9; width: min(560px, 90%); max-height: calc(100dvh - var(--dock) - 90px); overflow-y: auto; box-sizing: border-box; margin: 0; }
+  #app > .play.v2 > .ctrl > .emp, #app > .play.v2.over > .ctrl > .emp { position: absolute; left: auto; right: 16px; bottom: calc(100% + 10px); z-index: 7; max-width: min(560px, 60%); }
+  #app > .play.v2.over .dock { grid-template-columns: 1fr auto; } #app > .play.v2.over .hand { display: none; }
+  /* 기록: 오른쪽 서랍. 가장자리에 마우스를 대면 엿보고, 기록 버튼으로 고정한다 */
+  #app > .play.v2 > .logp { position: absolute; grid-column: 1 / -1; grid-row: 2 / 4; top: 0; bottom: 0; right: 0; left: auto; z-index: 9; width: var(--lw); box-sizing: border-box; margin: 0; padding: 0; display: block; overflow: visible;
+    border-width: 0 0 0 2px; box-shadow: -4px 0 0 rgba(90, 70, 68, .18); translate: 100% 0; transition: translate .26s ease .22s; }
+  #app > .play.v2 > .logp > .lg-in { height: 100%; overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: 12px 14px; display: grid; align-content: start; gap: 6px; }
+  #app > .play.v2 > .logp .logx { display: inline-block; justify-self: end; }
+  body.logopen #app > .play.v2 > .logp { translate: 0 0; transition-delay: 0s; }
+  @media (hover: hover) { #app > .play.v2 > .logp:hover { translate: 0 0; transition-delay: 0s; } }
+  #app > .play.v2 > .logp::after { content: ''; position: absolute; top: 0; bottom: 0; right: 100%; width: 12px; }
+  #app > .play.v2 .logtab { display: flex; position: absolute; right: 100%; top: 38%; width: 34px; padding: 10px 0; justify-content: center; writing-mode: vertical-rl; letter-spacing: 3px; font: inherit; font-weight: 700; font-size: 13px; color: var(--sil); background: var(--paper); border: 2px solid var(--sil); border-right: 0; box-shadow: -3px 3px 0 var(--line); cursor: pointer; }
+  body.logopen #app > .play.v2 .logtab { background: var(--sil); color: var(--paper); }
+  #app > .play.v2 > .bar .logb { display: inline-block; }
+}
+/* 좁거나 낮은 화면: 기록은 화면을 덮지 않고 오른쪽에서 밀려 나온다 */
+@media (max-width: 719px), (max-height: 559px) {
+  #app > .play.v2 > .logp { display: block; position: fixed; inset: 0 0 0 auto; z-index: 26; width: min(340px, 86vw); margin: 0; padding: 0; overflow: hidden; border-width: 0 0 0 2px; box-shadow: -6px 0 0 rgba(90, 70, 68, .25); translate: 100% 0; visibility: hidden; transition: translate .26s ease, visibility 0s .26s; }
+  body.logopen #app > .play.v2 > .logp { translate: 0 0; visibility: visible; transition: translate .26s ease; }
+  #app > .play.v2 > .logp > .lg-in { height: 100%; overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: max(12px, env(safe-area-inset-top, 0px)) 14px max(12px, env(safe-area-inset-bottom, 0px)); }
+}
+/* 낮은 넓은 화면(노트북 등): 카드를 조금 작게, 설명은 마우스를 댈 때만 */
+@media (min-width: 720px) and (min-height: 560px) and (max-height: 760px) {
+  #app > .play.v2 { --cw2: clamp(108px, min(9.5vw, 17vh), 140px); --dock: calc(var(--ch2) * .66 + 16px); }
+  #app > .play.v2 .orb { width: 64px; height: 64px; } #app > .play.v2 .orb b { font-size: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { #app > .play.v2 .hand .card { transition: none; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -4044,13 +4156,18 @@ function cardHTML(id, extra) {
 }
 /* 음양사 카드 설명: 지금 기운에 해당하는 쪽을 밝게, 반대쪽을 흐리게 */
 function yyDesc(d, yang) { const i = d.indexOf(' 음:'); if (i < 0) return hl(d); return `<span class="${yang ? 'yy-on' : 'yy-off'}">${hl(d.slice(0, i))}</span> <span class="${yang ? 'yy-off' : 'yy-on'}">${hl(d.slice(i + 1))}</span>`; }
+/* 마나 구슬: 이번 계획을 치르고 남는 마나 / 지금 마나 */
+function orbHTML(pl) {
+  const p = myP(), use = Math.min(cost(pl), p.mana), left = p.mana - use;
+  return `<div class="orb${use ? ' spend' : ''}" role="img" aria-label="마나 ${left} 남음 (지금 ${p.mana}, 최대 ${manaMaxOf(p)})"><b>${left}</b><span>/${p.mana}</span><em>마나</em></div>`;
+}
 function handHTML() {
   const p = myP(), pl = curPl(), n0 = p.hand.length - dealN;
   return '<div class="hand">' + p.hand.map((id, i) => {
     const c = CARDS[id], sel = pl.mv === i || pl.act === i, no = !RP && !sel && ((c.c > p.mana - cost(pl) && !(p.cls === 'vampire' && p.hp >= 2)) || (c.t !== 'move' && p.silenced === G.turn) || (id === 'feast' && p.hp < 3));
     const live = { pos: p.pos, dest: pl.dest, sel, tg: pl.tg, ab: pl.ab && p.cls === 'samurai', abAny: pl.ab, o2: p.cls === 'slime' ? p.clone : null };
     const yang = c.yy ? lvOf(G, p, sel && pl.ab) === 1 : null;
-    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}" style="--d:${Math.max(0, i - n0)}" data-a="card" data-i="${i}" aria-pressed="${sel}">
+    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}" style="--d:${Math.max(0, i - n0)};--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" aria-pressed="${sel}"><span class="glare" aria-hidden="true"></span>
       <span class="top"><span class="cost" title="마나">${c.c}</span><span class="nm">${c.n}</span></span>
       <span class="cg">${cardIc(id)}${cardGrid(id, live)}<span class="tag">${c.relic ? '유물 · ' : ''}${TAGS[id]}${(p.temper || {})[id] && c.t === 'atk' ? ` · <b class="k k-d">담금질 +${p.temper[id]}</b>` : ''}</span></span>
       <span class="ds">${c.yy ? yyDesc(c.d, yang) : hl(c.d)}</span></button>`;
@@ -4083,7 +4200,7 @@ function playHTML() {
       : seat === 'a' ? `<button type="button" class="btn red" data-a="again">${matchDone() ? (modeOf() === 'ban' ? '재대결 (금지부터 다시)' : modeOf() === 'bo3' ? '새 매치 시작' : '재대결 (직업 다시 선택)') : '다음 판 (직업 다시 선택)'}</button>` : `<p class="cap">방장이 ${matchDone() ? '재대결' : '다음 판'}을 누르면 넘어갑니다.</p>`}${tutOn() ? '' : '<button type="button" class="btn ghost shareb" data-a="share">결과 공유</button>'}</div>`;
   }
   const sd = !over && !RP ? actId(pl) || mvId(pl) : null;
-  return `<div class="play${SPD === 2 ? ' x2' : ''}${over ? ' over' : ''}">
+  return `<div class="play v2${SPD === 2 ? ' x2' : ''}${over ? ' over' : ''}">
     <div class="bar"><span class="turn">${G.turn}턴</span>
       <span>${over || RP ? '' : `남은 시간 <b id="timer" class="timer">--</b>초 · `}방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` ${scoreOf()[seat]} : ${scoreOf()[o]}` : ''} · ${ARENAS[G.arena] || ARENAS.castle}${G.turn >= COLLAPSE_FROM - 1 ? ' · 바닥 붕괴 중' : ''}</span>
       <span class="row"><button type="button" class="btn ghost" data-a="snd" aria-pressed="${SND.on}">효과음 ${SND.on ? '켬' : '끔'}</button><button type="button" class="btn ghost" data-a="bgm" aria-pressed="${SND.bgm}">배경음 ${SND.bgm ? '켬' : '끔'}</button>
@@ -4095,16 +4212,16 @@ function playHTML() {
       ${tutOn() && !over && !RP ? tutHTML() : ''}
       <p class="hint" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>
       ${sd ? `<p class="seldesc"><b>${CARDS[sd].n}</b> ${hl(CARDS[sd].d)}</p>` : over || RP ? '' : '<p class="seldesc empty">카드를 누르면 설명이 여기에 나옵니다.</p>'}
-      ${over || RP ? '' : sumHTML(pl)}
+      <div class="dock"><div class="dk-l">${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
       ${handHTML()}
-      ${emOpen ? `<div class="emp" role="group" aria-label="이모트">${EMOTES.map((t, i) => `<button type="button" class="btn ghost${i >= 5 ? ' tn' : ''}" data-a="emo" data-i="${i}">${t}</button>`).join('')}</div>` : ''}
-      ${over || RP ? '<div class="acts one"><button type="button" class="btn ghost" data-a="emt" aria-expanded="' + emOpen + '">이모트</button></div>' : `<div class="acts">
+      <div class="dk-r">${over || RP ? '<div class="acts one"><button type="button" class="btn ghost" data-a="emt" aria-expanded="' + emOpen + '">이모트</button></div>' : `<div class="acts">
         <button type="button" class="btn ghost emb${emOpen ? ' on' : ''}" data-a="emt" aria-expanded="${emOpen}">이모트</button>
         <button type="button" class="btn ghost${abOn ? ' on' : ''}" data-a="ab" ${locked ? 'disabled' : ''} aria-pressed="${abOn}">능력: ${ab} (${p.cls === 'druid' && G.turn < p.cd ? (p.cd - G.turn) + '턴 뒤' : p.cls === 'merfolk' && p.dive ? '솟아오르는 중' : p.cls === 'mage' ? (p.mana >= 2 ? '마나 ' + p.mana + ' → 피해 ' + Math.floor(p.mana / 2) : '마나 2 이상') : p.cls === 'mirror' ? (echoId() ? CARDS[echoId()].n + ' · 마나 ' + echoCost() : '비출 카드 없음') : p.cls === 'chrono' && G.turn < (p.rwCd || 0) ? (p.rwCd - G.turn) + '턴 뒤' : CLS[p.cls].ab.label})</button>
-        ${locked ? `<button type="button" class="btn" data-a="unlock" ${doc.lock[o] === curTag ? 'disabled' : ''}>${doc.lock[o] === curTag ? '확정됨' : '확정 취소'}</button>` : '<button type="button" class="btn red" data-a="lock">계획 확정</button>'}</div>`}
-      </div><div class="panel logp"><button type="button" class="btn ghost logx" data-a="logp">닫기</button><p class="cap">결투장 · ${ARENAS[G.arena] || ARENAS.castle}</p><p class="arule">${ARENA_RULE[G.arena] || ARENA_RULE.castle}${G.bless ? ` <b>축복의 칸(${BLESS[G.bless.t][1]})이 ${G.bless.until - G.turn + 1}턴 남았습니다.</b>` : ''}</p><p class="cap">최근 3턴에 낸 카드</p>${histHTML() || '<div class="log"><div>아직 기록이 없습니다.</div></div>'}
+        ${locked ? `<button type="button" class="btn" data-a="unlock" ${doc.lock[o] === curTag ? 'disabled' : ''}>${doc.lock[o] === curTag ? '확정됨' : '확정 취소'}</button>` : '<button type="button" class="btn red" data-a="lock">계획 확정</button>'}</div>`}</div></div>
+      ${emOpen ? `<div class="emp" role="group" aria-label="이모트">${EMOTES.map((t, i) => `<button type="button" class="btn ghost${i >= 5 ? ' tn' : ''}" data-a="emo" data-i="${i}">${t}</button>`).join('')}</div>` : ''}
+      </div><div class="panel logp"><button type="button" class="logtab" data-a="logp" aria-label="전투 기록 열고 닫기">기록</button><div class="lg-in"><button type="button" class="btn ghost logx" data-a="logp">닫기</button><p class="cap">결투장 · ${ARENAS[G.arena] || ARENAS.castle}</p><p class="arule">${ARENA_RULE[G.arena] || ARENA_RULE.castle}${G.bless ? ` <b>축복의 칸(${BLESS[G.bless.t][1]})이 ${G.bless.until - G.turn + 1}턴 남았습니다.</b>` : ''}</p><p class="cap">최근 3턴에 낸 카드</p>${histHTML() || '<div class="log"><div>아직 기록이 없습니다.</div></div>'}
         <p class="cap">지난 턴 · 붉은 점선은 공격이 지나간 칸</p>
-        <div class="log">${G.ev.length ? G.ev.map(e => `<div><b class="${e[0] === seat ? 'me' : ''}">${e[0] === seat ? '나' : '상대'}</b> ${esc(e[1])}</div>`).join('') : '<div>아직 기록이 없습니다.</div>'}</div></div>
+        <div class="log">${G.ev.length ? G.ev.map(e => `<div><b class="${e[0] === seat ? 'me' : ''}">${e[0] === seat ? '나' : '상대'}</b> ${esc(e[1])}</div>`).join('') : '<div>아직 기록이 없습니다.</div>'}</div></div></div>
     </div>`;
 }
 /* ===== 메인 메뉴 ===== */
@@ -7383,6 +7500,14 @@ function stBag() {
       <ul class="sb-deck">${deck}</ul><p class="cap sb-tip">${L('카드에 마우스를 대면 설명이 나옵니다.', 'Hover a card to read it.')}</p></section>`;
   return stDrawer('l', L('내 상태', 'My status'), `<i class="px a-${run.cls} sdr-ic" aria-hidden="true"></i>`, body);
 }
+/* ===== 전투 손패: 카드에 마우스를 대면 커서 쪽으로 기울고 빛이 따라온다 ===== */
+document.addEventListener('pointermove', e => {
+  const c = e.target.closest && e.target.closest('.play.v2 .hand .card'); if (!c || e.pointerType !== 'mouse') return;
+  const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+  c.style.setProperty('--ry', ((x - 0.5) * 18).toFixed(1) + 'deg'); c.style.setProperty('--rx', ((0.5 - y) * 14).toFixed(1) + 'deg');
+  c.style.setProperty('--gx', (x * 100).toFixed(0) + '%'); c.style.setProperty('--gy', (y * 100).toFixed(0) + '%');
+});
+document.addEventListener('pointerout', e => { const c = e.target.closest && e.target.closest('.play.v2 .hand .card'); if (c && !(e.relatedTarget && c.contains(e.relatedTarget))) { c.style.removeProperty('--rx'); c.style.removeProperty('--ry'); } });
 /* ===== 지도: 칸에 마우스를 대면 지금 자리에서 그 칸까지 가는 길을 밝힌다 =====
    지금 자리에서 닿을 수 있고, 그 칸으로 이어지는 칸만 고른다(갈림길이 여럿이면 모두) */
 function stPathSet(tr, tc) {
