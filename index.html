@@ -2195,6 +2195,16 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
 .cpeek .card .g3 { grid-template-columns: repeat(3, 22px); grid-auto-rows: 22px; gap: 3px; }
 @keyframes cpIn { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .tbanner, .uf-pop { display: none; } }
+/* ===== 쓰러짐: 가루가 되어 흩어진다(전 직업 공통). 3D는 픽셀 조각으로 따로 그리고, 2D는 위에서부터 지워지며 가루가 떠오른다 ===== */
+.unit.ko.dust, .unit.ko.dusted { animation: none; opacity: 1; }
+html:not(.a3on) .unit.dust { animation: dust2d 1.7s steps(17) forwards; }
+html:not(.a3on) .unit.dusted { opacity: 0; }
+@keyframes dust2d { 0% { clip-path: inset(0 0 0 0); } 15% { clip-path: inset(0 0 0 0); } 100% { clip-path: inset(100% 0 0 0); translate: 0 calc(-4 * var(--u)); opacity: .3; } }
+html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%; top: 40%; width: calc(2 * var(--u)); height: calc(2 * var(--u)); background: transparent; pointer-events: none;
+  box-shadow: calc(-8 * var(--u)) 0 0 var(--sil), calc(5 * var(--u)) calc(-4 * var(--u)) 0 var(--ash), calc(-3 * var(--u)) calc(-9 * var(--u)) 0 var(--sil), calc(9 * var(--u)) calc(-12 * var(--u)) 0 var(--ash), calc(-11 * var(--u)) calc(-15 * var(--u)) 0 var(--ash), calc(2 * var(--u)) calc(-18 * var(--u)) 0 var(--sil), calc(7 * var(--u)) calc(-6 * var(--u)) 0 var(--sil), calc(-6 * var(--u)) calc(-22 * var(--u)) 0 var(--ash);
+  animation: dustDots 1.7s ease-out forwards; }
+@keyframes dustDots { 0% { translate: 0 0; opacity: 0; } 20% { opacity: 1; } 100% { translate: calc(3 * var(--u)) calc(-28 * var(--u)); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { html:not(.a3on) .unit.dust { animation: none; opacity: 0; } html:not(.a3on) .unit.dust::before { display: none; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -4326,7 +4336,7 @@ function boardHTML(k) {
   }
   const ko = doc.phase === 'over' && !RP && p.hp <= 0, hid = !!p.dive && !over0;
   if (p.clone != null) h += `<i class="unit clone px a-${p.cls}${mine ? '' : ' flip'}" style="--x:${C(p.clone)};--y:${R(p.clone)}"></i>`;
-  h += `<i class="unit main px a-${p.cls}${ko ? '-ko ko pose' : doc.phase === 'over' && !RP && G.winner === k ? '-act pose win' : ''}${mine ? '' : ' flip'}${p.boss ? ' boss b-' + p.boss : ''}${hid ? (mine ? ' sub' : ' gone') : ''}" data-c="${p.cls}" style="--x:${C(p.pos)};--y:${R(p.pos)}"></i><canvas class="fx" width="96" height="96" aria-hidden="true"></canvas>`;
+  h += `<i class="unit main px a-${p.cls}${ko ? ' ko dusted' : doc.phase === 'over' && !RP && G.winner === k ? '-act pose win' : ''}${mine ? '' : ' flip'}${p.boss ? ' boss b-' + p.boss : ''}${hid ? (mine ? ' sub' : ' gone') : ''}" data-c="${p.cls}" style="--x:${C(p.pos)};--y:${R(p.pos)}"></i><canvas class="fx" width="96" height="96" aria-hidden="true"></canvas>`;
   if (hid && !mine && !RP) h += '<span class="subm">잠수 중 · 어디서 솟을지 모릅니다</span>';
   return h + '</div>';
 }
@@ -6235,14 +6245,15 @@ function showIntro() {
 /* ----- KO와 승리 연출: 멈춤 → K.O. → 쓰러진 쪽을 비춘 뒤 → 이긴 쪽의 승리 포즈 ----- */
 async function koScene(neu, cls, fin) {
   const KS = ['a', 'b'], w = neu.winner, losers = KS.filter(k => neu.P[k].hp <= 0), a = app.querySelector('.arena');
-  const fall = k => { const u = uEl(k); if (u) { setPose(k, cls(k), 'ko'); u.classList.add('ko'); } };
+  /* 쓰러짐 자세 대신 맞은 자세 그대로 가루가 되어 흩어진다(전 직업 공통). 3D는 픽셀 조각, 2D는 CSS로 */
+  const fall = k => { const u = uEl(k); if (u) { setPose(k, cls(k), 'hit'); u.classList.add('ko', 'dust'); } };
   if (SKIP || noMotion || !a) { losers.forEach(fall); if (!SKIP) { play('ko'); await sleep(800); } return; }
   await hitStop(280);
   losers.forEach(k => { fall(k); fx(k, FX.dust(fin(k)), 500); fx(k, FX.hit(fin(k), 3), 600); pulse(bEl(k), 'shake', 500); });
   a.classList.add('ko-zoom', w === 'draw' || losers.length > 1 ? 'kz-c' : losers[0] === seat ? 'kz-me' : 'kz-op');
   const e = document.createElement('div'); e.className = 'kofx'; e.innerHTML = '<b>K.O.</b>'; a.appendChild(e);
   play('ko'); pulse(app.querySelector('.field'), 'quake', 520);
-  await sleep(1500);
+  await sleep(2100);
   if (SKIP) return;
   if (w && w !== 'draw') {
     const u = uEl(w); if (u) { setPose(w, cls(w), true); u.classList.add('win'); }
@@ -8454,6 +8465,9 @@ function stOverHTML(won) {
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] >= 128) { if (y > yb) yb = y; if (y < yt) yt = y; }
     const geo = new T.PlaneGeometry(w * VS, h * VS); geo.translate(0, (yb + 1) * VS - h * VS / 2, 0);
     v.tex = pixelTex(c); v.geo = geo; v.top = (yb + 1 - yt) * VS;
+    /* 가루 연출용: 칠해진 픽셀의 자리와 색 */
+    const px = []; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; if (d[i + 3] >= 128) px.push([(x - w / 2 + 0.5) * VS, (yb + 0.5 - y) * VS, d[i] / 255, d[i + 1] / 255, d[i + 2] / 255]); }
+    v.px = px; v.ph = (yb + 1 - yt) || 1; v.yt = yt; v.yb = yb;
   }
   /* 메시에 판과 그림을 입힌다. 그림이 아직 안 불러졌으면 false */
   function useVox(mesh, v) {
@@ -9081,6 +9095,38 @@ function stOverHTML(won) {
     if (sm && !mine) { const e = document.createElement('span'); e.className = 'subm'; e.dataset.b = b; e.textContent = sm.textContent; lab.appendChild(e); }
     else if (!sm && mine) mine.remove();
   }
+  /* --- 가루가 되어 흩어지기 ---
+     처음엔 픽셀 조각이 캐릭터 모양 그대로 있다가, 위쪽 조각부터 하나씩 떨어져 흔들리며 떠오르고, 작아지며 잿빛으로 바랜다 */
+  const DUSTG = new T.PlaneGeometry(VS * 1.02, VS * 1.02), _do = new T.Object3D(), _dc = new T.Color(), ASH = new T.Color(0.86, 0.82, 0.8);
+  function dustStart(u) {
+    const px = u.vox.px, n = px.length, mesh = new T.InstancedMesh(DUSTG, new T.MeshBasicMaterial({ side: T.DoubleSide }), n);
+    const P = new Float32Array(n * 8); let seed = 11;
+    const rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (let i = 0; i < n; i++) { const q = px[i], top = (q[1] / (VS * u.vox.ph)); /* 0 발끝 ~ 1 머리 */
+      P[i * 8] = q[0]; P[i * 8 + 1] = q[1]; P[i * 8 + 2] = 1.15 * (1 - top) * 0.75 + rnd() * 0.45; /* 늦게 떨어질수록 큼: 머리부터 */
+      P[i * 8 + 3] = (rnd() - 0.5) * 0.5; P[i * 8 + 4] = 0.55 + rnd() * 0.7; P[i * 8 + 5] = (rnd() - 0.5) * 0.5; P[i * 8 + 6] = rnd() * 6.28; P[i * 8 + 7] = 0.7 + rnd() * 0.6;
+      _dc.setRGB(q[2], q[3], q[4]); mesh.setColorAt(i, _dc); }
+    mesh.frustumCulled = false; u.g.add(mesh);
+    u.dust = { mesh: mesh, P: P, n: n, t0: tSec, done: false };
+  }
+  function dustStep(u) {
+    const D = u.dust; if (D.done) return; const t = still ? 9 : tSec - D.t0, M = D.mesh, P = D.P; let alive = 0;
+    for (let i = 0; i < D.n; i++) {
+      const o = i * 8, d = Math.max(0, t - P[o + 2]), life = 1.1 * P[o + 7], k = Math.min(1, d / life);
+      if (k >= 1) { _do.scale.setScalar(0); }
+      else { alive++;
+        _do.position.set(P[o] + P[o + 3] * d + Math.sin(d * 5 + P[o + 6]) * 0.05 * d, P[o + 1] + P[o + 4] * d + 0.35 * d * d, 0.01 + P[o + 5] * d);
+        _do.rotation.set(0, 0, d * 3 * (P[o + 3] > 0 ? 1 : -1)); _do.scale.setScalar(d > 0 ? Math.max(0, 1 - k) * (1 + 0.3 * Math.sin(d * 9 + P[o + 6])) : 1);
+        if (d > 0) { M.getColorAt(i, _dc); _dc.lerp(ASH, Math.min(1, d * 0.08)); M.setColorAt(i, _dc); } }
+      _do.updateMatrix(); M.setMatrixAt(i, _do.matrix);
+    }
+    M.instanceMatrix.needsUpdate = true; if (M.instanceColor) M.instanceColor.needsUpdate = true;
+    if (!alive && t > 0.5) dustEnd(u, false);
+  }
+  function dustEnd(u, reset) {
+    const D = u.dust; if (!D) return; if (D.mesh) { u.g.remove(D.mesh); D.mesh.material.dispose(); D.mesh.dispose(); D.mesh = null; }
+    if (reset) u.dust = null; else D.done = true;
+  }
   function syncUnit(u, el, b, cs32, cellIdx) {
     const cs = getComputedStyle(el), cl = el.classList, url = urlOf(cs.backgroundImage);
     if (url && url !== u.bg) { u.bg = url; u.vox = voxOf(url); }
@@ -9097,8 +9143,13 @@ function stOverHTML(won) {
     u.mat.color.setHex(red ? 0x000000 : 0xffffff); u.mat.emissive.setHex(red ? 0xd8475a : after ? 0x3560c8 : 0);
     u.mat.transparent = op < 0.99; u.mat.opacity = op; u.mat.depthWrite = op > 0.6; u.g.visible = op > 0.02; u.back.material.transparent = u.mat.transparent; u.back.material.opacity = op * 0.9;
     const koNow = cl.contains('ko'), cellI = Math.max(0, Math.min(2, Math.round(row))) * 3 + Math.max(0, Math.min(2, Math.round(col)));
-    if (koNow && u.el === el && !u.wasKo && GM) burst(b, cellI, 16, [GM.K.gray, GM.K.ash, GM.K.wht, GM.K.sil], 2.6, 2.8);
     u.wasKo = koNow; u.el = el;
+    /* 가루: 'dust'가 붙는 순간 그림을 픽셀 조각으로 바꿔 흩날리고, 'dusted'(이미 사라짐)면 감춘다 */
+    if (cl.contains('dust') && !u.dust && u.vox && u.vox.px) dustStart(u);
+    if (!cl.contains('dust') && !cl.contains('dusted') && u.dust) dustEnd(u, true);
+    if (u.dust) { u.mesh.visible = u.back.visible = u.crown.visible = false; u.g.visible = true; u.sh.visible = !u.dust.done; if (!u.dust.done) u.sh.scale.multiplyScalar(Math.max(0, 1 - (tSec - u.dust.t0) / 1.2)); dustStep(u); return; }
+    if (cl.contains('dusted')) { u.g.visible = false; u.sh.visible = false; return; }
+    u.mesh.visible = u.back.visible = true;
     if (cl.contains('win') && GM && Math.floor(tSec * 1.6) !== u.cf) { u.cf = Math.floor(tSec * 1.6); burst(b, cellI, 5, [GM.K.red, GM.K.yel, GM.K.blue, GM.K.grn, GM.K.wht, GM.K.amb], 1.5, 4.2, 6); }
     const k = Math.max(0.35, 1 - Math.max(0, y) * 1.4);
     u.sh.visible = op > 0.4 && y > -0.1 && cellIdx == null; u.sh.position.set(x, TY + 0.02, z + 0.02); u.sh.scale.set(0.85 * k, 1, 0.85 * k);
