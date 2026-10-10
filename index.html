@@ -2366,8 +2366,8 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   .menu.t2 .m-cast { display: none; }
 }
 /* ===== 직업 선택 v2: 조명 무대 + 정보판 + 아래 명단 ===== */
-#app > .gate.pick2 { display: grid; grid-template-rows: auto auto auto; gap: 12px; align-content: start; }
-.pk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; }
+#app > .gate.pick2 { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; align-content: stretch; }
+.pk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: minmax(0, 1fr); gap: 18px; min-height: 0; }
 .pk-show { --fs: clamp(150px, 30vh, 280px); position: relative; overflow: hidden; min-height: calc(var(--fs) * 1.8); border: 2px solid var(--sil); box-shadow: 6px 6px 0 var(--ac);
   background: linear-gradient(170deg, color-mix(in srgb, var(--ac) 34%, #fff), color-mix(in srgb, var(--ac) 10%, #fff) 62%, #fff); }
 .pk-bg { position: absolute; inset: 0; background: repeating-linear-gradient(115deg, transparent 0 34px, color-mix(in srgb, var(--ac) 16%, transparent) 34px 64px); mask-image: linear-gradient(90deg, #000, transparent 85%); }
@@ -2398,7 +2398,13 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pk-show.banning .pk-stamp { color: var(--sil); border-color: var(--sil); }
 .pk-show.locked .pk-hi { filter: none; }
 /* 정보판: 무대에 이미 있는 초상, 이름, 한 줄 소개, 역할은 감춘다 */
-.pick2 .detail { align-self: start; align-content: start; height: auto; }
+/* 정보판은 크기를 고정한다: 직업마다 글 길이와 카드 수가 달라도 화면 배치는 그대로. 내용은 탭으로 나누고 넘치면 그 칸만 스크롤 */
+.pick2 .detail { height: 100%; min-height: 0; box-sizing: border-box; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: stretch; }
+.pick2 .detail > .d-tabs { display: flex; }
+.pick2 .detail > .d-sec { display: none; }
+.pick2 .detail[data-tab="a"] > [data-t="a"], .pick2 .detail[data-tab="c"] > [data-t="c"], .pick2 .detail[data-tab="r"] > [data-t="r"] { display: grid; align-content: start; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-right: 4px; }
+.pick2 .detail .d-pv canvas { width: 72px; height: 96px; }
+.pick2 .detail > .d-go { margin-top: 0; }
 .pick2 .detail .d-por, .pick2 .detail .d-ttl h1, .pick2 .detail .d-tag, .pick2 .detail .chips { display: none; }
 .pick2 .detail .d-head { align-items: center; padding-bottom: 8px; }
 .pick2 .detail .d-meta { margin: 0; }
@@ -2441,7 +2447,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 @media (max-width: 1100px) { .pk-roster.faces { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
 @media (max-width: 719px) {
   #app > .gate.pick2 { gap: 8px; }
-  .pk-main { grid-template-columns: 1fr; gap: 10px; }
+  .pk-main { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 10px; }
   .pk-show { --fs: clamp(110px, 18vh, 170px); min-height: 0; height: calc(var(--fs) * 1.75); box-shadow: 4px 4px 0 var(--ac); }
   .pk-name { bottom: 8px; left: 12px; } .pk-name h2 { font-size: 30px; } .pk-tag { font-size: 12px; } .pk-name .chips { display: none; }
   .pk-no { font-size: 18px; left: 10px; top: 6px; } .pk-lv { top: 8px; right: 8px; font-size: 11px; }
