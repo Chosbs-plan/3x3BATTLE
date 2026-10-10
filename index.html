@@ -1946,9 +1946,6 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
   .orb b { font-size: 30px; text-shadow: 2px 2px 0 #0f1f3f; } .orb span { position: absolute; right: 10px; bottom: 18px; font-size: 12px; opacity: .85; }
   .orb em { position: absolute; left: 50%; bottom: -10px; translate: -50% 0; font-style: normal; font-size: 11px; padding: 0 6px; background: #d8c3a8; color: #2f2120; font-weight: 700; }
   .orb.spend { box-shadow: 0 0 0 3px #ffd75e, 0 0 18px 2px rgba(255, 215, 94, .6); }
-  #app > .play.v2 .dk-l .sum { display: grid; gap: 3px; min-width: 0; }
-  #app > .play.v2 .dk-l .sum span { background: #fffdfb; border: 0; border-left: 5px solid var(--line); padding: 1px 8px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #app > .play.v2 .dk-l .sum .t-atk { border-left-color: var(--red); } #app > .play.v2 .dk-l .sum .t-sp, #app > .play.v2 .dk-l .sum .t-ab { border-left-color: var(--amber); } #app > .play.v2 .dk-l .sum .t-move { border-left-color: var(--blue); }
   /* 오른쪽: 능력·이모트·확정 */
   #app > .play.v2 .acts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; width: clamp(220px, 22vw, 320px); }
   #app > .play.v2 .acts .btn { min-height: 38px; padding: 4px 10px; font-size: 13px; }
@@ -2004,6 +2001,76 @@ html:not(.a3on) .smap.pt-on .mnode.pth:not(.here) .mt { box-shadow: 4px 4px 0 #f
   #app > .play.v2 .orb { width: 64px; height: 64px; } #app > .play.v2 .orb b { font-size: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { #app > .play.v2 .hand .card { transition: none; } }
+/* ===== 전투 상단 유닛 프레임: 초상, 이름, 체력·마나 막대, 패시브·능력, 상태 칩 ===== */
+.hint2, .sum-h { display: none; }
+.play .stat.uf { --acc: var(--red); display: flex; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; gap: 8px; max-width: min(400px, 100%); box-sizing: border-box; padding: 6px 8px 7px; text-align: left;
+  background: linear-gradient(#fffdfb, #f3ebe5); border: 2px solid #2b1d1c; border-top: 4px solid var(--acc); box-shadow: 0 3px 0 #2b1d1c; }
+.play .side.op .stat.uf { --acc: var(--blue); flex-direction: row-reverse; text-align: right; }
+.uf-por { flex: none; align-self: center; display: grid; place-items: center; width: 54px; height: 54px; background: var(--wash); border: 2px solid #2b1d1c; box-shadow: inset 0 -4px 0 var(--ac, var(--line)); }
+.uf-por > i.px { width: 48px; height: 48px; display: block; }
+.uf-main { flex: 1 1 auto; min-width: 0; display: grid; gap: 3px; align-content: center; }
+.uf-name { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.side.op .uf-name { flex-direction: row-reverse; }
+.uf-name b { font-size: 15px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.uf-who { flex: none; font-size: 10px; font-weight: 700; padding: 0 5px; color: #fff; background: var(--acc); }
+.uf-name .infob { margin-left: auto; flex: none; } .side.op .uf-name .infob { margin-left: 0; margin-right: auto; }
+.uf-bar { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.side.op .uf-bar { flex-direction: row-reverse; }
+.uf-ic { flex: none; width: 12px; text-align: center; font-size: 12px; line-height: 1; } .uf-hp .uf-ic { color: var(--red); } .uf-mp .uf-ic { color: var(--blue); }
+.uf-bar .pips { flex: 1 1 auto; display: flex; gap: 2px; min-width: 0; }
+.side.op .uf-bar .pips { flex-direction: row-reverse; }
+.uf-bar .pips i { flex: 1 1 0; min-width: 4px; width: auto; height: 13px; }
+.uf-mp .pips i { height: 9px; }
+.uf-bar b { flex: none; min-width: 34px; font-size: 15px; line-height: 1; font-variant-numeric: tabular-nums; } .uf-bar b small { font-size: 11px; color: var(--ash); font-weight: 400; }
+.uf-mp b { font-size: 13px; }
+.side.op .uf-bar b { text-align: left; } .side.me .uf-bar b { text-align: right; }
+.stat.uf.low .uf-hp .pips i.f { animation: ufLow .8s steps(2) infinite; }
+@keyframes ufLow { 50% { background: #ff9aa8; } }
+.uf-ks { display: flex; flex-wrap: wrap; gap: 3px; min-width: 0; } .side.op .uf-ks { justify-content: flex-end; }
+.uf-k { position: relative; display: inline-flex; align-items: baseline; gap: 4px; max-width: 100%; padding: 1px 6px; font-size: 11px; line-height: 1.4; background: #fff; border: 1px solid var(--line); cursor: help; outline: none; }
+.uf-k em { font-style: normal; color: var(--ash); flex: none; } .uf-k b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.uf-k.act { border-color: color-mix(in srgb, var(--amber) 60%, #fff); } .uf-k.act em { color: var(--amber-d); }
+.uf-k:hover, .uf-k:focus-visible { border-color: var(--sil); }
+.uf-tip { position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; width: max-content; max-width: 260px; padding: 6px 9px; background: #fffbe9; color: var(--sil); border: 2px solid var(--sil); box-shadow: 3px 3px 0 rgba(43, 29, 28, .35); font-size: 12px; line-height: 1.45; text-align: left; white-space: normal; display: none; }
+.side.op .uf-tip { left: auto; right: 0; }
+.uf-k:hover .uf-tip, .uf-k:focus .uf-tip { display: block; }
+.stat.uf .chipr { display: flex; flex-wrap: wrap; gap: 3px; justify-content: flex-start; margin: 0; } .side.op .stat.uf .chipr { justify-content: flex-end; }
+.stat.uf .chipr:empty { display: none; }
+/* 좁은 폰, 가로로 든 폰: 초상을 작게, 패시브·능력은 이름만 */
+@media (max-width: 719px), (max-height: 559px) {
+  .play .stat.uf, .a3on .play .stat.uf { padding: 3px 5px 4px; gap: 5px; font-size: 11px; border-top-width: 3px; }
+  .a3on .play .stat.uf > .uf-main, .a3on .play .stat.uf > .uf-por { font-size: 11px; display: grid; }
+  .uf-por { width: 30px; height: 30px; border-width: 1px; } .uf-por > i.px { width: 28px; height: 28px; }
+  .uf-name b { font-size: 12px; } .uf-who { font-size: 9px; padding: 0 3px; } .uf-name .infob { min-height: 18px; padding: 0 4px; font-size: 10px; }
+  .uf-bar { gap: 3px; } .uf-bar .pips i { height: 9px; } .uf-mp .pips i { height: 6px; } .uf-bar b { min-width: 24px; font-size: 11px; } .uf-bar b small { font-size: 9px; } .uf-ic { width: 9px; font-size: 9px; }
+  .uf-k { font-size: 10px; padding: 0 4px; } .uf-k em { display: none; }
+}
+
+/* ===== 넓은 화면: 안내 문구는 결투장 위쪽 가운데(손패를 가리지 않게), 계획 요약은 표처럼 ===== */
+@media (min-width: 720px) and (min-height: 560px) {
+  #app > .play.v2 .stat.uf { width: min(400px, 31vw); }
+  #app > .play.v2 > .ctrl > .hint { display: none; }
+  #app > .play.v2 > .hint2 { display: block; grid-column: 1; grid-row: 2; align-self: start; justify-self: center; position: relative; z-index: 5; box-sizing: border-box; margin: 12px 0 0; width: max-content; max-width: min(36%, 520px); padding: 7px 14px;
+    font-size: 13px; line-height: 1.45; text-align: center; color: var(--sil); background: rgba(255, 253, 251, .96); border: 2px solid #2b1d1c; border-bottom: 4px solid var(--red); box-shadow: 0 3px 0 rgba(43, 29, 28, .35); }
+  #app > .play.v2 > .hint2 .rpc { display: inline-flex; gap: 6px; margin-left: 6px; } #app > .play.v2 > .hint2 .btn { min-height: 28px; padding: 2px 10px; font-size: 12px; }
+  #app > .play.v2:has(.tutb) > .hint2 { display: none; }
+  #app > .play.v2.over > .hint2 { display: none; }
+  /* 이번 턴 계획 */
+  #app > .play.v2 .dk-l .sum { display: grid; gap: 3px; width: min(270px, 100%); min-width: 0; box-sizing: border-box; margin: 0; padding: 6px 8px 8px; background: #fffdfb; border: 2px solid #1d1413; box-shadow: 0 3px 0 #1d1413; }
+  #app > .play.v2 .dk-l .sum .sum-h { display: block; font-size: 11px; color: var(--ash); letter-spacing: 1px; padding: 0 0 3px; border: 0; border-bottom: 1px dashed var(--line); background: none; white-space: nowrap; }
+  #app > .play.v2 .dk-l .sum > span:not(.sum-h) { display: flex; align-items: baseline; gap: 8px; min-width: 0; padding: 2px 6px; font-size: 14px; line-height: 1.3; background: var(--wash); border: 0; border-left: 5px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #app > .play.v2 .dk-l .sum > span > b { flex: none; width: 34px; margin: 0; font-size: 12px; color: var(--ash); font-weight: 400; }
+  #app > .play.v2 .dk-l .sum .k-mv { border-left-color: var(--blue); }
+  #app > .play.v2 .dk-l .sum .k-mv.need { background: #fff1f3; } #app > .play.v2 .dk-l .sum .k-mv.need em { animation: ufLow .8s steps(2) infinite; }
+  #app > .play.v2 .dk-l .sum .t-atk { border-left-color: var(--red); font-weight: 700; } #app > .play.v2 .dk-l .sum .t-sp, #app > .play.v2 .dk-l .sum .t-ab { border-left-color: var(--amber); font-weight: 700; }
+  #app > .play.v2 .dk-l .sum .none { color: var(--ash); }
+  #app > .play.v2 .dk-l .sum .k-mana { font-size: 12px; background: none; border-left-color: transparent; color: var(--ash); }
+  #app > .play.v2 .dk-l .sum .t-hp { border-left-color: var(--red-d); color: var(--red-d); font-weight: 700; }
+}
+@media (min-width: 720px) and (min-height: 560px) and (max-height: 760px) {
+  #app > .play.v2 .dk-l .sum { padding: 4px 6px 5px; gap: 2px; } #app > .play.v2 .dk-l .sum > span:not(.sum-h) { font-size: 12px; padding: 1px 5px; } #app > .play.v2 .dk-l .sum .sum-h { display: none; }
+  #app > .play.v2 .uf-por { width: 44px; height: 44px; } #app > .play.v2 .uf-por > i.px { width: 40px; height: 40px; }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -3894,12 +3961,12 @@ function tgName(kind, tg) {
 }
 function sumHTML(pl) {
   const p = myP(), m = mvId(pl), a = actId(pl), A = CLS[p.cls], out = [], needMv = m || (a && CARDS[a].mv);
-  out.push(`<span><b>이동</b>${m ? CARDS[m].n + ' → ' : ''}${pl.dest == null ? (needMv ? '<em>칸을 고르세요</em>' : '제자리') : pl.dest === p.pos ? '제자리' : CN[pl.dest]}</span>`);
+  out.push(`<span class="k-mv${pl.dest == null && needMv ? ' need' : ''}"><b>이동</b>${m ? CARDS[m].n + ' → ' : ''}${pl.dest == null ? (needMv ? '<em>칸을 고르세요</em>' : '제자리') : pl.dest === p.pos ? '제자리' : CN[pl.dest]}</span>`);
   if (a) out.push(`<span class="t-${CARDS[a].t}"><b>행동</b>${CARDS[a].n}${CARDS[a].tg ? ' → ' + tgName(CARDS[a].tg, pl.tg) : ''}</span>`);
   else if (!(pl.ab && A.ab.slot)) out.push('<span class="none"><b>행동</b>없음</span>');
   if (pl.ab) out.push(`<span class="t-ab"><b>능력</b>${A.act[0]}${A.ab.slot && A.ab.tg ? ' → ' + tgName(A.ab.tg, pl.tg) : ''}</span>`);
-  { const hpc = (cost(pl) > p.mana ? 1 : 0) + (pl.ab && p.cls === 'vampire' ? 1 : 0) + (a === 'feast' ? 2 : 0); out.push(`<span><b>마나</b>${Math.min(cost(pl), p.mana)} 사용 / ${p.mana}</span>`); if (hpc) out.push(`<span class="t-hp"><b>체력</b>${hpc} 지불</span>`); }
-  return `<p class="sum" aria-label="계획 요약">${out.join('')}</p>`;
+  { const hpc = (cost(pl) > p.mana ? 1 : 0) + (pl.ab && p.cls === 'vampire' ? 1 : 0) + (a === 'feast' ? 2 : 0); out.push(`<span class="k-mana"><b>마나</b>${Math.min(cost(pl), p.mana)} 사용 / ${p.mana}</span>`); if (hpc) out.push(`<span class="t-hp"><b>체력</b>${hpc} 지불</span>`); }
+  return `<p class="sum" aria-label="계획 요약"><span class="sum-h" aria-hidden="true">이번 턴 계획</span>${out.join('')}</p>`;
 }
 function planDmg(pl) {
   const p = myP(), id = actId(pl), A = CLS[p.cls].ab;
@@ -4007,11 +4074,16 @@ function pips(kind, n, max, spend) {
   return h + '</span>';
 }
 function statHTML(k) {
-  const p = G.P[k], mine = k === seat, pl = curPl();
-  return `<div class="stat"><b>${mine ? '나' : '상대'} · ${CLS[p.cls].n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${CLS[p.cls].n} 설명 보기">설명</button>
-    <span>체력 ${pips('hp', Math.max(0, p.hp), hpMaxOf(p))}</span>
-    <span>마나 ${pips('mp', p.mana, manaMaxOf(p), mine && doc.phase === 'play' && !replaying ? cost(pl) : 0)}</span>
-    <span class="chipr">${chipsOf(p, k)}</span></div>`;
+  const p = G.P[k], mine = k === seat, pl = curPl(), c = CLS[p.cls], hp = Math.max(0, p.hp), hm = hpMaxOf(p), mm = manaMaxOf(p), sp = mine && doc.phase === 'play' && !replaying ? cost(pl) : 0;
+  /* 출시 게임의 유닛 프레임처럼: 초상, 이름, 굵은 체력 막대, 마나 막대, 패시브와 능력(마우스를 대면 설명), 상태 칩 */
+  return `<div class="stat uf ${mine ? 'me' : 'op'} c-${p.cls}${hp <= 1 && doc.phase === 'play' ? ' low' : ''}">
+    <span class="uf-por" aria-hidden="true"><i class="px a-${p.cls}${mine ? '' : ' flip'}"></i></span>
+    <span class="uf-main">
+      <span class="uf-name"><span class="uf-who">${mine ? '나' : '상대'}</span><b>${c.n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${c.n} 설명 보기">설명</button></span>
+      <span class="uf-bar uf-hp" role="img" aria-label="체력 ${hp} / ${hm}"><span class="uf-ic" aria-hidden="true">♥</span>${pips('hp', hp, hm)}<b>${hp}<small>/${hm}</small></b></span>
+      <span class="uf-bar uf-mp" role="img" aria-label="마나 ${p.mana} / ${mm}${sp ? ', 이번 계획에 ' + Math.min(sp, p.mana) + ' 사용' : ''}"><span class="uf-ic" aria-hidden="true">◆</span>${pips('mp', p.mana, mm, sp)}<b>${p.mana}<small>/${mm}</small></b></span>
+      <span class="uf-ks"><span class="uf-k pas" tabindex="0"><em>패시브</em><b>${c.pas[0]}</b><span class="uf-tip" role="tooltip">${hl(c.pas[1])}</span></span><span class="uf-k act" tabindex="0"><em>능력</em><b>${c.act[0]}</b><span class="uf-tip" role="tooltip">${hl(c.act[1])}</span></span></span>
+      <span class="chipr">${chipsOf(p, k)}</span></span></div>`;
 }
 const TAGS = { leap: '내 진영 · 이동', blink: '내 진영 · 이동', guard: '나 자신', parry: '나 자신', scry: '상대 손패', frost: '상대 진영 · 2칸 선택',
   fire: '상대 진영 · 영역 선택', bolt: '상대 진영 · 줄 선택', burst: '상대 진영 · 고정', meteor: '상대 진영 · 안전 줄 선택',
@@ -4207,7 +4279,7 @@ function playHTML() {
         <label class="vol">음량<input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"></label><button type="button" class="btn ghost logb" data-a="logp">기록</button><button type="button" class="btn ghost optb" data-a="ov" data-o="settings">설정</button><button type="button" class="btn ghost" data-a="leave">나가기</button></span></div>
     <div class="arena th-${ARENAS[G.arena] ? G.arena : 'castle'}${G.turn >= COLLAPSE_FROM - 1 ? ' dusk' : ''}"><div class="back" aria-hidden="true"><i class="bl a-bfar"></i>${G.arena === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i></div>
       <div class="field">${sideHTML(seat)}<span class="vs" aria-hidden="true">vs</span>${sideHTML(o)}</div>${abarHTML()}</div>
-    <div class="ctrl">
+      <p class="hint2" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>    <div class="ctrl">
       ${verdict}
       ${tutOn() && !over && !RP ? tutHTML() : ''}
       <p class="hint" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>
@@ -8698,7 +8770,10 @@ function stOverHTML(won) {
     renderer.setSize(W, L, false); rt.setSize(W, L); rtBg.setSize(W, L); bgDirty = true; U.snap.value = L * 0.5;
     camA.aspect = camB.aspect = camM.aspect = vw / vh; camA.updateProjectionMatrix(); camB.updateProjectionMatrix(); camM.updateProjectionMatrix(); if (mode === 'duel' || !mode) fitB();
   }
-  if (window.ResizeObserver) new ResizeObserver(resize).observe(host); else window.addEventListener('resize', resize);
+  /* 그림 버퍼 크기를 바꾸면 캔버스가 지워진다. 다음 그리기(최대 30ms 뒤)까지 검은 화면이 보이지 않게, 크기를 바꾼 그 프레임에 바로 다시 그린다
+     (서랍을 고정하거나 기록을 열어 결투장·지도가 줄어드는 동안 매 프레임 생기던 깜빡임) */
+  const resizeDraw = function () { resize(); if (active && !document.hidden) tick(performance.now(), true); };
+  if (window.ResizeObserver) new ResizeObserver(resizeDraw).observe(host); else window.addEventListener('resize', resizeDraw);
 
   /* --- 테마 --- */
   let theme = '', dusk = 0;
@@ -8817,10 +8892,10 @@ function stOverHTML(won) {
       if (mode === 'map') arena.querySelectorAll('.mnode, .mstart').forEach(function (e) { e.style.left = e.style.top = e.style.visibility = ''; }); }
   }
   new MutationObserver(attach).observe(appEl, { childList: true });
-  function frame(now) {
-    requestAnimationFrame(frame);
+  function frame(now) { requestAnimationFrame(frame); tick(now, false); }
+  function tick(now, force) {
     if (!active && !document.hidden) { const ims = appEl.querySelectorAll('.stall canvas.im, .mystic canvas.im'); if (ims.length) frameShop(now, ims); return; }
-    if (!active || document.hidden || now - last < 30) return;
+    if (!active || document.hidden || (!force && now - last < 30)) return;
     const gap = now - last, dt = Math.min(0.1, gap / 1000); last = now;
     /* 느린 기기: 프레임 간격이 계속 길면 배경 갱신을 줄이고, 화질을 직접 고르지 않았다면 한 단계 낮춘다 */
     if (gap < 400) { slowSum += gap; if (++slowN >= 45) { if (slowSum / slowN > 55 && slowLv < 3) { slowLv++; if (slowLv === 2 && !qualUser && qual !== 'lo') { qual = 'lo'; qBtn.textContent = '화질 ' + QL[qual][1]; resize(); } else bgEvery = Math.min(16, bgEvery * 2); } slowN = 0; slowSum = 0; } }
