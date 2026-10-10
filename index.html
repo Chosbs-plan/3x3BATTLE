@@ -1622,6 +1622,139 @@ html[lang=en] .play .hand .card .nm { font-size: 11px; }
 }
 @media (max-height: 460px) and (orientation: landscape) { .gate.stmap.scn { max-width: none; } .scene { grid-template-columns: 240px minmax(0, 1fr); padding: 10px; } .sc-art { min-height: 0; } }
 .a3on .smap .a3 canvas { touch-action: pan-y; }
+/* ===== 스테이지 화면 틀: 지도는 가득, 위 띠(HUD), 좌우 서랍 ===== */
+#app:has(> .sm2) { max-width: none; padding: 0; }
+.gate.stmap.sm2 { display: flex; flex-direction: column; gap: 0; height: 100%; }
+/* 위 띠 */
+.sm-hud { flex: none; position: relative; z-index: 6; display: flex; align-items: center; gap: 10px 18px; padding: max(8px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 8px max(14px, env(safe-area-inset-left, 0px));
+  background: var(--paper); border-bottom: 2px solid var(--sil); box-shadow: 0 3px 0 var(--line); }
+.hud-me { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.hud-me > i.px { width: 40px; height: 40px; flex: none; }
+.hud-me .cap { margin: 0; font-size: 11px; line-height: 1.2; } .hud-me b { font-size: 17px; line-height: 1.2; white-space: nowrap; }
+.hud-st { display: flex; align-items: center; gap: 6px; }
+.hs { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; background: var(--wash); border: 2px solid var(--line); font: inherit; color: var(--sil); white-space: nowrap; }
+.hs b { font-size: 16px; font-variant-numeric: tabular-nums; } .hs b small { font-size: 11px; color: var(--ash); font-weight: 400; }
+.hs .pxi { width: 15px; height: 15px; flex: none; }
+.hs-hp .pxi { color: var(--red); } .hs-hp .pips i { width: 8px; height: 14px; }
+.hs-gold .coin { scale: 1.25; }
+.hs-deck .pxi { color: var(--blue-d); } .hs-rl .pxi { color: var(--sand-d); }
+button.hs { cursor: pointer; } button.hs:hover, button.hs:focus-visible { border-color: var(--sil); background: var(--paper); }
+.hud-acts { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; align-items: center; gap: 0; }
+.hud-acts li { display: flex; align-items: center; gap: 6px; padding: 4px 10px; color: var(--ash); font-size: 13px; white-space: nowrap; position: relative; }
+.hud-acts li + li::before { content: ''; position: absolute; left: -8px; width: 14px; height: 2px; background: var(--line); }
+.hud-acts li + li { margin-left: 14px; }
+.hud-acts li.on { color: var(--sil); background: var(--tint, var(--wash)); box-shadow: inset 0 0 0 2px var(--sil); font-weight: 700; }
+.hud-acts li.past { color: var(--green-d); } .hud-acts li.past b::after { content: ' ✓'; }
+.hud-acts li.th-forest { --tint: #e3eedb; } .hud-acts li.th-snow { --tint: #e2ecf7; } .hud-acts li.th-desert { --tint: #f6e6c8; } .hud-acts li.th-castle { --tint: #e9e4e2; }
+.adots { display: inline-flex; gap: 3px; margin-left: 2px; }
+.adots i { width: 7px; height: 7px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--ash); }
+.adots i.f { background: var(--sil); box-shadow: none; } .adots i.b { width: 9px; height: 9px; box-shadow: inset 0 0 0 2px var(--amber-d); } .adots i.b.f { background: var(--amber); }
+.hud-btn { display: flex; gap: 6px; } .hud-btn .btn { white-space: nowrap; min-height: 34px; padding: 4px 12px; font-size: 13px; box-shadow: inset 0 0 0 2px var(--sil); }
+.hud-btn .quitb.warn { background: var(--red); color: #fff; box-shadow: none; }
+/* 지도 무대: 고정된 서랍만큼 지도가 비켜 준다 */
+.sm-stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; --dl: min(340px, 30vw); --dr: min(360px, 32vw); }
+.sm2 .smap, .a3on .sm2 .smap { position: absolute; inset: 0; height: auto; border: 0; box-shadow: none; transition: left .28s ease, right .28s ease; }
+.sm-stage.pin-l .smap { left: var(--dl); } .sm-stage.pin-r .smap { right: var(--dr); }
+.sm2 .mleg { position: absolute; left: 10px; bottom: 10px; z-index: 3; margin: 0; max-width: calc(100% - 140px); padding: 5px 10px; gap: 3px 12px; background: rgba(255, 255, 255, .86); border: 2px solid var(--line); color: var(--sil); }
+.sm2 .mleg .pxi { position: static; width: 14px; height: 14px; }
+.sm2 .mleg .k-elite, .sm2 .mleg .k-boss { color: var(--amber-d); } .sm2 .mleg .k-rest { color: var(--ember); } .sm2 .mleg .k-treasure { color: var(--sand-d); } .sm2 .mleg .k-shop { color: var(--amber-d); } .sm2 .mleg .k-event { color: var(--teal-d); }
+.sm-hint { position: absolute; left: 50%; top: 12px; translate: -50% 0; z-index: 3; margin: 0; padding: 6px 14px; background: var(--sil); color: var(--paper); font-size: 14px; font-weight: 700; white-space: nowrap; box-shadow: 3px 3px 0 var(--red); pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) { .sm-hint { animation: hintb 1.6s steps(2) infinite; } }
+@keyframes hintb { 50% { translate: -50% 2px; } }
+.sm2 .smap .mnode.av .ml { background: var(--red); border-color: var(--red); color: #fff; }
+.a3on .sm2 .smap .mnode .ml { font-size: 14px; padding: 2px 8px; }
+/* 서랍 */
+.sdr { position: absolute; top: 0; bottom: 0; z-index: 5; width: var(--dw); display: flex; transition: translate .26s ease .22s; }
+.sdr-l { left: 0; --dw: var(--dl, min(340px, 86vw)); translate: -100% 0; }
+.sdr-r { right: 0; --dw: var(--dr, min(360px, 86vw)); translate: 100% 0; flex-direction: row-reverse; }
+.sdr.open { translate: 0 0; transition-delay: 0s; }
+@media (hover: hover) { .sdr:hover, .sdr:focus-within { translate: 0 0; transition-delay: 0s; } }
+.sdr-in { flex: 1 1 auto; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; gap: 12px; padding: 12px 14px 16px; background: var(--paper); border: 0 solid var(--sil); }
+.sdr-l .sdr-in { border-right-width: 2px; box-shadow: 4px 0 0 rgba(90, 70, 68, .18); } .sdr-r .sdr-in { border-left-width: 2px; box-shadow: -4px 0 0 rgba(90, 70, 68, .18); }
+/* 손잡이: 서랍 바깥으로 튀어나온 책갈피. 그 옆 가는 띠에 마우스를 대도 열린다 */
+.sdr-tab { position: absolute; top: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 34px; padding: 8px 0 10px; background: var(--paper); color: var(--sil); border: 2px solid var(--sil); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.sdr-l .sdr-tab { left: 100%; border-left: 0; box-shadow: 3px 3px 0 var(--line); } .sdr-r .sdr-tab { right: 100%; border-right: 0; box-shadow: -3px 3px 0 var(--line); }
+.sdr-tab:hover, .sdr-tab:focus-visible { background: var(--wash); }
+.sdr-r .sdr-tab { color: var(--red); }
+.sdr-tx { writing-mode: vertical-rl; letter-spacing: 2px; white-space: nowrap; }
+.sdr-tab .sdr-ic { width: 26px; height: 26px; display: grid; place-items: center; } .sdr-tab .sdr-ic .pxi { width: 18px; height: 18px; } .sdr-tab i.sdr-ic { display: block; }
+.sdr::after { content: ''; position: absolute; top: 0; bottom: 0; width: 14px; }
+.sdr-l::after { left: 100%; } .sdr-r::after { right: 100%; }
+.sdr.open .sdr-tab { background: var(--sil); color: var(--paper); }
+.sdr-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--sil); }
+.sdr-hd b { font-size: 15px; }
+.sdr-pin { font: inherit; font-size: 12px; min-height: 28px; padding: 2px 10px; background: var(--paper); color: var(--sil); border: 2px solid var(--sil); cursor: pointer; }
+.sdr-pin:hover { background: var(--wash); }
+.sdr h3 { margin: 0; font-size: 20px; line-height: 1.25; } .sdr h4 { margin: 0; } .sdr p { margin: 0; }
+/* 내 상태 */
+.sb-me { display: flex; gap: 10px; align-items: center; } .sb-me > i.px { width: 64px; height: 64px; flex: none; background-color: var(--wash); box-shadow: inset 0 -4px 0 var(--ac, var(--line)); }
+.sd-kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; align-items: center; }
+.sd-kv dt { color: var(--ash); } .sd-kv dd { margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; } .sd-kv b { font-size: 15px; }
+.sb-sec { display: grid; gap: 6px; }
+.sb-sec h4 { display: flex; align-items: center; gap: 6px; font-size: 14px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.sb-sec h4 .pxi { width: 14px; height: 14px; color: var(--sand-d); } .sb-sec h4 span { color: var(--ash); font-weight: 400; } .sb-sec h4 small { margin-left: auto; color: var(--ash); font-size: 11px; font-weight: 400; }
+.sb-sec:last-child h4 .pxi { color: var(--blue-d); }
+.sb-rl { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sb-rl li { display: grid; gap: 1px; padding: 6px 9px; background: var(--wash); border-left: 4px solid var(--sand); }
+.sb-rl li.abup { border-left-color: var(--amber); } .sb-rl li span { font-size: 12px; color: var(--sil); opacity: .85; }
+.sb-deck { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.sb-deck li { position: relative; display: flex; align-items: center; gap: 8px; min-height: 28px; padding: 2px 8px 2px 4px; background: var(--wash); border-left: 4px solid var(--line); flex-wrap: wrap; outline: none; }
+.sb-deck li.k-move { border-left-color: var(--blue); } .sb-deck li.k-atk { border-left-color: var(--red); } .sb-deck li.k-sp { border-left-color: var(--amber); } .sb-deck li.k-relic { border-left-color: var(--sand); background: #fbf4e7; }
+.sb-deck .cost { flex: none; width: 20px; height: 20px; display: grid; place-items: center; background: var(--blue); color: #fff; font-size: 12px; }
+.sb-deck .nm { flex: 1 1 auto; min-width: 0; } .sb-deck em { font-style: normal; color: var(--ash); } .sb-deck .nw { font-style: normal; font-size: 11px; font-weight: 700; color: #fff; background: var(--green); padding: 0 4px; }
+.sb-deck li.add { box-shadow: inset 0 0 0 1px var(--green); }
+.sb-deck .ds { display: none; flex-basis: 100%; padding: 2px 0 4px 28px; font-size: 12px; line-height: 1.45; }
+.sb-deck li:hover, .sb-deck li:focus-visible { background: var(--paper); box-shadow: inset 0 0 0 2px var(--sil); } .sb-deck li:hover .ds, .sb-deck li:focus-visible .ds { display: block; }
+@media (hover: none) { .sb-tip { display: none; } .sb-deck li:focus .ds { display: block; } }
+/* 다음 장소 */
+.sd-info { display: grid; gap: 12px; align-content: start; }
+.sd-kind { display: flex; align-items: center; gap: 6px; font-weight: 700; } .sd-kind .pxi { width: 16px; height: 16px; }
+.sd-kind.k-elite, .sd-kind.k-boss, .sd-kind.k-shop { color: var(--amber-d); } .sd-kind.k-fight { color: var(--red); } .sd-kind.k-rest { color: var(--ember); } .sd-kind.k-treasure { color: var(--sand-d); } .sd-kind.k-event { color: var(--teal-d); }
+.sd-foe { display: flex; gap: 12px; align-items: center; padding: 10px; background: var(--wash); border: 2px solid var(--line); }
+.sd-foe > i.px { width: 88px; height: 88px; flex: none; }
+.sd-info.boss .sd-foe { border-color: var(--amber); box-shadow: 4px 4px 0 var(--amber); }
+.sd-foe.k-rest .st-ic { color: var(--ember); } .sd-foe.k-treasure .st-ic { color: var(--sand-d); } .sd-foe.k-shop .st-ic { color: var(--amber-d); } .sd-foe.k-event .st-ic { color: var(--teal-d); }
+.sd-rw { display: grid; gap: 4px; } .sd-rw ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sd-rw li { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; background: var(--wash); border: 1px solid var(--line); }
+.sd-rw li .pxi { width: 13px; height: 13px; }
+.sd-info .btn.big { width: 100%; margin-top: 4px; position: sticky; bottom: 0; z-index: 1; box-shadow: 0 -10px 0 var(--paper), 3px 3px 0 var(--line); }
+.sd-boss { display: grid; gap: 6px; padding: 10px; border: 2px dashed var(--amber); background: #fffaf0; }
+.sd-boss .st-row > i { width: 56px; height: 56px; } .sd-boss h4 { font-size: 16px; }
+.sd-score { font-size: 15px; } .sd-score b { font-size: 34px; color: var(--red); margin-right: 2px; }
+/* 보상·상점·장면 화면도 같은 왼쪽 서랍을 쓴다 */
+.gate.stmap:not(.sm2) { position: relative; }
+.gate.stmap:not(.sm2) > .sdr { --dw: min(340px, 86vw); }
+#app:has(> .stmap:not(.sm2)) { padding-left: max(46px, env(safe-area-inset-left, 0px)); }
+/* 이 화면들의 상자는 넘침을 감추므로 서랍은 창에 붙인다 */
+.gate.stmap:not(.sm2) > .sdr { position: fixed; z-index: 30; }
+.sm2 .a3-on { top: auto; bottom: 10px; right: 10px; }
+@media (min-width: 1200px) { .gate.stmap:has(> .stall) { grid-template-columns: minmax(0, 1fr); } }
+/* 좁은 화면: 서랍은 지도를 밀지 않고 덮는다. 오른쪽 정보는 아래에서 올라오는 판 */
+@media (max-width: 719px) {
+  .sm-hud { flex-wrap: wrap; gap: 6px 8px; padding-top: max(6px, env(safe-area-inset-top, 0px)); padding-bottom: 6px; padding-inline: 10px; }
+  .hud-me > i.px { width: 30px; height: 30px; } .hud-me .cap { display: none; } .hud-me b { font-size: 15px; }
+  .hud-st { gap: 4px; margin-left: auto; } .hs { height: 30px; padding: 0 6px; gap: 4px; } .hs b { font-size: 14px; } .hs-hp .pips { display: none; }
+  .hud-acts { order: 3; margin: 0; flex: 1 1 auto; } .hud-acts li { padding: 2px 6px; font-size: 12px; } .hud-acts li:not(.on) .an { display: none; } .hud-acts li + li { margin-left: 8px; } .hud-acts li + li::before { width: 8px; left: -6px; }
+  .hud-btn { order: 4; } .hud-btn .btn { min-height: 30px; padding: 2px 8px; font-size: 12px; }
+  .sm-stage { --dl: min(320px, 84vw); --dr: auto; }
+  .sm-stage.pin-l .smap, .sm-stage.pin-r .smap { left: 0; right: 0; }
+  .sdr-r { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 62%; flex-direction: column-reverse; translate: 0 100%; }
+  .sdr-r.open { translate: 0 0; } @media (hover: hover) { .sdr-r:hover, .sdr-r:focus-within { translate: 0 0; } }
+  .sdr-r .sdr-in { border-left-width: 0; border-top-width: 2px; box-shadow: 0 -4px 0 rgba(90, 70, 68, .18); }
+  .sdr-r .sdr-tab { position: absolute; right: 12px; top: auto; bottom: 100%; flex-direction: row; width: auto; padding: 4px 12px; border: 2px solid var(--sil); border-bottom: 0; box-shadow: none; }
+  .sdr-r .sdr-tx { writing-mode: horizontal-tb; letter-spacing: 0; } .sdr-r::after { display: none; }
+  .sdr-r .sdr-tab .sdr-ic { width: 18px; height: 18px; }
+  .sd-foe > i.px { width: 60px; height: 60px; } .sdr h3 { font-size: 17px; }
+  .sm2 .mleg { display: none; } .sm-hint { font-size: 12px; top: 8px; padding: 4px 10px; white-space: normal; text-align: center; width: max-content; max-width: calc(100% - 100px); }
+  .a3on .sm2 .smap .mnode .ml { font-size: 12px; padding: 1px 5px; }
+}
+@media (max-height: 460px) and (orientation: landscape) {
+  .sm-hud { padding-block: 4px; gap: 8px; } .hud-me > i.px { width: 28px; height: 28px; } .hud-me > div { display: none; } .hs { height: 28px; padding: 0 6px; gap: 4px; } .hs b { font-size: 14px; } .hs-hp .pips { display: none; }
+  .hud-acts li { padding: 2px 6px; font-size: 12px; } .hud-acts li:not(.on) .an { display: none; } .hud-acts li + li { margin-left: 8px; } .hud-acts li + li::before { width: 8px; left: -6px; }
+  .hud-btn .btn { min-height: 28px; padding: 2px 8px; font-size: 12px; white-space: nowrap; }
+  .sd-foe { padding: 6px; } .sd-foe > i.px { width: 52px; height: 52px; } .sdr h3 { font-size: 16px; } .sdr-in { gap: 8px; padding-top: 8px; }
+  .sm2 .mleg { display: none; }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -6849,7 +6982,7 @@ const stLab = () => { const n = stCurNode(); return L(`${run.act + 1}막 · ${n 
 const stFoot = () => (run && run.map && stCurNode() ? ` ${stLab()} · ${L('봇', 'Bot')} ${TR(BOTS[stLv()][0])}` : '');
 function stDone() {
   const c = run.cur; if (!c) return; const n = stNode(c.r, c.c);
-  run.path.push(run.act + '-' + c.r + '-' + c.c); run.row = c.r; run.col = c.c; run.cur = null; run.sel = null; run.scene = null; run.shop = null;
+  stDr.r = false; run.path.push(run.act + '-' + c.r + '-' + c.c); run.row = c.r; run.col = c.c; run.cur = null; run.sel = null; run.scene = null; run.shop = null;
   if (n.t === 'boss') { run.act += 1; run.row = -1; run.col = 0; if (run.act >= run.map.length) { run.act = run.map.length - 1; run.cleared = true; } }
   stSave();
 }
@@ -6905,7 +7038,7 @@ function rewardHTML() {
       : `<div class="mcards">${(o.cards || []).map((id, i) => mcardHTML(id, i).replace('class="mcard', (i === o.spoil ? `data-rb="${L('전리품', 'Spoils')}" ` : '') + 'class="mcard' + (i === o.spoil ? ' spoil' : ''))).join('')}</div>
         <p class="my-note">${o.spoil === 0 ? L(`첫 장은 방금 쓰러뜨린 ${fn}의 카드입니다. `, `The first card belongs to the ${TR(fn)} you just beat. `) : ''}${L('고른 카드는 남은 판 내내 덱에 섞입니다.', 'The card you pick stays in your deck for the rest of the run.')}</p>
         <div class="my-skip"><button type="button" class="btn ghost" data-a="rcard" data-i="">${L('고르지 않고 지나간다', 'Skip without picking')}</button></div>`}</div>
-    <div class="panel st-me c-${run.cls}"><p class="cap">${L('내 상태', 'My status')} · ${CLS[run.cls].n}</p>${stStatus()}</div></div>`;
+    ${stBag()}</div>`;
 }
 /* 상점 */
 function openShop() {
@@ -6945,20 +7078,11 @@ function shopHTML() {
         ${s.relic ? goods('relic', 'r', s.relic, rlName(s.relic), rlDesc(s.relic), price3('relic')) : ''}
         ${s.pass.map(k => goods('pass', k, k === 'spring' ? 'mana' : k, rlName(k), `${rlDesc(k)}.<br>${L('남은 도전 내내 유지됩니다.', 'Lasts for the rest of the run.')}`, price3('pass'))).join('')}</div>
       <div class="st-foot"><button type="button" class="btn woodb" data-a="shopout">${L('가판대를 떠난다', 'Leave the stall')}</button><span>${L('떠나면 다시 돌아올 수 없습니다.', "You can't come back once you leave.")}</span></div></div>
-    <div class="panel st-me c-${run.cls}"><p class="cap">${L('내 상태', 'My status')} · ${CLS[run.cls].n}</p>${stStatus()}</div></div>`;
+    ${stBag()}</div>`;
 }
 /* 내 덱(뺀 카드를 덜어낸 것) */
 function stDeck() { const d = [...(CLS[run.cls].common || COMMON), ...CLS[run.cls].deck, ...(run.cards || [])]; (run.cut || []).forEach(id => { const i = d.indexOf(id); if (i >= 0) d.splice(i, 1); }); return d; }
 function stCut(id) { const i = (run.cards || []).indexOf(id); if (i >= 0) run.cards.splice(i, 1); else run.cut.push(id); }
-function stStatus() {
-  const rl = run.rl.map(k => `<span class="chip" title="${esc(L(RL[k][1], RL[k][3]))}">${rlName(k)}</span>`).join('') + (run.abup ? `<span class="chip abup" title="${esc(L(ABUP[1], ABUP[3]))}">${L(ABUP[0], ABUP[2])}</span>` : '');
-  const cnt = {}; (run.cards || []).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; });
-  const cards = Object.keys(cnt).map(id => `<span class="chip" title="${esc(CARDS[id].d)}">${CARDS[id].n}${cnt[id] > 1 ? ' ×' + cnt[id] : ''}</span>`).join('');
-  const none = `<span class="cap">${L('없음', 'None')}</span>`;
-  return `<p>${L('체력', 'HP')} ${pips('hp', run.hp, run.maxHp)} <b>${run.hp} / ${run.maxHp}</b> · ${L('금화', 'Gold')} ${GOLD}<b>${run.gold}</b> · ${L(`누적 ${run.turns}턴`, `${run.turns} turns so far`)}</p>
-    <p class="cap">${L('유물', 'Relics')}</p><p class="chipr">${rl || none}</p>
-    <p class="cap">${L(`덱 ${stDeck().length}장 · 더한 카드 ${(run.cards || []).length}장${(run.cut || []).length ? ' · 뺀 카드 ' + run.cut.length + '장' : ''}`, `Deck ${stDeck().length} · added ${(run.cards || []).length}${(run.cut || []).length ? ' · removed ' + run.cut.length : ''}`)}</p><p class="chipr">${cards || none}</p>`;
-}
 /* 쉼터·사건·보물: 선택지를 고르면 결과 한 줄을 보여 주고 지도로 돌아간다 */
 const EVT = {
   gamble: ['도박사의 내기', '길가에 천막을 친 도박사가 동전을 튕긴다. "금화 3, 앞면이면 두 배로 돌려주지."', "The Gambler's Wager", 'A gambler under a roadside tent flips a coin. "Three Gold. Heads, I pay you double."'],
@@ -7022,7 +7146,74 @@ function sceneHTML() {
   const npc = sc.t === 'event' ? ({ gamble: 'gambler', grave: 'grave', herb: 'druid', vamp: 'vampire', hunter: 'hunter', forge: '', cart: '', mirror: '' })[sc.ev] || '' : '', th = run.map[run.act].ar;
   return `<div class="gate stmap scn"><div class="gate-top"><div><p class="cap">${L('스테이지 모드', 'Stage Mode')} · ${stLab()}</p><h2>${title}</h2></div><p class="stgold">${L('금화', 'Gold')} ${GOLD}<b>${run.gold}</b></p></div>
     <div class="scene sc-${sc.t}"><div class="sc-art th-${th}" data-sc="${sc.t === 'event' ? sc.ev : sc.t}" aria-hidden="true"><span class="sc-2d">${npc ? `<i class="px a-${npc} flip sc-npc"></i>` : pxi(sc.t)}<i class="px a-${run.cls} sc-hero"></i></span></div><div class="sc-body"><p class="sc-text">${text}</p>${body}</div></div>
-    <div class="panel st-me c-${run.cls}"><p class="cap">${L('내 상태', 'My status')} · ${CLS[run.cls].n}</p>${stStatus()}</div></div>`;
+    ${stBag()}</div>`;
+}
+/* ===== 스테이지 화면 틀: 위 띠(HUD)와 좌우 서랍 =====
+   지도는 화면을 가득 채우고, 내 상태(왼쪽)와 고른 곳 정보(오른쪽)는 가장자리에서 밀려 나온다.
+   마우스를 대면 잠깐 보이고(엿보기), 손잡이를 누르면 열린 채로 고정된다. 고정하면 지도가 그만큼 비켜 준다 */
+Object.assign(PXI, {
+  heart: ['...........', '.###...###.', '#####.#####', '###########', '###########', '###########', '.#########.', '..#######..', '...#####...', '....###....', '.....#.....'],
+  deck: ['...#######.', '...#.....#.', '.#######.#.', '.#.....#.#.', '.#.###.#.#.', '.#.....#.#.', '.#.###.#.#.', '.#.....#.#.', '.#.....###.', '.#.....#...', '.#######...'],
+  relic: ['...........', '..#######..', '.##.#.#.##.', '###########', '.#.......#.', '..#.....#..', '...#...#...', '....#.#....', '.....#.....', '...........', '...........'],
+});
+let stDr = { l: false, r: false }, stDrShown = { l: false, r: false };
+/* 새로 그린 서랍은 이전 상태로 두었다가 다음 프레임에 바꿔야 미끄러지는 움직임이 보인다 */
+function stDrSync() {
+  ['l', 'r'].forEach(s => {
+    const el = document.querySelector('#app .sdr-' + s); if (!el) return; void el.offsetWidth;
+    el.classList.toggle('open', stDr[s]); el.querySelectorAll('[data-sdr]').forEach(b => b.setAttribute('aria-expanded', stDr[s]));
+    const pin = el.querySelector('.sdr-pin'); if (pin) pin.textContent = stDr[s] ? L('닫기', 'Close') : L('고정', 'Pin');
+    const st = el.closest('.sm-stage'); if (st) st.classList.toggle('pin-' + s, stDr[s]);
+    stDrShown[s] = stDr[s];
+  });
+}
+function stDrawer(s, title, ic, body) {
+  requestAnimationFrame(stDrSync);
+  return `<aside class="sdr sdr-${s}${stDrShown[s] ? ' open' : ''}" aria-label="${esc(title)}">
+    <button type="button" class="sdr-tab" data-sdr="${s}" aria-expanded="${stDrShown[s]}" aria-controls="sdr-${s}">${ic}<span class="sdr-tx">${title}</span></button>
+    <div class="sdr-in" id="sdr-${s}"><div class="sdr-hd"><b>${title}</b><button type="button" class="sdr-pin" data-sdr="${s}" aria-expanded="${stDrShown[s]}">${stDrShown[s] ? L('닫기', 'Close') : L('고정', 'Pin')}</button></div>${body}</div></aside>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-sdr]'); if (!b || !run) return;
+  const s = b.dataset.sdr; stDr[s] = !stDr[s]; if (stDr[s] && window.matchMedia && matchMedia('(max-width: 719px)').matches) stDr[s === 'l' ? 'r' : 'l'] = false;
+  SND.play('tap'); stDrSync();
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape' || !document.querySelector('#app .sdr') || !(stDr.l || stDr.r)) return;
+  const inf = document.getElementById('info'); if (inf && !inf.hidden) return;
+  stDr.l = stDr.r = false; stDrSync();
+});
+/* 위 띠: 직업, 체력, 금화, 덱과 유물(누르면 왼쪽 서랍), 막 진행, 포기와 나가기 */
+function stHud() {
+  const act = run.map[run.act], n = act.rows.length, prog = run.cleared ? n : run.row + 1;
+  const acts = run.map.map((m, i) => { const past = i < run.act || run.cleared, on = i === run.act && !run.cleared;
+    return `<li class="th-${m.ar}${past ? ' past' : ''}${on ? ' on' : ''}"${on ? ' aria-current="step"' : ''}><b>${L(`${i + 1}막`, `Act ${i + 1}`)}</b><span class="an">${L(ARENAS[m.ar] || m.ar, TR(ARENAS[m.ar] || m.ar))}</span>${on ? `<span class="adots" role="img" aria-label="${L(`${n}걸음 가운데 ${prog}걸음`, `Step ${prog} of ${n}`)}">${Array.from({ length: n }, (_, k) => `<i class="${k < prog ? 'f' : ''}${k === n - 1 ? ' b' : ''}"></i>`).join('')}</span>` : ''}</li>`; }).join('');
+  return `<header class="sm-hud">
+    <div class="hud-me c-${run.cls}"><i class="px a-${run.cls}" aria-hidden="true"></i><div><p class="cap">${L('스테이지 모드', 'Stage Mode')}</p><b>${CLS[run.cls].n}</b></div></div>
+    <div class="hud-st">
+      <span class="hs hs-hp" title="${L('체력', 'HP')}">${pxi('heart')}${pips('hp', run.hp, run.maxHp)}<b>${run.hp}<small>/${run.maxHp}</small></b></span>
+      <span class="hs hs-gold" title="${L('금화', 'Gold')}">${GOLD}<b>${run.gold}</b></span>
+      <button type="button" class="hs hs-deck" data-sdr="l" aria-label="${L(`덱 ${stDeck().length}장 보기`, `View deck, ${stDeck().length} cards`)}">${pxi('deck')}<b>${stDeck().length}</b></button>
+      <button type="button" class="hs hs-rl" data-sdr="l" aria-label="${L(`유물 ${run.rl.length}개 보기`, `View relics, ${run.rl.length}`)}">${pxi('relic')}<b>${run.rl.length + (run.abup ? 1 : 0)}</b></button>
+    </div>
+    <ol class="hud-acts" aria-label="${L('막', 'Acts')}">${acts}</ol>
+    <div class="hud-btn">${run.cleared ? '' : `<button type="button" class="btn ghost quitb${run.quit ? ' warn' : ''}" data-a="stquit">${run.quit ? L('한 번 더 누르면 포기', 'Tap again to give up') : L('포기', 'Give up')}</button>`}<button type="button" class="btn ghost" data-a="leave">${L('저장하고 나가기', 'Save & leave')}</button></div>
+  </header>`;
+}
+/* 왼쪽 서랍: 내 상태. 유물은 설명까지 늘 보이고, 덱은 종류와 마나 순으로 묶는다 */
+function stBag() {
+  const c = CLS[run.cls], cnt = {}, add = {}, ord = { move: 0, atk: 1, sp: 2 }, d = stDeck();
+  d.forEach(id => { cnt[id] = (cnt[id] || 0) + 1; }); (run.cards || []).forEach(id => { add[id] = (add[id] || 0) + 1; });
+  const ids = Object.keys(cnt).sort((a, b) => (CARDS[a].relic ? 1 : 0) - (CARDS[b].relic ? 1 : 0) || (ord[CARDS[a].t] || 0) - (ord[CARDS[b].t] || 0) || CARDS[a].c - CARDS[b].c);
+  const rls = run.rl.map(k => `<li><b>${rlName(k)}</b><span>${L(RL[k][1], RL[k][3])}</span></li>`).join('') + (run.abup ? `<li class="abup"><b>${L(ABUP[0], ABUP[2])}</b><span>${L(ABUP[1], ABUP[3])}</span></li>` : '');
+  const deck = ids.map(id => { const k = CARDS[id]; return `<li class="k-${k.relic ? 'relic' : k.t}${add[id] ? ' add' : ''}" tabindex="0"><b class="cost" aria-label="${L('마나', 'Mana')} ${k.c}">${k.c}</b><span class="nm">${k.n}</span>${cnt[id] > 1 ? `<em>×${cnt[id]}</em>` : ''}${add[id] ? `<i class="nw" title="${L('이번 도전에서 더한 카드', 'Added this run')}">+${add[id]}</i>` : ''}<span class="ds">${hl(k.d)}</span></li>`; }).join('');
+  const body = `<div class="sb-me c-${run.cls}"><i class="px a-${run.cls}" aria-hidden="true"></i><div><h3>${c.n}</h3><p class="cap">${c.tag}</p></div></div>
+    <dl class="sd-kv sb-kv"><dt>${L('체력', 'HP')}</dt><dd>${pips('hp', run.hp, run.maxHp)} <b>${run.hp} / ${run.maxHp}</b></dd><dt>${L('금화', 'Gold')}</dt><dd>${GOLD}<b>${run.gold}</b></dd>
+      <dt>${L('이긴 결투', 'Duels won')}</dt><dd><b>${run.fights || 0}</b>${run.elite ? ` <span class="cap">(${L('정예', 'elite')} ${run.elite})</span>` : ''}</dd><dt>${L('누적 턴', 'Turns')}</dt><dd><b>${run.turns}</b></dd></dl>
+    <section class="sb-sec"><h4>${pxi('relic')}${L('유물', 'Relics')} <span>${run.rl.length + (run.abup ? 1 : 0)}</span></h4>${rls ? `<ul class="sb-rl">${rls}</ul>` : `<p class="cap">${L('아직 없습니다. 정예·보스·보물·상점에서 얻습니다.', 'None yet. Elites, bosses, treasure and shops give relics.')}</p>`}</section>
+    <section class="sb-sec"><h4>${pxi('deck')}${L('덱', 'Deck')} <span>${d.length}${L('장', '')}</span>${(run.cards || []).length || (run.cut || []).length ? `<small>${L(`더함 ${(run.cards || []).length}${(run.cut || []).length ? ' · 뺌 ' + run.cut.length : ''}`, `+${(run.cards || []).length}${(run.cut || []).length ? ' · −' + run.cut.length : ''}`)}</small>` : ''}</h4>
+      <ul class="sb-deck">${deck}</ul><p class="cap sb-tip">${L('카드에 마우스를 대면 설명이 나옵니다.', 'Hover a card to read it.')}</p></section>`;
+  return stDrawer('l', L('내 상태', 'My status'), `<i class="px a-${run.cls} sdr-ic" aria-hidden="true"></i>`, body);
 }
 /* 지도 */
 const MX = [13, 28, 43, 58, 73, 90], MY = { 3: [19, 50, 81], 2: [34, 66], e: [19, 60], 1: [50] };
@@ -7043,39 +7234,47 @@ function stageMapHTML() {
     const lab = show ? CLS[n.foe].n : nodeN(n.t);
     return `<button type="button" class="mnode k-${n.t}${a ? ' av' : ''}${d ? ' done' : ''}${here ? ' here' : ''}${s ? ' sel' : ''}${off(r, c) ? ' off' : ''}" style="--x:${x}%;--y:${y}%" data-a="stnode" data-r="${r}" data-c="${c}" data-to="${(n.to || []).join(',')}" data-y="${y}" ${a ? '' : 'disabled'} aria-pressed="${!!s}" aria-label="${nodeN(n.t)}${show ? ' · ' + CLS[n.foe].n : ''}${d ? L(' · 지나옴', ' · visited') : a ? L(' · 갈 수 있음', ' · reachable') : ''}">
       ${here ? `<i class="px a-${run.cls} hero" aria-hidden="true"></i>` : ''}<span class="mt">${show ? `<i class="px a-${n.foe}${d ? '-ko' : ''} flip" aria-hidden="true"></i><span class="badge">${pxi(n.t)}</span>` : pxi(n.t)}</span><span class="ml">${lab}</span></button>`; };
-  const tabs = run.map.map((m, i) => `<li class="th-${m.ar}${i === run.act ? ' on' : ''}${i < run.act || run.cleared ? ' past' : ''}"><b>${L(`${i + 1}막`, `Act ${i + 1}`)}</b><span>${ARENAS[m.ar] || m.ar}</span></li>`).join('');
-  const sn = sel ? stNode(sel[0], sel[1]) : null, rec = stageRec3();
+  const sn = sel ? stNode(sel[0], sel[1]) : null, rec = stageRec3(), ar = n => L(ARENAS[n] || n, TR(ARENAS[n] || n));
+  /* 오른쪽 서랍: 고른 곳의 정보. 아무것도 안 골랐으면 안내와 이번 막의 보스 */
   let info;
-  if (run.cleared) info = `<div class="panel st-foe"><p class="cap">${L('결과', 'Result')}</p><h3>${L(`${CLS[run.cls].n}(으)로 세 막을 모두 돌파 · ${run.score}점`, `Cleared all three acts as ${TR(CLS[run.cls].n)} · ${run.score} pts`)}</h3>
-      <p>${L(`결투 ${run.fights}판(정예 ${run.elite}) · ${run.turns}턴 · 남은 체력 ${run.hp} · 금화 ${run.gold}`, `${run.fights} duels (${run.elite} elite) · ${run.turns} turns · HP left ${run.hp} · Gold ${run.gold}`)}</p>
-      <p class="cap">${rec[run.cls] === run.score ? L('이 직업의 최고 점수입니다.', 'Your best score with this class.') : L(`이 직업의 최고 점수는 ${rec[run.cls]}점입니다.`, `Your best with this class is ${rec[run.cls]} pts.`)} ${L('점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수', 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns')}</p>
-      <button type="button" class="btn red big" data-a="strestart">${L('다른 직업으로 다시 도전', 'Try again with another class')}</button></div>`;
-  else if (!sn) info = `<div class="panel st-foe"><p class="cap">${L('다음 장소', 'Next stop')}</p><h3>${L('갈 곳을 고르세요', 'Choose where to go')}</h3><p>${L('붉게 표시된 칸 가운데 하나로 갈 수 있습니다. 지나온 길로는 돌아갈 수 없습니다.', 'You can move to any tile marked in red. There is no going back.')}</p>
-      <p class="cap">${L('결투에서 이기면 금화와 카드 한 장(한 장은 쓰러뜨린 상대의 카드). 정예와 보스는 유물도 줍니다. 지면 처음부터 다시 합니다.', "Win a duel for Gold and a card (one is always the beaten foe's). Elites and bosses also give a relic. Lose and you start over.")}</p></div>`;
-  else if (sn.foe) { const sp = stSpec(sn), hp = sp.hp - (run.rl.includes('first') ? 1 : 0);
+  if (run.cleared) info = `<p class="cap">${L('결과', 'Result')}</p><h3>${L(`${CLS[run.cls].n}(으)로 세 막을 모두 돌파`, `Cleared all three acts as ${TR(CLS[run.cls].n)}`)}</h3>
+      <p class="sd-score"><b>${run.score}</b>${L('점', ' pts')}</p>
+      <dl class="sd-kv"><dt>${L('결투', 'Duels')}</dt><dd>${run.fights}${L('판', '')} (${L('정예', 'elite')} ${run.elite})</dd><dt>${L('턴', 'Turns')}</dt><dd>${run.turns}</dd><dt>${L('남은 체력', 'HP left')}</dt><dd>${run.hp}</dd><dt>${L('금화', 'Gold')}</dt><dd>${run.gold}</dd></dl>
+      <p class="cap">${rec[run.cls] === run.score ? L('이 직업의 최고 점수입니다.', 'Your best score with this class.') : L(`이 직업의 최고 점수는 ${rec[run.cls]}점입니다.`, `Your best with this class is ${rec[run.cls]} pts.`)}<br>${L('점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수', 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns')}</p>
+      <button type="button" class="btn red big" data-a="strestart">${L('다른 직업으로 다시 도전', 'Try again with another class')}</button>`;
+  else if (!sn) { const bn = rows[rows.length - 1][0], bs = stSpec(bn);
+    info = `<p class="cap">${L('다음 장소', 'Next stop')}</p><h3>${L('갈 곳을 고르세요', 'Choose where to go')}</h3>
+      <p>${L('붉게 빛나는 곳 가운데 하나로 갈 수 있습니다. 지나온 길로는 돌아갈 수 없습니다.', 'You can move to any glowing red spot. There is no going back.')}</p>
+      <p class="cap">${L('결투에서 이기면 금화와 카드 한 장(한 장은 쓰러뜨린 상대의 카드). 정예와 보스는 유물도 줍니다. 지면 처음부터 다시 합니다.', "Win a duel for Gold and a card (one is always the beaten foe's). Elites and bosses also give a relic. Lose and you start over.")}</p>
+      <div class="sd-boss c-${bn.foe}"><p class="cap">${L(`${run.act + 1}막의 보스`, `Act ${run.act + 1} boss`)}</p><div class="st-row"><i class="px a-${bn.foe} flip" aria-hidden="true"></i><div><h4>${CLS[bn.foe].n}</h4><p>${L('체력', 'HP')} <b>${bs.hp}</b>${bs.mx ? ` · ${L('최대 마나 +1', 'Max mana +1')}` : ''}</p></div></div></div>`; }
+  else if (sn.foe) { const sp = stSpec(sn), hp = sp.hp - (run.rl.includes('first') ? 1 : 0), g = sn.t === 'boss' ? 7 : sn.t === 'elite' ? 6 : 4;
     const rule = sn.t === 'boss' ? (sp.boss === 'final' ? L(`체력 ${sp.hp}, 최대 마나 +1. 3턴마다 가로 한 줄에 피해 2를 예고한다.`, `HP ${sp.hp}, max mana +1. Every 3rd turn it forecasts 2 damage on a row.`) : L(`체력 ${sp.hp}${sp.mx ? ', 최대 마나 +1' : ''}. 체력이 절반 이하가 되면 한 번 분노해 다음 턴 공격 피해 +1.`, `HP ${sp.hp}${sp.mx ? ', max mana +1' : ''}. At half HP or less it rages once: next turn's attacks deal +1.`))
       : sn.t === 'elite' ? L('정예: 체력과 최대 마나가 더 많고, 마나 3으로 시작한다. 이기면 유물을 고른다.', 'Elite: more HP and max mana, starts with 3 mana. Win to choose a relic.') : '';
-    info = `<div class="panel st-foe c-${sn.foe}${sn.t !== 'fight' ? ' boss' : ''}"><p class="cap">${nodeN(sn.t)}</p><div class="st-row"><i class="px a-${sn.foe} flip" aria-hidden="true"></i><div><h3>${CLS[sn.foe].n}</h3>
-        <p>${L('체력', 'HP')} <b>${hp}</b> · ${L('봇 수준', 'Bot level')} <b>${BOTS[sp.lv][0]}</b></p><p class="cap">${CLS[sn.foe].tag}</p></div></div>
-      ${rule ? `<p class="bossn">${rule}</p>` : ''}<p class="cap">${L(`보상: 금화 ${sn.t === 'boss' ? 7 : sn.t === 'elite' ? 6 : 4}(무피해 +2), 카드 한 장${sn.t === 'fight' ? '' : ', 유물 하나'}${sn.t === 'boss' ? ', 체력 +2' : ''}`, `Reward: ${sn.t === 'boss' ? 7 : sn.t === 'elite' ? 6 : 4} Gold (+2 flawless), a card${sn.t === 'fight' ? '' : ', a relic'}${sn.t === 'boss' ? ', HP +2' : ''}`)}</p>
-      <button type="button" class="btn red big" data-a="stgo">${L('결투 시작', 'Start Duel')}</button></div>`; }
+    info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe c-${sn.foe}"><i class="px a-${sn.foe} flip" aria-hidden="true"></i><div><h3>${CLS[sn.foe].n}</h3><p class="cap">${CLS[sn.foe].tag}</p></div></div>
+      <dl class="sd-kv"><dt>${L('체력', 'HP')}</dt><dd>${pips('hp', hp, hp)} <b>${hp}</b></dd><dt>${L('봇 수준', 'Bot level')}</dt><dd><b>${BOTS[sp.lv][0]}</b></dd></dl>
+      ${rule ? `<p class="bossn">${rule}</p>` : ''}
+      <div class="sd-rw"><p class="cap">${L('보상', 'Reward')}</p><ul><li>${GOLD}${L(`금화 ${g} (무피해 +2)`, `${g} Gold (+2 flawless)`)}</li><li>${pxi('deck')}${L('카드 한 장', 'A card')}</li>${sn.t === 'fight' ? '' : `<li>${pxi('relic')}${L('유물 하나', 'A relic')}</li>`}${sn.t === 'boss' ? `<li>${pxi('heart')}${L('체력 +2', 'HP +2')}</li>` : ''}</ul></div>
+      <button type="button" class="btn red big" data-a="stgo">${L('결투 시작', 'Start Duel')}</button>`; }
   else { const T = { shop: ['떠돌이 상인', '금화로 카드, 유물, 회복을 삽니다. 한 번 떠나면 돌아올 수 없습니다.', 'Wandering Merchant', "Spend Gold on cards, relics and healing. You can't come back once you leave."], rest: ['쉼터', '체력 +2, 카드 1장 제거, 능력 강화 가운데 하나를 고릅니다.', 'Rest site', 'Choose one: HP +2, remove a card, or Ability Boost.'],
       event: ['사건', '결투 없이 지나가는 곳. 무슨 일이 있을지는 가 봐야 압니다.', 'Event', 'No duel here. You only find out what happens by going.'], treasure: ['보물', '유물 둘 가운데 하나를 가져갑니다.', 'Treasure', 'Take one of two relics.'] }[sn.t];
-    info = `<div class="panel st-foe k-${sn.t}"><p class="cap">${L('다음 장소', 'Next stop')}</p><div class="st-row"><span class="st-ic">${pxi(sn.t)}</span><div><h3>${L(T[0], T[2])}</h3><p>${L(T[1], T[3])}</p></div></div>
-      <button type="button" class="btn red big" data-a="stgo">${L('들어간다', 'Enter')}</button></div>`; }
-  return `<div class="gate stmap"><div class="gate-top"><div><p class="cap">${L('스테이지 모드', 'Stage Mode')} · ${CLS[run.cls].n}</p><h2>${run.cleared ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L(`${run.act + 1}막 · ${ARENAS[act.ar] || ''}`, `Act ${run.act + 1} · ${TR(ARENAS[act.ar] || '')}`)}</h2></div>
-      <p class="stgold">${L('금화', 'Gold')} ${GOLD}<b>${run.gold}</b></p>${run.cleared ? '' : `<button type="button" class="btn ghost quitb" data-a="stquit">${run.quit ? L('한 번 더 누르면 포기', 'Tap again to give up') : L('포기', 'Give up')}</button>`}<button type="button" class="btn ghost" data-a="leave">${L('저장하고 나가기', 'Save & leave')}</button></div>
-    <div class="smapw"><ol class="acts3" aria-label="${L('막', 'Acts')}">${tabs}</ol>
+    info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe k-${sn.t}"><span class="st-ic">${pxi(sn.t)}</span><div><h3>${L(T[0], T[2])}</h3></div></div><p>${L(T[1], T[3])}</p>
+      <button type="button" class="btn red big" data-a="stgo">${L('들어간다', 'Enter')}</button>`; }
+  /* 서랍은 고르면 저절로 열리고, 직접 닫거나 연 상태는 다음 그리기까지 이어진다 */
+  if (run.cleared) stDr.r = true;
+  const hint = run.cleared || sn ? '' : `<p class="sm-hint" aria-hidden="true">${L('붉게 빛나는 곳을 눌러 다음 장소를 고르세요', 'Tap a glowing red spot to choose your next stop')}</p>`;
+  return `<div class="gate stmap sm2">${stHud()}
+    <div class="sm-stage${stDrShown.l ? ' pin-l' : ''}${stDrShown.r ? ' pin-r' : ''}">
       <div class="smap th-${act.ar}" role="group" aria-label="${L(`${run.act + 1}막 지도`, `Act ${run.act + 1} map`)}">
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
         ${run.row < 0 && !run.cleared ? `<span class="mstart"><i class="px a-${run.cls} hero" aria-hidden="true"></i><b>${L('출발', 'Start')}</b></span>` : ''}
-        ${rows.map((row, r) => row.map((n, c) => node(n, r, c)).join('')).join('')}</div>
-      <p class="mleg" aria-hidden="true">${['fight', 'elite', 'event', 'treasure', 'shop', 'rest', 'boss'].map(t => `<span>${pxi(t)}${nodeN(t)}</span>`).join('')}</p></div>
-    <div class="st-cols">${info}
-      <div class="panel st-me c-${run.cls}"><p class="cap">${L('내 상태', 'My status')}</p><div class="st-row"><i class="px a-${run.cls}" aria-hidden="true"></i><div><h3>${CLS[run.cls].n}</h3></div></div>${stStatus()}</div>
+        ${rows.map((row, r) => row.map((n, c) => node(n, r, c)).join('')).join('')}
+        ${hint}
+        <p class="mleg" aria-label="${L('지도 표시', 'Map key')}">${['fight', 'elite', 'event', 'treasure', 'shop', 'rest', 'boss'].map(t => `<span class="k-${t}">${pxi(t)}${nodeN(t)}</span>`).join('')}</p></div>
+      ${stBag()}
+      ${stDrawer('r', run.cleared ? L('결과', 'Result') : L('다음 장소', 'Next stop'), `<span class="sdr-ic">${pxi(run.cleared ? 'boss' : sn ? sn.t : 'event')}</span>`, `<div class="sd-info${sn && sn.foe && sn.t !== 'fight' ? ' boss' : ''}">${info}</div>`)}
     </div></div>`;
 }
-function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.quit = 0; if (!stAvail().some(x => x[0] === r && x[1] === c)) return; run.sel = [r, c]; SND.play('tap'); render(); }
+function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.quit = 0; if (!stAvail().some(x => x[0] === r && x[1] === c)) return; run.sel = [r, c]; stDr.r = true; SND.play('tap'); render(); }
 function stOverHTML(won) {
   const n = stCurNode(), last = n && n.t === 'boss' && run.act === run.map.length - 1;
   return won ? `<p class="vscore">${stLab()} ${L('승리', 'won')}</p><button type="button" class="btn red" data-a="stwin">${last ? L('결과 보기', 'See result') : L('보상 받기', 'Claim reward')}</button>`
@@ -7906,7 +8105,9 @@ function stOverHTML(won) {
     if (camFit !== camM.aspect) { camFit = camM.aspect; const pts = [[ISL.x0, 0, ISL.z1 + 0.6], [ISL.x1, 0, ISL.z1 + 0.6], [ISL.x0, 0, ISL.z0], [ISL.x1, 0, ISL.z0], [ISL.x0, -1.6, ISL.z1 + 0.6], [ISL.x1, -1.6, ISL.z1 + 0.6], [NX[5] + 1, 11.5, -5.4], [ISL.x0, 5.5, ISL.z0 + 1], [NX[2], 6.4, -9.9]];
       const probe = function (d, cz) { camM.position.set(MCX, 1 + Math.sin(pitch) * d, cz + Math.cos(pitch) * d); camM.lookAt(MCX, 1, cz); camM.updateMatrixWorld(); let lo = 9, hi = -9, mx = 0; pts.forEach(function (q) { ndc(q[0], q[1], q[2]); lo = Math.min(lo, _p.y); hi = Math.max(hi, _p.y); mx = Math.max(mx, Math.abs(_p.x)); }); return [lo, hi, mx]; };
       let dV = 0, dH = 0; for (let d = 24; d < 260 && !(dV && dH); d += 1) { const q = probe(d, 0); if (!dV && q[1] - q[0] < 1.84) dV = d; if (!dH && q[2] < 0.97) dH = d; }
-      dV = dV || 80; dH = dH || dV; camD = dH <= dV * 1.25 ? Math.max(dV, dH) : dV * 1.1;
+      dV = dV || 80; dH = dH || dV;
+      /* 지도가 화면을 가득 채우는 넓은 화면에서는 보스까지 한 막 전체가 보이게 조금 멀리서 본다. 폰처럼 좁으면 높이에 맞추고 따라간다 */
+      camD = dH <= dV * (vw >= 720 ? 2 : 1.25) ? Math.max(dV, dH) : dV * 1.1;
       const q = probe(camD, 0), mid = (q[0] + q[1]) / 2; camZ = -Math.tan(15 * PI / 180) * camD * mid / Math.sin(pitch) * 0.98;
       const half = Math.tan(15 * PI / 180) * camD * camM.aspect; upp = 2 * half / Math.max(1, vw); panLim = camD < dH ? Math.max(0, (ISL.x1 - ISL.x0) / 2 + 1.2 - half * 0.9) : 0; }
     { const hn0 = mapNodes.find(function (n) { return n.el.classList.contains('here'); }), k = mapKey + '|' + (hn0 ? hn0.r + '-' + hn0.c : 's'); if (k !== panKey) { panKey = k; panHold = false; }
