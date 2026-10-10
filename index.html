@@ -2242,8 +2242,128 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 @media (max-width: 719px) {
   .sg-grid { grid-template-columns: 1fr; gap: 10px; } .adv { padding: 12px; gap: 8px; } .adv h3 { font-size: 24px; } .adv-d { font-size: 12px; }
   .adv-acts li { min-height: 46px; padding: 6px 8px; } .adv-acts b { font-size: 13px; } .adv-acts span { font-size: 10px; }
+  .adv-go .mbtn span { font-size: 11px; }
   .sg-side { gap: 8px; } .sg-card { padding: 10px; gap: 6px; } .sg-card p { display: none; } .sg-card h3 { font-size: 16px; }
   .sg-card .mbtn { min-height: 0; padding: 8px 12px 8px 32px; } .sg-card .mbtn b { font-size: 17px; }
+}
+/* ===== 타이틀 화면 v2: 화면 전체를 쓰는 결투장 그림 + 왼쪽 메뉴 ===== */
+#app:has(> .menu.t2) { max-width: none; padding: 0; }
+.menu.t2 { --fh: clamp(96px, 22vh, 220px); --bh: clamp(120px, 30vh, 300px); --hs: clamp(120px, 26vh, 250px);
+  position: relative; height: 100%; min-height: 0; overflow: hidden; border: 0; display: block; background: var(--paper); }
+.menu.t2 .m-scene { position: absolute; inset: 0; height: auto; background: none; }
+.m-sky { position: absolute; inset: 0; background: linear-gradient(#ece5e1, #f8f4f2 55%, #fff); }
+.th-snow .m-sky { background: linear-gradient(#d6e3ef, #eef4fa 55%, #fff); } .th-forest .m-sky { background: linear-gradient(#d9e6d2, #eef4ea 55%, #fff); }
+.th-desert .m-sky { background: linear-gradient(#f1dcb8, #faefdc 55%, #fff); }
+.m-sun { position: absolute; right: 18%; top: 9vh; width: clamp(70px, 12vh, 120px); aspect-ratio: 1; background: #fff6e8; box-shadow: 0 0 0 10px rgba(255, 246, 232, .55), 0 0 0 22px rgba(255, 246, 232, .3), 0 0 80px 40px rgba(255, 236, 210, .5); border-radius: 50%; }
+.th-snow .m-sun { background: #fbfdff; box-shadow: 0 0 0 10px rgba(255, 255, 255, .6), 0 0 0 22px rgba(255, 255, 255, .3), 0 0 80px 40px rgba(255, 255, 255, .6); }
+.menu.t2 .m-scene .bl { inset: auto 0 var(--fh) 0; height: var(--bh); background-size: calc(var(--bh) * 4.3636) 100%; }
+.menu.t2 .m-scene .bl.an { background-size: calc(var(--bh) * 4.3636) 200%; }
+.menu.t2 .m-scene .bl.sf { inset: 0 0 var(--fh) 0; height: auto; background-size: calc(var(--bh) * 2.18) calc(var(--bh) * 2.18); }
+.menu.t2 .m-floor { height: var(--fh); box-shadow: inset 0 8px 0 #e3dcda, inset 0 -40px 60px -30px rgba(74, 59, 59, .18); }
+.menu.t2 .m-cast { bottom: auto; top: -46px; opacity: .78; filter: saturate(.7); }
+.menu.t2 .mc { width: 56px; height: 56px; margin-right: -18px; } .menu.t2 .m-cast.r .mc { margin-left: -18px; }
+.menu.t2 .m-cast.l { left: 1vw; } .menu.t2 .m-cast.r { right: 1vw; }
+/* 가운데 결투: 3×3 판, 두 직업, 부딪치는 불꽃 */
+.m-duel { position: absolute; left: 66%; bottom: calc(var(--fh) * .5); width: calc(var(--hs) * 2.6); translate: -50% 0; height: calc(var(--hs) * 1.1); }
+.m-pad { position: absolute; left: 50%; bottom: calc(var(--hs) * -.3); width: calc(var(--hs) * 1.7); aspect-ratio: 1; translate: -50% 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6%; padding: 4%;
+  transform: perspective(600px) rotateX(64deg); transform-origin: 50% 100%; background: rgba(74, 59, 59, .12); box-shadow: 0 0 0 4px rgba(74, 59, 59, .18); }
+.m-pad i { background: #fff; box-shadow: inset 0 0 0 3px #d9cfcc, 4px 4px 0 rgba(74, 59, 59, .2); } .m-pad i.c { background: #fde6e9; box-shadow: inset 0 0 0 3px var(--red), 4px 4px 0 rgba(74, 59, 59, .2); }
+.m-hero { position: absolute; bottom: 0; width: var(--hs); height: var(--hs); }
+.m-hero.l { left: 0; } .m-hero.r { right: 0; }
+.m-hero > .px { position: absolute; inset: 0; } .m-hero .ha { opacity: 0; }
+.m-hero .hs { position: absolute; left: 22%; right: 22%; bottom: 2%; height: 9%; background: rgba(74, 59, 59, .28); border-radius: 50%; }
+.m-hero .hi { animation: breathe 1.3s steps(1) infinite; } .m-hero.r .hi { animation-delay: -.6s; }
+.m-clash { position: absolute; left: 50%; top: 34%; width: calc(var(--hs) * .5); aspect-ratio: 1; translate: -50% -50%; opacity: 0; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0 8%, #fff 8% 12%, transparent 12% 33%, #ffd27a 33% 37%, transparent 37% 58%, #fff 58% 62%, transparent 62% 83%, #ffd27a 83% 87%, transparent 87%);
+  border-radius: 50%; filter: drop-shadow(0 0 10px #fff3c4); }
+.m-veil { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(255, 255, 255, .92), rgba(255, 255, 255, .55) 30%, transparent 46%); }
+/* 로고 + 메뉴: 넓은 화면은 왼쪽 */
+.menu.t2 .m-ui { position: absolute; inset: 0 auto 0 0; width: min(440px, 40vw); height: auto; display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: clamp(14px, 3.5vh, 34px);
+  padding: 4vh 0 calc(40px + 4vh) clamp(24px, 5vw, 84px); overflow: visible; box-sizing: content-box; }
+.menu.t2 .m-ui > * { flex: none; }
+.menu.t2 .logo { justify-items: start; text-align: left; gap: 8px; }
+.menu.t2 .logo h1 { font-size: clamp(44px, 8vh, 84px); letter-spacing: 3px; text-shadow: 4px 4px 0 var(--line), 0 0 30px rgba(255, 255, 255, .9); }
+.menu.t2 .lg-mark { grid-template-columns: repeat(3, clamp(14px, 2.4vh, 22px)); gap: 4px; } .menu.t2 .lg-mark i { width: auto; height: auto; aspect-ratio: 1; }
+.menu.t2 .lg-sub { letter-spacing: 2px; font-size: 13px; }
+.t2nav { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.mi { font: inherit; position: relative; display: grid; gap: 1px; text-align: left; padding: 8px 14px 8px 30px; min-height: 52px; align-content: center; color: var(--sil); cursor: pointer;
+  background: linear-gradient(90deg, rgba(255, 255, 255, .92), rgba(255, 255, 255, .6)); border: 0; border-left: 4px solid var(--sil); box-shadow: 0 2px 0 rgba(74, 59, 59, .18); transition: translate .12s, background .12s, border-color .12s; }
+.mi b { font-size: clamp(18px, 2.6vh, 22px); line-height: 1.2; } .mi span { font-size: 12px; color: var(--ash); }
+.mi::before { content: ''; position: absolute; left: 10px; top: 50%; width: 0; height: 0; margin-top: -6px; border: 6px solid transparent; border-left: 8px solid var(--line); border-right: 0; transition: border-color .12s, translate .12s; }
+.mi:hover, .mi:focus-visible { translate: 8px 0; background: linear-gradient(90deg, #fff, rgba(255, 255, 255, .85)); border-left-color: var(--red); outline: none; }
+.mi:hover::before, .mi:focus-visible::before { border-left-color: var(--red); translate: 2px 0; }
+.mi.go { background: linear-gradient(90deg, var(--red), #e86a7a); color: var(--paper); border-left-color: var(--red-d); padding-left: 74px; min-height: 62px; box-shadow: 0 3px 0 var(--red-d); }
+.mi.go span { color: #fde1e5; } .mi.go::before { border-left-color: #fde1e5; }
+.mi.go:hover, .mi.go:focus-visible { background: linear-gradient(90deg, #e04c60, #f07c8b); border-left-color: var(--sil); }
+.mi.go > .px { position: absolute; left: 28px; top: 50%; width: 36px; height: 36px; translate: 0 -50%; background-color: rgba(255, 255, 255, .9); box-shadow: 0 0 0 2px var(--red-d); }
+.mi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+.mi.sm { min-height: 40px; padding: 6px 4px; text-align: center; justify-items: center; border-left: 0; border-bottom: 3px solid var(--sil); }
+.mi.sm b { font-size: 14px; } .mi.sm::before { display: none; }
+.mi.sm:hover, .mi.sm:focus-visible { translate: 0 -3px; border-bottom-color: var(--red); }
+/* 바닥 줄: 정보, 팁, 빠른 버튼 */
+.m-foot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; align-items: center; gap: 16px; padding: 8px clamp(14px, 3vw, 40px) max(8px, env(safe-area-inset-bottom, 0px)); background: linear-gradient(transparent, rgba(74, 59, 59, .72)); color: var(--paper); }
+.menu.t2 .m-ver { position: static; color: #f1e9e6; white-space: nowrap; }
+.m-tip { flex: 1 1 auto; min-width: 0; margin: 0; display: flex; gap: 8px; align-items: baseline; font-size: 12px; }
+.m-tip b { flex: none; background: var(--amber); color: var(--sil); padding: 0 6px; font-size: 11px; } .m-tip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-qk { margin-left: auto; display: flex; gap: 6px; }
+.qk { font: inherit; font-size: 12px; min-width: 34px; height: 30px; padding: 0 8px; display: grid; place-items: center; background: rgba(255, 255, 255, .92); color: var(--sil); border: 2px solid var(--sil); cursor: pointer; }
+.qk:hover, .qk:focus-visible { background: #fff; border-color: var(--red); }
+.qk.off { opacity: .55; } .qk.off .qk-ic::after { content: ''; position: absolute; left: -3px; right: -3px; top: 50%; height: 2px; background: var(--red); rotate: -40deg; }
+.qk-ic { position: relative; width: 14px; height: 14px; display: block; }
+.qk-ic.snd { background: conic-gradient(from 225deg at 30% 50%, var(--sil) 0 25%, transparent 0) 0 0 / 100% 100%; clip-path: polygon(0 32%, 32% 32%, 70% 0, 70% 100%, 32% 68%, 0 68%); background: var(--sil); }
+.qk-ic.bgm { background: var(--sil); clip-path: polygon(30% 0, 100% 0, 100% 72%, 86% 86%, 70% 86%, 62% 72%, 70% 58%, 86% 58%, 86% 22%, 44% 22%, 44% 86%, 30% 100%, 14% 100%, 6% 86%, 14% 72%, 30% 72%); }
+/* 첫 화면: 로고를 가운데 크게, 아래에 깜빡이는 안내 */
+.menu.t2.splash .m-ui { inset: 0; width: auto; align-items: center; justify-content: flex-start; padding: 10vh 16px 0; }
+.menu.t2.splash .logo { justify-items: center; text-align: center; }
+.menu.t2.splash .logo h1 { font-size: clamp(44px, min(13vh, 16vw), 128px); white-space: nowrap; }
+.menu.t2.splash .lg-mark { grid-template-columns: repeat(3, clamp(18px, 3.6vh, 32px)); }
+.menu.t2.splash .press { position: absolute; left: 50%; bottom: calc(var(--fh) + var(--hs) * 1.25); translate: -50% 0; margin: 0; white-space: nowrap; font-size: clamp(15px, 2.4vh, 20px); letter-spacing: 2px; background: var(--sil); padding: 6px 22px; box-shadow: 4px 4px 0 var(--red); }
+.menu.t2.splash .m-veil { background: radial-gradient(ellipse at 50% 22%, rgba(255, 255, 255, .85), transparent 55%); }
+.menu.t2.splash .m-duel, .menu.t2.sub .m-duel { --hs: clamp(120px, 24vh, 230px); left: 50%; }
+/* 하위 화면(싱글·멀티): 그림을 가리고 가운데 판 */
+.menu.t2.sub .m-veil { background: rgba(255, 255, 255, .7); backdrop-filter: blur(2px); }
+.menu.t2.sub .m-ui { inset: 0; width: auto; align-items: center; justify-content: safe center; padding: 3vh 16px calc(48px + 2vh); gap: 14px; }
+.menu.t2.sub .logo { flex-direction: row; display: flex; align-items: center; gap: 12px; position: absolute; left: clamp(16px, 3vw, 40px); top: 14px; }
+.menu.t2.sub .logo h1 { font-size: 30px; text-shadow: 2px 2px 0 var(--line); letter-spacing: 2px; } .menu.t2.sub .lg-sub { display: none; }
+.menu.t2.sub .lg-mark { grid-template-columns: repeat(3, 9px); gap: 2px; } .menu.t2.sub .lg-mark b { height: 3px; margin-top: -1.5px; }
+.menu.t2.sub .m-sub:not(.single2) { width: min(420px, 100%); box-sizing: border-box; }
+@media (prefers-reduced-motion: no-preference) {
+  .m-hero.l { animation: duelL 6s ease-in-out 2.4s infinite; } .m-hero.r { animation: duelR 6s ease-in-out 2.4s infinite; }
+  .m-hero .ha { animation: duelPose 6s steps(1) 2.4s infinite; } .m-hero .hi { animation: breathe 1.3s steps(1) infinite, duelHide 6s steps(1) 2.4s infinite; }
+  .m-clash { animation: duelClash 6s steps(3) 2.4s infinite; }
+  .menu.t2.anim .m-duel, .menu.t2.splash .m-duel { animation: mcIn .6s steps(6) .5s backwards; }
+  .menu.t2.anim .mi-row > .mi { animation: mPop .3s steps(6) calc(1.7s + var(--i, 3) * .1s) backwards; }
+  .mi.go::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 45%, transparent 60%) -200% 0 / 200% 100% no-repeat; animation: goShine 3.2s linear infinite; pointer-events: none; }
+  .m-sun { animation: sunPulse 4s ease-in-out infinite; }
+}
+@keyframes duelL { 0%, 70%, 100% { translate: 0 0; } 76% { translate: calc(var(--hs) * .36) -6%; } 80% { translate: calc(var(--hs) * .3) 0; } 88% { translate: 0 0; } }
+@keyframes duelR { 0%, 70%, 100% { translate: 0 0; } 76% { translate: calc(var(--hs) * -.36) -6%; } 80% { translate: calc(var(--hs) * -.3) 0; } 88% { translate: 0 0; } }
+@keyframes duelPose { 0% { opacity: 0; } 72% { opacity: 1; } 86% { opacity: 0; } }
+@keyframes duelHide { 0% { opacity: 1; } 72% { opacity: 0; } 86% { opacity: 1; } }
+@keyframes duelClash { 0%, 75% { opacity: 0; scale: .3; } 77% { opacity: 1; scale: 1.1; rotate: 0deg; } 82% { opacity: 0; scale: 1.6; rotate: 30deg; } 100% { opacity: 0; } }
+@keyframes goShine { 0%, 40% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes sunPulse { 50% { scale: 1.05; } }
+/* 세로 화면(휴대폰): 로고와 메뉴는 위, 결투는 아래 */
+@media (max-aspect-ratio: 1/1) {
+  .menu.t2 { --fh: clamp(80px, 16vh, 150px); --hs: clamp(96px, 16vh, 150px); }
+  .menu.t2 .m-ui { inset: 0; width: auto; justify-content: flex-start; align-items: center; padding: max(18px, 4vh) 18px 0; gap: 16px; }
+  .menu.t2 .logo { justify-items: center; text-align: center; } .menu.t2 .logo h1 { font-size: clamp(40px, 7vh, 64px); }
+  .t2nav { width: min(380px, 100%); }
+  .m-veil { background: linear-gradient(rgba(255, 255, 255, .9), rgba(255, 255, 255, .6) 55%, transparent 70%); }
+  .m-duel { left: 50%; bottom: calc(var(--fh) * .5); } .m-sun { right: 8%; top: auto; bottom: calc(var(--fh) + var(--bh) * .7); }
+  .m-tip { display: none; } .m-foot { justify-content: space-between; }
+  .menu.t2.splash .m-ui { padding-top: 14vh; } .menu.t2.splash .press { position: static; translate: none; margin-top: 3vh; }
+  .menu.t2.splash .m-duel, .menu.t2.sub .m-duel { --hs: clamp(96px, 16vh, 150px); }
+  .menu.t2.sub .m-foot { display: none; } .menu.t2.sub .m-ui { padding-bottom: 12px; }
+  .menu.t2.sub .logo { display: none; } .menu.t2.sub .m-ui { justify-content: flex-start; padding-top: 12px; }
+  .menu.t2 .m-cast { top: -40px; } .menu.t2 .mc { width: 44px; height: 44px; margin-right: -12px; } .menu.t2 .m-cast.r .mc { margin-left: -12px; }
+}
+@media (max-width: 400px) { .mi-row { grid-template-columns: repeat(2, 1fr); } }
+/* 낮고 넓은 화면(가로로 든 휴대폰) */
+@media (max-height: 560px) and (min-aspect-ratio: 5/4) {
+  .menu.t2 { --fh: 64px; --hs: 110px; } .menu.t2 .m-ui { padding-top: 10px; padding-bottom: 46px; gap: 10px; } .menu.t2 .logo h1 { font-size: 36px; }
+  .menu.t2 .lg-sub { display: none; } .mi { min-height: 40px; padding-block: 4px; } .mi.go { min-height: 46px; } .mi span { display: none; } .mi.go span { display: block; }
+  .menu.t2 .m-cast { display: none; }
 }
 </style>
 <main id="app"></main>
@@ -4643,15 +4763,25 @@ function singleHTML(ta) {
 }
 /* 새로 시작: 저장된 모험을 지우고 직업 고르기부터 */
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="stnew"]'); if (!b) return; if (typeof stLost === 'function') stLost(); SND.play('tap'); startStage(); });
+/* 타이틀 화면: 화면 전체가 결투장 그림. 가운데 3×3 판 위에서 두 직업이 맞서고, 관중은 뒤에.
+   넓은 화면은 로고와 메뉴를 왼쪽에, 세로 화면은 위에 쌓는다 */
+const MENU_DUEL = MENU_CAST.slice(0, 2), MENU_TIP = Math.floor(Math.random() * 9);
+const mE = (ko, en) => (typeof LANG === 'string' && LANG === 'en' ? en : ko);
 function gateHTML() {
   const off = netReady && !db, anim = menuAnim, ta = tabAnim; menuAnim = false; tabAnim = false;
-  const cast = MENU_CAST.map((k, n) => `<i class="px mc a-${k}${n >= Math.ceil(MENU_CAST.length / 2) ? ' flip' : ''}" style="--i:${n}"></i>`);
-  const half = Math.ceil(cast.length / 2);
-  const scene = `<div class="m-scene th-${MENU_TH}" aria-hidden="true"><i class="bl a-bfar"></i>${MENU_TH === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i>
-      <div class="m-floor"><div class="m-cast l">${cast.slice(0, half).join('')}</div><div class="m-cast r">${cast.slice(half).join('')}</div></div></div>`;
+  const crowd = MENU_CAST.slice(2).map((k, n) => `<i class="px mc a-${k}${n % 2 ? ' flip' : ''}" style="--i:${n}"></i>`);
+  const half = Math.ceil(crowd.length / 2);
+  const hero = (k, side) => `<span class="m-hero ${side} c-${k}"><i class="hs"></i><i class="px hi a-${k}${side === 'r' ? ' flip' : ''}"></i><i class="px ha a-${k}-act${side === 'r' ? ' flip' : ''}"></i></span>`;
+  const scene = `<div class="m-scene th-${MENU_TH}" aria-hidden="true"><i class="m-sky"></i><i class="m-sun"></i><i class="bl a-bfar"></i>${MENU_TH === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i>
+      <div class="m-floor"><div class="m-cast l">${crowd.slice(0, half).join('')}</div><div class="m-cast r">${crowd.slice(half).join('')}</div></div>
+      <div class="m-duel"><div class="m-pad">${ALL.map(n => `<i${n === 4 ? ' class="c"' : ''}></i>`).join('')}</div>${hero(MENU_DUEL[0], 'l')}<i class="m-clash"></i>${hero(MENU_DUEL[1], 'r')}</div><i class="m-veil"></i></div>`;
   const logo = `<div class="logo"><span class="lg-mark" aria-hidden="true">${ALL.map(n => `<i style="--i:${n}"></i>`).join('')}<b></b></span>
       <h1 aria-label="삼삼결투">${[...'삼삼결투'].map((c, n) => `<span style="--i:${n}" aria-hidden="true">${c}</span>`).join('')}</h1><p class="lg-sub">1 대 1 · 동시 턴 · 3×3 카드 결투</p></div>`;
-  if (menuSt === 'splash') return `<div class="menu splash" data-a="splash" role="button" tabindex="0" aria-label="눌러서 시작">${scene}<div class="m-ui">${logo}<p class="press">눌러서 시작</p></div></div>`;
+  const touch = matchMedia('(hover: none)').matches;
+  const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span>
+      ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
+      <span class="m-qk"><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
+  if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
   let body;
   if (menuTab === 'single') body = singleHTML(ta);
   else if (menuTab === 'multi') body = `<div class="m-sub${ta ? ' pop' : ''}"><h2>멀티 플레이</h2>
@@ -4660,13 +4790,25 @@ function gateHTML() {
         <div class="row"><input id="code" class="code-in" maxlength="4" autocomplete="off" value="${esc(prefill)}" placeholder="ABCD"><button type="button" class="btn" data-a="join" ${netReady && db ? '' : 'disabled'}>입장</button></div></div>
       ${off ? '<p class="note">이 화면에서는 온라인 대전을 쓸 수 없습니다.</p>' : !netReady ? '<p class="note">연결하는 중입니다.</p>' : ''}
       <button type="button" class="btn ghost mb-back" data-a="mback">뒤로</button></div>`;
-  else body = `<nav class="m-main" aria-label="메인 메뉴">
-      <button type="button" class="mbtn" data-a="mtab" data-m="single" style="--i:0"><b>싱글 플레이</b><span>모험 모드 · 연습 · 튜토리얼</span></button>
-      <button type="button" class="mbtn" data-a="mtab" data-m="multi" style="--i:1"><b>멀티 플레이</b><span>방 만들기 · 접속하기</span></button>
-      <button type="button" class="mbtn" data-a="ov" data-o="rules" style="--i:2"><b>규칙</b><span>1분이면 읽습니다</span></button>
-      <div class="m-mini" style="--i:3"><button type="button" class="btn ghost" data-a="ov" data-o="codex">직업 도감</button><button type="button" class="btn ghost" data-a="ov" data-o="records">기록</button><button type="button" class="btn ghost" data-a="ov" data-o="settings">설정</button></div></nav>`;
-  return `<div class="menu${anim ? ' anim' : ''}">${scene}<div class="m-ui">${logo}${body}</div><p class="m-ver cap">직업 ${CLASS_IDS.length}종 · 결투장 4곳</p></div>`;
+  else { const sv = typeof stLoad === 'function' ? stLoad() : null;
+    const mi = (attrs, ko, en, sk, se, i, cls = '') => `<button type="button" class="mi${cls}" ${attrs} style="--i:${i}"><b>${mE(ko, en)}</b>${sk ? `<span>${mE(sk, se)}</span>` : ''}</button>`;
+    body = `<nav class="m-main t2nav" aria-label="${mE('메인 메뉴', 'Main menu')}">
+      ${sv && CLS[sv.cls] ? `<button type="button" class="mi go c-${sv.cls}" data-a="stage" style="--i:0"><i class="px a-${sv.cls}" aria-hidden="true"></i><b>${mE('이어하기', 'Continue')}</b><span>${mE('모험', 'Adventure')} · ${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)} · ${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp}</span></button>` : ''}
+      ${mi('data-a="mtab" data-m="single"', '싱글 플레이', 'Single Player', '모험 모드 · 연습 · 튜토리얼', 'Adventure · Practice · Tutorial', 1)}
+      ${mi('data-a="mtab" data-m="multi"', '멀티 플레이', 'Multiplayer', '방 만들기 · 접속하기', 'Create room · Join', 2)}
+      <div class="mi-row" style="--i:3">${mi('data-a="ov" data-o="codex"', '직업 도감', 'Classes', '', '', 3, ' sm')}${mi('data-a="ov" data-o="records"', '기록', 'Records', '', '', 3, ' sm')}${mi('data-a="ov" data-o="rules"', '규칙', 'Rules', '', '', 3, ' sm')}${mi('data-a="ov" data-o="settings"', '설정', 'Settings', '', '', 3, ' sm')}</div></nav>`; }
+  return `<div class="menu t2${anim ? ' anim' : ''}${menuTab ? ' sub' : ''}">${scene}<div class="m-ui">${logo}${body}</div>${foot}</div>`;
 }
+/* 타이틀 빠른 버튼: 언어 전환. 메뉴 목록은 위아래 화살표로 고른다. 첫 화면은 아무 키나 */
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="lang"]'); if (b && !doc) setLang(mE('en', 'ko')); });
+document.addEventListener('keydown', e => {
+  if (doc || !infoEl.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (menuSt === 'splash') { if (!['Enter', ' ', 'Shift', 'Tab', 'Escape'].includes(e.key) && e.key.length <= 12) menuStart(); return; }
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  const its = [...document.querySelectorAll('.menu.t2 .m-main .mi')]; if (!its.length || (e.target.matches && e.target.matches('input'))) return;
+  const i = its.indexOf(document.activeElement); e.preventDefault();
+  its[i < 0 ? 0 : (i + (e.key === 'ArrowDown' ? 1 : -1) + its.length) % its.length].focus(); SND.play('tap');
+});
 /* 메뉴 오버레이: 규칙, 설정, 직업 도감, 기록 */
 function ovHTML() {
   const close = '<div class="d-go"><button type="button" class="btn big" data-x="1">닫기</button></div>';
@@ -4684,7 +4826,7 @@ function ovHTML() {
       <div class="set-row"><b>음량</b><label class="vol"><input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"><span>${Math.round(SND.vol * 100)}</span></label></div>
       <div class="set-row"><b>턴 재생 속도</b><span class="lvs">${[1, 2].map(n => `<button type="button" class="btn ghost${SPD === n ? ' on' : ''}" data-s="spd" data-n="${n}" aria-pressed="${SPD === n}">${n}배</button>`).join('')}</span></div>
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
-      <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">스테이지 기록 초기화</button></div></div>
+      <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">모험 기록 초기화</button></div></div>
       <p class="cap">설정은 이 브라우저에 저장됩니다.${doc ? ' 언어는 첫 화면에서 바꿀 수 있습니다.' : ''}</p>${close}</section></div>`; }
   if (ovKind === 'records') { const rec = stageRec(), n = Object.keys(rec).length;
     return `<div class="info-in"><section class="detail ov-box"><h1>기록</h1><p>모험 모드를 돌파한 직업 <b class="k k-d">${n}</b> / ${CLASS_IDS.length}. 숫자는 다섯 판에 걸린 가장 적은 턴 수입니다.</p>
