@@ -2365,6 +2365,90 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   .menu.t2 .lg-sub { display: none; } .mi { min-height: 40px; padding-block: 4px; } .mi.go { min-height: 46px; } .mi span { display: none; } .mi.go span { display: block; }
   .menu.t2 .m-cast { display: none; }
 }
+/* ===== 직업 선택 v2: 조명 무대 + 정보판 + 아래 명단 ===== */
+#app > .gate.pick2 { display: grid; grid-template-rows: auto auto auto; gap: 12px; align-content: start; }
+.pk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; }
+.pk-show { --fs: clamp(150px, 30vh, 280px); position: relative; overflow: hidden; min-height: calc(var(--fs) * 1.8); border: 2px solid var(--sil); box-shadow: 6px 6px 0 var(--ac);
+  background: linear-gradient(170deg, color-mix(in srgb, var(--ac) 34%, #fff), color-mix(in srgb, var(--ac) 10%, #fff) 62%, #fff); }
+.pk-bg { position: absolute; inset: 0; background: repeating-linear-gradient(115deg, transparent 0 34px, color-mix(in srgb, var(--ac) 16%, transparent) 34px 64px); mask-image: linear-gradient(90deg, #000, transparent 85%); }
+.pk-rays { position: absolute; left: 50%; bottom: 30%; width: 220%; aspect-ratio: 1; translate: -50% 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, .55) 0 6deg, transparent 6deg 18deg); mask-image: radial-gradient(circle, #000 8%, transparent 46%); }
+.pk-no { position: absolute; left: 16px; top: 12px; font-size: 26px; font-weight: 700; color: var(--ac-d); letter-spacing: 1px; text-shadow: 2px 2px 0 #fff; }
+.pk-no small { font-size: 13px; color: var(--ash); }
+.pk-lv { position: absolute; right: 14px; top: 14px; padding: 2px 10px; font-weight: 700; color: var(--paper); background: var(--sil); box-shadow: 3px 3px 0 var(--ac); }
+.pk-lv.lv1 { background: var(--green); } .pk-lv.lv2 { background: var(--amber); color: var(--sil); } .pk-lv.lv3 { background: var(--red); }
+.pk-fig { position: absolute; left: 50%; bottom: calc(var(--fs) * .52); width: var(--fs); height: var(--fs); translate: -50% 0; }
+.pk-fig > .px { position: absolute; inset: 0; } .pk-ha { opacity: 0; }
+.pk-light { position: absolute; left: 50%; bottom: 6%; width: 150%; height: 260%; translate: -50% 0; pointer-events: none;
+  background: linear-gradient(transparent, rgba(255, 255, 255, .75)); clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); }
+.pk-ped { position: absolute; left: 50%; bottom: -10%; width: 125%; height: 24%; translate: -50% 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #fff, #ece4e2 60%, #d6cbc8);
+  box-shadow: 0 6px 0 var(--ac), 0 10px 0 var(--ac-d), 0 18px 24px rgba(74, 59, 59, .25); }
+.pk-sh { position: absolute; left: 24%; right: 24%; bottom: 0; height: 9%; border-radius: 50%; background: rgba(74, 59, 59, .3); }
+.pk-flash { position: absolute; left: 50%; top: 55%; width: 140%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle, #fff 0 30%, rgba(255, 255, 255, .6) 45%, transparent 66%); }
+.pk-dust { position: absolute; bottom: -4%; width: 26%; height: 16%; opacity: 0; border-radius: 50%; background: radial-gradient(circle at 50% 70%, #fff 0 35%, rgba(230, 222, 220, .9) 55%, transparent 70%); }
+.pk-dust.l { left: 6%; } .pk-dust.r { right: 6%; }
+.pk-name { position: absolute; left: 18px; right: 18px; bottom: 14px; display: grid; gap: 4px; justify-items: start; }
+.pk-name h2 { margin: 0; font-size: clamp(34px, 6.4vh, 60px); line-height: 1; letter-spacing: 3px; color: var(--sil); text-shadow: 3px 3px 0 #fff, 6px 6px 0 var(--ac); white-space: nowrap; }
+.pk-name h2 span { display: inline-block; }
+.pk-tag { margin: 0; font-size: 15px; font-weight: 700; color: var(--ac-d); background: rgba(255, 255, 255, .8); padding: 0 6px; }
+.pk-name .chips { margin: 0; }
+.pk-stamp { position: absolute; right: 8%; top: 22%; padding: 4px 18px; font-size: clamp(30px, 5vh, 46px); font-weight: 700; letter-spacing: 6px; color: var(--red); border: 5px solid var(--red);
+  background: rgba(255, 255, 255, .85); rotate: -12deg; box-shadow: 0 0 0 3px #fff; }
+.pk-show.banning .pk-stamp { color: var(--sil); border-color: var(--sil); }
+.pk-show.locked .pk-hi { filter: none; }
+/* 정보판: 무대에 이미 있는 초상, 이름, 한 줄 소개, 역할은 감춘다 */
+.pick2 .detail { align-self: start; align-content: start; height: auto; }
+.pick2 .detail .d-por, .pick2 .detail .d-ttl h1, .pick2 .detail .d-tag, .pick2 .detail .chips { display: none; }
+.pick2 .detail .d-head { align-items: center; padding-bottom: 8px; }
+.pick2 .detail .d-meta { margin: 0; }
+/* 명단: 격투 게임처럼 한 줄 또는 두 줄 */
+.pk-roster.faces { display: grid; grid-template-columns: repeat(12, minmax(0, 68px)); justify-content: center; gap: 6px; padding: 8px 10px 10px; background: var(--wash); border-top: 2px solid var(--sil); }
+.pk-roster .face { border: 2px solid var(--line); background: #fff; transition: translate .12s, box-shadow .12s, border-color .12s; }
+.pk-roster .face > i { border-bottom-width: 5px; background-color: color-mix(in srgb, var(--ac) 12%, #fff); }
+.pk-roster .face:hover:not(:disabled) { translate: 0 -4px; border-color: var(--sil); box-shadow: 0 4px 0 var(--ac); }
+.pk-roster .face.sel { translate: 0 -6px; border-color: var(--sil); box-shadow: 0 0 0 3px var(--ac), 0 6px 0 var(--ac-d); z-index: 1; }
+.pk-roster .face.sel::after { content: ''; position: absolute; left: 50%; top: -12px; translate: -50% 0; border: 6px solid transparent; border-top: 7px solid var(--sil); border-bottom: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .pk-rays { animation: pkSpin 30s linear infinite; }
+  .pk-hi { animation: breathe 1.3s steps(1) infinite; }
+  .pk-show.enter .pk-hi { animation: pkIn .5s cubic-bezier(.2, .9, .3, 1.15) backwards, pkHide 1.15s steps(1), breathe 1.3s steps(1) 1.15s infinite; }
+  .pk-show.enter .pk-ha { animation: pkPose 1.15s steps(1); }
+  .pk-show.enter .pk-flash { animation: pkFlash .5s ease-out .38s; }
+  .pk-show.enter .pk-dust.l { animation: pkDustL .55s ease-out .4s; } .pk-show.enter .pk-dust.r { animation: pkDustR .55s ease-out .4s; }
+  .pk-show.enter .pk-bg { animation: pkSweep .5s ease-out; }
+  .pk-show.enter .pk-name h2 span { animation: pkLetter .32s cubic-bezier(.2, .9, .3, 1.2) calc(.12s + var(--i) * .06s) backwards; }
+  .pk-show.enter .pk-tag, .pk-show.enter .pk-name .chips { animation: fadeUp .3s steps(4) .45s backwards; }
+  .pk-show.enter .pk-no, .pk-show.enter .pk-lv { animation: fadeUp .25s steps(3) .2s backwards; }
+  .pk-show.lock .pk-hi { opacity: 0; } .pk-show.lock .pk-ha { opacity: 1; animation: pkLunge .5s cubic-bezier(.2, .9, .3, 1.2); }
+  .pk-show.lock .pk-flash { animation: pkFlash .6s ease-out; }
+  .pk-show.lock { animation: pkShake .32s steps(4) .1s; }
+  .pk-show.lock .pk-stamp { animation: pkStamp .32s cubic-bezier(.3, 1.4, .5, 1) .18s backwards; }
+  .pk-show.lock .pk-rays { animation-duration: 3s; }
+}
+@keyframes pkSpin { to { rotate: 360deg; } }
+@keyframes pkIn { 0% { translate: 0 -60%; scale: 1.1 1.2; opacity: 0; filter: brightness(0) invert(1); } 55% { opacity: 1; filter: brightness(0) invert(1); } 75% { translate: 0 0; scale: 1.12 .86; filter: none; } 100% { scale: 1; } }
+@keyframes pkHide { 0% { opacity: 1; } 48% { opacity: 0; } 92% { opacity: 1; } }
+@keyframes pkPose { 0% { opacity: 0; } 48% { opacity: 1; } 92% { opacity: 0; } }
+@keyframes pkFlash { 0% { opacity: .95; scale: .3; } 100% { opacity: 0; scale: 1.3; } }
+@keyframes pkDustL { 0% { opacity: .9; translate: 40% 0; scale: .4; } 100% { opacity: 0; translate: -50% -20%; scale: 1.3; } }
+@keyframes pkDustR { 0% { opacity: .9; translate: -40% 0; scale: .4; } 100% { opacity: 0; translate: 50% -20%; scale: 1.3; } }
+@keyframes pkSweep { 0% { background-position: -300px 0; opacity: 0; } }
+@keyframes pkLetter { 0% { translate: 80px 0; skew: -20deg 0; opacity: 0; } 70% { translate: -4px 0; skew: 0; opacity: 1; } }
+@keyframes pkLunge { 0% { translate: 0 0; } 40% { translate: 0 -10%; scale: 1.12; } 100% { translate: 0 0; scale: 1; } }
+@keyframes pkShake { 25% { translate: -5px 2px; } 50% { translate: 4px -2px; } 75% { translate: -2px 1px; } }
+@keyframes pkStamp { 0% { scale: 3; opacity: 0; } 100% { scale: 1; opacity: 1; } }
+@media (max-width: 1100px) { .pk-roster.faces { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
+@media (max-width: 719px) {
+  #app > .gate.pick2 { gap: 8px; }
+  .pk-main { grid-template-columns: 1fr; gap: 10px; }
+  .pk-show { --fs: clamp(110px, 18vh, 170px); min-height: 0; height: calc(var(--fs) * 1.75); box-shadow: 4px 4px 0 var(--ac); }
+  .pk-name { bottom: 8px; left: 12px; } .pk-name h2 { font-size: 30px; } .pk-tag { font-size: 12px; } .pk-name .chips { display: none; }
+  .pk-no { font-size: 18px; left: 10px; top: 6px; } .pk-lv { top: 8px; right: 8px; font-size: 11px; }
+  .pk-stamp { font-size: 26px; top: 14%; }
+  .pk-roster.faces { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; padding: 6px; }
+}
+@media (max-height: 560px) and (min-aspect-ratio: 5/4) { .pk-show { --fs: 120px; min-height: 0; } .pk-name h2 { font-size: 28px; } .pk-roster.faces { grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 3px; padding: 4px; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -4918,6 +5002,7 @@ infoEl.addEventListener('click', e => {
 });
 infoEl.addEventListener('input', e => { if (e.target.matches('[data-vol]')) { SND.setVol(+e.target.value / 100); const s = e.target.nextElementSibling; if (s) s.textContent = e.target.value; } });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !infoEl.hidden) { infoEl.hidden = true; infoEl.innerHTML = ''; ovKind = null; } else if (!doc && menuSt === 'splash' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); menuStart(); } });
+let pkSeen = null, pkLock = false;
 function selectHTML() {
   const banning = doc.phase === 'ban', src = banning ? doc.ban : doc.pick, bans = banning ? [] : bansOf(), ok = CLASS_IDS.filter(x => !bans.includes(x));
   const mine = src[seat], theirs = src[opp(seat)], view = mine || (selCls && ok.includes(selCls) ? selCls : ok[0]), c = CLS[view], last = ls('ssd-last');
@@ -4926,14 +5011,30 @@ function selectHTML() {
       <i class="px a-t${CLASS_IDS.indexOf(k) % 2}"><i class="spr px a-${k}"></i></i><span>${bans.includes(k) ? '금지' : CLS[k].n}</span></button>`;
   const footer = `<div class="d-go"><button type="button" class="btn red big" data-a="pickok" data-k="${view}" ${mine ? 'disabled' : ''}>${banning ? (mine ? `${c.n} 금지함. 상대를 기다립니다` : `${c.n} 금지하기`) : mine ? `${c.n} 확정됨. 상대를 기다립니다` : `${c.n}(으)로 확정`}</button>
           <span class="cap">${banning ? '서로의 금지는 둘 다 고른 뒤에 공개됩니다. 금지된 직업은 양쪽 모두 고를 수 없습니다.' : '상대의 선택은 결투가 시작될 때 공개됩니다.'}</span></div>`;
-  return `<div class="gate"><div class="gate-top"><div><p class="cap">방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf()[seat]} : ${scoreOf()[opp(seat)]}` : ''}${bans.length ? ' · 금지: ' + bans.map(x => CLS[x].n).join(', ') : ''}</p><h2>${banning ? '금지할 직업을 고르세요' : stageOn() ? '끝까지 함께할 직업을 고르세요' : '직업을 고르세요'}</h2></div>
+  /* 무대: 고른 직업이 조명 아래 크게 선다. 고른 직업이 바뀔 때만 등장 연출 */
+  const key = view + '|' + doc.gid + doc.phase, enter = pkSeen !== key; pkSeen = key;
+  const n = CLASS_IDS.indexOf(view) + 1, lvN = META[view] ? ['쉬움', '보통', '어려움'][META[view][0] - 1] : '';
+  const show = `<section class="pk-show c-${view}${enter ? ' enter' : ''}${mine ? ' locked' : ''}${banning ? ' banning' : ''}" aria-hidden="true">
+      <i class="pk-bg"></i><i class="pk-rays"></i><span class="pk-no">No.${String(n).padStart(2, '0')}<small> / ${CLASS_IDS.length}</small></span>${lvN ? `<span class="pk-lv lv${META[view][0]}">${lvN}</span>` : ''}
+      <div class="pk-fig"><i class="pk-light"></i><i class="pk-ped"></i><i class="pk-sh"></i><i class="px pk-hi a-${view}"></i><i class="px pk-ha a-${view}-act"></i><i class="pk-flash"></i><i class="pk-dust l"></i><i class="pk-dust r"></i></div>
+      <div class="pk-name"><h2 data-notr>${[...(mE('', 'en') && typeof I18N !== 'undefined' ? I18N.tr(c.n) : c.n)].map((ch, i) => `<span style="--i:${i}">${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join('')}</h2><p class="pk-tag">${c.tag}</p><p class="chips">${ROLE[view].map(r => `<span>${r}</span>`).join('')}</p></div>
+      ${mine ? `<span class="pk-stamp">${banning ? mE('금지', 'BANNED') : mE('결정', 'LOCKED')}</span>` : ''}</section>`;
+  return `<div class="gate pick2"><div class="gate-top"><div><p class="cap">방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf()[seat]} : ${scoreOf()[opp(seat)]}` : ''}${bans.length ? ' · 금지: ' + bans.map(x => CLS[x].n).join(', ') : ''}</p><h2>${banning ? '금지할 직업을 고르세요' : stageOn() ? '끝까지 함께할 직업을 고르세요' : '직업을 고르세요'}</h2></div>
       <span class="row"><button type="button" class="btn ghost" data-a="rand" ${mine ? 'disabled' : ''}>무작위</button>${last && CLS[last] ? `<button type="button" class="btn ghost" data-a="last" ${mine ? 'disabled' : ''}>지난 판: ${CLS[last].n}</button>` : ''}
       <span class="oppst${theirs ? ' ok' : ''}">${theirs ? (banning ? '상대: 금지 완료' : '상대: 선택 완료') : '상대: 고르는 중'}</span><button type="button" class="btn ghost" data-a="leave">나가기</button></span></div>
-    <div class="pickr">
-      <div class="faces" role="group" aria-label="직업 초상화">${CLASS_IDS.map(face).join('')}</div>
-      ${detailHTML(view, footer)}
-    </div></div>`;
+    <div class="pk-main">${show}${detailHTML(view, footer)}</div>
+    <div class="faces pk-roster" role="group" aria-label="직업 초상화">${CLASS_IDS.map(face).join('')}</div></div>`;
 }
+/* 확정 연출: 버튼을 누르면 무대의 직업이 공격 자세로 번쩍이고 '결정' 도장이 찍힌 뒤 실제로 확정한다 */
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-a="pickok"]'); if (!b || b.disabled || pkLock || noMotion || !doc) return;
+  const sh = document.querySelector('.pk-show'); if (!sh) return;
+  e.stopImmediatePropagation(); pkLock = true; b.disabled = true; SND.unlock(); SND.play('tap');
+  const c = b.dataset.k, ban = doc.phase === 'ban';
+  sh.classList.remove('enter'); sh.classList.add('lock'); sh.insertAdjacentHTML('beforeend', `<span class="pk-stamp">${ban ? mE('금지', 'BANNED') : mE('결정', 'LOCKED')}</span>`);
+  if (typeof cry === 'function') cry(c, null, true); if (vibOn && navigator.vibrate) try { navigator.vibrate(30); } catch (x) { /* 무시 */ }
+  setTimeout(() => { pkLock = false; if (!doc) return; if (ban) W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c } }); } }, 760);
+}, true);
 function render() { if (!replaying) renderNow(); }
 function renderNow() {
   let h;
