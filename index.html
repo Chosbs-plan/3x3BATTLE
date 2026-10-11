@@ -9789,13 +9789,15 @@ function stOverHTML(won) {
       t.drop += ((gone ? 1 : 0) - t.drop) * Math.min(1, dt * 5); if (Math.abs((gone ? 1 : 0) - t.drop) < 0.01) t.drop = gone ? 1 : 0;
       t.lift += ((hv ? 1 : 0) - t.lift) * Math.min(1, dt * 14);
       t.mesh.position.y = TY - 0.07 - t.drop * 1.6 + t.lift * 0.05; t.mesh.visible = t.drop < 0.97; t.pit.visible = t.drop > 0.02;
-      t.ov.position.y = TY + 0.012 + t.lift * 0.05; t.ov.visible = !gone;
+      t.ov.position.y = TY + 0.012 + t.lift * 0.05;
       let rune = false; const kinds = {}; let h = '';
       for (const ch of cell.children) { const c = ch.classList;
         if (c.contains('tok')) { if (c.contains('rune')) rune = true; for (const k of PK) if (c.contains(k)) kinds[k] = 1; if (!c.contains('egg')) h += ch.outerHTML; }
         else if (c.contains('cd') || c.contains('dmgp')) h += ch.outerHTML; }
       if (gone) h += '<span class="tok a3-gone">무너짐</span>';
       const s = { mv: cl.contains('mv'), dest: cl.contains('dest'), aim: cl.contains('aim'), was: cl.contains('was'), warn: cl.contains('warn'), wx: cl.contains('wx'), sand: cl.contains('sandw'), dug: cl.contains('dug'), crack: cl.contains('crack'), rune: rune, tg: tg && can, hover: hv, pd: !cl.contains('pd') ? '' : (cell.className.match(/(?:^| )pd-([A-Za-z]+)/) || [])[1] || '', pdn: cl.contains('pdnow') };
+      /* 무너진 칸도 일부러 들어갈 수 있으니, 이동·도착·조준 표시는 구덩이 위에 그대로 띄운다 */
+      t.ov.visible = !gone || s.mv || s.dest || s.aim || s.tg || hv;
       const sig = (s.mv ? 'm' : '') + (s.dest ? 'd' : '') + (s.aim ? 'a' : '') + (s.was ? 'w' : '') + (s.warn ? 'W' + blink : '') + (s.wx ? 'x' : '') + (s.sand ? 's' : '') + (s.dug ? 'g' : '') + (s.crack ? 'k' : '') + (rune ? 'r' : '') + (s.tg ? 't' : '') + (hv ? 'h' : '') + (s.pd ? 'P' + s.pd + (s.pdn ? blink : '') : '');
       if (sig !== t.sig) { t.sig = sig; drawOv(t, s, blink); }
       if (cl.contains('ice')) { if (!t.ice) { t.ice = new T.Mesh(iceGeo, iceMat); t.ice.position.set(t.x, TY + 0.25, t.z); t.ice.renderOrder = 4; boardG[b].add(t.ice); } t.ice.visible = true; } else if (t.ice) t.ice.visible = false;
