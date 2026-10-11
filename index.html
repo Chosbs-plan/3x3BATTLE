@@ -6213,14 +6213,14 @@ const SIG = {
   scarecrow: ['swing', '수확', 'Harvest', 'rise', 'diag'], vampire: ['cross', '흡혈', 'Drain', 'blink', 'iris'], hunter: ['shoot', '명중', 'Bullseye', 'dash', 'flat'],
   grave: ['swing', '매장', 'Buried', 'rise', 'iris'], mirror: ['flip', '반사', 'Reflect', 'blink', 'diag'], chrono: ['pulse', '시간 정지', 'Time Stop', 'drop', 'diag'],
 };
-async function finisherIn(k, ac) {
+async function finisherIn(k, ac, name) {
   slowEnd(true); if (SKIP) return; const ar = app.querySelector('.arena'); play('finish');
   if (calmMotion() || !ar) { await sleep(200); return; }
   ar.classList.add('fin', 'rd-zoom', k === seat ? 'kz-me' : 'kz-op'); window.A3SLOMO = { until: performance.now() + 1600, k: 0.14 };
   const sg = ac && SIG[ac], fromL = k !== seat;   /* 결정타를 넣은 쪽이 나면 왼쪽에서 들어온다 */
   const e = document.createElement('div'); e.className = 'finfx' + (k === seat ? ' bad' : ''); e.setAttribute('aria-hidden', 'true');
   const ic = sg ? abIcon(ac) : '', extra = !sg ? '' : sg[0] === 'rain' ? `<span class="sg-rain">${ic}${ic}${ic}</span>` : '', shards = sg && sg[0] === 'shatter' ? ['q1', 'q2', 'q3', 'q4'].map(q => `<span class="sg-sh ${q}">${ic}</span>`).join('') : '';
-  e.innerHTML = '<i></i>' + (sg ? `<div class="sig sg-${sg[0]} en-${sg[3] || 'dash'} bd-${sg[4] || 'diag'} c-${ac}${fromL ? '' : ' rv'}"><i class="sg-bg"></i>${extra}<i class="px sg-pose a-${ac}-s${fromL ? '' : ' flip'}"></i><b class="sg-w"><small>${mE('결정타', 'FINISH')}</small>${mE(sg[1], sg[2])}</b><span class="sg-ic">${ic}${shards}</span></div>` : '<b>' + mE('결정타', 'FINISH') + '</b>');
+  e.innerHTML = '<i></i>' + (sg ? `<div class="sig sg-${sg[0]} en-${sg[3] || 'dash'} bd-${sg[4] || 'diag'} c-${ac}${fromL ? '' : ' rv'}"><i class="sg-bg"></i>${extra}<i class="px sg-pose a-${ac}-s${fromL ? '' : ' flip'}"></i><b class="sg-w"><small>${mE('결정타', 'FINISH')}</small>${name ? (typeof I18N !== 'undefined' ? I18N.tr(name) : name) : mE(sg[1], sg[2])}</b><span class="sg-ic">${ic}${shards}</span></div>` : '<b>' + mE('결정타', 'FINISH') + '</b>');
   ar.appendChild(e); if (sg) { play('sig_' + sg[0]); if (typeof cry === 'function') setTimeout(() => cry(ac, null, true), 260); }
   setTimeout(() => e.remove(), 2000); setTimeout(() => ar.classList.remove('fin'), 1800);
   await sleep(1020);
@@ -6647,7 +6647,14 @@ async function runReplay(old, neu) {
   const fatal = hits.find(h => neu.P[h[0]].hp <= 0);
   if (hits.length) {
     const top = Math.max(...hits.map(h => h[3]));
-    if (fatal) await finisherIn(fatal[0], cls(opp(fatal[0])));
+    /* 결정타 이름: 쓰러진 칸을 맞힌 즉발 공격 카드 → 그 턴 터진 예고 공격 → 쓴 능력 순으로 찾는다 */
+    const finName = k => { const a = opp(k), q = rp.P[a], cell = fin(k), cd = id => id && CARDS[id];
+      if (cd(q.actId) && CARDS[q.actId].t === 'atk' && !CARDS[q.actId].delay && (q.cells || []).includes(cell)) return CARDS[q.actId].n;
+      const ex = rp.ex.find(e => e.t === k && e.hit && cd(e.id)); if (ex) return CARDS[ex.id].n;
+      if (q.ab) return CLS[cls(a)].act[0];
+      if (cd(q.actId) && CARDS[q.actId].t === 'atk') return CARDS[q.actId].n;
+      return null; };
+    if (fatal) await finisherIn(fatal[0], cls(opp(fatal[0])), finName(fatal[0]));
     await hitStop((fatal ? 260 : [0, 90, 140, 220][top]) + (reads.length ? 120 : 0));
     for (const [k, cell, dmg, tier] of hits) { const u = uEl(k); if (u) u.classList.remove('white'); hurt(k, tier); impactFx(k, cell, tier); floatText(k, cell, '-' + dmg, 'f-dmg d' + tier); }
     for (const [a, k, cell] of reads) await readFx(a, k, cell, !!fatal);
