@@ -2529,26 +2529,6 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 @keyframes lboxIn { from { scale: 1 0; } } @keyframes lboxOut { to { scale: 1 0; } }
 .arena.slo { filter: saturate(.7) contrast(1.08); transition: filter .3s; }
 .fx0 .arena .lbox::before, .fx0 .arena .lbox::after { animation: none; }
-/* ===== 동시 확정: 대각선 분할 ===== */
-.arena .lsplit { position: absolute; inset: 0; z-index: 33; pointer-events: none; overflow: hidden; }
-.lsplit .ls-h { position: absolute; inset: 0; display: flex; align-items: center; gap: 4%; padding: 0 8%; background: linear-gradient(120deg, color-mix(in srgb, var(--ac) 85%, #000), var(--ac)); }
-.lsplit .ls-h.l { clip-path: polygon(0 0, 58% 0, 42% 100%, 0 100%); animation: lsL .76s cubic-bezier(.2, .9, .3, 1) both; }
-.lsplit .ls-h.r { clip-path: polygon(58% 0, 100% 0, 100% 100%, 42% 100%); flex-direction: row-reverse; animation: lsR .76s cubic-bezier(.2, .9, .3, 1) both;
-  background: linear-gradient(300deg, color-mix(in srgb, var(--ac) 85%, #000), var(--ac)); }
-.lsplit .ls-h i { width: min(34vh, 30%); aspect-ratio: 1; flex: none; filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, .35)); }
-.lsplit .ls-h b { font-size: clamp(22px, 4.4vh, 44px); color: #fff; -webkit-text-stroke: 3px #1b0b0b; paint-order: stroke fill; letter-spacing: 2px; }
-.lsplit .ls-cut { position: absolute; left: 50%; top: -10%; width: 10px; height: 120%; translate: -50% 0; rotate: 9.5deg; background: #fff; box-shadow: 0 0 24px 8px rgba(255, 255, 255, .8); animation: lsCut .76s ease-out both; }
-.lsplit .ls-lock { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 74px; height: 74px; animation: lsLock .76s ease-out both; }
-.lsplit .ls-lock i { position: absolute; top: 18px; width: 30px; height: 38px; border: 6px solid #fff; border-radius: 16px 16px 4px 4px; box-shadow: 0 0 0 3px #1b0b0b; box-sizing: border-box; }
-.lsplit .ls-lock i:first-child { left: 4px; animation: lsKeyL .76s cubic-bezier(.3, 1.4, .5, 1) both; } .lsplit .ls-lock i:last-child { right: 4px; animation: lsKeyR .76s cubic-bezier(.3, 1.4, .5, 1) both; }
-@keyframes lsL { 0% { translate: -100% 0; } 25%, 78% { translate: 0 0; } 100% { translate: -100% 0; } }
-@keyframes lsR { 0% { translate: 100% 0; } 25%, 78% { translate: 0 0; } 100% { translate: 100% 0; } }
-@keyframes lsCut { 0%, 22% { opacity: 0; scale: 1 0; } 30% { opacity: 1; scale: 1 1; } 78% { opacity: .9; } 100% { opacity: 0; } }
-@keyframes lsLock { 0%, 20% { opacity: 0; scale: 1.6; } 30% { opacity: 1; scale: 1; } 78% { opacity: 1; } 100% { opacity: 0; scale: .8; } }
-@keyframes lsKeyL { 0%, 20% { translate: -30px 0; } 32%, 100% { translate: 8px 0; } }
-@keyframes lsKeyR { 0%, 20% { translate: 30px 0; } 32%, 100% { translate: -8px 0; } }
-@media (max-width: 719px) { .lsplit .ls-h { flex-direction: column; justify-content: center; padding: 0 6%; } .lsplit .ls-h.l { align-items: flex-start; } .lsplit .ls-h.r { flex-direction: column; align-items: flex-end; } .lsplit .ls-h i { width: 34%; } }
-.fx0 .lsplit .ls-cut { box-shadow: none; }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -3758,7 +3738,6 @@ const SND = (() => {
     step: () => T(220, 0.06, { to: 330, w: 'triangle', v: 0.2 }),
     lock: () => arp([392, 587], 0.07, 0.09, { v: 0.12 }),
     deal: () => { N(0.06, { f: 5000, ft: 'highpass', v: 0.12 }); T(880, 0.03, { v: 0.05 }); },
-    lockin: () => { N(0.05, { f: 4200, ft: 'highpass', v: 0.3 }); T(1180, 0.08, { to: 900, w: 'square', v: 0.09 }); N(0.06, { f: 3200, ft: 'bandpass', v: 0.32, at: 0.16 }); T(1400, 0.1, { to: 1000, w: 'square', v: 0.1, at: 0.16 }); T(90, 0.25, { to: 50, w: 'sine', v: 0.3, at: 0.16 }); },
     plan: () => { T(660, 0.06, { w: 'triangle', v: 0.06 }); T(990, 0.08, { w: 'triangle', v: 0.05, at: 0.07 }); },
     slow: () => { T(120, 0.9, { to: 60, w: 'sine', v: 0.22 }); N(0.8, { f: 2500, to: 300, v: 0.12 }); T(880, 0.7, { to: 440, w: 'triangle', v: 0.03 }); },
     finish: () => { T(55, 1.1, { to: 28, w: 'sine', v: 0.5 }); N(0.9, { f: 6000, to: 200, v: 0.32 }); T(2093, 0.6, { to: 1047, w: 'triangle', v: 0.06 }); T(110, 0.8, { to: 40, w: 'sawtooth', v: 0.16, at: 0.05 }); },
@@ -5560,23 +5539,23 @@ const FX = {
 
 /* --- 고해상도 이펙트 (96칸 좌표, 도트 한 칸 = 캐릭터 도트 한 칸) --- */
 const hi = fn => { fn.hi = true; return fn; };
-/* 예정 경로: 출발 칸에서 도착 칸까지 점선이 흘러가며 그려지고 끝에 화살촉. 조준: 노린 칸에 붉은 모서리 괄호가 조여 든다 */
-const planPath = (from, to, col) => hi((g, t, f) => {
-  if (from == null || to == null || from === to) return; const x0 = C(from) * 32 + 16, y0 = R(from) * 32 + 16, x1 = C(to) * 32 + 16, y1 = R(to) * 32 + 16;
-  const L = Math.abs(x1 - x0) + Math.abs(y1 - y0), grow = Math.min(1, t * 3.2), fade = t > 0.82 ? 1 - (t - 0.82) / 0.18 : 1; if (fade <= 0 || !L) return;
-  const dx = Math.sign(x1 - x0), dy = Math.sign(y1 - y0), end = Math.max(0, L * grow - 8), O = '#1b0b0b'; g.globalAlpha = fade;
-  for (let d = 6; d <= end; d++) { if (((d - f * 3) % 10 + 10) % 10 >= 6) continue; const x = x0 + dx * d, y = y0 + dy * d; D(g, x - 2, y - 2, O, 4, 4); }
-  for (let d = 6; d <= end; d++) { if (((d - f * 3) % 10 + 10) % 10 >= 6) continue; const x = x0 + dx * d, y = y0 + dy * d; D(g, x - 1, y - 1, col, 2, 2); }
-  disc(g, x0, y0, 4, O); disc(g, x0, y0, 2, col);
-  if (grow >= 1) for (let k = 0; k <= 8; k++) { const w = 8 - k, bx = x1 - dx * (11 - k), by = y1 - dy * (11 - k);
-    for (let j = -w - 1; j <= w + 1; j++) D(g, bx + dy * j, by + dx * j, Math.abs(j) > w - 1 || k === 0 ? O : col, dx ? 1 : 1, 1); }
+/* 예정 경로: 출발 칸 가장자리에서 도착 칸으로 가는 가는 선과 작은 꺾쇠, 도착 칸에 옅은 테두리.
+   조준: 노린 칸에 옅은 붉은 바탕과 가는 테두리가 천천히 차오른다 */
+const planFx = (from, to, col) => hi((g, t) => {
+  if (from == null || to == null || from === to) return;
+  const x0 = C(from) * 32 + 16, y0 = R(from) * 32 + 16, x1 = C(to) * 32 + 16, y1 = R(to) * 32 + 16, dx = Math.sign(x1 - x0), dy = Math.sign(y1 - y0);
+  const L = Math.abs(x1 - x0) + Math.abs(y1 - y0), ein = Math.min(1, t / 0.3), e = 1 - Math.pow(1 - ein, 3), out = t > 0.8 ? Math.max(0, 1 - (t - 0.8) / 0.2) : 1; if (!L || out <= 0) return;
+  const s0 = 11, s1 = L - 9, len = s0 + (s1 - s0) * e;
+  g.globalAlpha = 0.9 * out; for (let d = s0; d <= len; d++) D(g, x0 + dx * d - (dx ? 0 : 1), y0 + dy * d - (dy ? 0 : 1), col, dx ? 1 : 2, dy ? 1 : 2);
+  if (e > 0.98) { const hx = x0 + dx * len, hy = y0 + dy * len; for (let k = 1; k <= 4; k++) { D(g, hx - dx * k + dy * k - (dx ? 0 : 1), hy - dy * k + dx * k - (dy ? 0 : 1), col, 2, 2); D(g, hx - dx * k - dy * k - (dx ? 0 : 1), hy - dy * k - dx * k - (dy ? 0 : 1), col, 2, 2); } }
+  g.globalAlpha = 0.55 * out * e; const bx = C(to) * 32 + 3, by = R(to) * 32 + 3; D(g, bx, by, col, 26, 2); D(g, bx, by + 24, col, 26, 2); D(g, bx, by, col, 2, 26); D(g, bx + 24, by, col, 2, 26);
   g.globalAlpha = 1;
 });
-const planAim = cells => hi((g, t, f) => {
-  const fade = t > 0.86 ? 1 - (t - 0.86) / 0.14 : 1; if (fade <= 0) return; g.globalAlpha = fade;
-  cells.forEach(i => { const cx = C(i) * 32 + 16, cy = R(i) * 32 + 16, r = Math.round(15 - Math.min(1, t * 4) * 4 + (f % 4 < 2 ? 0 : 1)), a = 5, c = f % 6 < 3 ? K.red : '#ff8a8a';
-    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => { const x = cx + sx * r, y = cy + sy * r; D(g, sx < 0 ? x : x - a + 1, y, c, a, 2); D(g, x, sy < 0 ? y : y - a + 1, c, 2, a); });
-    if (t > 0.18) { D(g, cx - 1, cy - 4, c, 2, 3); D(g, cx - 1, cy + 2, c, 2, 3); D(g, cx - 4, cy - 1, c, 3, 2); D(g, cx + 2, cy - 1, c, 3, 2); } });
+const planAim = cells => hi((g, t) => {
+  const ein = Math.min(1, t / 0.25), out = t > 0.85 ? Math.max(0, 1 - (t - 0.85) / 0.15) : 1, pul = 0.85 + 0.15 * Math.sin(t * 18); if (out <= 0) return;
+  cells.forEach(i => { const bx = C(i) * 32 + 2, by = R(i) * 32 + 2;
+    g.globalAlpha = 0.2 * ein * out; D(g, bx, by, K.red, 28, 28);
+    g.globalAlpha = 0.85 * ein * out * pul; D(g, bx, by, K.red, 28, 2); D(g, bx, by + 26, K.red, 28, 2); D(g, bx, by, K.red, 2, 28); D(g, bx + 26, by, K.red, 2, 28); });
   g.globalAlpha = 1;
 });
 const mid2 = i => [C(i) * 32 + 16, R(i) * 32 + 16];
@@ -6077,21 +6056,12 @@ function impactFx(k, cell, tier) {
   if (f) window.A3PUNCH = { t0: performance.now(), s: [0, 0.5, 0.8, 1.2][tier] * f, x: me ? -1 : 1 };
   if (window.A3BURST) window.A3BURST(bEl(k), cell, tier);
 }
-/* 동시 확정: 양쪽 계획이 맞물리는 순간 화면이 대각선으로 갈라지며 두 직업이 마주 본다 */
-async function lockSplit(old) {
-  if (SKIP || calmMotion()) return; const ar = app.querySelector('.arena'); if (!ar || !seat) return;
-  const me = old.P[seat].cls, op = old.P[opp(seat)].cls, side = (c, cl, flip) => `<div class="ls-h ${cl} c-${c}"><i class="px a-${c}-act${flip ? ' flip' : ''}"></i><b>${CLS[c].n}</b></div>`;
-  const e = document.createElement('div'); e.className = 'lsplit'; e.setAttribute('aria-hidden', 'true');
-  e.innerHTML = side(me, 'l', false) + side(op, 'r', true) + '<i class="ls-cut"></i><span class="ls-lock"><i></i><i></i></span>';
-  ar.appendChild(e); play('lockin'); setTimeout(() => e.remove(), 1000);
-  await sleep(760);
-}
 /* 예정 경로: 움직이기 직전, 양쪽 이동 경로와 노린 칸을 먼저 보여 주고 잠깐 멈춘다 */
 async function planPreview(rp) {
   if (SKIP) return; let any = false;
   for (const k of ['a', 'b']) {
     const p = rp.P[k], o = opp(k), q = rp.P[o], mv = p.from != null && p.to != null && p.from !== p.to;
-    if (mv) { fx(k, planPath(p.from, p.to, k === seat ? '#5ec8ff' : '#ff6b6b'), 1500); any = true; }
+    if (mv) { fx(k, planFx(p.from, p.to, k === seat ? '#4f9fe8' : '#e8606e'), 1500); any = true; }
     const inst = (q.actId && CARDS[q.actId].t === 'atk' && !CARDS[q.actId].delay) || q.det;
     const cells = uniq([...(inst ? q.cells || [] : []), ...rp.ex.filter(e => e.t === k).flatMap(e => e.cells)]);
     if (cells.length) { fx(k, planAim(cells), 2600); any = true; }
@@ -6175,8 +6145,7 @@ async function runReplay(old, neu) {
   const rp = neu.rp, KS = ['a', 'b'], cls = k => old.P[k].cls, mine = k => k === seat, fin = k => (rp.P[k].final != null ? rp.P[k].final : rp.P[k].to);
   SKIP = false; FXD = 0; setSpeed(SPD);
   const cutDone = {}, ult = async k => { if (!cutDone[k] && ULT(rp.P[k])) { cutDone[k] = 1; await cutIn(k, cls(k), rp.P[k].surge ? '마력 방출' : rp.P[k].actId ? CARDS[rp.P[k].actId].n : '앙상블'); } };
-  // 1. 공개: 양쪽 계획이 맞물리고(동시 확정), 낸 카드가 결투장으로 날아가 대결 컷이 열린다
-  await lockSplit(old);
+  // 1. 공개: 낸 카드가 결투장으로 날아가고, 그 자리에서 대결 컷이 열린다
   await revealCut(old, rp);
   play('reveal');
   for (const k of KS) reveal(k, rp.P[k], cls(k));
