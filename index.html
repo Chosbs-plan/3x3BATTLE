@@ -2455,6 +2455,19 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   .pk-roster.faces { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; padding: 6px; }
 }
 @media (max-height: 560px) and (min-aspect-ratio: 5/4) { .pk-show { --fs: 120px; min-height: 0; } .pk-name h2 { font-size: 28px; } .pk-roster.faces { grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 3px; padding: 4px; } }
+/* ===== 뽑기 연출 v2: 천천히 날아와 손패 자리에 '착' 내려앉는다. 카드 사이 240ms, 착지 640ms(DEAL_STEP, DEAL_LAND) ===== */
+.play .hand .card.draw { animation: dealIn2 .8s cubic-bezier(.2, .75, .25, 1) backwards; animation-delay: calc(var(--d) * 240ms + 140ms - var(--el, 0ms)); }
+.play .hand .card.draw::after { animation: dealBack .8s linear backwards; animation-delay: calc(var(--d) * 240ms + 140ms - var(--el, 0ms)); }
+@keyframes dealIn2 {
+  0% { translate: var(--fx, 60px) var(--fy, -70px); scale: .42; rotate: -10deg; opacity: 0; }
+  8% { opacity: 1; }
+  48% { translate: calc(var(--fx, 60px) * .3) calc(var(--fy, -70px) * .3 - 70px); scale: .04 1; rotate: -4deg; }
+  70% { translate: 0 -30px; scale: 1.14; rotate: 2deg; filter: brightness(1.3); }
+  80% { translate: 0 5px; scale: 1.06 .94; rotate: 0deg; filter: brightness(1.1); }
+  90% { translate: 0 -3px; scale: .98 1.02; }
+  100% { translate: 0 0; scale: 1; opacity: 1; filter: none; }
+}
+#app > .play.v2 .pile.give i:nth-child(3) { animation: pileGive .24s steps(3) 4; }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -3664,6 +3677,7 @@ const SND = (() => {
     step: () => T(220, 0.06, { to: 330, w: 'triangle', v: 0.2 }),
     lock: () => arp([392, 587], 0.07, 0.09, { v: 0.12 }),
     deal: () => { N(0.06, { f: 5000, ft: 'highpass', v: 0.12 }); T(880, 0.03, { v: 0.05 }); },
+    snap: () => { N(0.035, { f: 2200, ft: 'bandpass', v: 0.34 }); T(1500, 0.05, { to: 600, v: 0.07 }); T(180, 0.06, { to: 90, w: 'sine', v: 0.16 }); },
     regroup: () => { for (let i = 0; i < 6; i++) N(0.05, { f: 3500 + i * 300, ft: 'highpass', v: 0.12, at: i * 0.045 }); arp([523, 659, 784], 0.06, 0.08, { w: 'triangle', v: 0.08, at: 0.3 }); },
     tick: () => T(990, 0.04, { v: 0.1 }),
     turn: () => arp([523, 784], 0.09, 0.12, { w: 'triangle', v: 0.2 }),
@@ -3961,6 +3975,9 @@ const TURN_MS = 45000;
 let db = null, me = null, netReady = false, local = false, ref = null, unsub = null, code = null, doc = null, seat = null;
 let G = null, gameStr = '', curTag = '', locked = null, sentTag = '', resolvedTag = '', startedGid = -1, deadline = 0;
 let RP = false, replaying = false, rpLocked = null, dealN = 0, dealOpp = 0;
+let dealAt = 0, dealCnt = 0;   /* 진행 중인 뽑기 연출. 그 사이 화면이 다시 그려져도 날아오던 자리에서 이어 간다 */
+const dealLeft = () => { if (!dealCnt) return 0; const el = performance.now() - dealAt; return el < 140 + dealCnt * DEAL_STEP + 820 ? el : (dealCnt = 0); };
+const DEAL_STEP = 240, DEAL_LAND = 640;   /* 뽑기 연출: 카드 사이 간격과 손패에 착 내려앉는 시점(ms). CSS dealIn2와 맞춘다 */
 let noMotion = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || ls('ssd-motion') === '0', vibOn = ls('ssd-vib') !== '0';
 if (noMotion) document.documentElement.classList.add('nomo');
 const curPl = () => (RP ? rpLocked || blank() : locked || plan);
@@ -4134,7 +4151,9 @@ async function startReplay(job) {
   try { renderNow(); } finally { G = neu; RP = false; }
   try { await runReplay(job.old, neu); } catch (e) { console.error(e); }
   if (!replaying) return;
-  const drawn = k => { const q = neu.rp.P[k]; return Math.max(0, neu.P[k].hand.length - (job.old.P[k].hand.length - (q.mvId ? 1 : 0) - (q.actId ? 1 : 0))); };
+  /* 재정비: 남은 손패가 버린 더미로 쓸려 나간 뒤에 새 카드가 들어온다 */
+  if (neu.rp.P[seat] && neu.rp.P[seat].regroup && !SKIP && !calmMotion()) { await discardFx(); if (!replaying) return; }
+  const drawn = k => { const q = neu.rp.P[k]; return Math.max(0, neu.P[k].hand.length - (job.old.P[k].hand.length - (q.mvId ? 1 : 0) - (q.actId ? 1 : 0) - (q.regroup || 0))); };
   dealN = drawn(seat); dealOpp = drawn(opp(seat));
   replaying = false; rpLocked = null; deadline = Date.now() + TURN_MS;
   render();
@@ -4680,6 +4699,17 @@ function abBtnHTML(p, on) {
 /* 손패 재정렬: 다시 그리기 전 카드 자리를 적어 두었다가, 남은 카드가 새 자리로 미끄러지게 한다(같은 카드는 이름과 몇 번째인지로 짝짓는다) */
 const calmMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function handKeys(list) { const n = {}; return list.map(c => { const id = c.dataset.id; n[id] = (n[id] || 0) + 1; return id + '#' + n[id]; }); }
+/* 버리기: 남은 손패가 한 장씩 위로 살짝 들렸다가 아래로 쓸려 나간다 */
+function discardFx() {
+  const cs = [...app.querySelectorAll('.hand .card[data-id]')].filter(c => !c.classList.contains('relic') && !c.classList.contains('played') && !c.classList.contains('sel') && c.style.visibility !== 'hidden');
+  if (!cs.length || !cs[0].animate) return Promise.resolve();
+  const STEP = 120, DUR = 520;
+  cs.reverse().forEach((c, i) => { const dir = i % 2 ? 1 : -1;
+    setTimeout(() => SND.play('deal'), i * STEP);
+    c.animate([{ translate: '0 0', rotate: '0deg', opacity: 1, filter: 'none' }, { translate: '0 -30px', rotate: dir * 4 + 'deg', opacity: 1, filter: 'brightness(1.15)', offset: .3 },
+      { translate: `${dir * 60}px 260px`, rotate: dir * 24 + 'deg', opacity: 0, filter: 'brightness(.7)' }], { duration: DUR, delay: i * STEP, easing: 'cubic-bezier(.45, 0, .8, .45)', fill: 'forwards' }); });
+  return new Promise(r => setTimeout(r, (cs.length - 1) * STEP + DUR + 140));
+}
 function handSnap() {
   const cs = [...document.querySelectorAll('#app .hand .card[data-id]')]; if (!cs.length) return null;
   const ks = handKeys(cs), m = {}; cs.forEach((c, i) => { const r = c.getBoundingClientRect(); m[ks[i]] = r.left + r.width / 2; }); return m;
@@ -4755,12 +4785,12 @@ function orbHTML(pl) {
   return `<div class="orb${use ? ' spend' : ''}" role="img" aria-label="${L(`마나 ${left} 남음 (지금 ${p.mana}, 최대 ${manaMaxOf(p)})`, `${left} mana left after this plan (now ${p.mana}, max ${manaMaxOf(p)})`)}"><b>${left}</b><span>/${p.mana}</span><em>마나</em></div>`;
 }
 function handHTML() {
-  const p = myP(), pl = curPl(), n0 = p.hand.length - dealN;
+  const dEl = dealN ? 0 : dealLeft(), p = myP(), pl = curPl(), n0 = p.hand.length - (dealN || (dEl ? dealCnt : 0));
   return '<div class="hand">' + p.hand.map((id, i) => {
     const c = CARDS[id], sel = pl.mv === i || pl.act === i, no = !RP && !sel && ((c.c > p.mana - cost(pl) && !(p.cls === 'vampire' && p.hp >= 2)) || (c.t !== 'move' && p.silenced === G.turn) || (id === 'feast' && p.hp < 3));
     const live = { pos: p.pos, dest: pl.dest, sel, tg: pl.tg, ab: pl.ab && p.cls === 'samurai', abAny: pl.ab, o2: p.cls === 'slime' ? p.clone : null };
     const yang = c.yy ? lvOf(G, p, sel && pl.ab) === 1 : null;
-    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}" style="--d:${Math.max(0, i - n0)};--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" data-id="${id}" aria-pressed="${sel}"><span class="glare" aria-hidden="true"></span>
+    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}" style="--d:${Math.max(0, i - n0)};--el:${Math.round(dEl)}ms;--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" data-id="${id}" aria-pressed="${sel}"><span class="glare" aria-hidden="true"></span>
       <span class="top"><span class="cost" title="마나">${c.c}</span><span class="nm">${c.n}</span></span>
       <span class="cg">${cardIc(id)}${cardGrid(id, live)}<span class="tag">${c.relic ? '유물 · ' : ''}${TAGS[id]}${(p.temper || {})[id] && c.t === 'atk' ? ` · <b class="k k-d">담금질 +${p.temper[id]}</b>` : ''}</span></span>
       <span class="ds">${c.yy ? yyDesc(c.d, yang) : hl(c.d)}</span></button>`;
@@ -5067,7 +5097,8 @@ function renderNow() {
   app.innerHTML = h;
   handFlip(hs);
   SND.music(doc && G && seat && doc.phase === 'play' ? (G.P.b && G.P.b.boss ? 'boss' : (ARENAS[G.arena] ? G.arena : 'castle') + (G.turn >= COLLAPSE_FROM - 1 ? ':late' : '')) : !doc && menuSt === 'main' ? 'menu' : doc && doc.phase !== 'over' && doc.phase !== 'play' ? 'lobby' : 'off');
-  if (doc && G && doc.phase !== 'select' && doc.phase !== 'ban') { for (let i = 0; i < dealN; i++) setTimeout(() => SND.play('deal'), 100 + i * 130); if (typeof dealFx === 'function') dealFx(dealN, dealOpp); dealN = 0; dealOpp = 0; }
+  if (doc && G && doc.phase !== 'select' && doc.phase !== 'ban') { if (dealN) { dealAt = performance.now(); dealCnt = dealN; for (let i = 0; i < dealN; i++) { setTimeout(() => SND.play('deal'), 140 + i * DEAL_STEP); setTimeout(() => SND.play('snap'), 140 + i * DEAL_STEP + DEAL_LAND); } if (typeof dealFx === 'function') dealFx(dealN, dealOpp); }
+    else if (dealLeft() && typeof dealFx === 'function') dealFx(dealCnt, 0, true); dealN = 0; dealOpp = 0; }
   tick();
 }
 let lastTick = 0;
@@ -7713,13 +7744,14 @@ const PVSET = {
 })();
 
 /* ---------- 카드 뽑기: 덱 표시에서 뽑은 장수가 튀어나온다 ---------- */
-function dealFx(nMine, nOpp) {
+function dealFx(nMine, nOpp, resume) {
   if (!seat || !G) return;
   /* 새 카드마다 뽑을 더미(없으면 상단 덱 칩)에서 손패 자리까지의 거리를 적어 둔다. 카드는 그 자리에서 뒤집히며 날아온다 */
   if (nMine) { const pile = app.querySelector('.dock .pile'), chip = app.querySelector('.side.me .chip[data-t="deck"]'), src = pile && pile.offsetParent ? pile : chip;
     if (src) { const r0 = src.getBoundingClientRect(), x0 = r0.left + r0.width / 2, y0 = r0.top + r0.height / 2;
       app.querySelectorAll('.hand .card.draw').forEach(c => { const r = c.getBoundingClientRect(); c.style.setProperty('--fx', Math.round(x0 - r.left - r.width / 2) + 'px'); c.style.setProperty('--fy', Math.round(y0 - r.top - r.height / 2) + 'px'); });
-      if (pile) { pile.classList.remove('give'); void pile.offsetWidth; pile.classList.add('give'); } } }
+      if (pile && !resume) { pile.classList.remove('give'); void pile.offsetWidth; pile.classList.add('give'); } } }
+  if (resume) return;
   [[seat, nMine], [opp(seat), nOpp]].forEach(([k, n]) => { if (!n) return; const b = bEl(k), side = b && b.closest('.side'), chip = side && side.querySelector('.chip[data-t="deck"]'); if (!chip) return;
     chip.classList.remove('drawp'); void chip.offsetWidth; chip.classList.add('drawp'); const e = document.createElement('span'); e.className = 'dfl'; e.textContent = '-' + n; e.setAttribute('data-notr', ''); chip.appendChild(e); setTimeout(() => { e.remove(); chip.classList.remove('drawp'); }, 900); });
 }
