@@ -2670,6 +2670,67 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pips.fuel i.f { background: #6fb83f; box-shadow: inset 0 -2px 0 #3f7a22; }
 /* 잔디깎이가 깎은 칸: 잔디밭 줄무늬 */
 .cell.mowed:not(.wx):not(.warn):not(.crack):not(.sandw):not(.ice):not(.pd)::before { content: ''; position: absolute; inset: 0; z-index: 1; background: repeating-linear-gradient(90deg, rgba(111, 184, 63, .34) 0 calc(5 * var(--u, 1px)), rgba(170, 220, 110, .2) calc(5 * var(--u, 1px)) calc(10 * var(--u, 1px))); box-shadow: inset 0 0 0 calc(2 * var(--u, 1px)) rgba(63, 122, 34, .45); pointer-events: none; }
+/* ===== 폰 세로 전용: 직업 선택 =====
+   통째로 줄이지 않는다. 위에서부터 무대 → 한 줄로 넘기는 초상화 → 설명(안에서 스크롤) → 화면 아래에 붙은 확정 버튼 */
+@media (max-width: 640px) and (orientation: portrait) {
+  #app > .gate.pick2 { display: flex; flex-direction: column; gap: 8px; height: 100%; overflow: hidden; padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; }
+  @media (max-height: 600px) { .pick2 .pk-show { --fs: 64px; } .pick2 .pk-name h2 { font-size: 20px; } .pick2 .pk-tag { display: none; } .pick2 .pk-roster .face { flex-basis: 50px; } }
+  .pick2 > .gate-top { flex: none; padding-bottom: 6px; gap: 6px; align-items: center; }
+  .pick2 > .gate-top h2 { font-size: 17px; } .pick2 > .gate-top .cap { font-size: 11px; }
+  .pick2 > .gate-top .row { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; } .pick2 > .gate-top .row::-webkit-scrollbar { display: none; }
+  .pick2 > .gate-top .btn, .pick2 > .gate-top .oppst { flex: none; min-height: 32px; padding: 3px 10px; font-size: 13px; }
+  .pick2 .pk-main { display: contents; }
+  .pick2 .pk-show { order: 1; flex: none; --fs: clamp(78px, 14vh, 130px); height: calc(var(--fs) * 1.55); min-height: 0; box-shadow: 3px 3px 0 var(--ac); }
+  .pick2 .pk-name h2 { font-size: 26px; } .pick2 .pk-tag { font-size: 12px; }
+  .pick2 .pk-roster.faces { order: 2; flex: none; display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 10px 8px 8px; margin-inline: -4px; scrollbar-width: none; }
+  .pick2 .pk-roster.faces::-webkit-scrollbar { display: none; }
+  .pick2 .pk-roster .face { flex: 0 0 58px; scroll-snap-align: center; }
+  .pick2 .pk-roster .face > span { font-size: 10px; }
+  .pick2 .detail { order: 3; flex: 1 1 auto; min-height: 0; height: auto; padding: 10px; gap: 8px; box-shadow: 3px 3px 0 var(--ac); }
+  .pick2 .detail .d-pv canvas { width: 40px; height: 54px; } .pick2 .detail .d-pv .pv-n { display: none; }
+  .pick2 .detail .d-head { padding-bottom: 4px; } .pick2 .detail .d-meta { font-size: 12px; line-height: 1.5; } .pick2 .detail .d-tabs .btn { min-height: 32px; font-size: 13px; }
+  /* 확정 버튼: 화면 아래에 늘 보이게 */
+  .pick2 .detail > .d-go { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; margin: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--paper); border-top: 2px solid var(--sil); box-shadow: 0 -4px 0 rgba(90, 70, 68, .12); flex-wrap: nowrap; gap: 10px; }
+  .pick2 .detail > .d-go .btn.big { flex: 1 1 auto; min-height: 50px; font-size: 16px; }
+  .pick2 .detail > .d-go .cap { display: none; }
+}
+/* ===== 폰 세로 전용: 전투 =====
+   결투장이 남는 높이를 다 쓰고, 아래 독은 [안내 한두 줄] → [계획 요약 한 줄] → [손패 4장 나란히] → [이모트·능력·확정] 순서로 겹치지 않게 쌓는다 */
+@media (max-width: 640px) and (orientation: portrait) {
+  #app > .play.v2 { grid-template-rows: auto minmax(0, 1fr) auto; gap: 4px; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  #app > .play.v2 > .ctrl { zoom: 1 !important; gap: 4px; }
+  #app > .play.v2 .hint { font-size: 12px; line-height: 1.35; padding: 5px 8px; margin: 0; max-height: 2.8em; overflow: hidden; }
+  #app > .play.v2 .dock { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 0; }
+  #app > .play.v2 .dk-l { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  #app > .play.v2 .dk-l .pile { flex: none; scale: .8; transform-origin: 0 50%; margin-right: -6px; }
+  #app > .play.v2 .dk-l .sum { flex: 1 1 auto; display: flex; flex-wrap: nowrap; gap: 4px; overflow-x: auto; scrollbar-width: none; margin: 0; padding: 0; background: none; border: 0; box-shadow: none; width: auto; }
+  #app > .play.v2 .dk-l .sum::-webkit-scrollbar { display: none; }
+  #app > .play.v2 .dk-l .sum .sum-h { display: none; }
+  #app > .play.v2 .dk-l .sum { align-items: center; height: auto !important; min-height: 0 !important; }
+  #app > .play.v2 .dk-l .sum > span:not(.sum-h) { flex: none; display: inline-block !important; height: auto !important; min-height: 0 !important; align-self: center; font-size: 11px; line-height: 1.3; padding: 2px 6px; white-space: nowrap; }
+  #app > .play.v2 .dk-l .sum > span > b { width: auto; margin-right: 4px; font-size: 10px; }
+  /* 손패: 부채꼴 대신 4칸 나란히. 설명은 길게 눌러 본다 */
+  #app > .play.v2 .dock > .hand { height: auto !important; min-height: 0 !important; grid-auto-rows: auto !important; grid-template-rows: auto !important; align-items: start; }
+  #app > .play.v2 .hand { display: grid; grid-template-columns: repeat(var(--hn, 4), minmax(0, 1fr)); gap: 5px; height: auto; padding: 4px 0 0; margin: 0; perspective: none; }
+  #app > .play.v2 .hand .card, #app > .play.v2 .hand .card[data-id] { width: auto; height: 108px; margin: 0; transform: none; translate: none; rotate: none; scale: none; --lift: 0px; }
+  #app > .play.v2 .hand .card[data-id].sel { transform: translateY(-5px); }
+  #app > .play.v2 .hand .card .ds { display: none; }
+  #app > .play.v2 .hand .card .g3 { grid-template-columns: repeat(3, 11px); grid-auto-rows: 11px; }
+  #app > .play.v2 .hand .card .tag { font-size: 9px; line-height: 1.2; }
+  /* 아래 버튼 줄 */
+  #app > .play.v2 .dk-r { justify-self: stretch; width: 100%; }
+  #app > .play.v2 .acts { display: grid; grid-template-columns: 54px minmax(0, 1.2fr) minmax(0, 1fr); gap: 6px; width: 100%; }
+  #app > .play.v2 .acts.one { grid-template-columns: 1fr; }
+  #app > .play.v2 .acts > .btn { min-height: 48px; padding: 4px 6px; font-size: 15px; }
+  #app > .play.v2 .acts > .emb { font-size: 11px; padding: 2px; }
+  #app > .play.v2 .abb { min-height: 48px; }
+}
+/* 폰: 다음 장소 판이 올라오면 지도는 그 위 남은 자리로 줄어든다(3D 카메라도 그 크기에 다시 맞춘다) */
+@media (max-width: 719px) {
+  .sm-stage.pin-r .smap { bottom: 54%; }
+  .sm-stage .sdr-r.open { height: 54%; max-height: 54%; }
+  .sm-stage .sdr-r.open .sdr-in { height: 100%; overflow-y: auto; box-sizing: border-box; }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -5186,7 +5247,7 @@ function orbHTML(pl) {
 }
 function handHTML() {
   const dEl = dealN ? 0 : dealLeft(), p = myP(), pl = curPl(), n0 = p.hand.length - (dealN || (dEl ? dealCnt : 0));
-  return '<div class="hand">' + p.hand.map((id, i) => {
+  return '<div class="hand" style="--hn:' + Math.max(4, p.hand.length) + '">' + p.hand.map((id, i) => {
     const c = CARDS[id], sel = pl.mv === i || pl.act === i, no = !RP && !sel && ((cardCost(p, id) > p.mana - cost(pl) && !(p.cls === 'vampire' && p.hp >= 2)) || (c.t !== 'move' && p.silenced === G.turn) || (id === 'feast' && p.hp < 3) || (id === 'show' && !(p.cups || []).length) || (id === 'backstep' && !legalDests(G, seat, 'backstep', null).length));
     const live = { pos: p.pos, dest: pl.dest, sel, tg: pl.tg, ab: pl.ab && p.cls === 'samurai', abAny: pl.ab, o2: p.cls === 'slime' ? p.clone : null };
     const yang = c.yy ? lvOf(G, p, sel && pl.ab) === 1 : null;
@@ -5493,7 +5554,7 @@ document.addEventListener('click', e => {
   if (typeof cry === 'function') cry(c, null, true); if (vibOn && navigator.vibrate) try { navigator.vibrate(30); } catch (x) { /* 무시 */ }
   setTimeout(() => { pkLock = false; if (!doc) return; if (ban) W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c } }); } }, 760);
 }, true);
-function render() { if (!replaying) renderNow(); }
+function render() { if (!replaying) renderNow(); { const f = document.querySelector('.pick2 .pk-roster .face.sel'); if (f && f.parentNode.scrollWidth > f.parentNode.clientWidth) { const r = f.parentNode; r.scrollLeft = f.offsetLeft - r.clientWidth / 2 + f.offsetWidth / 2; } } }
 function renderNow() {
   let h;
   if (!doc) h = gateHTML();
@@ -7220,6 +7281,7 @@ document.addEventListener('click', e => {
 const FIT_SEL = '.menu > .m-ui, #app > .gate, .play > .ctrl, .play > .logp, #info > .info-in, .intro';
 function fitOne(e) {
   e.style.zoom = '';
+  if ((e.matches('#app > .gate.pick2') || e.matches('.play.v2 > .ctrl')) && matchMedia('(max-width: 640px) and (orientation: portrait)').matches) return;
   /* 손패 상자는 카드가 날아드는 동안 넘침 값이 흔들리므로, 움직임과 무관한 배치 높이로 잰다 */
   const lay = e.matches('.play > .ctrl');
   const over = lay ? () => { let m = 0; for (const c of e.children) { if (getComputedStyle(c).position === 'absolute') continue; m = Math.max(m, c.offsetTop + c.offsetHeight); } return m > e.clientHeight - parseFloat(getComputedStyle(e).paddingBottom) + 1; }
