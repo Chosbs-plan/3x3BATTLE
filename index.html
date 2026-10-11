@@ -5541,7 +5541,8 @@ const FX = {
 const hi = fn => { fn.hi = true; return fn; };
 /* 예정 경로: 출발 칸 가장자리에서 도착 칸으로 가는 가는 선과 작은 꺾쇠, 도착 칸에 옅은 테두리.
    조준: 노린 칸에 옅은 붉은 바탕과 가는 테두리가 천천히 차오른다 */
-const planFx = (from, to, col) => hi((g, t) => {
+const gnd = fn => { fn.ground = true; return fn; };
+const planFx = (from, to, col) => gnd(hi((g, t) => {
   if (from == null || to == null || from === to) return;
   const x0 = C(from) * 32 + 16, y0 = R(from) * 32 + 16, x1 = C(to) * 32 + 16, y1 = R(to) * 32 + 16, dx = Math.sign(x1 - x0), dy = Math.sign(y1 - y0);
   const L = Math.abs(x1 - x0) + Math.abs(y1 - y0), ein = Math.min(1, t / 0.3), e = 1 - Math.pow(1 - ein, 3), out = t > 0.8 ? Math.max(0, 1 - (t - 0.8) / 0.2) : 1; if (!L || out <= 0) return;
@@ -5550,14 +5551,14 @@ const planFx = (from, to, col) => hi((g, t) => {
   if (e > 0.98) { const hx = x0 + dx * len, hy = y0 + dy * len; for (let k = 1; k <= 4; k++) { D(g, hx - dx * k + dy * k - (dx ? 0 : 1), hy - dy * k + dx * k - (dy ? 0 : 1), col, 2, 2); D(g, hx - dx * k - dy * k - (dx ? 0 : 1), hy - dy * k - dx * k - (dy ? 0 : 1), col, 2, 2); } }
   g.globalAlpha = 0.55 * out * e; const bx = C(to) * 32 + 3, by = R(to) * 32 + 3; D(g, bx, by, col, 26, 2); D(g, bx, by + 24, col, 26, 2); D(g, bx, by, col, 2, 26); D(g, bx + 24, by, col, 2, 26);
   g.globalAlpha = 1;
-});
-const planAim = cells => hi((g, t) => {
+}));
+const planAim = cells => gnd(hi((g, t) => {
   const ein = Math.min(1, t / 0.25), out = t > 0.85 ? Math.max(0, 1 - (t - 0.85) / 0.15) : 1, pul = 0.85 + 0.15 * Math.sin(t * 18); if (out <= 0) return;
   cells.forEach(i => { const bx = C(i) * 32 + 2, by = R(i) * 32 + 2;
     g.globalAlpha = 0.2 * ein * out; D(g, bx, by, K.red, 28, 28);
     g.globalAlpha = 0.85 * ein * out * pul; D(g, bx, by, K.red, 28, 2); D(g, bx, by + 26, K.red, 28, 2); D(g, bx, by, K.red, 2, 28); D(g, bx + 26, by, K.red, 2, 28); });
   g.globalAlpha = 1;
-});
+}));
 const mid2 = i => [C(i) * 32 + 16, R(i) * 32 + 16];
 function disc(g, cx, cy, r, c) { r = Math.round(r); if (r < 0) return; for (let dy = -r; dy <= r; dy++) { const w = Math.floor(Math.sqrt(r * r - dy * dy) + 0.4); D(g, cx - w, cy + dy, c, w * 2 + 1, 1); } }
 function circ(g, cx, cy, r, c, th) { const n = Math.max(16, Math.round(r * 5)); for (let a = 0; a < n; a++) D(g, cx + Math.cos(a / n * 6.283) * r, cy + Math.sin(a / n * 6.283) * r, c, th || 1, th || 1); }
@@ -9098,7 +9099,7 @@ function stOverHTML(won) {
   }
   function subs(e) {
     if (e.a3s) return e.a3s;
-    const info = e.fn.a3, name = info ? info[0] : '', a = info ? info[1] : [], m = MODE[name] || 'vol', S = [];
+    const info = e.fn.a3, name = info ? info[0] : '', a = info ? info[1] : [], m = e.fn.ground ? 'ground' : MODE[name] || 'vol', S = [];   /* ground 표시가 붙은 이펙트는 타일 위에 한 장만 */
     const make = function (list, off) { let fn = null; try { fn = FX0[name].apply(null, [list].concat(a.slice(1))); } catch (err) { /* 무시 */ } return fn; };
     if (m === 'c') (a[0] || []).forEach(function (c, n) { const fn = make(a[0].map(function (x, j) { return j === n ? x : 900 + j * 3; })); if (fn) S.push({ fn: fn, cell: c, s: 0.05, n: n }); });
     else if (m === 'c1') S.push({ fn: e.fn, cell: a[0], s: 0.05, n: 0 });
