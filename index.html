@@ -2507,7 +2507,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .arena .finfx { position: absolute; inset: 0; z-index: 31; pointer-events: none; display: grid; place-items: center; }
 .arena .finfx i { position: absolute; inset: 0; background: #fff; animation: finFlash .5s ease-out forwards; }
 .arena .finfx i::after { content: ''; position: absolute; left: -20%; right: -20%; top: 50%; height: 9%; background: #111; rotate: -14deg; translate: 0 -50%; transform-origin: center; animation: finSlash .55s cubic-bezier(.2, .9, .3, 1) .06s backwards; box-shadow: 0 0 0 4px #fff, 0 0 30px 10px rgba(0, 0, 0, .4); }
-.arena .finfx b { position: relative; font-size: clamp(34px, 7vw, 76px); letter-spacing: 8px; color: #fff; -webkit-text-stroke: 4px #111; paint-order: stroke fill; rotate: -8deg; animation: finText 1.4s cubic-bezier(.2, .9, .3, 1) .1s backwards; }
+.arena .finfx b { position: relative; font-size: clamp(34px, 7vw, 76px); letter-spacing: 8px; color: #fff; -webkit-text-stroke: 4px #111; paint-order: stroke fill; rotate: -8deg; animation: finText 1.9s cubic-bezier(.2, .9, .3, 1) .1s backwards; }
 .arena .finfx.bad b { color: #ff5a5a; }
 @keyframes finFlash { 0% { opacity: 1; } 15% { opacity: .95; background: #000; } 30% { opacity: .8; background: #fff; } 100% { opacity: 0; } }
 @keyframes finSlash { 0% { scale: 0 1; } 60% { scale: 1 1; } 100% { scale: 1 .05; opacity: 0; } }
@@ -2521,6 +2521,14 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .fx0 .unit.flashw { filter: none !important; } .fx0 .float.f-dmg.d3 { animation-name: dmgPop; }
 .fx0 .arena.fin { filter: grayscale(1); }
 @media (prefers-reduced-motion: reduce) { .arena .finfx i, .arena .finfx b { animation: none; opacity: 0; } }
+/* 막타 슬로모션: 위아래 검은 띠 */
+.arena .lbox { position: absolute; inset: 0; z-index: 29; pointer-events: none; }
+.arena .lbox::before, .arena .lbox::after { content: ''; position: absolute; left: 0; right: 0; height: 9%; background: #0b0808; animation: lboxIn .35s cubic-bezier(.2, .8, .3, 1) both; }
+.arena .lbox::before { top: 0; transform-origin: top; } .arena .lbox::after { bottom: 0; transform-origin: bottom; }
+.arena .lbox.out::before, .arena .lbox.out::after { animation: lboxOut .35s ease-in both; }
+@keyframes lboxIn { from { scale: 1 0; } } @keyframes lboxOut { to { scale: 1 0; } }
+.arena.slo { filter: saturate(.7) contrast(1.08); transition: filter .3s; }
+.fx0 .arena .lbox::before, .fx0 .arena .lbox::after { animation: none; }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -3730,6 +3738,7 @@ const SND = (() => {
     step: () => T(220, 0.06, { to: 330, w: 'triangle', v: 0.2 }),
     lock: () => arp([392, 587], 0.07, 0.09, { v: 0.12 }),
     deal: () => { N(0.06, { f: 5000, ft: 'highpass', v: 0.12 }); T(880, 0.03, { v: 0.05 }); },
+    slow: () => { T(120, 0.9, { to: 60, w: 'sine', v: 0.22 }); N(0.8, { f: 2500, to: 300, v: 0.12 }); T(880, 0.7, { to: 440, w: 'triangle', v: 0.03 }); },
     finish: () => { T(55, 1.1, { to: 28, w: 'sine', v: 0.5 }); N(0.9, { f: 6000, to: 200, v: 0.32 }); T(2093, 0.6, { to: 1047, w: 'triangle', v: 0.06 }); T(110, 0.8, { to: 40, w: 'sawtooth', v: 0.16, at: 0.05 }); },
     read: () => { T(70, 0.5, { to: 35, w: 'sine', v: 0.4 }); N(0.4, { f: 300, to: 4000, ft: 'bandpass', v: 0.22 }); arp([392, 523, 659, 1047], 0.05, 0.2, { w: 'sawtooth', v: 0.09, at: 0.06 }); T(1568, 0.5, { w: 'triangle', v: 0.06, at: 0.26 }); },
     near: () => { N(0.3, { f: 600, to: 7000, ft: 'bandpass', v: 0.24 }); arp([1319, 1760, 2093], 0.04, 0.16, { w: 'sine', v: 0.06, at: 0.08 }); },
@@ -4211,6 +4220,7 @@ async function startReplay(job) {
   const neu = G; rpLocked = job.lockedPlan; RP = true; G = job.old;
   try { renderNow(); } finally { G = neu; RP = false; }
   try { await runReplay(job.old, neu); } catch (e) { console.error(e); }
+  slowEnd();
   if (!replaying) return;
   /* 재정비: 남은 손패가 버린 더미로 쓸려 나간 뒤에 새 카드가 들어온다 */
   if (neu.rp.P[seat] && neu.rp.P[seat].regroup && !SKIP && !calmMotion()) { await discardFx(); if (!replaying) return; }
@@ -5978,7 +5988,7 @@ const later = (fn, ms) => { if (SKIP) return fn(); const t = setTimeout(() => { 
 const playEl = () => app.querySelector('.play');
 function setSpeed(n) { SPD = n; try { localStorage.setItem('ssd-spd', String(n)); } catch (e) { /* 무시 */ } const p = playEl(); if (p) p.classList.toggle('x2', SPD === 2); }
 function skipReplay() {
-  SKIP = true; HOLD = 0; TIMERS.forEach(clearTimeout); TIMERS.clear(); FXQ.clear();
+  slowEnd(); SKIP = true; HOLD = 0; TIMERS.forEach(clearTimeout); TIMERS.clear(); FXQ.clear();
   app.querySelectorAll('canvas.fx').forEach(c => c.getContext('2d').clearRect(0, 0, 96, 96));
   app.querySelectorAll('.cut, .cutin, .float, .reveal').forEach(e => e.remove());
   [...WAITS].forEach(f => f());
@@ -6026,14 +6036,26 @@ function impactFx(k, cell, tier) {
   if (f) window.A3PUNCH = { t0: performance.now(), s: [0, 0.5, 0.8, 1.2][tier] * f, x: me ? -1 : 1 };
   if (window.A3BURST) window.A3BURST(bEl(k), cell, tier);
 }
+/* 막타 슬로모션: 턴 재생 시간(SPD)과 3D 시간을 함께 늦추고 위아래 검은 띠를 내린다. 결정타가 시작되면 되돌린다 */
+let sloSave = 0;
+function slowStart(k) {
+  if (SKIP || calmMotion() || sloSave) return; const ar = app.querySelector('.arena');
+  sloSave = SPD; SPD = SPD * 0.42; window.A3SLOMO = { until: performance.now() + 60000, k: 0.4 };
+  if (ar) { ar.classList.add('slo', k === seat ? 'kz-me' : 'kz-op', 'rd-zoom'); if (!ar.querySelector('.lbox')) ar.insertAdjacentHTML('beforeend', '<i class="lbox" aria-hidden="true"></i>'); }
+  play('slow');
+}
+function slowEnd(keepZoom) {
+  if (!sloSave) return; SPD = sloSave; sloSave = 0; window.A3SLOMO = null; const ar = app.querySelector('.arena');
+  if (ar) { ar.classList.remove('slo'); if (!keepZoom) ar.classList.remove('rd-zoom'); const l = ar.querySelector('.lbox'); if (l) { l.classList.add('out'); setTimeout(() => l.remove(), 400); } }
+}
 /* 결정타: 마지막 일격이 들어가기 직전 화면이 흑백으로 얼어붙고, 섬광과 함께 아주 느리게 들어간다 */
 async function finisherIn(k) {
-  if (SKIP) return; const ar = app.querySelector('.arena'); play('finish');
+  slowEnd(true); if (SKIP) return; const ar = app.querySelector('.arena'); play('finish');
   if (calmMotion() || !ar) { await sleep(200); return; }
-  ar.classList.add('fin', 'rd-zoom', k === seat ? 'kz-me' : 'kz-op'); window.A3SLOMO = { until: performance.now() + 1100, k: 0.14 };
+  ar.classList.add('fin', 'rd-zoom', k === seat ? 'kz-me' : 'kz-op'); window.A3SLOMO = { until: performance.now() + 1600, k: 0.14 };
   const e = document.createElement('div'); e.className = 'finfx' + (k === seat ? ' bad' : ''); e.setAttribute('aria-hidden', 'true'); e.innerHTML = '<i></i><b>' + mE('결정타', 'FINISH') + '</b>'; ar.appendChild(e);
-  setTimeout(() => e.remove(), 1500); setTimeout(() => ar.classList.remove('fin'), 1300);
-  await sleep(520);
+  setTimeout(() => e.remove(), 2000); setTimeout(() => ar.classList.remove('fin'), 1800);
+  await sleep(1020);
 }
 /* 예측 적중: 상대가 움직여 간 칸을 정확히 노려 맞혔을 때. 잠깐 느려지며 카메라가 다가가고 '읽었다!' */
 async function readFx(a, k, cell, light) {
@@ -6266,6 +6288,8 @@ async function runReplay(old, neu) {
     }
   }
   if (any) await sleep(1300);
+  /* 이번 턴에 맞아서 쓰러지는 쪽이 있으면, 공격이 날아오는 순간부터 느려진다 */
+  if (KS.some(k => neu.P[k].hp <= 0 && rp.R[k].dmg > 0)) slowStart(KS.find(k => neu.P[k].hp <= 0 && rp.R[k].dmg > 0));
   // 4. 예고 폭발
   if (rp.ex.length) {
     play(rp.ex.some(e => e.id === 'meteor') ? 'meteor' : rp.ex.some(e => e.id !== 'spore') ? 'boom' : 'spore');
@@ -6716,6 +6740,7 @@ function showIntro() {
 
 /* ----- KO와 승리 연출: 멈춤 → K.O. → 쓰러진 쪽을 비춘 뒤 → 이긴 쪽의 승리 포즈 ----- */
 async function koScene(neu, cls, fin) {
+  slowEnd(true);
   const KS = ['a', 'b'], w = neu.winner, losers = KS.filter(k => neu.P[k].hp <= 0), a = app.querySelector('.arena');
   /* 쓰러짐 자세 대신 맞은 자세 그대로 가루가 되어 흩어진다(전 직업 공통). 3D는 픽셀 조각, 2D는 CSS로 */
   const fall = k => { const u = uEl(k); if (u) { setPose(k, cls(k), 'hit'); u.classList.add('ko', 'dust'); } };
