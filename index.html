@@ -2468,6 +2468,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   100% { translate: 0 0; scale: 1; opacity: 1; filter: none; }
 }
 #app > .play.v2 .pile.give i:nth-child(3) { animation: pileGive .24s steps(3) 4; }
+.qk.tb { width: auto; gap: 6px; display: inline-flex; align-items: center; padding: 0 10px; white-space: nowrap; }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -4897,6 +4898,10 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
 /* 타이틀 화면: 화면 전체가 결투장 그림. 가운데 3×3 판 위에서 두 직업이 맞서고, 관중은 뒤에.
    넓은 화면은 로고와 메뉴를 왼쪽에, 세로 화면은 위에 쌓는다 */
 const MENU_DUEL = MENU_CAST.slice(0, 2), MENU_TIP = Math.floor(Math.random() * 9);
+/* 타이틀 음악: 고를 수 있다. 결전(기본)·진군은 전투곡, 고요는 예전 타이틀 곡 */
+const TITLE_BGM = { clash: ['결전', 'Clash'], march: ['진군', 'March'], calm: ['고요', 'Calm'] };
+let titleBgm = (() => { const v = ls('ssd-title'); return TITLE_BGM[v] ? v : 'clash'; })();
+function setTitleBgm(v) { if (!TITLE_BGM[v]) return; titleBgm = v; ls('ssd-title', v); }
 const mE = (ko, en) => (typeof LANG === 'string' && LANG === 'en' ? en : ko);
 function gateHTML() {
   const off = netReady && !db, anim = menuAnim, ta = tabAnim; menuAnim = false; tabAnim = false;
@@ -4911,7 +4916,7 @@ function gateHTML() {
   const touch = matchMedia('(hover: none)').matches;
   const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span>
       ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
-      <span class="m-qk"><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
+      <span class="m-qk"><button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
   let body;
   if (menuTab === 'single') body = singleHTML(ta);
@@ -4932,6 +4937,9 @@ function gateHTML() {
 }
 /* 타이틀 빠른 버튼: 언어 전환. 메뉴 목록은 위아래 화살표로 고른다. 첫 화면은 아무 키나 */
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="lang"]'); if (b && !doc) setLang(mE('en', 'ko')); });
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="tbgm"]'); if (!b || doc) return;
+  const ks = Object.keys(TITLE_BGM); setTitleBgm(ks[(ks.indexOf(titleBgm) + 1) % ks.length]); SND.unlock(); SND.play('tap');
+  if (!SND.bgm) SND.toggleBgm(); SND.music('off'); SND.music('menu'); render(); });
 document.addEventListener('keydown', e => {
   if (doc || !infoEl.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
   if (menuSt === 'splash') { if (!['Enter', ' ', 'Shift', 'Tab', 'Escape'].includes(e.key) && e.key.length <= 12) menuStart(); return; }
@@ -4954,6 +4962,7 @@ function ovHTML() {
       ${navigator.vibrate ? `<div class="set-row"><b>진동</b>${onoff('vib', vibOn)}</div>` : ''}
       <div class="set-row"><b>효과음</b><button type="button" class="btn ghost${SND.on ? ' on' : ''}" data-s="snd" aria-pressed="${SND.on}">${SND.on ? '켬' : '끔'}</button></div>
       <div class="set-row"><b>배경음</b><button type="button" class="btn ghost${SND.bgm ? ' on' : ''}" data-s="bgm" aria-pressed="${SND.bgm}">${SND.bgm ? '켬' : '끔'}</button></div>
+      <div class="set-row"><b>타이틀 음악</b><span class="lvs">${Object.entries(TITLE_BGM).map(([k, [n]]) => `<button type="button" class="btn ghost${titleBgm === k ? ' on' : ''}" data-s="tbgm" data-l="${k}" aria-pressed="${titleBgm === k}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>음량</b><label class="vol"><input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"><span>${Math.round(SND.vol * 100)}</span></label></div>
       <div class="set-row"><b>턴 재생 속도</b><span class="lvs">${[1, 2].map(n => `<button type="button" class="btn ghost${SPD === n ? ' on' : ''}" data-s="spd" data-n="${n}" aria-pressed="${SPD === n}">${n}배</button>`).join('')}</span></div>
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
@@ -5044,7 +5053,8 @@ infoEl.addEventListener('click', e => {
   else if (s === 'motion') { noMotion = !noMotion; ls('ssd-motion', noMotion ? '0' : '1'); document.documentElement.classList.toggle('nomo', noMotion); }
   else if (s === 'vib') { vibOn = !vibOn; ls('ssd-vib', vibOn ? '1' : '0'); if (vibOn && navigator.vibrate) navigator.vibrate(30); }
   else if (s === 'spd') setSpeed(+b.dataset.n); else if (s === 'bot') { botLv = b.dataset.l; ls('ssd-bot', botLv); }
-  else if (s === 'wipe') { ls('ssd-stage', '{}'); toast('스테이지 기록을 지웠습니다'); } else if (s === 'cx') cxView = b.dataset.k;
+  else if (s === 'tbgm') { setTitleBgm(b.dataset.l); if (!doc && SND.bgm) { SND.music('off'); SND.music('menu'); } }
+  else if (s === 'wipe') { ls('ssd-stage', '{}'); toast('모험 기록을 지웠습니다'); } else if (s === 'cx') cxView = b.dataset.k;
   SND.play('tap'); const y = infoEl.scrollTop; infoEl.innerHTML = ovHTML(); infoEl.scrollTop = y;
 });
 infoEl.addEventListener('input', e => { if (e.target.matches('[data-vol]')) { SND.setVol(+e.target.value / 100); const s = e.target.nextElementSibling; if (s) s.textContent = e.target.value; } });
@@ -7682,6 +7692,18 @@ const BGM = {
     lead: SEQ('A4 . C5 D5 E5 . D5 C5  C5 . E5 G5 E5 . C5 .  G4 . B4 D5 B4 . A4 G4  A4 . C5 E5 D5 C5 B4 .') },
 };
 BGM.duel = BGM.castle;
+/* 타이틀 전투곡: 16분음표 칸, 8마디(앞 4마디 주제, 뒤 4마디 고조) 반복.
+   mel: '음:길이(16분음표 칸)' 또는 '.:길이'. ch: 마디마다 [베이스 근음, 아르페지오 세 음] */
+const MEL = s => { const out = []; s.trim().split(/\s+/).forEach(t => { const [n, l] = t.split(':'), len = +l || 1; out.push([NOTE(n), len]); for (let i = 1; i < len; i++) out.push(null); }); return out; };
+const CH = s => s.trim().split('|').map(b => { const ns = b.trim().split(/\s+/).map(NOTE); return [ns[0], ns.slice(1)]; });
+BGM.t_clash = { v2: true, sp: 0.118, kit: 'rock', bass: 'pump', lw: 'square', lv: 0.05, lv2: 0.022,
+  ch: CH('A2 A3 C4 E4 | F2 F3 A3 C4 | G2 G3 B3 D4 | E2 E3 G#3 B3 | A2 A3 C4 E4 | F2 F3 A3 C4 | G2 G3 B3 D4 | E2 E3 G#3 B3'),
+  mel: MEL(`A4:2 C5:2 E5:4 D5:2 C5:2 D5:4  C5:2 A4:2 F4:4 A4:2 C5:2 F5:4  G5:3 F5:1 E5:2 D5:2 B4:4 D5:2 G5:2  E5:4 G#4:2 B4:2 E5:6 .:2
+    E5:2 E5:1 E5:1 A5:4 G5:2 E5:2 C5:4  F5:2 F5:1 F5:1 A5:4 G5:2 F5:2 C5:4  D5:2 G5:2 B5:4 A5:2 G5:2 F5:2 D5:2  E5:2 B4:2 G#4:2 B4:2 E5:4 G#5:4`) };
+BGM.t_march = { v2: true, sp: 0.15, kit: 'war', bass: 'hold', lw: 'sawtooth', lv: 0.034, lv2: 0.02,
+  ch: CH('D2 D4 F4 A4 | Bb1 Bb3 D4 F4 | C2 C4 E4 G4 | A1 A3 C#4 E4 | D2 D4 F4 A4 | Bb1 Bb3 D4 F4 | C2 C4 E4 G4 | A1 A3 C#4 E4'),
+  mel: MEL(`D5:6 F5:2 E5:4 D5:4  F5:6 D5:2 Bb4:8  C5:4 E5:4 G5:6 F5:2  E5:4 C#5:4 A4:8
+    A5:4 F5:2 D5:2 A5:4 G5:2 F5:2  Bb5:4 F5:2 D5:2 F5:6 D5:2  C6:4 G5:2 E5:2 G5:4 A5:2 Bb5:2  A5:6 G5:2 E5:4 C#5:4`) };
 (() => {
   const K0 = SND.kit; let last = '';
   const noise = (st, t, d, f, type, v) => { try { const src = st.ac.createBufferSource(), fl = st.ac.createBiquadFilter(), g = st.ac.createGain(); src.buffer = st.nb; src.loop = true; fl.type = type; fl.frequency.value = f; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t + d); src.connect(fl); fl.connect(g); g.connect(st.mg); src.start(t, Math.random() * 0.5); src.stop(t + d + 0.03); } catch (e) { /* 무시 */ } };
@@ -7691,11 +7713,35 @@ BGM.duel = BGM.castle;
     wood: (st, i, t) => { if (i % 8 === 2 || i % 8 === 6) K0.M(820, 0.04, t, 'square', 0.035); if (i % 8 === 0) K0.M(90, 0.1, t, 'sine', 0.14); if (i === 14 || i === 30) { K0.M(2100, 0.06, t, 'sine', 0.03); K0.M(2500, 0.06, t + 0.08, 'sine', 0.03); } },
     darbuka: (st, i, t) => { const k = i % 8; if (k === 0 || k === 3) K0.M(95, 0.14, t, 'sine', 0.24); if (k === 2 || k === 5 || k === 6) noise(st, t, 0.035, 3800, 'highpass', 0.07); },
   };
+  /* 전투곡 한 칸(16분음표): 드럼, 베이스, 아르페지오, 선율 */
+  const KIT = {
+    rock: (st, i, bar, t, sp) => { const fill = bar % 4 === 3 && i >= 12;
+      if ([0, 3, 8, 10].includes(i)) { K0.M(150, 0.02, t, 'sine', 0.3); K0.M(58, 0.16, t, 'sine', 0.34); }
+      if (i === 4 || i === 12 || fill) { noise(st, t, fill ? 0.06 : 0.11, 1900, 'bandpass', fill ? 0.12 + (i - 12) * 0.03 : 0.2); K0.M(190, 0.06, t, 'triangle', 0.08); }
+      if (i % 2 === 0 && !fill) noise(st, t, 0.025, 8000, 'highpass', i % 4 === 2 ? 0.05 : 0.025);
+      if (i === 0 && bar % 4 === 0) noise(st, t, 0.9, 6000, 'highpass', 0.07); },
+    war: (st, i, bar, t, sp) => { const fill = bar % 4 === 3 && i >= 12;
+      if (i === 0 || i === 8) { K0.M(52, 0.5, t, 'sine', 0.36); K0.M(104, 0.08, t, 'triangle', 0.12); }
+      if (i === 6 || i === 7 || i === 14) K0.M(i === 7 ? 98 : 120, 0.18, t, 'sine', 0.22);
+      if (i === 4 || i === 12 || fill) noise(st, t, 0.1, 1500, 'bandpass', fill ? 0.1 + (i - 12) * 0.035 : 0.17);
+      if (i % 4 === 2) noise(st, t, 0.03, 7000, 'highpass', 0.03);
+      if (i === 0 && bar % 4 === 0) { noise(st, t, 1.2, 5000, 'highpass', 0.06); K0.M(41, 1.2, t, 'sine', 0.2); } },
+  };
+  const V2 = (st, tr, step, t, sp) => {
+    const n = tr.mel.length, s = step % n, i = s % 16, bar = (s / 16) | 0, [root, ar] = tr.ch[bar % tr.ch.length], hi = bar >= 4;
+    KIT[tr.kit](st, i, bar, t, sp);
+    if (tr.bass === 'pump') { if (i % 2 === 0) { const f = root * (i % 4 === 2 ? 2 : 1); K0.M(f, sp * 1.6, t, 'sawtooth', 0.07); K0.M(f, sp * 1.8, t, 'triangle', 0.16); } }
+    else if (i === 0 || i === 8) { K0.M(root, sp * 7.5, t, 'sawtooth', 0.075); K0.M(root * 2, sp * 7.5, t, 'triangle', 0.1); } else if (i === 4 || i === 12) K0.M(root * 1.5, sp * 2, t, 'triangle', 0.08);
+    K0.M(ar[[0, 1, 2, 1][i % 4]] * (hi ? 2 : 1), sp * 0.9, t, 'square', hi ? 0.018 : 0.012);
+    const m = tr.mel[s]; if (m && m[0]) { const d = sp * m[1] * 0.92; K0.M(m[0], d, t, tr.lw, tr.lv); K0.M(m[0] * (hi ? 0.5 : 2), d, t, 'square', tr.lv2); if (tr.lw === 'sawtooth') K0.M(m[0] * 1.004, d, t, 'square', tr.lv2); }
+  };
   SND.hook.sched = () => {
     const st = K0.st(); if (!st.ac || st.mode === 'off' || st.ac.state !== 'running') { if (st.ac && st.mode !== 'off') K0.adv(st.step, st.ac.currentTime + 0.15); return; }
-    const [name, late] = String(st.mode).split(':'), tr = BGM[name] || BGM.castle, sp = tr.sp * (late ? 0.74 : 1), tp = tr.tr || 1;
+    const [mode, late] = String(st.mode).split(':'), name = mode === 'menu' && typeof titleBgm === 'string' && titleBgm !== 'calm' ? 't_' + titleBgm : mode;
+    const tr = BGM[name] || BGM.castle, sp = tr.sp * (late ? 0.74 : 1), tp = tr.tr || 1;
     let step = st.step, next = st.next; if (name !== last) { last = name; step = 0; next = st.ac.currentTime + 0.12; }
     if (next < st.ac.currentTime) next = st.ac.currentTime + 0.05;
+    if (tr.v2) { while (next < st.ac.currentTime + 0.3) { V2(st, tr, step, next, sp); step += 1; next += sp; } K0.adv(step, next); return; }
     while (next < st.ac.currentTime + 0.3) { const i = step % 32, b = tr.bass[(i / 2) | 0];
       if (i % 2 === 0 && b) { K0.M(b * (tr.bo || 1), sp * 2 * (tr.bd || 0.85), next, tr.bw, tr.bv); if (tr.bo) K0.M(b, sp * 0.8, next, 'triangle', 0.14); }
       if (tr.lead[i]) K0.M(tr.lead[i] * tp * (tr.lo || 1), sp * tr.ld, next, tr.lw, tr.lv);
