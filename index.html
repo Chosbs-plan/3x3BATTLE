@@ -6507,10 +6507,10 @@ async function runReplay(old, neu) {
     if (p.actId === 'mist') { fx(k, FX.mistFx(p.from), 2400); floatText(k, p.from, '안개', 'f-big f-sp'); sp('wind'); }
     if (p.actId === 'ambush') { fx(k, FX.ambushFx(p.from), 1600); floatText(k, p.from, '잠복', 'f-sp'); sp('bramble'); }
     if (p.actId === 'coffin') { fx(k, FX.coffinFx(p.from), 2200); floatText(k, p.from, '관 뚜껑', 'f-sp'); sp('stone'); }
-    if (p.actId === 'cocktail') { fx(o, FX.sparkle(p.tg, '#e8559a'), 700); floatText(o, p.tg, mE('칵테일', 'Cocktail'), 'f-sp'); sp('coin', 1); const c = bEl(o) && bEl(o).children[p.tg]; if (c && !c.querySelector('.tok.cup')) later(() => c.insertAdjacentHTML('beforeend', '<span class="tok cup">칵테일</span>'), 380); }
-    if (p.wink) { fx(k, FX.sparkle(p.from, '#e8559a'), 800); floatText(k, p.from, mE('윙크', 'Wink'), 'f-big f-sp'); sp('coin', 1); }
-    if (p.actId === 'counter') { fx(k, FX.guard(p.from), 700); floatText(k, p.from, mE('카운터 자세', 'Counter stance'), 'f-sp'); sp('parryUp', 1); }
-    if (p.actId === 'tune') { fx(k, FX.sparkle(p.from, '#6fb83f'), 700); floatText(k, p.from, mE('정비 · 연료 +2', 'Tune-up · Fuel +2'), 'f-sp'); later(() => refreshStat(k), 250); }
+    if (p.actId === 'cocktail') { fx(o, FX.cupFx(p.tg), 900); floatText(o, p.tg, mE('칵테일', 'Cocktail'), 'f-sp'); sp('coin', 1); const c = bEl(o) && bEl(o).children[p.tg]; if (c && !c.querySelector('.tok.cup')) later(() => c.insertAdjacentHTML('beforeend', '<span class="tok cup">칵테일</span>'), 380); }
+    if (p.wink) { fx(k, FX.winkFx(p.from), 1000); floatText(k, p.from, mE('윙크', 'Wink'), 'f-big f-sp'); sp('coin', 1); }
+    if (p.actId === 'counter') { fx(k, FX.counterFx(p.from), 900); floatText(k, p.from, mE('카운터 자세', 'Counter stance'), 'f-sp'); sp('parryUp', 1); }
+    if (p.actId === 'tune') { fx(k, FX.tuneFx(p.from), 900); floatText(k, p.from, mE('정비 · 연료 +2', 'Tune-up · Fuel +2'), 'f-sp'); later(() => refreshStat(k), 250); }
     if (p.actId === 'noose') { for (const t of [].concat(p.tg)) { fx(o, FX.nooseFx(t), 800); floatText(o, t, '올가미', 'f-warn'); const c = bEl(o) && bEl(o).children[t]; if (c && !c.querySelector('.tok.noose')) later(() => c.insertAdjacentHTML('beforeend', '<span class="tok noose">올가미</span>'), 380); } sp('hook', 1); }
     if (p.tag != null) { fx(o, FX.tagFx(p.tag), 800); floatText(o, p.tag, '표식!', 'f-big f-warn'); sp('mark', 1); const c = bEl(o) && bEl(o).children[p.tag]; if (c && !c.querySelector('.tok.tag')) later(() => c.insertAdjacentHTML('beforeend', '<span class="tok tag">표식</span>'), 350); later(() => refreshStat(k), 250); }
     if (p.crack != null) { for (const q of KS) { fx(q, FX.crackFx(p.crack), 900); fx(q, FX.dirt(p.crack), 600); const c = bEl(q) && bEl(q).children[p.crack]; if (c && !c.classList.contains('gone')) later(() => c.classList.add('crack'), 300); } floatText(o, p.crack, '삽질! 곧 무너진다', 'f-big f-warn'); sp('dig', 1); pulse(bEl(o), 'shake1', 300); later(() => refreshStat(k), 250); }
@@ -6611,8 +6611,8 @@ async function runReplay(old, neu) {
   any = false;
   for (const k of KS) {
     const p = rp.P[k], o = opp(k), tok = (c, sel) => { const e = bEl(o) && bEl(o).children[c]; if (e) e.querySelectorAll(sel).forEach(x => x.remove()); };
-    if (p.cup != null) { any = true; tok(p.cup, '.tok.cup'); fx(o, FX.sparkle(p.cup, '#e8559a'), 800); floatText(o, p.cup, mE('칵테일 한 잔! 마나 +1, 다음 턴 피해 +1', 'A drink! Mana +1, +1 damage next turn'), 'f-big f-warn'); play('coin'); }
-    if (p.clump) { any = true; fx(o, FX.splat(p.clump, K.grn), 800); floatText(o, p.clump[0], mE('잔디 뭉치! 다음 턴 진입 불가', 'Grass clumps! Blocked next turn'), 'f-warn'); }
+    if (p.cup != null) { any = true; tok(p.cup, '.tok.cup'); fx(o, FX.cupFx(p.cup), 900); fx(o, FX.winkFx(p.cup), 900); floatText(o, p.cup, mE('칵테일 한 잔! 마나 +1, 다음 턴 피해 +1', 'A drink! Mana +1, +1 damage next turn'), 'f-big f-warn'); play('coin'); }
+    if (p.clump) { any = true; fx(o, FX.clumpFx(p.clump), 1000); floatText(o, p.clump[0], mE('잔디 뭉치! 다음 턴 진입 불가', 'Grass clumps! Blocked next turn'), 'f-warn'); }
     if (p.nooseHit != null) { any = true; tok(p.nooseHit, '.tok.noose'); fx(o, FX.nooseSnap(p.nooseHit), 850); floatText(o, p.nooseHit, '올가미! 다음 턴 이동 불가', 'f-big f-warn'); play('hook'); pulse(bEl(o), 'shake1', 300); }
     if (p.prey != null) { any = true; tok(p.prey, '.tok.tag'); fx(o, FX.preyFx(p.prey), 700, p.nooseHit != null ? 300 : 0); floatText(o, p.prey, '길목! 피해 +1', 'f-big f-warn', p.nooseHit != null ? 400 : 0); later(() => play('markPop'), p.nooseHit != null ? 300 : 0); later(() => refreshStat(k), 250); }
   }
@@ -6689,9 +6689,9 @@ async function runReplay(old, neu) {
       later(() => pulse(bEl(o), sg.n >= 4 ? 'shake' : 'shake1', 450), WIND + 200); floatText(k, p.to, '마력 방출! 마나 ' + sg.n, 'f-big f-move'); later(() => refreshStat(k), 250); }
     if (p.det) { any = true; setPose(k, cls(k), true); fx(o, FX.boom(p.cells), 700); play('boom'); }
     if (p.grab != null) { any = true; attackAnim(k, cls(k)); swung = true;
-      if (p.grab >= 0) { later(() => play('slash'), WIND); fx(o, FX.hookFx(p.grab, mine(o)), 700, WIND); later(() => pulse(bEl(o), 'shake', 450), WIND + 150); floatText(o, p.grab, mE('잡기!', 'Grab!'), 'f-big f-warn'); }
+      if (p.grab >= 0) { later(() => play('slash'), WIND); fx(o, FX.grabFx(p.grab, mine(o)), 900, WIND); later(() => pulse(bEl(o), 'shake', 450), WIND + 150); floatText(o, p.grab, mE('잡기!', 'Grab!'), 'f-big f-warn'); }
       else floatText(k, p.to, mE('헛손질!', 'Whiff!'), 'f-miss'); }
-    if (p.rush) { any = true; attackAnim(k, cls(k)); swung = true; later(() => play('scythe'), WIND); fx(o, FX.splat(p.cells, K.grn), 800, WIND); fx(o, FX.gdebris(p.cells, false), 800, WIND); floatText(k, p.to, mE('풀가동!', 'Full Throttle!'), 'f-big f-move'); later(() => refreshStat(k), 250); }
+    if (p.rush) { any = true; attackAnim(k, cls(k)); swung = true; later(() => play('scythe'), WIND); fx(o, FX.bladeFx(p.cells, true), 1000, WIND); floatText(k, p.to, mE('풀가동!', 'Full Throttle!'), 'f-big f-move'); later(() => refreshStat(k), 250); }
     if (p.ens != null) { any = true; setPose(k, cls(k), true); play('chord'); fx(o, FX.notes(p.cells), 900); floatText(o, p.cells[0], '앙상블! 박자 ' + p.ens, 'f-big f-sp'); later(() => refreshStat(k), 250); }
     if (p.constel) { any = true; setPose(k, cls(k), true); play('constel'); if (p.cells.length) { fx(o, FX.asConLine(p.constel, p.cells), 1300); fx(o, FX.asConWall(p.constel), 1300); fx(o, FX.asConStar(p.constel), 1300); fx(o, FX.asConstel(p.cells.filter(c => !p.constel.includes(c))), 800, 640); later(() => pulse(bEl(o), 'shake1', 350), 680); } floatText(o, 4, '별자리!', 'f-big f-sp'); }
     if (p.crumb) { any = true; setPose(k, cls(k), true); fx(o, FX.rubble([p.crumb.c]), 800); floatText(o, p.crumb.c, '낙석', 'f-warn'); play('stone'); }
@@ -6720,14 +6720,14 @@ async function runReplay(old, neu) {
     else if (id === 'ring') fx(o, FX.ring(), 650);
     else if (id === 'vine') fx(o, FX.vine(rows, rev), 700);
     else if (id === 'wolves') fx(o, FX.wolves(), 750);
-    else if (id === 'jab' || id === 'straight') fx(o, FX.thrust(p.cells, rev), id === 'jab' ? 500 : 650);
-    else if (id === 'upper') fx(o, FX.prongFx(p.cells, rev), 700);
-    else if (id === 'kick') fx(o, FX.slashV(cols), 650);
-    else if (id === 'blade') { fx(o, FX.splat(p.cells, K.grn), 750); fx(o, FX.gdebris(p.cells, false), 750); }
-    else if (id === 'pebble') fx(o, FX.balls(p.cells, rev), 700);
-    else if (id === 'tray') { fx(o, FX.headFx(p.tg, rev), 700); if (p.bounce) floatText(o, p.tg, mE('튕겼다! +1', 'Bounce! +1'), 'f-warn', 300); }
-    else if (id === 'heel') fx(o, FX.smHammer(p.cells, p.heelJump ? 2 : 1), 750);
-    else if (id === 'show') { if (p.cells.length) { fx(o, FX.gbChips(p.cells, 2, true), 900); floatText(o, p.cells[0], mE('쇼타임!', 'Showtime!'), 'f-big f-sp'); } else floatText(k, p.to, mE('잔이 없다', 'No cups'), 'f-miss'); }
+    else if (id === 'jab' || id === 'straight') fx(o, FX.punchFx(p.cells, rev, id === 'straight'), id === 'jab' ? 600 : 750);
+    else if (id === 'upper') fx(o, FX.upperFx(p.cells), 800);
+    else if (id === 'kick') fx(o, FX.kickFx(p.cells, rev), 750);
+    else if (id === 'blade') fx(o, FX.bladeFx(p.cells, !!p.fast), 900);
+    else if (id === 'pebble') fx(o, FX.pebbleFx(p.cells, p.to), 800);
+    else if (id === 'tray') { fx(o, FX.trayFx(p.tg, rev, !!p.bounce), 850); if (p.bounce) floatText(o, p.tg, mE('튕겼다! +1', 'Bounce! +1'), 'f-warn', 300); }
+    else if (id === 'heel') fx(o, FX.heelFx(p.cells, p.to, !!p.heelJump), 800);
+    else if (id === 'show') { if (p.cells.length) { fx(o, FX.showFx(p.cells), 1100); floatText(o, p.cells[0], mE('쇼타임!', 'Showtime!'), 'f-big f-sp'); } else floatText(k, p.to, mE('잔이 없다', 'No cups'), 'f-miss'); }
     else if (id === 'spore') { fx(o, FX.drSeed(p.cells), 1000); later(() => play('vine'), WIND); }
     else if (id === 'slam' || id === 'bounce') fx(o, FX.splat(p.cells, K.vio), 650);
     else if (id === 'engulf') fx(o, FX.engulf(p.cells), 650);
@@ -6791,7 +6791,7 @@ async function runReplay(old, neu) {
     if (p.fast) floatText(k, p.to, mE('가속! 피해 +1', 'Speed! +1'), 'f-big f-move', 150);
     if (p.drunk) floatText(k, p.to, mE('취했지? 피해 +1', 'Tipsy! +1'), 'f-big f-sp', 150);
     if (p.heelJump) floatText(k, p.to, mE('깡충 킥! 피해 2', 'Hop kick! 2'), 'f-big f-sp', 150);
-    if (p.winked) { const t = rp.P[o].final != null ? rp.P[o].final : rp.P[o].to; floatText(o, t, mE('윙크! 비껴감', 'Wink! Deflected'), 'f-big f-sp'); fx(o, FX.sparkle(t, '#e8559a'), 700); }
+    if (p.winked) { const t = rp.P[o].final != null ? rp.P[o].final : rp.P[o].to; floatText(o, t, mE('윙크! 비껴감', 'Wink! Deflected'), 'f-big f-sp'); fx(o, FX.winkFx(t), 900); }
     if (p.eggN && (id === 'peck' || id === 'flap')) floatText(k, p.to, '알 ' + p.eggN + '개', 'f-yolk', 200);
     if (p.dare) floatText(k, p.to, '닭싸움!', 'f-big f-warn');
     if (p.both) floatText(o, p.tg, '되베기!', 'f-big f-warn');
@@ -7540,6 +7540,119 @@ Object.assign(FX, {
     for (let k = 0; k < 3; k++) { const v = t * 1.3 - k * 0.18; if (v < 0 || v > 1) continue; g.globalAlpha = 0.8 * (1 - v); circ(g, cx, cy - 6, 3 + v * 18, k % 2 ? K.brassl : K.wht, 2); circ(g, cx, cy - 6, 2 + v * 12, K.brass, 1); } g.globalAlpha = 1;
     if (t < 0.25) { twk(g, cx, cy - 6, 5, K.wht); D(g, cx - 1, cy - 30, K.brassl, 2, 22); }
   })),
+});
+
+/* ===== 3차 추가 직업 전용 이펙트: 격투가(주황 주먹), 잔디깎이(칼날과 잘린 풀), 바니걸(핑크 하트와 무대) ===== */
+Object.assign(K, { brw: '#e0782f', brwd: '#9a4a16', brwl: '#ffbe82', mow: '#6fb83f', mowd: '#3f7a22', mowl: '#aadc6e', pk: '#e8559a', pkd: '#a02a62', pkl: '#ffaacd', spot: '#fff3c4' });
+/* 주먹: 가로 5, 세로 4. dir 쪽을 향한다 */
+const fistG = (g, x, y, dir, big) => { const w = big ? 10 : 8, h = big ? 8 : 7, x0 = dir > 0 ? x - w + 1 : x, y0 = Math.round(y - h / 2);
+  D(g, x0, y0, K.brw, w, h); D(g, x0, y0 + h - 2, K.brwd, w, 2); D(g, dir > 0 ? x - 1 : x0, y0, K.brwd, 2, h);
+  for (let k = 1; k < 4; k++) D(g, dir > 0 ? x - 2 : x0 + 2, y0 + k * 2 - 1, K.brwd, 1, 1);
+  D(g, x0 + (dir > 0 ? 1 : w - 4), y0 + 1, K.brwl, 3, 1); D(g, dir > 0 ? x0 - 3 : x0 + w, y0 + 2, K.brwd, 3, h - 3); };
+const heartG = (g, x, y, c, s) => { s = s || 1; [[0, 0], [2, 0], [-1, 1], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [1, 3]].forEach(([a, b]) => D(g, x + a * s, y + b * s, c, s, s)); };
+const bladeG = (g, x, y, r, a, c1, c2) => { for (let k = 0; k < 4; k++) { const q = a + k * 1.5708; seg(g, x, y, x + Math.cos(q) * r, y + Math.sin(q) * r * 0.5, k % 2 ? c1 : c2, 2); } D(g, x - 1, y - 1, K.night || '#30232a', 3, 3); };
+Object.assign(FX, {
+  /* 격투가 */
+  punchFx: (cells, rev, big) => HI((g, t, f) => cells.forEach((i, n) => {
+    const dir = rev ? -1 : 1, [cx, cy] = m3(i), tt = t - n * 0.06; if (tt < 0) return;
+    const u = Math.min(1, tt / 0.22), x = cx - dir * 30 * (1 - u), y = cy - 10;
+    if (u < 1) { for (let k = 1; k <= 3; k++) { g.globalAlpha = 0.25 * (4 - k) / 3; fistG(g, x - dir * k * 6, y, dir, big); } g.globalAlpha = 1; fistG(g, x, y, dir, big); return; }
+    const v = Math.min(1, (tt - 0.22) / 0.5); if (v >= 1) return;
+    g.globalAlpha = 1 - v; fistG(g, cx + dir * 2, y, dir, big);
+    for (let j = 0; j < 8; j++) { const a = j * 0.785, r1 = 4 + v * 6, r2 = 8 + v * (big ? 16 : 12); seg(g, cx + Math.cos(a) * r1, y + Math.sin(a) * r1, cx + Math.cos(a) * r2, y + Math.sin(a) * r2, j % 2 ? K.brwl : K.wht, 1); }
+    circ(g, cx, y, 5 + v * (big ? 14 : 10), K.brw, 1); g.globalAlpha = 1;
+  })),
+  upperFx: cells => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), u = Math.min(1, t / 0.3), y = cy + 12 - 46 * u;
+    if (n === 0) { g.globalAlpha = 0.5 * (1 - t); D(g, cx - 3, y, K.brwl, 6, 46 * u); g.globalAlpha = 1; if (t < 0.6) { D(g, cx - 3, y - 6, K.brw, 6, 7); D(g, cx - 3, y, K.brwd, 6, 1); D(g, cx - 3, y - 6, K.brwl, 2, 1); } }
+    if (t > 0.25) { const v = Math.min(1, (t - 0.25) / 0.6); g.globalAlpha = 1 - v;
+      for (let k = 0; k < 2; k++) { const r = 6 + v * 14 + k * 6; seg(g, cx - r, cy - 8 - k * 4, cx, cy - 8 - r * 0.6 - k * 4, K.brw, 1); seg(g, cx, cy - 8 - r * 0.6 - k * 4, cx + r, cy - 8 - k * 4, K.brwl, 1); }
+      for (let j = 0; j < 5; j++) D(g, cx - 8 + j * 4, cy - 14 - v * 22 - rnd(j, i) * 8, j % 2 ? K.brwl : K.wht, 2, 2); g.globalAlpha = 1; }
+  })),
+  kickFx: (cells, rev) => HI((g, t, f) => {
+    const dir = rev ? -1 : 1, top = Math.min(...cells.map(R)), bot = Math.max(...cells.map(R)), c = C(cells[0]), cx = c * 32 + 16, y0 = top * 32 + 2, y1 = bot * 32 + 30, u = Math.min(1, t / 0.4);
+    const pts = []; for (let k = 0; k <= 20; k++) { const s = k / 20; pts.push([cx - dir * Math.sin(s * Math.PI) * 12, y0 + (y1 - y0) * s]); }
+    const n = Math.round(20 * u);
+    for (let k = 0; k < n; k++) { const [x, y] = pts[k], [x2, y2] = pts[k + 1]; g.globalAlpha = Math.max(0, 1 - t) * (0.35 + 0.65 * k / 20); seg(g, x - 3, y, x2 - 3, y2, k > n - 4 ? K.wht : K.brw, 3); seg(g, x + 1, y, x2 + 1, y2, K.brwl, 2); }
+    g.globalAlpha = 1;
+    if (u < 1) { const [x, y] = pts[n]; D(g, x - 5, y - 3, K.brw, 10, 6); D(g, x - 5, y + 2, K.brwd, 10, 1); D(g, x - 5, y - 3, K.brwl, 3, 1); }
+    else if (t < 0.8) { const v = (t - 0.4) / 0.4; for (let j = 0; j < 6; j++) D(g, cx - 10 + rnd(j, f) * 20, y1 - 2 - v * 8 * rnd(f, j), K.sil || '#b8b0a8', 2, 2); }
+  }),
+  grabFx: (cell, rev) => HI((g, t, f) => {
+    const [cx, cy] = m3(cell), y = cy - 10, u = Math.min(1, t / 0.3);
+    if (t < 0.45) { const gap = 16 * (1 - u); fistG(g, cx - gap - 2, y, 1, true); fistG(g, cx + gap + 2, y, -1, true); return; }
+    const v = Math.min(1, (t - 0.45) / 0.5), drop = Math.min(1, v * 3);
+    if (v < 0.35) { fistG(g, cx - 3, y + drop * 14, 1, true); fistG(g, cx + 3, y + drop * 14, -1, true); }
+    g.globalAlpha = 1 - v; ell(g, cx, cy + 8, 6 + v * 14, 2 + v * 3, K.sil || '#b8b0a8');
+    for (let j = 0; j < 8; j++) { const a = Math.PI + j * 0.4; D(g, cx + Math.cos(a) * (8 + v * 16), cy + 6 + Math.sin(a) * (4 + v * 10), j % 2 ? K.brw : K.ash || '#8a7d78', 2, 2); }
+    g.globalAlpha = 1;
+  }),
+  counterFx: cell => HI((g, t, f) => {
+    const [cx, cy] = m3(cell), fade = t > 0.7 ? (1 - t) / 0.3 : 1; g.globalAlpha = fade;
+    for (let k = 0; k < 2; k++) { const r = 12 + k * 4 + Math.sin(t * 12) * 1; for (let a = -1.2; a <= 1.2; a += 0.15) { D(g, cx + Math.cos(a) * r, cy - 12 + Math.sin(a) * r, k ? K.brwl : K.brw, 1, 1); D(g, cx - Math.cos(a) * r, cy - 12 + Math.sin(a) * r, k ? K.brwl : K.brw, 1, 1); } }
+    if (t < 0.35) twk(g, cx + 8, cy - 22, 3, K.wht); g.globalAlpha = 1;
+  }),
+  /* 잔디깎이 */
+  bladeFx: (cells, big) => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), tt = t - n * 0.08; if (tt < 0) return; const u = Math.min(1, tt / 0.7);
+    for (let s = 0; s < 4; s++) { g.globalAlpha = Math.min(1, u * 2) * (t > 0.8 ? (1 - t) / 0.2 : 1) * 0.8; D(g, cx - 14, cy - 12 + s * 7, s % 2 ? K.mowl : K.mow, 28, 3); }
+    g.globalAlpha = 1;
+    if (u < 0.75) { bladeG(g, cx, cy - 6, big ? 13 : 10, tt * 40, K.sil || '#b8b0a8', K.wht); circ(g, cx, cy - 6, big ? 14 : 11, K.mowd, 1); }
+    for (let j = 0; j < (big ? 10 : 7); j++) { const a = rnd(j, i) * 6.28, q = u * (8 + rnd(i, j) * 16); D(g, cx + Math.cos(a) * q, cy - 6 - Math.abs(Math.sin(a)) * q * 1.2 + u * u * 10, j % 3 ? K.mow : K.mowl, 1, 2); }
+  })),
+  pebbleFx: (cells, src) => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), [sx, sy] = m3(src), u = Math.min(1, t / 0.45), x = sx + (cx - sx) * u, y = sy + (cy - sy) * u - Math.sin(u * Math.PI) * 18 - 6;
+    if (u < 1) { D(g, x - 3, y - 2, K.ash || '#6f6460', 6, 5); D(g, x - 2, y - 3, K.ash || '#6f6460', 4, 1); D(g, x - 2, y - 2, K.sil || '#b8b0a8', 2, 1); for (let k = 1; k < 3; k++) { g.globalAlpha = 0.3; D(g, x - (cx - sx) * 0.06 * k - 1, y + k * 2, K.mowl, 2, 2); } g.globalAlpha = 1; return; }
+    const v = Math.min(1, (t - 0.45) / 0.45), by = cy - 2 - Math.sin(v * Math.PI) * 8; if (v >= 1) return;
+    D(g, cx - 2 + v * 6, by - 2, K.ash || '#6f6460', 5, 4); g.globalAlpha = 1 - v; circ(g, cx, cy + 2, 3 + v * 9, K.mowl, 2); if (v < 0.25) twk(g, cx, cy, 4, K.wht); g.globalAlpha = 1;
+  })),
+  clumpFx: cells => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), u = Math.min(1, (t - n * 0.07) / 0.4); if (u <= 0) return; const fade = t > 0.8 ? (1 - t) / 0.2 : 1, h = Math.round(9 * u);
+    g.globalAlpha = fade; ell(g, cx, cy + 8 - h / 2, 11, h / 2 + 1, K.mowd); ell(g, cx - 1, cy + 7 - h / 2, 9, h / 2, K.mow);
+    for (let j = 0; j < 7; j++) { const x = cx - 9 + j * 3; seg(g, x, cy + 6 - h, x + (j % 2 ? 2 : -2), cy + 2 - h - 3 * u, j % 2 ? K.mowl : K.mow, 1); } g.globalAlpha = 1;
+  })),
+  tuneFx: cell => HI((g, t, f) => {
+    const [cx, cy] = m3(cell), y = cy - 14 - t * 10; g.globalAlpha = t > 0.7 ? (1 - t) / 0.3 : 1;
+    circ(g, cx, cy - 10, 7, K.sil || '#b8b0a8', 2); for (let k = 0; k < 6; k++) { const a = k * 1.047 + t * 6; D(g, cx + Math.cos(a) * 9 - 1, cy - 10 + Math.sin(a) * 9 - 1, K.sil || '#b8b0a8', 3, 3); }
+    D(g, cx + 10, y, K.mow, 3, 4); D(g, cx + 11, y - 1, K.mow, 1, 1); D(g, cx + 10, y, K.mowl, 1, 2); g.globalAlpha = 1;
+  }),
+  /* 바니걸 */
+  trayFx: (cell, rev, bounce) => HI((g, t, f) => {
+    const dir = rev ? -1 : 1, [cx, cy] = m3(cell), u = Math.min(1, t / 0.35), x = cx - dir * 28 * (1 - u), y = cy - 12 - Math.sin(u * Math.PI) * 14, w = 3 + Math.round(Math.abs(Math.cos(t * 30)) * 5);
+    const tray = (x, y, w) => { D(g, x - w, y - 1, '#e6e0e6', w * 2 + 1, 3); D(g, x - w, y + 2, '#a89aa6', w * 2 + 1, 1); D(g, x - w - 1, y - 1, '#5a4644', 1, 4); D(g, x + w + 1, y - 1, '#5a4644', 1, 4); D(g, x - w, y + 3, '#5a4644', w * 2 + 1, 1); D(g, x - w + 1, y - 2, K.wht, Math.max(1, w), 1); D(g, x + w - 2, y - 1, K.pkl, 2, 1); };
+    if (u < 1) { tray(x, y, 4 + Math.round(Math.abs(Math.cos(t * 26)) * 7)); g.globalAlpha = 0.35; D(g, x - dir * 12, y, K.pkl, 8, 1); D(g, x - dir * 16, y + 3, K.pkl, 6, 1); g.globalAlpha = 1; return; }
+    const v = (t - 0.35) / 0.65, bx = cx + dir * v * 14, by = cy - 12 - (bounce ? Math.sin(Math.min(1, v * 1.4) * Math.PI) * 16 : -v * 10);
+    if (v < 0.25) { for (let j = 0; j < 8; j++) { const a = j * 0.785; D(g, cx + Math.cos(a) * (6 + v * 20), cy - 12 + Math.sin(a) * (6 + v * 20), j % 2 ? K.pkl : K.wht, 2, 2); } }
+    g.globalAlpha = 1 - v; tray(bx, by, 7); g.globalAlpha = 1; if (v < 0.2) { twk(g, cx, cy - 12, 7, K.wht); twk(g, cx, cy - 12, 4, K.pkl); }
+  }),
+  heelFx: (cells, src, big) => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), main = i === src, u = Math.min(1, t / 0.2);
+    if (main) { if (u < 1) { g.globalAlpha = 0.5; seg(g, cx + 14, cy - 44, cx + 4, cy - 34 + 30 * u, K.pkl, 3); g.globalAlpha = 1; D(g, cx - 2, cy - 34 + 30 * u, K.pk, 7, 5); D(g, cx + 3, cy - 30 + 30 * u, K.pkd, 2, 6); D(g, cx - 2, cy - 34 + 30 * u, K.pkl, 3, 1); return; }
+      if (t < 0.32) { twk(g, cx, cy - 4, 9, K.wht); twk(g, cx, cy - 4, 5, K.pk); }
+      const v = Math.min(1, (t - 0.2) / 0.6); if (v >= 1) return; g.globalAlpha = 1 - v;
+      for (let j = 0; j < 8; j++) { const a = j * 0.785, r = 4 + v * (big ? 18 : 13); seg(g, cx + Math.cos(a) * 3, cy - 4 + Math.sin(a) * 3, cx + Math.cos(a) * r, cy - 4 + Math.sin(a) * r * 0.7, j % 2 ? K.pkl : K.pk, 2); }
+      heartG(g, cx - 3, cy - 14 - v * 14, K.pk, 2);
+      circ(g, cx, cy - 4, 4 + v * 10, K.pk, 1); g.globalAlpha = 1; return; }
+    const v = Math.min(1, Math.max(0, (t - 0.22) / 0.5)); if (v <= 0 || v >= 1) return;
+    g.globalAlpha = 1 - v; circ(g, cx, cy + 2, 3 + v * 9, K.pkl, 1); D(g, cx - 1, cy - 2 - v * 6, K.pk, 2, 2); g.globalAlpha = 1;
+  })),
+  showFx: cells => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), on = Math.min(1, t / 0.2), fade = t > 0.75 ? (1 - t) / 0.25 : 1;
+    g.globalAlpha = 0.35 * on * fade; for (let y = 0; y < 46; y += 2) { const w = 3 + y * 0.28; D(g, cx - w, cy - 40 + y, K.spot, w * 2, 2); } g.globalAlpha = fade;
+    if (t > 0.2) { const v = (t - 0.2) / 0.8; for (let j = 0; j < 4; j++) { const a = j * 1.57 + n, q = 4 + v * 14; heartG(g, cx + Math.cos(a) * q - 2, cy - 8 + Math.sin(a) * q * 0.6 - v * 10, j % 2 ? K.pk : K.pkl); } }
+    for (let j = 0; j < 4; j++) twk(g, cx - 10 + rnd(j, i) * 20, cy - 30 + rnd(i, j + f % 3) * 24, 1, j % 2 ? K.pkl : K.spot); g.globalAlpha = 1;
+  })),
+  cupFx: cell => HI((g, t, f) => {
+    const [cx, cy] = m3(cell), u = Math.min(1, t / 0.25), y = cy - 4 - 12 * (1 - u), fade = t > 0.8 ? (1 - t) / 0.2 : 1; g.globalAlpha = fade;
+    D(g, cx - 7, y - 14, K.sil || '#d8d0d8', 15, 2); D(g, cx - 6, y - 12, K.pk, 13, 3); D(g, cx - 4, y - 9, K.pk, 9, 2); D(g, cx - 2, y - 7, K.pkd, 5, 2); D(g, cx - 5, y - 12, K.pkl, 2, 1);
+    D(g, cx - 1, y - 5, K.sil || '#d8d0d8', 2, 6); D(g, cx - 4, y + 1, K.sil || '#d8d0d8', 9, 2); D(g, cx + 4, y - 17, K.pkd, 1, 4); D(g, cx + 3, y - 18, K.lime || '#93b830', 3, 2);
+    if (t > 0.2) twk(g, cx + 9, y - 16, 2, K.pkl); g.globalAlpha = 1;
+  }),
+  winkFx: cell => HI((g, t, f) => {
+    const [cx, cy] = m3(cell), u = Math.min(1, t / 0.5), fade = t > 0.75 ? (1 - t) / 0.25 : 1; g.globalAlpha = fade;
+    heartG(g, cx + 4 + u * 10, cy - 26 - u * 8, K.pk, 2); for (let j = 0; j < 10; j++) { const a = j * 0.628 + t * 3, r = 10 + u * 6; D(g, cx + Math.cos(a) * r, cy - 12 + Math.sin(a) * r * 0.7, j % 2 ? K.pkl : K.pk, 1, 1); }
+    g.globalAlpha = 1;
+  }),
 });
 
 /* ===== 마법사의 마력 방출 이펙트 ===== */
@@ -8308,9 +8421,9 @@ BGM.t_march = { v2: true, sp: 0.15, kit: 'war', bass: 'hold', lw: 'sawtooth', lv
 
 /* ---------- 직업 미리보기: 대표 카드 이펙트를 작은 진영에서 돌려 보여 준다 ---------- */
 const PVSET = {
-  brawler: () => [['straight', [FX.thrust([3, 4, 5], false)], 650], ['upper', [FX.prongFx([4, 1], false)], 700]],
-  mower: () => [['blade', [FX.splat([3, 4, 5], K.grn)], 700], ['pebble', [FX.balls([0, 2, 4, 6, 8], false)], 700]],
-  bunny: () => [['tray', [FX.headFx(4, false)], 700], ['show', [FX.gbChips([1, 3, 4, 5, 7], 2, true)], 800]],
+  brawler: () => [['straight', [FX.punchFx([3, 4, 5], false, true)], 750], ['upper', [FX.upperFx([4, 1])], 800], ['kick', [FX.kickFx([1, 4, 7], false)], 750]],
+  mower: () => [['blade', [FX.bladeFx([3, 4, 5], true)], 900], ['pebble', [FX.pebbleFx([0, 2, 6, 8], 4)], 800], ['clump', [FX.clumpFx([3, 4, 5])], 900]],
+  bunny: () => [['tray', [FX.trayFx(4, false, true)], 850], ['heel', [FX.heelFx([1, 3, 4, 5, 7], 4, true)], 800], ['show', [FX.showFx([1, 3, 4, 5, 7])], 1100]],
   mage: () => [['meteor', [FX.meteor([1, 3, 4, 5, 7])], 1000], ['bolt', [FX.bolt(1)], 650]], samurai: () => [['hslash', [FX.slashH([1], false)], 650], ['vslash', [FX.slashV([1])], 650]],
   mechanic: () => [['rail', [FX.rail(1)], 700], ['mine', [FX.boom([4])], 700]], druid: () => [['vine', [FX.vine([1], false)], 700], ['spore', [FX.spore([3, 4, 5], true)], 700]],
   slime: () => [['slam', [FX.splat([3, 4, 5], K.vio)], 650], ['engulf', [FX.engulf([4])], 650]], archaeologist: () => [['shovel', [FX.shovelFx([4], false)], 650]],
@@ -9459,10 +9572,10 @@ function stOverHTML(won) {
      칸을 물들이는 색(tint)은 항상 바닥으로 보내고, 타격과 폭발에는 복셀 파편을 더한다. */
   const GM = (function () { try { return { FX: FX, FXQ: FXQ, K: K }; } catch (e) { return null; } })();
   const FX0 = {}, MODE = {};
-  [['c', 'mgMotes mgFire mgSky drSeed drBurst asConStar asNovaArm asCometR asConstel blJet blPop blHelium mfProng mfHarpoon gbChips smHammer smSkewer smErupt gdebris surgeRing shardFx twinFx kaleidoCast kaleidoFx tickFx clockCast clockBoom bellFx echoFx biteFx bspearFx batsFx feastFx arrowFx volleyFx pickFx wispCast wispFx ghandFx boom fireCast meteor markPop thrust whiff spore splat engulf shovelFx heavy rubble balls notes sparks talisFx sickleFx peckFx eggBreak prongFx'],
-    ['c1', 'castRing clBoxPop asStar asNova asComet asLens asHole asHoleBurst blInflate blBang blKnot mfBubble mfDive mfSurf gbWheel gbCoin gbAllin gbBluff gbPot smOpus smAnvil smStoke gplungeFx gblockFx gstomp surgeCharge surgeFx copyFx flipFx haltFx mistFx drainFx bloodPay tagFx preyFx nooseFx nooseSnap ambushFx coffinFx quakeFx parryReady clash guard guardOk dust sparkle hit crumble place hookFx bramble thornHit healFx dirt pillarFx headFx starFx splash'],
+  [['c', 'punchFx upperFx bladeFx pebbleFx clumpFx heelFx showFx mgMotes mgFire mgSky drSeed drBurst asConStar asNovaArm asCometR asConstel blJet blPop blHelium mfProng mfHarpoon gbChips smHammer smSkewer smErupt gdebris surgeRing shardFx twinFx kaleidoCast kaleidoFx tickFx clockCast clockBoom bellFx echoFx biteFx bspearFx batsFx feastFx arrowFx volleyFx pickFx wispCast wispFx ghandFx boom fireCast meteor markPop thrust whiff spore splat engulf shovelFx heavy rubble balls notes sparks talisFx sickleFx peckFx eggBreak prongFx'],
+    ['c1', 'grabFx counterFx tuneFx trayFx cupFx winkFx castRing clBoxPop asStar asNova asComet asLens asHole asHoleBurst blInflate blBang blKnot mfBubble mfDive mfSurf gbWheel gbCoin gbAllin gbBluff gbPot smOpus smAnvil smStoke gplungeFx gblockFx gstomp surgeCharge surgeFx copyFx flipFx haltFx mistFx drainFx bloodPay tagFx preyFx nooseFx nooseSnap ambushFx coffinFx quakeFx parryReady clash guard guardOk dust sparkle hit crumble place hookFx bramble thornHit healFx dirt pillarFx headFx starFx splash'],
     ['a', 'gchopFx gcleaveFx tornado diceFx scry sand sunFx blink batMove rewindFx'], ['r', 'driveFx slashH vine turretFire snowFx gazeFx pieFx waveFx'], ['r1', 'turretUp gsweepFx gbDice mfWave'], ['rows3', 'wolves gust'],
-    ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx'], ['ground', 'mgCircle asConLine asCometCast gbRoulette smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
+    ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx kickFx'], ['ground', 'mgCircle asConLine asCometCast gbRoulette smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
   ].forEach(function (m) { m[1].split(' ').forEach(function (n) { MODE[n] = m[0]; }); });
   const ANCH = {
     tornado: function (a) { const c = a[0] || []; let q = null; try { q = c.find(function (i) { return c.every(function (j) { return around(i).includes(j); }); }); } catch (e) { /* 무시 */ } return q != null ? q : c[0]; },
@@ -9537,7 +9650,8 @@ function stOverHTML(won) {
   }
   /* 이름 → [시작 시점, 개수, 색(문자는 K의 색 이름, 숫자는 인자 번호), 퍼지는 속도, 솟는 속도, 중력] */
   const PT = { mgFire: [0.34, 12, ['org', 'yel', 'red'], 3.2, 3.6], drBurst: [0.22, 7, ['grn', 'lime'], 1.6, 2.2, -0.6], clBoxPop: [0.1, 10, ['mag', 'yel', 'blue'], 2.8, 3.4], asConStar: [0.52, 7, ['star', 'wht', 'yel'], 2.4, 2.8], asStar: [0.36, 6, ['star', 'wht'], 2, 2.6], asNova: [0.38, 16, ['star', 'wht', 'org'], 3.6, 3.4], asNovaArm: [0.42, 5, ['star', 'wht'], 2, 2.6], asComet: [0.4, 16, ['lblue', 'wht', 'star'], 3.6, 3.6], asCometR: [0.44, 6, ['lblue', 'wht'], 2.2, 2.6], asHoleBurst: [0.16, 16, ['nebl', 'wht', 'star'], 3.4, 4.2], blPop: [0.02, 4, ['coral', 'wht', 'yel'], 3, 3], blBang: [0, 12, ['coral', 'wht'], 3.2, 3], blJet: [0.25, 5, ['wht', 'gray'], 2.2, 1.6], mfProng: [0.2, 6, ['mint', 'lblue', 'foam'], 2, 2.6], mfHarpoon: [0.3, 6, ['mint', 'lblue', 'foam'], 2, 2.8], mfSurf: [0.1, 12, ['mint', 'lblue', 'foam'], 2.4, 4.2], mfWave: [0.36, 12, ['mint', 'lblue', 'foam'], 3, 3], mfDive: [0.1, 8, ['mint', 'foam'], 2, 3], gbChips: [0.24, 8, ['lime', 'gold', 'red', 'card'], 2.8, 3.4], gbCoin: [0.4, 10, ['gold', 'goldd', 'wht'], 3, 3.4], gbAllin: [0.5, 22, ['lime', 'gold', 'red', 'card'], 4.2, 4.2], smHammer: [0.2, 7, ['molt', 'yel', 'wht'], 2.8, 3.4], smSkewer: [0.08, 6, ['gray', 'ember', 'molt'], 2, 3], smErupt: [0.1, 10, ['molt', 'yel', 'red'], 2.8, 4.2], smOpus: [0.3, 22, ['wht', 'yel', 'molt', 'ember'], 4.4, 4.4], smAnvil: [0.24, 8, ['molt', 'yel', 'wht'], 2.4, 3], gdebris: [0.04, 9, ['gray', 'ash', 'steel'], 2.8, 3.4], gsweepFx: [0.4, 12, ['gray', 'steel', 'edge'], 3.6, 2.6], gplungeFx: [0.26, 14, ['gray', 'steel', 'edge'], 3.6, 3.4], gblockFx: [0.07, 7, ['gray', 'ash'], 1.8, 2], gstomp: [0, 4, ['gray', 'ash'], 1.2, 1.2], surgeFx: [0.1, 16, ['blue', 'lblue', 'wht'], 3.4, 3.8], surgeRing: [0.25, 6, ['lblue', 'wht'], 2, 2.4], surgeCharge: [0.5, 5, ['lblue', 'wht'], 0.6, 1.6, -1.2], shardFx: [0.3, 10, ['glass', 'glassl', 'wht'], 2.6, 2.8], twinFx: [0.15, 7, ['glass', 'wht'], 1.4, 3.2, -0.6], kaleidoFx: [0.18, 14, ['glass', 'mag', 'yel', 'vio'], 3, 3.2], flipFx: [0, 6, ['glass', 'wht'], 1.2, 1.8, -1],
-    tickFx: [0.2, 7, ['brass', 'brassl', 'wht'], 2.2, 2.6], clockBoom: [0.35, 12, ['brass', 'brassl', 'red'], 3, 3.2], bellFx: [0.12, 9, ['brass', 'brassl'], 2.6, 2.6], echoFx: [0.02, 5, ['brassl', 'wht'], 1.4, 2], haltFx: [0, 6, ['brass', 'wht'], 0.6, 1.2, -0.8], biteFx: [0.3, 10, ['blood', 'bloodd', 'bloodl'], 2.4, 2.8], bspearFx: [0.34, 9, ['blood', 'bloodl'], 2.2, 3], feastFx: [0.45, 4, ['blood', 'bloodd'], 1.2, 1.6], drainFx: [0.1, 6, ['blood', 'bloodl'], 0.5, 1.6, -1.2], bloodPay: [0, 5, ['blood', 'bloodd'], 1.6, 2.2],
+    tickFx: [0.2, 7, ['brass', 'brassl', 'wht'], 2.2, 2.6], punchFx: [0.22, 7, ['brw', 'brwl', 'wht'], 2.6, 2.4], upperFx: [0.28, 9, ['brw', 'brwl', 'wht'], 1.8, 4], grabFx: [0.5, 12, ['ash', 'sil', 'brw'], 3, 2.2], kickFx: [0.4, 6, ['sil', 'brwl'], 2, 2.2],
+    bladeFx: [0.1, 12, ['mow', 'mowl', 'mowd'], 2.6, 3.4], pebbleFx: [0.45, 4, ['gray', 'sil'], 1.6, 2.4], clumpFx: [0.15, 6, ['mow', 'mowl'], 1.2, 2], trayFx: [0.35, 6, ['pkl', 'sil'], 2.2, 2.6], heelFx: [0.2, 10, ['pk', 'pkl', 'wht'], 2.8, 2.8], showFx: [0.25, 12, ['pk', 'pkl', 'spot'], 2, 3.6], clockBoom: [0.35, 12, ['brass', 'brassl', 'red'], 3, 3.2], bellFx: [0.12, 9, ['brass', 'brassl'], 2.6, 2.6], echoFx: [0.02, 5, ['brassl', 'wht'], 1.4, 2], haltFx: [0, 6, ['brass', 'wht'], 0.6, 1.2, -0.8], biteFx: [0.3, 10, ['blood', 'bloodd', 'bloodl'], 2.4, 2.8], bspearFx: [0.34, 9, ['blood', 'bloodl'], 2.2, 3], feastFx: [0.45, 4, ['blood', 'bloodd'], 1.2, 1.6], drainFx: [0.1, 6, ['blood', 'bloodl'], 0.5, 1.6, -1.2], bloodPay: [0, 5, ['blood', 'bloodd'], 1.6, 2.2],
     arrowFx: [0.28, 6, ['sand', 'gray', 'rope'], 2, 2.4], volleyFx: [0.4, 5, ['sand', 'gray'], 2, 2.2], preyFx: [0, 9, ['red', 'wht'], 2.8, 2.4], nooseSnap: [0.25, 5, ['rope', 'yel'], 1.8, 2.2], ambushFx: [0, 6, ['pine', 'grn'], 1.6, 2.6],
     pickFx: [0.28, 10, ['gray', 'ash', 'sil'], 2.8, 3.2], wispFx: [0.1, 12, ['wisp', 'wispd', 'wht'], 1.2, 2.4, -1.6], ghandFx: [0.2, 5, ['sil', 'bone'], 1.6, 2.2], quakeFx: [0.02, 16, ['gray', 'sil', 'ash'], 3.2, 3.8], coffinFx: [0.02, 6, ['ash', 'sil'], 1.6, 1.4], hit: [0, 12, ['red', 'org', 'wht'], 3.2, 2.8], boom: [0.12, 12, ['org', 'yel', 'red'], 3.4, 3.4], meteor: [0.4, 18, ['org', 'red', 'sil', 'yel'], 4.2, 4], sparks: [0, 10, ['ember', 'yel'], 3, 3.2],
     clash: [0, 9, ['amb', 'wht'], 3, 2.6], rubble: [0.5, 6, ['gray', 'ash'], 1.6, 1.4], dirt: [0.05, 9, ['sand', 'sandd'], 2, 3.2], crumble: [0, 9, ['ash', 'sil'], 1.4, 1.2], eggBreak: [0, 7, ['wht', 'yolk'], 2.2, 2.6],
