@@ -2669,7 +2669,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .tok.cup { color: #a02a62; }
 .pips.fuel i.f { background: #6fb83f; box-shadow: inset 0 -2px 0 #3f7a22; }
 /* 잔디깎이가 깎은 칸: 잔디밭 줄무늬 */
-.cell.mowed:not(.wx):not(.warn):not(.crack):not(.sandw):not(.ice):not(.pd)::before { content: ''; position: absolute; inset: 0; z-index: 1; background: repeating-linear-gradient(90deg, rgba(111, 184, 63, .34) 0 calc(5 * var(--u, 1px)), rgba(170, 220, 110, .2) calc(5 * var(--u, 1px)) calc(10 * var(--u, 1px))); box-shadow: inset 0 0 0 calc(2 * var(--u, 1px)) rgba(63, 122, 34, .45); pointer-events: none; }
+.cell.mowed:not(.wx):not(.warn):not(.crack):not(.sandw):not(.blk):not(.pd)::before { content: ''; position: absolute; inset: 0; z-index: 1; background: repeating-linear-gradient(90deg, rgba(111, 184, 63, .34) 0 calc(5 * var(--u, 1px)), rgba(170, 220, 110, .2) calc(5 * var(--u, 1px)) calc(10 * var(--u, 1px))); box-shadow: inset 0 0 0 calc(2 * var(--u, 1px)) rgba(63, 122, 34, .45); pointer-events: none; }
 /* ===== 폰 세로 전용: 직업 선택 =====
    통째로 줄이지 않는다. 위에서부터 무대 → 한 줄로 넘기는 초상화 → 설명(안에서 스크롤) → 화면 아래에 붙은 확정 버튼 */
 @media (max-width: 640px) and (orientation: portrait) {
@@ -2735,6 +2735,18 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 }
 .tok.tray { color: #8a7d88; }
 .cell.traygo { box-shadow: inset 0 0 0 calc(2 * var(--u, 1px)) rgba(232, 85, 154, .6); }
+/* 막힌 칸: 기술마다 다르게. 빙결은 얼음(.ice), 잔디 뭉치는 풀 더미, 기둥은 기둥 둘레의 금 간 돌바닥 */
+.cell.blk-grass::before { content: ''; position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background: radial-gradient(ellipse 34% 20% at 30% 78%, #3f7a22 0 60%, transparent 62%), radial-gradient(ellipse 30% 18% at 68% 74%, #4f8c2c 0 60%, transparent 62%), radial-gradient(ellipse 26% 16% at 50% 60%, #6fb83f 0 60%, transparent 62%),
+    repeating-linear-gradient(100deg, transparent 0 calc(5 * var(--u, 1px)), rgba(111, 184, 63, .55) calc(5 * var(--u, 1px)) calc(7 * var(--u, 1px)));
+  box-shadow: inset 0 0 0 calc(3 * var(--u, 1px)) rgba(63, 122, 34, .7); }
+.cell.blk-grass::after { content: '잔디 더미'; position: absolute; inset: auto 0 2px 0; z-index: 6; text-align: center; font-size: 11px; color: #2f5a18; text-shadow: 0 1px 0 rgba(255, 255, 255, .7); }
+html[lang=en] .cell.blk-grass::after { content: 'Grass'; }
+.cell.blk-pil::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(circle at 50% 55%, transparent 0 28%, rgba(120, 104, 100, .45) 30% 44%, transparent 46%),
+  linear-gradient(35deg, transparent 47%, rgba(90, 70, 68, .55) 48% 50%, transparent 51%), linear-gradient(-50deg, transparent 47%, rgba(90, 70, 68, .45) 48% 50%, transparent 51%); box-shadow: inset 0 0 0 calc(3 * var(--u, 1px)) rgba(120, 104, 100, .6); }
+.cell.ice::after { content: '얼음'; position: absolute; inset: auto 0 2px 0; z-index: 6; text-align: center; font-size: 11px; color: #3f6f98; text-shadow: 0 1px 0 rgba(255, 255, 255, .8); }
+html[lang=en] .cell.ice::after { content: 'Ice'; }
+.cell.mv.blk::after { content: ''; }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -3421,7 +3433,7 @@ function draw(p) {
 
 /* 한 턴 해결: 특수 → 이동 → 갈고리·분열·발굴·지뢰 → 예고 폭발 → 공격·포탑 → 피해 → 정리 */
 function resolve(s, plans) {
-  const ev = [], fx = { a: [], b: [] }, X = {}, nextBlk = { a: [], b: [] }, KS = ['a', 'b'];
+  const ev = [], fx = { a: [], b: [] }, X = {}, nextBlk = { a: [], b: [] }, nextBlkT = { a: {}, b: {} }, KS = ['a', 'b'];
   const rp = { P: {}, ex: [], R: {} }, hp0 = {};
   for (const k of KS) {
     const p = s.P[k], pl = sanitize(s, k, plans[k]);
@@ -3489,7 +3501,7 @@ function resolve(s, plans) {
     if (id === 'parry') { x.parry = true; ev.push([k, '받아넘기기를 준비했다']); }
     if (id === 'scry') { p.see = s.turn + 1; ev.push([k, '투시로 상대 손패를 엿본다']); }
     if (id === 'regroup') { x.regroup = true; rp.P[k].regroup = p.hand.filter(c => !CARDS[c].relic).length; ev.push([k, '재정비로 손패를 갈았다']); }
-    if (id === 'frost') nextBlk[o] = cellsOf('frost', pl.tg);
+    if (id === 'frost') { nextBlk[o] = cellsOf('frost', pl.tg); nextBlk[o].forEach(c => { nextBlkT[o][c] = 'ice'; }); }
     if (id === 'mine') { p.mines = p.mines.filter(m => m !== pl.tg); p.mines.push(pl.tg); if (p.mines.length > TRAP_MAX) p.mines.shift(); ev.push([k, '지뢰를 숨겼다']); }
     if (id === 'turret') { p.turrets.push({ r: pl.tg, until: s.turn + 1 }); ev.push([k, '포탑을 세웠다']); }
     if (id === 'bramble') { p.brambles = p.brambles.filter(m => m !== pl.tg); p.brambles.push(pl.tg); if (p.brambles.length > 2) p.brambles.shift(); ev.push([k, '가시덤불을 심었다']); }
@@ -3590,7 +3602,7 @@ function resolve(s, plans) {
       else if (p.eggs.length >= 3) { rp.P[k].lay = -2; ev.push([k, '알 낳기. 알이 이미 3개다']); }
       else { p.eggs.push(p.pos); rp.P[k].lay = p.pos; ev.push([k, '알을 낳았다']); }
     }
-    if (id === 'clump') { const path = pathCells(X[k].from, X[k].to); nextBlk[o] = uniq([...nextBlk[o], ...path]); rp.P[k].clump = path; ev.push([k, '지나간 길에 잔디 뭉치를 쌓았다']); }
+    if (id === 'clump') { const path = pathCells(X[k].from, X[k].to); nextBlk[o] = uniq([...nextBlk[o], ...path]); path.forEach(c => { nextBlkT[o][c] = nextBlkT[o][c] || 'grass'; }); rp.P[k].clump = path; ev.push([k, '지나간 길에 잔디 뭉치를 쌓았다']); }
     if (id === 'scare') {
       const q = s.P[o], ok = !X[o].dive && (R(q.pos) === R(p.pos) || C(q.pos) === C(p.pos));
       if (ok) { q.rooted = s.turn + 1; rp.R[o].rooted = true; }
@@ -3917,8 +3929,8 @@ function resolve(s, plans) {
     if (p.boss === 'mid' && !p.raged && p.hp <= hpMaxOf(p) / 2) { p.raged = true; p.bossRage = s.turn; rp.R[k].enrage = true; ev.push([k, '분노했다. 다음 턴 공격 피해 +1']); }
     if (p.boss === 'final' && s.turn % 3 === 0 && s.P[o].hp > 0) { const row = Math.floor(Math.random() * 3); s.pend.push({ t: o, cells: rowOf(row), d: 2, at: s.turn, n: '보스의 일격', id: 'bossrow' }); rp.bossRow = { t: o, row }; ev.push([k, '보스의 일격을 예고했다']); }
   }
-  for (const k of KS) { const q = s.P[opp(k)]; q.pillars = q.pillars.filter(z => z.until >= s.turn); nextBlk[k] = uniq([...nextBlk[k], ...q.pillars.map(z => z.c)]); }
-  s.blk = nextBlk;
+  for (const k of KS) { const q = s.P[opp(k)]; q.pillars = q.pillars.filter(z => z.until >= s.turn); nextBlk[k] = uniq([...nextBlk[k], ...q.pillars.map(z => z.c)]); q.pillars.forEach(z => { nextBlkT[k][z.c] = 'pil'; }); }
+  s.blk = nextBlk; s.blkT = nextBlkT;   /* 막힌 칸의 종류: ice(빙결) · grass(잔디 뭉치) · pil(기둥) */
   if (s.warn != null) { s.col.push(s.warn); s.warn = null; }
   { const due = s.crack.filter(q => q.at < s.turn); if (due.length) { rp.fall = []; for (const q of due) if (!s.col.includes(q.c)) { s.col.push(q.c); rp.fall.push(q.c); } s.crack = s.crack.filter(q => q.at >= s.turn); } }
   if (s.turn >= COLLAPSE_FROM - 1) { const left = ALL.filter(i => !s.col.includes(i)); if (left.length) s.warn = pick(left); }
@@ -5044,7 +5056,7 @@ function boardHTML(k) {
   for (const i of ALL) {
     const cl = ['cell', 'px', `a-t${(R(i) + C(i)) % 2 + (i % 3 === (k === 'a' ? 0 : 1) ? 2 : 0)}`];
     if (G.col.includes(i)) cl.push('gone'); else if (G.warn === i) cl.push('warn'); else if ((G.crack || []).some(q => q.c === i)) cl.push('crack');
-    if (G.blk[k].includes(i)) cl.push('ice');
+    if (G.blk[k].includes(i)) { const bt = ((G.blkT || {})[k] || {})[i] || 'ice'; cl.push('blk', 'blk-' + bt); if (bt === 'ice') cl.push('ice'); }
     if (p.dug.includes(i)) cl.push('dug');
     if (p.cls === 'mower' && (p.mowed || []).includes(i)) cl.push('mowed');   /* 잔디깎이: 연료를 얻은(깎은) 칸 */
     if (wx && wx.t !== 'heatw' && (wx.t === 'storm' ? C(i) : R(i)) === wx.i) cl.push('wx', 'wx-' + wx.t);
@@ -9607,6 +9619,17 @@ function stOverHTML(won) {
     if (s.hover && !s.aim) { g.fillStyle = 'rgba(255,255,255,.2)'; g.fillRect(0, 0, 32, 32); ring(g, '#ffffff', 0, 1); } else if (s.hover) ring(g, '#ffffff', 3, 1);
     t.tex.needsUpdate = true;
   }
+  /* 막힌 칸 소품: 잔디 더미(잔디깎이), 기둥 둘레 돌무더기(석고상). 얼음(빙결)은 반투명 얼음 상자 */
+  function grassMound() {
+    const g = new T.Group(), M1 = PM.gm1 || (PM.gm1 = lam(0x3f7a22)), M2 = PM.gm2 || (PM.gm2 = lam(0x6fb83f)), M3 = PM.gm3 || (PM.gm3 = lam(0xaadc6e));
+    [[-0.18, -0.12, 0.26, 0.2], [0.16, -0.06, 0.24, 0.18], [0, 0.16, 0.28, 0.22], [-0.2, 0.2, 0.18, 0.14], [0.22, 0.22, 0.18, 0.14]].forEach(function (q, i) {
+      const m = new T.Mesh(new T.SphereGeometry(q[2], 6, 4, 0, PI * 2, 0, PI / 2), i % 2 ? M1 : M2); m.scale.y = q[3] / q[2] * 1.6; m.position.set(q[0], 0, q[1]); g.add(m); });
+    for (let i = 0; i < 9; i++) { const a = i * 0.7, r = 0.1 + (i % 3) * 0.1, m = new T.Mesh(new T.ConeGeometry(0.035, 0.26 + (i % 2) * 0.1, 4), i % 3 ? M2 : M3); m.position.set(Math.cos(a) * r, 0.3, Math.sin(a) * r); m.rotation.z = (i % 2 ? 0.25 : -0.25); g.add(m); }
+    return g; }
+  function rubbleRing() {
+    const g = new T.Group(), M = PM.rub || (PM.rub = lam(0x8a7d78)), Md = PM.rubd || (PM.rubd = lam(0x5a4644));
+    for (let i = 0; i < 8; i++) { const a = i * 0.785 + 0.3, r = 0.34, m = new T.Mesh(new T.BoxGeometry(0.09 + (i % 3) * 0.03, 0.06 + (i % 2) * 0.04, 0.08), i % 2 ? M : Md); m.position.set(Math.cos(a) * r, 0.04, 0.1 + Math.sin(a) * r * 0.9); m.rotation.y = a; g.add(m); }
+    return g; }
   /* 칸 위의 설치물: 토큰 종류마다 작은 3D 소품 */
   const PM = {};
   const lam = (c, o) => new T.MeshLambertMaterial(Object.assign({ color: c }, o || {}));
@@ -9632,7 +9655,7 @@ function stOverHTML(won) {
       m = new T.Mesh(new T.CylinderGeometry(0.025, 0.025, 0.22, 6), PM.stem || (PM.stem = lam(0x5a4644))); m.position.set(0.24, 0.12, -0.04); g.add(m);
       m = new T.Mesh(new T.ConeGeometry(0.19, 0.2, 10, 1, true), G); m.rotation.x = PI; m.position.set(0.24, 0.33, -0.04); g.add(m);
       m = new T.Mesh(new T.ConeGeometry(0.15, 0.15, 10), L); m.rotation.x = PI; m.position.set(0.24, 0.355, -0.04); g.add(m);
-      m = new T.Mesh(new T.IcosahedronGeometry(0.045, 0), PM.cherry || (PM.cherry = lam(0xc2304f, { emissive: 0x4a0e1a }))); m.position.set(0.31, 0.47, -0.04); g.add(m); g.userData.bob = m; }
+      m = new T.Mesh(new T.IcosahedronGeometry(0.045, 0), PM.cherry || (PM.cherry = lam(0xc2304f, { emissive: 0x4a0e1a }))); m.position.set(0.31, 0.47, -0.04); g.add(m); }
     else if (kind === 'tray') {   /* 떨어진 쟁반: 은빛 원반이 비스듬히 바닥에 */
       const S = PM.tray || (PM.tray = lam(0xd8d0d8, { emissive: 0x2a2228 })), Sd = PM.trayd || (PM.trayd = lam(0x8a7d88));
       m = new T.Mesh(new T.CylinderGeometry(0.23, 0.23, 0.03, 14), S); m.position.set(-0.06, 0.05, -0.24); m.rotation.set(0.18, 0, 0.12); g.add(m);
@@ -10271,7 +10294,9 @@ function stOverHTML(won) {
       t.ov.visible = !gone || s.mv || s.dest || s.aim || s.tg || hv;
       const sig = (s.mv ? 'm' : '') + (s.dest ? 'd' : '') + (s.aim ? 'a' : '') + (s.was ? 'w' : '') + (s.warn ? 'W' + blink : '') + (s.wx ? 'x' : '') + (s.sand ? 's' : '') + (s.dug ? 'g' : '') + (s.mowed ? 'M' : '') + (s.crack ? 'k' : '') + (rune ? 'r' : '') + (s.tg ? 't' : '') + (hv ? 'h' : '') + (s.pd ? 'P' + s.pd + (s.pdn ? blink : '') : '');
       if (sig !== t.sig) { t.sig = sig; drawOv(t, s, blink); }
-      if (cl.contains('ice')) { if (!t.ice) { t.ice = new T.Mesh(iceGeo, iceMat); t.ice.position.set(t.x, TY + 0.25, t.z); t.ice.renderOrder = 4; boardG[b].add(t.ice); } t.ice.visible = true; } else if (t.ice) t.ice.visible = false;
+      if (cl.contains('blk-ice')) { if (!t.ice) { t.ice = new T.Mesh(iceGeo, iceMat); t.ice.position.set(t.x, TY + 0.25, t.z); t.ice.renderOrder = 4; boardG[b].add(t.ice); } t.ice.visible = true; } else if (t.ice) t.ice.visible = false;
+      if (cl.contains('blk-grass')) { if (!t.grass) { t.grass = grassMound(); t.grass.position.set(t.x, TY, t.z); boardG[b].add(t.grass); } t.grass.visible = true; } else if (t.grass) t.grass.visible = false;
+      if (cl.contains('blk-pil')) { if (!t.rubble) { t.rubble = rubbleRing(); t.rubble.position.set(t.x, TY, t.z); boardG[b].add(t.rubble); } t.rubble.visible = true; } else if (t.rubble) t.rubble.visible = false;
       for (const k of PK) { let p = t.props[k]; if (kinds[k]) { if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); } p.visible = true; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
       if (h !== t.lsig) { t.lsig = h;
         if (!h) { if (t.label) { t.label.remove(); t.label = null; } }
