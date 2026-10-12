@@ -1,7 +1,15 @@
 <!doctype html>
+<!--
+  삼삼결투 (3x3 BATTLE)
+  Copyright (c) 2026 CHOSBS. All rights reserved.
+  이 게임의 코드, 그래픽, 사운드, 텍스트를 허락 없이 복제·수정·배포·재게시할 수 없습니다.
+  Unauthorized copying, modification, distribution or re-hosting of this game, in whole or in part, is prohibited.
+-->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta name="author" content="CHOSBS">
+<meta name="copyright" content="© 2026 CHOSBS. All rights reserved.">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>삼삼결투</title>
 <style>body{margin:0}</style>
@@ -2773,6 +2781,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .tm-row .card.mini[disabled] { opacity: .4; cursor: not-allowed; outline: none; }
 .tm-row .card.mini .ds { display: block; font-size: 11px; margin-top: 4px; }
 .tm-box .tm-x { margin-top: 12px; width: 100%; }
+.m-cr { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); margin: 0; padding: 2px 8px; border-radius: 8px; background: rgba(48,35,42,.5); color: #f4ede4; font-size: 11px; white-space: nowrap; letter-spacing: .03em; pointer-events: none; }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -5538,7 +5547,7 @@ function gateHTML() {
   const logo = `<div class="logo"><span class="lg-mark" aria-hidden="true">${ALL.map(n => `<i style="--i:${n}"></i>`).join('')}<b></b></span>
       <h1 aria-label="삼삼결투">${[...'삼삼결투'].map((c, n) => `<span style="--i:${n}" aria-hidden="true">${c}</span>`).join('')}</h1><p class="lg-sub">1 대 1 · 동시 턴 · 3×3 카드 결투</p></div>`;
   const touch = matchMedia('(hover: none)').matches;
-  const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span>
+  const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span><span class="m-cr cap" data-notr>© 2026 CHOSBS. All rights reserved.</span>
       ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
       <span class="m-qk"><button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
