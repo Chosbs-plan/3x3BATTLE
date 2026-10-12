@@ -3037,10 +3037,12 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .ic-roller{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAMklEQVR4nGOMcnP5z4ADLNu1h5EBlwKYOAsyhyDAppARn4Jlu/YwMuACMMVMhKwlqAAA0EkRemSKaOoAAAAASUVORK5CYII=)}
 .ic-frame{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAN0lEQVR4nGOMcnP5z4AP4FMQ5ebynwmZA1OMrIkJmy5kPoYCdICiYNmuPYzLdu1hJMmRjIS8CQCDIRcj3fU9hwAAAABJRU5ErkJggg==)}
 .c-painter { --ac: #e8b21e; --ac-d: #9a7212; }
-.cell .pnt { position: absolute; inset: 12%; pointer-events: none; z-index: 1; opacity: .62; mix-blend-mode: multiply;
-  background: radial-gradient(circle at 35% 40%, var(--pc) 0 22%, transparent 23%), radial-gradient(circle at 62% 58%, var(--pc) 0 26%, transparent 27%), radial-gradient(circle at 70% 28%, var(--pc) 0 10%, transparent 11%), radial-gradient(circle at 28% 72%, var(--pc) 0 9%, transparent 10%); }
+.cell .pnt { position: absolute; inset: 3%; pointer-events: none; z-index: 1; opacity: .7; mix-blend-mode: multiply;
+  background: radial-gradient(circle at 46% 50%, var(--pc) 0 34%, transparent 35%), radial-gradient(circle at 30% 36%, var(--pc) 0 22%, transparent 23%), radial-gradient(circle at 64% 62%, var(--pc) 0 26%, transparent 27%), radial-gradient(circle at 80% 22%, var(--pc) 0 11%, transparent 12%), radial-gradient(circle at 18% 80%, var(--pc) 0 9%, transparent 10%), radial-gradient(circle at 84% 84%, var(--pc) 0 7%, transparent 8%), linear-gradient(var(--pc), var(--pc)) 47% 88% / 5% 18% no-repeat; }
 .cell .pnt.pc0 { --pc: #f2c230; } .cell .pnt.pc1 { --pc: #e0524f; } .cell .pnt.pc2 { --pc: #4f86d9; }
 .tok.paint { display: none; }
+@media (prefers-reduced-motion: no-preference) { .cell .pnt.new { animation: pntIn .45s steps(5) both; } }
+@keyframes pntIn { 0% { scale: .2; opacity: 0; } 60% { scale: 1.18; opacity: .85; } 100% { scale: 1; } }
 .cell.pdone { box-shadow: inset 0 0 0 3px #f2c230, inset 0 0 0 6px rgba(242, 194, 48, .35); }
 @media (prefers-reduced-motion: no-preference) { .cell.pdone { animation: pdone 0.9s steps(2) infinite; } }
 @keyframes pdone { 50% { box-shadow: inset 0 0 0 3px #e0524f, inset 0 0 0 6px rgba(224, 82, 79, .3); } }
@@ -5173,7 +5175,7 @@ function aimCells(pl) {
   if (id === 'quake') { if (!validTg('line', pl.tg)) return []; const ln = pl.tg.o === 'r' ? rowOf(pl.tg.i) : colOf(pl.tg.i); return ln.filter(c => !G.col.includes(c) && !(G.crack || []).some(q => q.c === c && q.at <= G.turn)); }
   if (id === 'noose') return Array.isArray(pl.tg) ? pl.tg : [];
   if (id === 'show') return uniq((p.cups || []).flatMap(around));
-  if (id === 'cocktail' || id === 'sketch') return validTg('cell', pl.tg) ? [pl.tg] : [];
+  if (id === 'cocktail' || id === 'sketch' || id === 'release') return validTg('cell', pl.tg) ? [pl.tg] : [];
   if (id === 'magnum') return (p.paint || []).slice();
   if (id === 'encircle' || id === 'stoop') { const hc = hawkPred(pl); return hc == null ? [] : id === 'stoop' ? hawkCross(hc) : around(hc).filter(c => c !== hc); }
   if (id === 'clump') return pathCells(p.pos, pl.dest != null ? pl.dest : p.pos);
@@ -5659,7 +5661,7 @@ function boardHTML(k) {
     if (sandLine(G.sand, i) && (G.sand.o === 'r' ? C(i) : R(i)) === 1) inner += `<span class="tok fc sd">모래폭풍 ${sandArrow(G.sand)}</span>`;
     if (G.P[o].marks.includes(i)) inner += '<span class="tok rune">※ 각인</span>';
     if (G.P[o].brambles.includes(i)) inner += '<span class="tok thorn">가시</span>';
-    { const hk = G.P[o].hawk, wt = !mine && playing && pl.ab && myP().cls === 'tamer' && isCell(pl.wt) ? pl.wt : null;   /* 매조련사의 매: 체력 하트, 다음 추격 방향 화살표, 휘파람 예정 칸 */
+    { const hk = G.P[o].hawk, wt = mine || !playing || myP().cls !== 'tamer' ? null : pl.ab && isCell(pl.wt) ? pl.wt : actId(pl) === 'release' && isCell(pl.tg) ? pl.tg : null;   /* 매조련사의 매: 체력 하트, 다음 추격 방향 화살표, 휘파람 예정 칸 */
       if (hk && hk.c === i) { const nx = playing && wt == null ? hawkStep(G, o, hk.c) : hk.c, dir = nx === hk.c ? '' : nx === hk.c - 3 ? 'u' : nx === hk.c + 3 ? 'd' : nx === hk.c - 1 ? 'l' : 'r';
         inner += `<i class="hawk px a-hawk${wt != null ? ' gone' : ''}" aria-hidden="true"></i><span class="tok hawkt" aria-label="매 체력 ${hk.hp}"><b class="hhp">${'♥'.repeat(Math.max(0, hk.hp))}</b>${dir ? `<i class="harr ${dir}" aria-hidden="true"></i>` : ''}</span>`; }
       if (wt === i) inner += '<i class="hawk px a-hawk ghost" aria-hidden="true"></i>'; }
@@ -7234,7 +7236,7 @@ function reveal(k, p, cls) {
   if (names.length && typeof cry === 'function') setTimeout(() => cry(cls, p.actId || p.mvId || null, p.ab && !p.actId), k === 'a' ? 60 : 300);
 }
 /* 리플레이 중 칸의 물감 자국을 바로 붙이거나 지운다(턴이 끝나면 다시 그려진다) */
-function pntAdd(k, cells, delay) { later(() => { const b = bEl(k); if (!b) return; cells.forEach(i => { const c = b.children[i]; if (c && !c.querySelector('.pnt')) c.insertAdjacentHTML('afterbegin', `<i class="pnt pc${(i * 7 + 1) % 3}" aria-hidden="true"></i><span class="tok paint"></span>`); }); }, delay || 0); }
+function pntAdd(k, cells, delay) { later(() => { const b = bEl(k); if (!b) return; cells.forEach(i => { const c = b.children[i]; if (c && !c.querySelector('.pnt')) c.insertAdjacentHTML('afterbegin', `<i class="pnt new pc${(i * 7 + 1) % 3}" aria-hidden="true"></i><span class="tok paint"></span>`); }); }, delay || 0); }
 /* 매 토큰을 상대 판에서 옮긴다. c가 null이면 지우고, hp가 null이면 하트는 그대로 */
 function hawkPut(k, c, hp) {
   const b = bEl(opp(k)); if (!b) return; const old = b.querySelector('.tok.hawkt .hhp'), h = hp != null ? hp : old ? old.textContent.length : 2;
@@ -10530,6 +10532,11 @@ function stOverHTML(won) {
   const PDGL = { fire: 't', meteor: 'x', spore: 'd', comet: 'x', minute: 'c', hour: 'c', kaleido: 'v', wisp: 'd' };
   function drawOv(t, s, blink) {
     const g = t.g; g.clearRect(0, 0, 32, 32);
+    if (s.pnt) {   /* 화가 물감: 칸을 거의 덮는 큰 얼룩. 타일 위에 그려 들어올려져도 함께 뜬다 */
+      const P3 = [['#f2c230', '#b08014'], ['#e0524f', '#9a2c2a'], ['#4f86d9', '#2c5aa0']], c = P3[+s.pnt[2] || 0], o = P3[(+s.pnt[2] + 1) % 3];
+      const blob = (x, y, r, col) => { g.fillStyle = col; for (let yy = -r; yy <= r; yy++) for (let xx = -r; xx <= r; xx++) if (xx * xx + yy * yy <= r * r + r) g.fillRect(x + xx, y + yy, 1, 1); };
+      g.globalAlpha = 0.85; blob(15, 16, 10, c[1]); blob(15, 15, 9, c[0]); blob(24, 9, 4, c[0]); blob(7, 24, 3, c[0]); blob(25, 24, 3, o[0]); blob(6, 8, 2, o[0]); g.fillRect(14, 25, 2, 5); g.fillRect(21, 21, 2, 4);
+      g.fillStyle = 'rgba(255,255,255,.55)'; g.fillRect(11, 10, 3, 2); g.fillRect(10, 12, 2, 2); g.globalAlpha = 1; }
     if (s.wx) { g.fillStyle = 'rgba(63,167,163,.34)'; for (let k = -32; k < 32; k += 8) for (let y = 0; y < 32; y++) g.fillRect(k + y / 2, y, 3, 1); ring(g, COL.teal, 0, 2); }
     if (s.sand) { g.fillStyle = 'rgba(227,163,59,.42)'; for (let k = -32; k < 32; k += 8) for (let y = 0; y < 32; y++) g.fillRect(k + y / 2, y, 3, 1); ring(g, '#b97f22', 0, 2); }
     if (s.dug) { ring(g, COL.sand, 2, 3); ring(g, COL.sandd, 5, 1); }
@@ -10550,6 +10557,7 @@ function stOverHTML(won) {
       else if (gl === 'c') { g.fillRect(15, 8, 2, 9); g.fillRect(15, 15, 7, 2); }
       else if (gl === 'v') { for (let k = 0; k < 7; k++) { g.fillRect(16 - k, 9 + k, 1, 1); g.fillRect(15 + k, 9 + k, 1, 1); g.fillRect(16 - k, 22 - k, 1, 1); g.fillRect(15 + k, 22 - k, 1, 1); } }
       else g.fillRect(14, 14, 4, 4); }
+    if (s.pdone) { const on = !blink; ring(g, on ? '#f2c230' : '#e0524f', 0, 3); ring(g, on ? 'rgba(242,194,48,.45)' : 'rgba(224,82,79,.4)', 3, 2); }
     if (s.rune) { g.fillStyle = COL.red; [[20, 4], [26, 4], [23, 7], [20, 10], [26, 10], [22, 5], [24, 5], [22, 9], [24, 9], [21, 7], [25, 7]].forEach(function (p) { g.fillRect(p[0], p[1], 2, 2); }); }
     if (s.tg && !s.aim) { g.fillStyle = 'rgba(216,71,90,.75)'; [[0, 0], [27, 0], [0, 27], [27, 27]].forEach(function (p) { g.fillRect(p[0], p[1], 5, 1); g.fillRect(p[0], p[1] + 4, 5, 1); }); g.clearRect(1, 1, 3, 3); g.clearRect(28, 1, 3, 3); g.clearRect(1, 28, 3, 3); g.clearRect(28, 28, 3, 3);
       g.fillStyle = 'rgba(216,71,90,.75)'; [[0, 0, 5, 1], [0, 0, 1, 5], [27, 0, 5, 1], [31, 0, 1, 5], [0, 31, 5, 1], [0, 27, 1, 5], [27, 31, 5, 1], [31, 27, 1, 5]].forEach(function (r) { g.fillRect(r[0], r[1], r[2], r[3]); }); }
@@ -11225,7 +11233,7 @@ function stOverHTML(won) {
     return u;
   }
   function place(el, x, y, z) { ndc(x, y, z); el.style.left = Math.round((_p.x * 0.5 + 0.5) * vw) + 'px'; el.style.top = Math.round((-_p.y * 0.5 + 0.5) * vh) + 'px'; }
-  const PK = ['well', 'thorn', 'star', 'pil', 'egg', 'mine', 'tur', 'tree', 'tag', 'noose', 'cup', 'tray', 'acid', 'paint', 'hawkt', 'bl-hp', 'bl-pow', 'bl-mana'];
+  const PK = ['well', 'thorn', 'star', 'pil', 'egg', 'mine', 'tur', 'tree', 'tag', 'noose', 'cup', 'tray', 'acid', 'hawkt', 'bl-hp', 'bl-pow', 'bl-mana'];
   function syncBoard(b, el, now, dt) {
     const cells = el.children, bc = el.classList, tg = bc.contains('targeting'), rim = rims[b].mat, blink = Math.floor(now / 500) % 2;
     rim.color.setHex(tg ? 0xd8475a : bc.contains('glow') ? 0xe3a33b : bc.contains('heat') ? 0xb97f22 : 0x5a4644); rim.emissive.setHex(tg ? 0x7a1e2c : bc.contains('glow') ? 0x9a6410 : 0);
@@ -11244,15 +11252,15 @@ function stOverHTML(won) {
         if (c.contains('tok')) { if (c.contains('rune')) rune = true; for (const k of PK) if (c.contains(k)) kinds[k] = 1; if (!c.contains('egg') && !c.contains('paint')) h += ch.outerHTML; }
         else if (c.contains('cd') || c.contains('dmgp')) h += ch.outerHTML; }
       if (gone) h += '<span class="tok a3-gone">무너짐</span>';
-      const s = { mv: cl.contains('mv'), dest: cl.contains('dest'), aim: cl.contains('aim'), was: cl.contains('was'), warn: cl.contains('warn'), wx: cl.contains('wx'), sand: cl.contains('sandw'), dug: cl.contains('dug'), mowed: cl.contains('mowed'), crack: cl.contains('crack'), rune: rune, tg: tg && can, hover: hv, pd: !cl.contains('pd') ? '' : (cell.className.match(/(?:^| )pd-([A-Za-z]+)/) || [])[1] || '', pdn: cl.contains('pdnow') };
+      const s = { mv: cl.contains('mv'), dest: cl.contains('dest'), aim: cl.contains('aim'), was: cl.contains('was'), warn: cl.contains('warn'), wx: cl.contains('wx'), sand: cl.contains('sandw'), dug: cl.contains('dug'), mowed: cl.contains('mowed'), crack: cl.contains('crack'), rune: rune, tg: tg && can, hover: hv, pd: !cl.contains('pd') ? '' : (cell.className.match(/(?:^| )pd-([A-Za-z]+)/) || [])[1] || '', pdn: cl.contains('pdnow'), pnt: ((cell.querySelector('.pnt') || {}).className || '').match(/pc\d/) ? cell.querySelector('.pnt').className.match(/pc\d/)[0] : '', pdone: cl.contains('pdone') };
       /* 무너진 칸도 일부러 들어갈 수 있으니, 이동·도착·조준 표시는 구덩이 위에 그대로 띄운다 */
-      t.ov.visible = !gone || s.mv || s.dest || s.aim || s.tg || hv;
-      const sig = (s.mv ? 'm' : '') + (s.dest ? 'd' : '') + (s.aim ? 'a' : '') + (s.was ? 'w' : '') + (s.warn ? 'W' + blink : '') + (s.wx ? 'x' : '') + (s.sand ? 's' : '') + (s.dug ? 'g' : '') + (s.mowed ? 'M' : '') + (s.crack ? 'k' : '') + (rune ? 'r' : '') + (s.tg ? 't' : '') + (hv ? 'h' : '') + (s.pd ? 'P' + s.pd + (s.pdn ? blink : '') : '');
+      t.ov.visible = !gone || s.mv || s.dest || s.aim || s.tg || hv || s.pdone;
+      const sig = (s.mv ? 'm' : '') + (s.dest ? 'd' : '') + (s.aim ? 'a' : '') + (s.was ? 'w' : '') + (s.warn ? 'W' + blink : '') + (s.wx ? 'x' : '') + (s.sand ? 's' : '') + (s.dug ? 'g' : '') + (s.mowed ? 'M' : '') + (s.crack ? 'k' : '') + (rune ? 'r' : '') + (s.tg ? 't' : '') + (hv ? 'h' : '') + (s.pd ? 'P' + s.pd + (s.pdn ? blink : '') : '') + (s.pnt ? 'p' + s.pnt : '') + (s.pdone ? 'D' + blink : '');
       if (sig !== t.sig) { t.sig = sig; drawOv(t, s, blink); }
       if (cl.contains('blk-ice')) { if (!t.ice) { t.ice = new T.Mesh(iceGeo, iceMat); t.ice.position.set(t.x, TY + 0.25, t.z); t.ice.renderOrder = 4; boardG[b].add(t.ice); } t.ice.visible = true; } else if (t.ice) t.ice.visible = false;
       if (cl.contains('blk-grass')) { if (!t.grass) { t.grass = grassMound(); t.grass.position.set(t.x, TY, t.z); boardG[b].add(t.grass); } t.grass.visible = true; } else if (t.grass) t.grass.visible = false;
       if (cl.contains('blk-pil')) { if (!t.rubble) { t.rubble = rubbleRing(); t.rubble.position.set(t.x, TY, t.z); boardG[b].add(t.rubble); } t.rubble.visible = true; } else if (t.rubble) t.rubble.visible = false;
-      for (const k of PK) { let p = t.props[k]; if (kinds[k]) { if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); } p.visible = true; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
+      for (const k of PK) { let p = t.props[k]; if (kinds[k]) { if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); } p.visible = true; p.position.y = TY + t.lift * 0.05; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
       if (h !== t.lsig) { t.lsig = h;
         if (!h) { if (t.label) { t.label.remove(); t.label = null; } }
         else { if (!t.label) { t.label = document.createElement('div'); t.label.className = 'cell a3-cl'; lab.appendChild(t.label); } t.label.innerHTML = h; } }
