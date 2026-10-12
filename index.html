@@ -8885,24 +8885,99 @@ function showPeek(k) {
 infoEl.addEventListener('click', e => { const b = e.target.closest('[data-pk]'); if (b) { e.stopPropagation(); showInfo(b.dataset.pk); if (typeof fitAll === 'function') fitAll(); } }, true);
 /* 결과 공유: 결과 그림 한 장과 문구. 공유 창이 없으면 그림을 내려받고 문구를 복사한다 */
 function sprImg(cls, suf) { return new Promise(res => { const el = document.createElement('i'); el.className = 'px a-' + cls + (suf || ''); el.style.cssText = 'position:absolute;left:-99px;top:-99px;width:32px;height:32px'; document.body.appendChild(el); const m = /url\(["']?(data:[^"')]+)["']?\)/.exec(getComputedStyle(el).backgroundImage || ''); el.remove(); if (!m) return res(null); const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = m[1]; }); }
+/* 공유 그림 문구: 경기 내용에 맞춰 이긴 쪽은 치켜세우고 진 쪽은 놀린다. 같은 판은 늘 같은 문구 */
+function shareLines(w, l, turns) {
+  const st = G.st || {}, sw = st[w] || {}, sl = st[l] || {}, P = G.P, hitR = q => (q.atk ? q.hit / q.atk : 0), seed = (G.turn * 7 + (G.arena || '').length) % 3;
+  const pr = [], tn = [];
+  if (!sw.lost) pr.push(mE('무피해 퍼펙트 승리!', 'Flawless victory!'));
+  if (turns <= 6) pr.push(mE(`${turns}턴 만에 끝낸 번개 속공!`, `Lightning win in ${turns} turns!`));
+  if (P[w].hp === 1) pr.push(mE('체력 1로 버텨 낸 기적의 역전승!', 'Clutch win on 1 HP!'));
+  if (hitR(sw) >= 0.7 && sw.atk >= 3) pr.push(mE('백발백중 명사수!', 'Never misses!'));
+  if ((sw.best || 0) >= 3) pr.push(mE(`한 턴에 피해 ${sw.best}! 화끈한 한 방`, `${sw.best} damage in one turn!`));
+  pr.push(...[mE('압도적인 실력 차이!', 'A whole different league!'), mE('결투장의 새 주인 등극!', 'New ruler of the arena!'), mE('이것이 고수의 품격', 'This is how pros do it')].slice(seed).concat([mE('압도적인 실력 차이!', 'A whole different league!')]));
+  if (!sw.lost) tn.push(mE('상대 체력에 흠집 하나 못 냈다…', "Didn't leave a single scratch…"));
+  if (turns <= 6) tn.push(mE(`${turns}턴 만에 눕다니, 실화?`, `Down in ${turns} turns. Really?`));
+  if (P[w].hp === 1) tn.push(mE('딱 한 대만 더 때렸으면…', 'Just one more hit…'));
+  if (sl.atk >= 3 && hitR(sl) <= 0.3) tn.push(mE('허공만 열심히 때렸다', 'Hit nothing but air'));
+  tn.push(...[mE('한 수 배우고 갑니다', 'Lesson learned, I guess'), mE('결투장 바닥 청소 담당', 'Official arena floor sweeper'), mE('다음엔 잘할 수 있을 거야… 아마도', "Next time for sure… maybe")].slice(seed).concat([mE('한 수 배우고 갑니다', 'Lesson learned, I guess')]));
+  return [pr[0], tn[0]];
+}
+/* 결정타 이름: 마지막 턴에 이긴 쪽이 낸 공격 카드 또는 능력 */
+function shareFin(w) { const q = G.rp && G.rp.P && G.rp.P[w]; if (!q) return ''; if (q.actId && CARDS[q.actId] && CARDS[q.actId].t === 'atk') return CARDS[q.actId].n; if (q.ab) return CLS[G.P[w].cls].act[0]; const ex = (G.rp.ex || []).find(e => e.t !== w && e.hit && CARDS[e.id]); return ex ? CARDS[ex.id].n : ''; }
+async function shareCanvas() {
+  const o = opp(seat), w = G.winner, me = G.P[seat], fo = G.P[o], tr = typeof T_ === 'function' ? T_ : s => s, draw = w === 'draw', turns = G.turn - 1;
+  const W0 = 1200, H0 = 630, cv = document.createElement('canvas'); cv.width = W0; cv.height = H0; const g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
+  const css = getComputedStyle(document.documentElement), col = (n, d) => (css.getPropertyValue(n) || '').trim() || d, FF = getComputedStyle(document.body).fontFamily || 'monospace', F = px => px + 'px ' + FF;
+  const SIL = col('--sil', '#5a4644'), RED = col('--red', '#d8475a'), GOLD = '#ffd75e', INK = '#30232a';
+  const acOf = k => { const e = document.createElement('i'); e.className = 'c-' + G.P[k].cls; document.body.appendChild(e); const v = getComputedStyle(e).getPropertyValue('--ac').trim() || '#8a6fd0'; e.remove(); return v; };
+  const txt = (t, x, y, size, fill, opt = {}) => { if (opt.mw) { g.font = F(size); while (size > 10 && g.measureText(t).width > opt.mw) { size -= 1; g.font = F(size); } } g.font = F(size); g.textAlign = opt.a || 'center'; g.textBaseline = opt.b || 'alphabetic'; if (opt.st) { g.lineWidth = opt.sw || Math.max(4, size / 6); g.strokeStyle = opt.st; g.lineJoin = 'round'; g.strokeText(t, x, y); } if (opt.sh) { g.fillStyle = opt.sh; g.fillText(t, x + (opt.so || 4), y + (opt.so || 4)); } g.fillStyle = fill; g.fillText(t, x, y); };
+  const sideW = 400, L = { x: 0, k: seat }, Rr = { x: W0 - sideW, k: o };
+  /* 바탕: 가운데는 종이, 양쪽은 각 직업 무대. 이긴 쪽은 빛줄기와 색종이, 진 쪽은 잿빛 비 */
+  g.fillStyle = '#f3ece4'; g.fillRect(0, 0, W0, H0);
+  for (let x = -H0; x < W0; x += 60) { g.fillStyle = 'rgba(90,70,68,.05)'; g.beginPath(); g.moveTo(x, H0); g.lineTo(x + 30, H0); g.lineTo(x + 30 + H0 * .5, 0); g.lineTo(x + H0 * .5, 0); g.fill(); }
+  const stage = (sd, win) => { const k = sd.k, ac = acOf(k), x0 = sd.x, cx = x0 + sideW / 2;
+    g.save(); g.beginPath(); g.rect(x0, 0, sideW, H0); g.clip();
+    if (win || draw) { const gr = g.createRadialGradient(cx, 300, 20, cx, 300, 460); gr.addColorStop(0, '#fff7d6'); gr.addColorStop(0.35, ac); gr.addColorStop(1, INK); g.fillStyle = gr; g.fillRect(x0, 0, sideW, H0);
+      if (!draw) { g.globalAlpha = 0.22; for (let a = 0; a < 24; a++) { const t0 = a / 24 * Math.PI * 2; g.fillStyle = a % 2 ? '#fff' : GOLD; g.beginPath(); g.moveTo(cx, 300); g.arc(cx, 300, 700, t0, t0 + Math.PI / 48); g.fill(); } g.globalAlpha = 1;
+        for (let n = 0; n < 46; n++) { const r1 = Math.sin(n * 91.7) * 0.5 + 0.5, r2 = Math.sin(n * 37.3) * 0.5 + 0.5; g.fillStyle = ['#ffd75e', '#fff', '#ff8fa3', '#8ff0d0', ac][n % 5]; g.fillRect(x0 + r1 * sideW, 20 + r2 * 420, n % 3 ? 8 : 6, n % 3 ? 4 : 10); } } }
+    else { g.fillStyle = '#4a4248'; g.fillRect(x0, 0, sideW, H0); const gr = g.createLinearGradient(0, 0, 0, H0); gr.addColorStop(0, 'rgba(20,16,22,.6)'); gr.addColorStop(1, 'rgba(120,112,118,.2)'); g.fillStyle = gr; g.fillRect(x0, 0, sideW, H0);
+      g.strokeStyle = 'rgba(200,210,230,.35)'; g.lineWidth = 3; for (let n = 0; n < 60; n++) { const rx = x0 + ((n * 67) % sideW), ry = (n * 131) % H0; g.beginPath(); g.moveTo(rx, ry); g.lineTo(rx - 8, ry + 26); g.stroke(); }
+      /* 먹구름 */ g.fillStyle = '#2e282e'; [[cx - 70, 96, 46], [cx - 10, 80, 58], [cx + 60, 100, 44], [cx + 10, 112, 50]].forEach(([x, y, r]) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }); }
+    g.restore(); return ac; };
+  const acL = stage(L, w === seat), acR = stage(Rr, w === o);
+  /* 인물: 이긴 쪽은 크게 공격 자세 + 왕관, 진 쪽은 쓰러진 자세를 잿빛으로 */
+  const [imL, imR] = await Promise.all([sprImg(me.cls, draw ? '-ko' : w === seat ? '-act' : '-ko'), sprImg(fo.cls, draw ? '-ko' : w === o ? '-act' : '-ko')]);
+  const fig = (sd, im, win, flip) => { const cx = sd.x + sideW / 2, S = win ? 10 : 8, sz = 32 * S, y = win ? 128 : 190;
+    g.fillStyle = 'rgba(20,12,18,.35)'; g.beginPath(); g.ellipse(cx, y + sz - S * 3, sz * 0.36, 16, 0, 0, 7); g.fill();
+    if (im) { g.save(); if (!win) g.filter = 'grayscale(1) brightness(.85) contrast(.9)'; g.translate(cx + (flip ? sz / 2 : -sz / 2), y); g.scale(flip ? -1 : 1, 1); g.drawImage(im, 0, 0, sz, sz); g.restore(); }
+    if (win && !draw) { const cy = y - 8, s = 7; g.fillStyle = GOLD; [[0, 2, 9, 4], [0, 0, 1, 2], [4, -1, 1, 3], [8, 0, 1, 2]].forEach(([a, b, c2, d]) => g.fillRect(cx - 4.5 * s + a * s, cy + b * s, c2 * s, d * s)); g.fillStyle = '#c98a1e'; g.fillRect(cx - 4.5 * s, cy + 5 * s, 9 * s, s); g.fillStyle = RED; g.fillRect(cx - 0.5 * s, cy + 3 * s, s, s);
+      for (let n = 0; n < 6; n++) { const a = n * 1.05 + 0.3, r = 170, x = cx + Math.cos(a) * r, yy = y + 140 + Math.sin(a) * r * 0.8; g.fillStyle = '#fff'; g.fillRect(x - 10, yy - 2, 20, 4); g.fillRect(x - 2, yy - 10, 4, 20); } }
+    if (!win && !draw) { g.fillStyle = '#9fd3ff'; [[cx - 70, y + 120], [cx + 66, y + 104], [cx - 40, y + 70]].forEach(([x, yy], n) => { g.beginPath(); g.moveTo(x, yy); g.lineTo(x - 7, yy + 14); g.arc(x, yy + 16, 7, Math.PI, 0, true); g.lineTo(x, yy); g.fill(); });
+      txt(mE('털썩…', 'Thud…'), cx + 110, y + 70, 30, '#d9d2cf', { st: INK, sw: 6 }); } };
+  fig(L, imL, w === seat, false); fig(Rr, imR, w === o, true);
+  /* 이름표: 이긴 쪽 금색 WINNER, 진 쪽 잿빛 LOSER */
+  const [praise, taunt] = draw ? [mE('둘 다 쓰러졌다!', 'Both went down!'), mE('사이좋게 무승부', 'A friendly draw')] : shareLines(w, opp(w), turns);
+  const plate = (sd, win, who) => { const cx = sd.x + sideW / 2, k = sd.k, y = 488;
+    g.fillStyle = INK; g.fillRect(cx - 170 + 6, y + 6, 340, 112); g.fillStyle = draw ? '#fdf7ee' : win ? GOLD : '#8d8489'; g.fillRect(cx - 170, y, 340, 112); g.strokeStyle = INK; g.lineWidth = 5; g.strokeRect(cx - 170, y, 340, 112);
+    g.fillStyle = INK; g.fillRect(cx - 170, y - 34, 132, 34); txt(draw ? 'DRAW' : win ? 'WINNER' : 'LOSER', cx - 104, y - 8, 22, draw ? '#fff' : win ? GOLD : '#c9c1c4');
+    txt(who + ' · ' + tr(CLS[G.P[k].cls].n), cx, y + 42, 30, INK, { mw: 310 });
+    txt(draw ? (sd === L ? praise : taunt) : win ? praise : taunt, cx, y + 84, 21, win && !draw ? '#7a2f1c' : INK, { mw: 316 });
+    const n = Math.max(1, hpMaxOf(G.P[k])), hp = Math.max(0, G.P[k].hp); for (let i = 0; i < n; i++) { g.fillStyle = i < hp ? RED : 'rgba(48,35,42,.25)'; g.fillRect(cx + 170 - 22 - (n - 1 - i) * 22, y - 26, 16, 16); } };
+  plate(L, w === seat, tr('나')); plate(Rr, w === o, tr('상대'));
+  /* 승리 대사 말풍선 */
+  if (!draw) { const sd = w === seat ? L : Rr, q = (typeof WINL !== 'undefined' && WINL[G.P[w].cls]) || '', cx = sd.x + sideW / 2;
+    if (q) { g.font = F(18); const full = '“' + tr(q) + '”', ws = full.split(' '); let lines = [full];
+      if (g.measureText(full).width > 330) { let best = null; for (let n = 1; n < ws.length; n++) { const a = ws.slice(0, n).join(' '), b = ws.slice(n).join(' '), m = Math.max(g.measureText(a).width, g.measureText(b).width); if (!best || m < best[0]) best = [m, a, b]; } if (best) lines = [best[1], best[2]]; }
+      const tw = Math.min(372, Math.max(...lines.map(t => g.measureText(t).width)) + 36), bh = 22 + lines.length * 24, bx = Math.max(sd.x + 14, Math.min(sd.x + sideW - 14 - tw, cx - tw / 2)), by = 22;
+      g.fillStyle = '#fff'; g.fillRect(bx, by, tw, bh); g.strokeStyle = INK; g.lineWidth = 4; g.strokeRect(bx, by, tw, bh); g.fillStyle = '#fff'; g.beginPath(); g.moveTo(cx - 10, by + bh - 2); g.lineTo(cx + 10, by + bh - 2); g.lineTo(cx, by + bh + 16); g.fill();
+      lines.forEach((t, n) => txt(t, bx + tw / 2, by + 30 + n * 24, 18, INK, { mw: tw - 16 })); } }
+  /* 가운데: 결과 제목과 기록표 */
+  const CX = W0 / 2, mine = draw ? 'draw' : w === seat ? 'win' : 'lose';
+  txt(tr('삼삼결투'), CX, 54, 30, RED, { st: '#fff', sw: 6 });
+  txt(mine === 'win' ? mE('승리!', 'VICTORY!') : mine === 'lose' ? mE('패배…', 'DEFEAT…') : mE('무승부', 'DRAW'), CX, 136, 76, mine === 'win' ? GOLD : mine === 'lose' ? '#8d8489' : '#fff', { st: INK, sw: 12, sh: mine === 'win' ? RED : SIL, so: 6 });
+  const mode = typeof modeOf === 'function' ? modeOf() : 'single', sc = scoreOf(), sub = (MODES[mode] ? tr(MODES[mode][0]) : '') + (mode === 'bo3' ? ` ${sc[seat]} : ${sc[o]}` : '') + ' · ' + (ARENAS[G.arena] ? tr(ARENAS[G.arena]) + ' · ' : '') + mE(`${turns}턴`, `${turns} turns`);
+  txt(sub, CX, 178, 18, SIL);
+  const bx = CX - 190, by = 204, rows = [], st = G.st || {}, sm = st[seat] || {}, so = st[o] || {}, pct = q => (q.atk ? Math.round(q.hit / q.atk * 100) + '%' : '-');
+  rows.push([mE('남은 체력', 'HP left'), Math.max(0, me.hp) + '/' + hpMaxOf(me), Math.max(0, fo.hp) + '/' + hpMaxOf(fo)]);
+  rows.push([mE('공격 적중', 'Hit rate'), pct(sm), pct(so)]);
+  rows.push([mE('준 피해', 'Damage dealt'), String(so.lost || 0), String(sm.lost || 0)]);
+  rows.push([mE('한 턴 최대 피해', 'Best turn'), String(sm.best || 0), String(so.best || 0)]);
+  g.fillStyle = INK; g.fillRect(bx + 6, by + 6, 380, 46 + rows.length * 44); g.fillStyle = '#fffaf3'; g.fillRect(bx, by, 380, 46 + rows.length * 44); g.strokeStyle = INK; g.lineWidth = 4; g.strokeRect(bx, by, 380, 46 + rows.length * 44);
+  g.fillStyle = INK; g.fillRect(bx, by, 380, 40); txt(tr('나'), bx + 70, by + 28, 18, acL === '#8a6fd0' ? '#fff' : '#fff'); txt(mE('기록', 'STATS'), CX, by + 28, 18, GOLD); txt(tr('상대'), bx + 310, by + 28, 18, '#fff');
+  rows.forEach(([lab, a, b], n) => { const y = by + 74 + n * 44, better = (lab === mE('남은 체력', 'HP left') ? parseInt(a) - parseInt(b) : parseInt(a) - parseInt(b));
+    if (n % 2) { g.fillStyle = 'rgba(90,70,68,.06)'; g.fillRect(bx + 2, y - 28, 376, 44); }
+    txt(a, bx + 70, y, 26, better > 0 ? RED : INK); txt(lab, CX, y - 4, 15, SIL); txt(b, bx + 310, y, 26, better < 0 ? RED : INK); });
+  const fin = draw ? '' : shareFin(w);
+  if (fin) { const y = by + 70 + rows.length * 44; g.fillStyle = RED; g.fillRect(bx, y, 380, 44); g.strokeStyle = INK; g.strokeRect(bx, y, 380, 44); txt(mE('결정타', 'Finisher') + ' · ' + tr(fin), CX, y + 30, 20, '#fff', { mw: 360 }); }
+  /* 아래 띠 */
+  g.fillStyle = INK; g.fillRect(sideW, H0 - 44, W0 - sideW * 2, 44); txt('#' + tr('삼삼결투') + '  ·  ' + (location.host || 'samsam-duel'), CX, H0 - 15, 15, '#e9ddd0');
+  g.strokeStyle = INK; g.lineWidth = 10; g.strokeRect(5, 5, W0 - 10, H0 - 10);
+  const text = tr('삼삼결투') + ' · ' + tr(CLS[me.cls].n) + ' vs ' + tr(CLS[fo.cls].n) + ' · ' + (draw ? tr('무승부') : w === seat ? tr('승리') : tr('패배')) + ' (' + mE(`${turns}턴`, `${turns} turns`) + ')' + (draw ? '' : ' — ' + (w === seat ? praise : taunt));
+  window.__shareCanvas = cv; return { cv, text };
+}
 async function shareResult() {
-  if (!G) return; const o = opp(seat), w = G.winner, me = G.P[seat], fo = G.P[o], tr = typeof T_ === 'function' ? T_ : s => s;
-  const res = w === 'draw' ? '무승부' : w === seat ? '승리' : '패배', turns = G.turn - 1, url = location.href.split('#')[0];
-  const text = tr('삼삼결투') + ' · ' + tr(CLS[me.cls].n) + ' vs ' + tr(CLS[fo.cls].n) + ' · ' + tr(res) + ' (' + tr(turns + '턴') + ')';
-  const W0 = 600, H0 = 315, cv = document.createElement('canvas'); cv.width = W0; cv.height = H0; const g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
-  const css = getComputedStyle(document.documentElement), col = n => (css.getPropertyValue(n) || '').trim() || '#5a4644', F = px => px + 'px ' + (getComputedStyle(document.body).fontFamily || 'monospace');
-  g.fillStyle = col('--paper') || '#f6f2f0'; g.fillRect(0, 0, W0, H0); g.fillStyle = col('--sil'); g.fillRect(0, 0, W0, 6); g.fillRect(0, H0 - 6, W0, 6); g.fillRect(0, 0, 6, H0); g.fillRect(W0 - 6, 0, 6, H0);
-  for (let i = 0; i < 9; i++) { g.fillStyle = i % 2 ? '#ece6e3' : '#e3dcd8'; g.fillRect(24 + (i % 3) * 14, 22 + Math.floor(i / 3) * 14, 12, 12); }
-  g.fillStyle = col('--red'); g.font = F(30); g.textBaseline = 'top'; g.fillText(tr('삼삼결투'), 76, 24);
-  g.fillStyle = col('--ash') || '#a89c9c'; g.font = F(14); g.textAlign = 'right'; g.fillText((ARENAS[G.arena] ? tr(ARENAS[G.arena]) + ' · ' : '') + tr(turns + '턴'), W0 - 26, 34); g.textAlign = 'left';
-  const [a, b] = await Promise.all([sprImg(me.cls, w === seat ? '-act' : w === 'draw' ? '' : '-ko'), sprImg(fo.cls, w === o ? '-act' : w === 'draw' ? '' : '-ko')]);
-  const S = 5, y0 = 64; if (a) g.drawImage(a, 70, y0, 32 * S, 32 * S); if (b) { g.save(); g.translate(W0 - 70, y0); g.scale(-1, 1); g.drawImage(b, 0, 0, 32 * S, 32 * S); g.restore(); }
-  g.textAlign = 'center'; g.fillStyle = col('--red'); g.font = F(44); g.fillText('VS', W0 / 2, 110);
-  g.font = F(26); g.fillStyle = w === 'draw' ? col('--sil') : w === seat ? col('--blue') : col('--red'); g.fillText(tr(res), W0 / 2, 170);
-  g.font = F(20); g.fillStyle = col('--sil'); g.fillText(tr(CLS[me.cls].n), 150, 250); g.fillText(tr(CLS[fo.cls].n), W0 - 150, 250);
-  const pipRow = (cx, hp, mx, c) => { const n = Math.max(mx, 1), x0 = cx - (n * 16 - 4) / 2; for (let i = 0; i < n; i++) { g.fillStyle = i < hp ? c : '#d9d2cf'; g.fillRect(x0 + i * 16, 284, 12, 12); } };
-  pipRow(150, Math.max(0, me.hp), hpMaxOf(me), col('--red')); pipRow(W0 - 150, Math.max(0, fo.hp), hpMaxOf(fo), col('--red'));
-  g.font = F(12); g.fillStyle = col('--ash') || '#a89c9c'; g.fillText(tr('나'), 150, 232); g.fillText(tr('상대'), W0 - 150, 232);
+  if (!G) return; const tr = typeof T_ === 'function' ? T_ : s => s, url = location.href.split('#')[0];
+  const { cv, text } = await shareCanvas();
   const blob = await new Promise(r => cv.toBlob(r, 'image/png')); if (!blob) return toast('그림을 만들지 못했습니다');
   const file = typeof File === 'function' ? new File([blob], 'samsam-duel.png', { type: 'image/png' }) : null;
   try { if (file && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: tr('삼삼결투'), text: text + ' ' + url }); return; }
