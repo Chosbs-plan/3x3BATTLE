@@ -2673,20 +2673,22 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 /* ===== 폰 세로 전용: 직업 선택 =====
    통째로 줄이지 않는다. 위에서부터 무대 → 한 줄로 넘기는 초상화 → 설명(안에서 스크롤) → 화면 아래에 붙은 확정 버튼 */
 @media (max-width: 640px) and (orientation: portrait) {
-  #app > .gate.pick2 { display: flex; flex-direction: column; gap: 8px; height: 100%; overflow: hidden; padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; }
+  #app > .gate.pick2 { display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; }
   @media (max-height: 600px) { .pick2 .pk-show { --fs: 64px; } .pick2 .pk-name h2 { font-size: 20px; } .pick2 .pk-tag { display: none; } .pick2 .pk-roster .face { flex-basis: 50px; } }
   .pick2 > .gate-top { flex: none; padding-bottom: 6px; gap: 6px; align-items: center; }
   .pick2 > .gate-top h2 { font-size: 17px; } .pick2 > .gate-top .cap { font-size: 11px; }
-  .pick2 > .gate-top .row { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; } .pick2 > .gate-top .row::-webkit-scrollbar { display: none; }
-  .pick2 > .gate-top .btn, .pick2 > .gate-top .oppst { flex: none; min-height: 32px; padding: 3px 10px; font-size: 13px; }
+  .pick2 > .gate-top .row { flex-wrap: wrap; gap: 6px; max-width: 100%; }
+  .pick2 > .gate-top .btn, .pick2 > .gate-top .oppst { flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 32px; padding: 3px 10px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pick2 .pk-main { display: contents; }
   .pick2 .pk-show { order: 1; flex: none; --fs: clamp(78px, 14vh, 130px); height: calc(var(--fs) * 1.55); min-height: 0; box-shadow: 3px 3px 0 var(--ac); }
   .pick2 .pk-name h2 { font-size: 26px; } .pick2 .pk-tag { font-size: 12px; }
-  .pick2 .pk-roster.faces { order: 2; flex: none; display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 10px 8px 8px; margin-inline: -4px; scrollbar-width: none; }
+  .pick2 .pk-roster.faces { order: 2; flex: none; display: flex; justify-content: flex-start; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 10px 8px 8px; margin-inline: 0; scrollbar-width: none; }
   .pick2 .pk-roster.faces::-webkit-scrollbar { display: none; }
   .pick2 .pk-roster .face { flex: 0 0 58px; scroll-snap-align: center; }
   .pick2 .pk-roster .face > span { font-size: 10px; }
-  .pick2 .detail { order: 3; flex: 1 1 auto; min-height: 0; height: auto; padding: 10px; gap: 8px; box-shadow: 3px 3px 0 var(--ac); }
+  .pick2 .detail { order: 3; flex: none; min-height: 0; height: auto; padding: 10px; gap: 8px; box-shadow: 3px 3px 0 var(--ac); grid-template-rows: none; }
+  /* 설명은 안쪽 스크롤 대신 화면 전체가 스크롤되게: 잘리는 곳이 없도록 */
+  .pick2 .detail[data-tab="a"] > [data-t="a"], .pick2 .detail[data-tab="c"] > [data-t="c"], .pick2 .detail[data-tab="r"] > [data-t="r"] { overflow: visible; max-height: none; }
   .pick2 .detail .d-pv canvas { width: 40px; height: 54px; } .pick2 .detail .d-pv .pv-n { display: none; }
   .pick2 .detail .d-head { padding-bottom: 4px; } .pick2 .detail .d-meta { font-size: 12px; line-height: 1.5; } .pick2 .detail .d-tabs .btn { min-height: 32px; font-size: 13px; }
   /* 확정 버튼: 화면 아래에 늘 보이게 */
