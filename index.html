@@ -3065,6 +3065,65 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .cell.wcan:hover { background-color: rgba(154, 163, 58, .4); }
 .cell.wsel { box-shadow: inset 0 0 0 4px #626c1e, inset 0 0 0 7px rgba(214, 220, 122, .7); background-color: rgba(154, 163, 58, .35); }
 .cell .tok.hawkg { left: 50%; bottom: 3px; translate: -50% 0; background: #626c1e; color: #f3e6c8; z-index: 6; white-space: nowrap; }
+
+/* 운명의 세 장 */
+.fate { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; align-content: center; gap: 18px; padding: 16px; background: radial-gradient(ellipse at 50% 70%, rgba(42, 31, 36, .86), rgba(14, 10, 12, .97)); color: var(--paper); overflow: hidden; }
+.fate-h { font-family: var(--pix, inherit); font-size: clamp(16px, 2.4vw, 24px); letter-spacing: .3em; opacity: .8; margin: 0; }
+.fate-row { display: flex; gap: clamp(10px, 3vw, 36px); perspective: 900px; }
+.fate-c { width: clamp(92px, 20vw, 210px); aspect-ratio: 3 / 4; padding: 0; border: 0; background: none; cursor: pointer; }
+.fc-in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .5s steps(6); }
+.fate-c.on .fc-in { transform: rotateY(180deg); }
+.fc-b, .fc-f { position: absolute; inset: 0; backface-visibility: hidden; border: 4px solid #1a1216; box-shadow: 5px 5px 0 rgba(0, 0, 0, .45); }
+.fc-b { display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); gap: 6%; padding: 14%; background: #5a1f2b; outline: 3px solid #b5384a; outline-offset: -10px; }
+.fc-b i { background: #7a2a3a; box-shadow: inset 0 0 0 2px #d8475a; }
+.fc-b i:nth-child(5) { background: #d8475a; }
+.fc-f { transform: rotateY(180deg); background: #2a1f24; overflow: hidden; }
+.fc-g { position: absolute; inset: 0 0 26%; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); filter: brightness(.82); }
+.fc-f::after { content: ""; position: absolute; inset: 0 0 26%; background: linear-gradient(transparent 40%, rgba(42, 31, 36, .75)); }
+.fc-f::before { content: ""; position: absolute; inset: 0 0 26%; z-index: 0; mix-blend-mode: multiply; opacity: .75; background: var(--fct, #9a8a98); }
+.fc-f.th-forest { --fct: #6fae5a; } .fc-f.th-snow { --fct: #9cc0ea; } .fc-f.th-desert { --fct: #e8a83a; } .fc-f.th-castle { --fct: #a08a9a; }
+.fc-g { z-index: 0; }
+.fc-g i { background-size: 100% 100%; }
+.fc-boss { position: absolute; z-index: 1; left: 50%; top: 12%; width: 62%; aspect-ratio: 1; translate: -50% 0; filter: brightness(0) drop-shadow(0 0 0 #000) drop-shadow(0 0 8px #d8475a); }
+.fate-c.fin .fc-boss { filter: brightness(0) drop-shadow(0 0 12px #ff3b4a) drop-shadow(0 0 3px #ff3b4a); }
+.fc-t { position: absolute; left: 0; right: 0; bottom: 12%; text-align: center; font-size: clamp(11px, 1.5vw, 17px); color: var(--paper); }
+.fc-n { position: absolute; left: 0; right: 0; bottom: 3%; text-align: center; font-size: clamp(10px, 1.2vw, 14px); color: #ff8a7a; letter-spacing: .1em; }
+.fate-l { margin: 0; min-height: 1.5em; font-size: clamp(14px, 2vw, 20px); opacity: 0; transition: opacity .4s steps(4); text-align: center; }
+.fate.all .fate-l { opacity: 1; }
+.fate-hero { width: clamp(64px, 9vw, 112px); aspect-ratio: 1; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .5)); }
+.fate-skip { position: absolute; right: 16px; top: 16px; color: var(--paper); border-color: rgba(255, 255, 255, .4); }
+.fate.out { opacity: 0; transition: opacity .35s steps(4); }
+@media (prefers-reduced-motion: no-preference) {
+  .fate { animation: fateIn .5s steps(5) backwards; }
+  .fate-c { animation: fateDeal .5s steps(6) backwards; animation-delay: calc(var(--i) * 140ms + 250ms); }
+  .fate.fast .fate-c { animation-delay: calc(var(--i) * 60ms); }
+  .fate-c.fin.on { animation: fateQuake .45s steps(6); }
+  .fate-hero { animation: fateHero .6s steps(6) backwards .1s; }
+}
+@media (prefers-reduced-motion: reduce) { .fc-in { transition: none; } }
+@keyframes fateIn { from { opacity: 0; } }
+@keyframes fateDeal { 0% { translate: 0 -60vh; rotate: -12deg; } 80% { translate: 0 8px; rotate: 0deg; } }
+@keyframes fateQuake { 20% { translate: -6px 3px; } 40% { translate: 5px -3px; } 60% { translate: -4px 0; } 80% { translate: 3px 2px; } }
+@keyframes fateHero { from { translate: 0 40px; opacity: 0; } }
+.fate.shake .fate-row { animation: shake .4s steps(8) 1; }
+/* 잉크 지도 */
+.smap.veil svg, .smap.veil .mnode, .smap.veil .mstart, .smap.veil .sm-hint { visibility: hidden; }
+.smap line.inkl { stroke: #2a1f24; stroke-width: 4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .9; vector-effect: non-scaling-stroke; }
+@media (prefers-reduced-motion: no-preference) {
+  .smap.ink line.inkl { animation: inkLn .4s steps(8) forwards, inkOut .5s steps(4) forwards; animation-delay: calc(var(--d) * 1ms), 2.9s; }
+  .smap.ink line:not(.inkl) { animation: inkShow .3s steps(3) backwards; animation-delay: calc(var(--d) * 1ms + 380ms); }
+  .smap.ink .mnode { animation: inkDot .45s steps(5) backwards; animation-delay: calc(var(--r) * 330ms + 520ms); }
+  .smap.ink .mnode.k-boss { animation: inkDot .5s steps(5) backwards, inkBoss .8s steps(4) 2; animation-delay: calc(var(--r) * 330ms + 520ms), calc(var(--r) * 330ms + 1000ms); }
+  .smap.ink .mstart { animation: inkDrop .4s steps(4) backwards; animation-delay: 2.5s; }
+  .smap.ink .sm-hint { animation: inkShow .3s steps(3) backwards 2.9s; }
+}
+@media (prefers-reduced-motion: reduce) { .smap line.inkl { display: none; } }
+@keyframes inkLn { to { stroke-dashoffset: 0; } }
+@keyframes inkOut { to { opacity: 0; } }
+@keyframes inkShow { from { opacity: 0; } }
+@keyframes inkDot { 0% { opacity: 0; scale: .2; filter: blur(2px) brightness(0); } 60% { opacity: 1; scale: 1.25; filter: brightness(0); } 100% { scale: 1; } }
+@keyframes inkBoss { 50% { filter: drop-shadow(0 0 0 #d8475a) drop-shadow(0 0 10px #d8475a); } }
+@keyframes inkDrop { 0% { translate: 0 -30px; opacity: 0; } 70% { translate: 0 4px; opacity: 1; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -5124,7 +5183,7 @@ function drive() {
   if (local) {
     if (doc.phase === 'ban' && doc.ban.a && !doc.ban.b) W({ ban: { b: pick(CLASS_IDS.filter(x => x !== doc.ban.a)) } });
     if (doc.phase === 'select' && doc.pick.a && !doc.pick.b) {
-      if (stageOn()) { if (!run.cls) { run.cls = doc.pick.a; run.foes = rollFoes(run.cls); run.hp = run.maxHp = hpBase(run.cls); stInit(); } W({ phase: 'map' }); }
+      if (stageOn()) { if (!run.cls) { run.cls = doc.pick.a; run.foes = rollFoes(run.cls); run.hp = run.maxHp = hpBase(run.cls); stInit(); stFateQ = true; stFateOn = true; } W({ phase: 'map' }); }
       else W({ pick: { b: pick(CLASS_IDS.filter(x => !bansOf().includes(x))) } });
     }
     if (doc.phase === 'play' && doc.lock.a === t && doc.lock.b !== t && !botT) botT = setTimeout(() => { botT = 0; if (local && doc && doc.phase === 'play' && curTag === t && doc.lock.a === t && doc.lock.b !== t) W({ lock: { b: t }, plan: { b: JSON.stringify(Object.assign({ tag: t }, (tutOn() ? tutBot(G) : botPlan(G, 'b', stageOn() ? stLv() : botLv)))) } }); }, 900);
@@ -9713,7 +9772,7 @@ const stFoot = () => (run && run.map && stCurNode() ? ` ${stLab()} · ${L('봇',
 function stDone() {
   const c = run.cur; if (!c) return; const n = stNode(c.r, c.c);
   stDr.r = false; run.path.push(run.act + '-' + c.r + '-' + c.c); run.row = c.r; run.col = c.c; run.cur = null; run.sel = null; run.scene = null; run.shop = null;
-  if (n.t === 'boss') { run.act += 1; run.row = -1; run.col = 0; if (run.act >= run.map.length) { run.act = run.map.length - 1; run.cleared = true; } }
+  if (n.t === 'boss') { run.act += 1; run.row = -1; run.col = 0; if (run.act >= run.map.length) { run.act = run.map.length - 1; run.cleared = true; } else stInkUntil = Date.now() + 3400; }
   stSave();
 }
 function stageFight() {
@@ -10073,6 +10132,8 @@ function stageMapHTML() {
   if (!run.map) stInit();
   if (run.scene && !run.cleared) return sceneHTML();
   if (run.cleared || run.over) return stSumHTML();
+  if (stFateQ) { stFateQ = false; setTimeout(showFate, 30); }
+  const ink = Date.now() < stInkUntil;
   const act = run.map[run.act], rows = act.rows, av = stAvail(), isAv = (r, c) => av.some(x => x[0] === r && x[1] === c), was = (r, c) => run.path.includes(run.act + '-' + r + '-' + c), sel = run.sel && isAv(run.sel[0], run.sel[1]) ? run.sel : null;
   const pos = (r, c) => [MX[r], MY[rows[r][0].t === 'elite' ? 'e' : rows[r].length][c]], key = (r, c) => run.act + '-' + r + '-' + c, seen = (n, r, c) => n.t === 'boss' || isAv(r, c) || was(r, c) || !!(run.seenK || {})[key(r, c)] || run.rl.includes('compass') || run.scout === run.act || run.cleared;
   run.seenK = run.seenK || {}; av.forEach(x => { run.seenK[key(x[0], x[1])] = 1; });
@@ -10080,9 +10141,11 @@ function stageMapHTML() {
   const reach = {}; let fr = av.map(x => x[1]); for (let r = run.row + 1; r < rows.length && !run.cleared; r++) { const nx = []; fr.forEach(c => { reach[r + '-' + c] = 1; (rows[r][c].to || []).forEach(t => { if (!nx.includes(t)) nx.push(t); }); }); fr = nx; }
   const off = (r, c) => !run.cleared && !was(r, c) && !reach[r + '-' + c];
   let lines = '';
-  if (run.row < 0 && !run.cleared) rows[0].forEach((n, c) => { const [x, y] = pos(0, c); lines += `<line class="open" data-a="s" data-b="0-${c}" x1="1" y1="50" x2="${x}" y2="${y}"/>`; });
+  let inkL = '';   /* 잉크 지도: 펜촉이 출발점부터 길을 긋는 선. 막을 처음 펼칠 때만 */
+  if (run.row < 0 && !run.cleared) rows[0].forEach((n, c) => { const [x, y] = pos(0, c); lines += `<line class="open" style="--d:100" data-a="s" data-b="0-${c}" x1="1" y1="50" x2="${x}" y2="${y}"/>`; if (ink) inkL += `<line class="inkl" pathLength="1" style="--d:100" x1="1" y1="50" x2="${x}" y2="${y}"/>`; });
   rows.forEach((row, r) => { if (r < rows.length - 1) row.forEach((n, c) => n.to.forEach(t => { const [x1, y1] = pos(r, c), [x2, y2] = pos(r + 1, t);
-    lines += `<line data-a="${r}-${c}" data-b="${r + 1}-${t}" class="${was(r, c) && was(r + 1, t) ? 'done' : r === run.row && c === run.col && !run.cleared ? 'open' : off(r, c) || off(r + 1, t) ? 'off' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; })); });
+    if (ink) inkL += `<line class="inkl" pathLength="1" style="--d:${r * 330 + 430}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+    lines += `<line style="--d:${r * 330 + 430}" data-a="${r}-${c}" data-b="${r + 1}-${t}" class=""${was(r, c) && was(r + 1, t) ? 'done' : r === run.row && c === run.col && !run.cleared ? 'open' : off(r, c) || off(r + 1, t) ? 'off' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; })); });
   /* 칸에 마우스를 대면 뜨는 말풍선: 무엇이 있는지, 갈 수 있는지 */
   const TIPD = { shop: ['금화로 카드·유물·회복을 산다', 'Spend Gold on cards, relics, healing'], rest: ['체력 +2, 카드 제거, 능력 강화 가운데 하나', 'HP +2, remove a card, or Ability Boost'], event: ['결투 없음. 무슨 일이 생길지는 가 봐야 안다', 'No duel. Find out when you get there'], treasure: ['유물 둘 가운데 하나를 가져간다', 'Take one of two relics'] };
   const tipOf = (n, r, c, a, d, here, show) => {
@@ -10096,7 +10159,7 @@ function stageMapHTML() {
     return `<span class="mtip" aria-hidden="true"><span class="th k-${n.t}">${pxi(n.t)}${nodeN(n.t)}</span>${body}<span class="ts s-${st[0]}">${st[1]}</span></span>`; };
   const node = (n, r, c) => { const [x, y] = pos(r, c), a = isAv(r, c), d = was(r, c), here = !run.cleared && r === run.row && c === run.col, s = sel && sel[0] === r && sel[1] === c, show = n.foe && seen(n, r, c);
     const lab = show ? CLS[n.foe].n : nodeN(n.t);
-    return `<button type="button" class="mnode k-${n.t}${a ? ' av' : ''}${d ? ' done' : ''}${here ? ' here' : ''}${s ? ' sel' : ''}${off(r, c) ? ' off' : ''}" style="--x:${x}%;--y:${y}%" data-a="stnode" data-r="${r}" data-c="${c}" data-to="${(n.to || []).join(',')}" data-y="${y}" ${a ? '' : 'disabled'} aria-pressed="${!!s}" aria-label="${nodeN(n.t)}${show ? ' · ' + CLS[n.foe].n : ''}${d ? L(' · 지나옴', ' · visited') : a ? L(' · 갈 수 있음', ' · reachable') : ''}">
+    return `<button type="button" class="mnode k-${n.t}${a ? ' av' : ''}${d ? ' done' : ''}${here ? ' here' : ''}${s ? ' sel' : ''}${off(r, c) ? ' off' : ''}" style="--x:${x}%;--y:${y}%;--r:${r}" data-a="stnode" data-r="${r}" data-c="${c}" data-to="${(n.to || []).join(',')}" data-y="${y}" ${a ? '' : 'disabled'} aria-pressed="${!!s}" aria-label="${nodeN(n.t)}${show ? ' · ' + CLS[n.foe].n : ''}${d ? L(' · 지나옴', ' · visited') : a ? L(' · 갈 수 있음', ' · reachable') : ''}">
       ${here ? `<i class="px a-${run.cls} hero" aria-hidden="true"></i>` : ''}<span class="mt">${show ? `<i class="px a-${n.foe}${d ? '-ko' : ''} flip" aria-hidden="true"></i><span class="badge">${pxi(n.t)}</span>` : pxi(n.t)}</span><span class="ml">${lab}</span>${tipOf(n, r, c, a, d, here, show)}</button>`; };
   const sn = sel ? stNode(sel[0], sel[1]) : null, rec = stageRec3(), ar = n => L(ARENAS[n] || n, TR(ARENAS[n] || n));
   /* 오른쪽 서랍: 고른 곳의 정보. 아무것도 안 골랐으면 안내와 이번 막의 보스 */
@@ -10122,8 +10185,8 @@ function stageMapHTML() {
   const hint = run.cleared || sn ? '' : `<p class="sm-hint" aria-hidden="true">${L('붉게 빛나는 곳을 눌러 다음 장소를 고르세요', 'Tap a glowing red spot to choose your next stop')}</p>`;
   return `<div class="gate stmap sm2">${stHud()}
     <div class="sm-stage${stDrShown.l ? ' pin-l' : ''}${stDrShown.r ? ' pin-r' : ''}">
-      <div class="smap th-${act.ar}" role="group" aria-label="${L(`${run.act + 1}막 지도`, `Act ${run.act + 1} map`)}">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
+      <div class="smap th-${act.ar}${ink ? ' ink' : ''}${stFateOn ? ' veil' : ''}" role="group" aria-label="${L(`${run.act + 1}막 지도`, `Act ${run.act + 1} map`)}">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${lines}${inkL}</svg>
         ${run.row < 0 && !run.cleared ? `<span class="mstart"><i class="px a-${run.cls} hero" aria-hidden="true"></i><b>${L('출발', 'Start')}</b></span>` : ''}
         ${rows.map((row, r) => row.map((n, c) => node(n, r, c)).join('')).join('')}
         ${hint}
@@ -10131,6 +10194,39 @@ function stageMapHTML() {
       ${stBag()}
       ${stDrawer('r', run.cleared ? L('결과', 'Result') : L('다음 장소', 'Next stop'), `<span class="sdr-ic">${pxi(run.cleared ? 'boss' : sn ? sn.t : 'event')}</span>`, `<div class="sd-info${sn && sn.foe && sn.t !== 'fight' ? ' boss' : ''}">${info}</div>`)}
     </div></div>`;
+}
+/* 운명의 세 장: 새 모험을 시작하면 세 막의 결투장과 보스를 점괘 카드로 뒤집어 보여 준다. 끝나면 지도를 잉크로 그린다 */
+let stFateQ = false, stFateOn = false, stInkUntil = 0;
+function showFate() {
+  const ov = ovEl(); if (!ov || !run || !run.map || doc.phase !== 'map') { if (stFateOn) { stFateOn = false; if (doc.phase === 'map') render(); } return; }
+  let seen = 0; try { seen = +localStorage.getItem('ssd-fate') || 0; localStorage.setItem('ssd-fate', seen + 1); } catch (e) { /* 저장소 없음 */ }
+  const fast = seen > 0, ar = a => L(ARENAS[a] || a, TR(ARENAS[a] || a));
+  stFateOn = true; render();
+  const cards = run.map.map((m, a) => { const boss = m.rows[m.rows.length - 1][0].foe, tiles = ALL.map(i => `<i class="px a-t${(R(i) + C(i)) % 2}"></i>`).join('');
+    return `<button type="button" class="fate-c${a === 2 ? ' fin' : ''}" data-i="${a}" style="--i:${a}" aria-label="${L(`${a + 1}막 카드 뒤집기`, `Flip act ${a + 1} card`)}"><span class="fc-in">
+      <span class="fc-b" aria-hidden="true">${ALL.map(() => '<i></i>').join('')}</span>
+      <span class="fc-f th-${m.ar}"><span class="fc-g">${tiles}</span><i class="px a-${boss} fc-boss" aria-hidden="true"></i>
+        <b class="fc-t">${L(`${a + 1}막`, `Act ${a + 1}`)} · ${ar(m.ar)}</b><span class="fc-n">${a === 2 ? L('최종 보스', 'Final boss') : L('보스', 'Boss')} ???</span></span></span></button>`; }).join('');
+  ov.innerHTML = `<div class="fate${fast ? ' fast' : ''}" role="dialog" aria-label="${L('운명의 세 장', 'Three Cards of Fate')}">
+    <p class="fate-h">${L('운명의 세 장', 'Three Cards of Fate')}</p><div class="fate-row">${cards}</div>
+    <p class="fate-l" aria-live="polite">${L('세 개의 막, 세 개의 보스. 운명은 정해졌다.', 'Three acts, three bosses. Fate is sealed.')}</p>
+    <i class="px a-${run.cls} fate-hero" aria-hidden="true"></i>
+    <button type="button" class="btn ghost fate-skip">${L('건너뛰기', 'Skip')}</button></div>`;
+  const root = ov.querySelector('.fate'), cs = [...root.querySelectorAll('.fate-c')], tm = [];
+  let done = false;
+  const flip = c => { if (c.classList.contains('on')) return; c.classList.add('on'); const fin = c.classList.contains('fin');
+    SND.play(fin ? 'slam' : 'markPop'); if (fin) { pulse(root, 'shake', 450); setTimeout(() => SND.play('ghost'), 200); }
+    if (cs.every(x => x.classList.contains('on'))) { root.classList.add('all'); tm.push(setTimeout(close, fast ? 1300 : 2200)); } };
+  const close = () => { if (done) return; done = true; tm.forEach(clearTimeout); document.removeEventListener('keydown', key, true);
+    root.classList.add('out'); setTimeout(() => { if (ov.contains(root)) ov.innerHTML = ''; stFateOn = false; stInkUntil = Date.now() + 3400; if (doc.phase === 'map') render(); }, 380); };
+  const key = e => { e.preventDefault(); e.stopPropagation(); if (root.classList.contains('all')) close(); else cs.forEach(flip); };
+  document.addEventListener('keydown', key, true);
+  cs.forEach(c => c.addEventListener('click', e => { e.stopPropagation(); if (root.classList.contains('all')) close(); else flip(c); }));
+  root.querySelector('.fate-skip').addEventListener('click', e => { e.stopPropagation(); close(); });
+  root.addEventListener('click', () => { if (root.classList.contains('all')) close(); });
+  SND.play('scry');
+  if (fast) tm.push(setTimeout(() => cs.forEach(flip), 600));
+  else [1100, 1800, 2700].forEach((t, i) => tm.push(setTimeout(() => flip(cs[i]), t)));
 }
 function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.quit = 0; if (!stAvail().some(x => x[0] === r && x[1] === c)) return; run.sel = [r, c]; stDr.r = true; SND.play('tap'); render(); }
 function stOverHTML(won) {
