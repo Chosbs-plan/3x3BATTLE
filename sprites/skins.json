@@ -153,6 +153,16 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "wolf": {
+   "n": "백랑의 궁수",
+   "en": "White Wolf Archer",
+   "px": 2,
+   "price": 800,
+   "ac": [
+    "#6f93c8",
+    "#45689e"
+   ]
   }
  },
  "grave": {
