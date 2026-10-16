@@ -3320,6 +3320,38 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .uf-nick { max-width: 9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 6px; margin-right: 4px; background: var(--sil); color: var(--paper); font-size: 12px; line-height: 18px; }
 .qk.acct { display: inline-flex; align-items: center; gap: 6px; max-width: 12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .qk-me { width: 10px; height: 12px; background: radial-gradient(circle at 50% 28%, currentColor 0 26%, transparent 27%), radial-gradient(ellipse at 50% 100%, currentColor 0 48%, transparent 49%); }
+
+/* 랜덤 매칭 */
+.mu-rand { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin: 0 0 12px; padding: 12px 16px; }
+.mu-rand b { font-size: 20px; } .mu-rand span { font-size: 13px; opacity: .9; }
+.mm-box { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 0 0 12px; padding: 16px; background: var(--paper); border: 3px solid var(--sil); box-shadow: 4px 4px 0 var(--red); text-align: center; }
+.mm-box h3 { margin: 0; font-size: 20px; } .mm-t { margin: 0; color: var(--ash); } .mm-t b { color: var(--sil); }
+.mm-go { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.mm-ring { display: grid; grid-template-columns: repeat(3, 14px); gap: 3px; }
+.mm-ring i { width: 14px; height: 14px; background: var(--line); }
+.mm-box.found .mm-ring i { background: var(--red); }
+@media (prefers-reduced-motion: no-preference) { .mm-box:not(.found) .mm-ring i { animation: mmBlink 1.8s steps(1) infinite; animation-delay: calc(var(--i) * .2s); } .mm-box.found .mm-ring { animation: shake .4s steps(8) 1; } }
+@keyframes mmBlink { 0%, 30% { background: var(--red); } }
+/* 환영 선물 */
+.wel { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 16px; background: rgba(20, 14, 18, .72); }
+.wel-card { box-sizing: border-box; width: min(440px, 100%); display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 22px 22px 20px; background: var(--paper); border: 4px solid var(--sil); box-shadow: 6px 6px 0 #f2c230; text-align: center; }
+.wel-card h2 { margin: 0; font-size: 24px; } .wel-card .cap { margin: 0; }
+.wel-t { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; } .wel-t .mdl-n { font-size: 22px; color: #9a7212; }
+.wel-go { display: flex; flex-direction: column; gap: 8px; width: 100%; } .wel-go .btn { width: 100%; margin: 0; }
+.wel-box { position: relative; width: 120px; height: 110px; margin: 8px 0 4px; }
+.wb-body { position: absolute; left: 14px; right: 14px; bottom: 0; height: 62px; background: #d8475a; box-shadow: inset -8px -8px 0 rgba(0, 0, 0, .18), 4px 4px 0 var(--sil); }
+.wb-lid { position: absolute; left: 6px; right: 6px; bottom: 58px; height: 20px; background: #e85d6e; box-shadow: inset -6px -5px 0 rgba(0, 0, 0, .15), 4px 4px 0 var(--sil); z-index: 2; }
+.wb-rib { position: absolute; left: 52px; width: 16px; bottom: 0; height: 78px; background: #f2c230; z-index: 3; box-shadow: inset -4px 0 0 #b08014; }
+.wb-m { position: absolute; left: 50px; bottom: 50px; width: 18px; height: 18px; opacity: 0; background: radial-gradient(circle, #fff2b0 0 22%, #f2c230 23% 58%, #b08014 59% 70%, transparent 71%); }
+@media (prefers-reduced-motion: no-preference) {
+  .wel:not(.open) .wel-box { animation: welWob 1.4s steps(4) infinite; }
+  .wel.open .wb-lid, .wel.open .wb-rib { animation: welLid .6s steps(6) forwards; }
+  .wel.open .wb-m { animation: welCoin 1s steps(10) forwards; animation-delay: calc(var(--i) * 50ms + 150ms); }
+}
+.wel.open .wb-rib { opacity: 0; }
+@keyframes welWob { 25% { rotate: -4deg; } 75% { rotate: 4deg; } }
+@keyframes welLid { to { translate: 30px -70px; rotate: 35deg; opacity: 0; } }
+@keyframes welCoin { 0% { opacity: 1; translate: 0 0; } 60% { opacity: 1; } 100% { opacity: 0; translate: calc((var(--i) - 4.5) * 14px) calc(-80px - (var(--i) * 7px % 30px)); } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -5304,24 +5336,24 @@ function W(patch) {
 }
 
 /* 방 */
-async function createRoom() {
-  if (busy || !db) return; busy = true;
+async function createRoom(fixed) {
+  if (busy || !db) return false; busy = true;
   const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   if (p2p()) toast('방을 만드는 중입니다', 15000);
-  for (let n = 0; n < 5; n++) {
-    const c = Array.from({ length: 4 }, () => pick([...A])).join('');
-    try { await db.doc('rooms/' + c).set(freshDoc(me)); }
-    catch (e) { if (p2p() && e && e.type === 'unavailable-id') continue; busy = false; return toast(p2p() ? '중계 서버에 연결하지 못했습니다. 네트워크를 확인하고 다시 시도하세요' : '방을 만들지 못했습니다. 이 페이지에 쓰기 권한이 필요합니다', 4000); }
+  for (let n = 0; n < (fixed ? 1 : 5); n++) {
+    const c = fixed || Array.from({ length: 4 }, () => pick([...A])).join(''), d0 = freshDoc(me); if (fixed) d0.mm = true;   /* 랜덤 매칭 방: 대기실을 건너뛰고 바로 시작 */
+    try { await db.doc('rooms/' + c).set(d0); }
+    catch (e) { if (p2p() && e && e.type === 'unavailable-id' && !fixed) continue; busy = false; return toast(p2p() ? '중계 서버에 연결하지 못했습니다. 네트워크를 확인하고 다시 시도하세요' : '방을 만들지 못했습니다. 이 페이지에 쓰기 권한이 필요합니다', 4000); }
     busy = false; if (p2p()) toastEl.hidden = true;
-    return enter(c);
+    enter(c); return true;
   }
-  busy = false; toast('방을 만들지 못했습니다. 다시 시도하세요');
+  busy = false; toast('방을 만들지 못했습니다. 다시 시도하세요'); return false;
 }
-async function joinRoom(c) {
-  if (busy || !db) return;
+async function joinRoom(c, quiet) {
+  if (busy || !db) return false;
   if (!/^[A-Z0-9]{4}$/.test(c)) return toast('코드는 4글자입니다');
   busy = true; if (p2p()) toast('입장하는 중입니다', 15000);
-  const done = msg => { busy = false; if (msg) { if (p2p()) db.close(); toast(msg, 4000); } else if (p2p()) toastEl.hidden = true; };
+  const done = msg => { busy = false; if (msg) { if (p2p()) db.close(); if (quiet) toastEl.hidden = true; else toast(msg, 4000); } else if (p2p()) toastEl.hidden = true; return false; };
   const r = db.doc('rooms/' + c); let s;
   try { s = await r.get(); } catch (e) { return done(p2p() ? '방장에게 연결하지 못했습니다. 네트워크를 확인하고 다시 시도하세요' : '방을 불러오지 못했습니다'); }
   if (!s.exists) return done(p2p() ? '그 코드의 방이 없습니다. 방장이 방을 열어 둔 상태여야 합니다' : '그 코드의 방이 없습니다');
@@ -5332,7 +5364,7 @@ async function joinRoom(c) {
     if (d.seats.b) return done('방이 가득 찼습니다');
     try { await r.update({ seats: { b: me } }); } catch (e) { return done('입장하지 못했습니다. ' + (p2p() ? '다시 시도하세요' : '이 페이지에 쓰기 권한이 필요합니다')); }
   }
-  done(); enter(c);
+  done(); enter(c); return true;
 }
 /* 연결 상태 알림 (PeerJS 전용) */
 function netNote(k) {
@@ -5354,6 +5386,10 @@ function leave() { run = null; busy = false; if (!local && p2p()) db.close(); if
 function onDoc() {
   if (!doc) return render();
   seat = doc.seats.a === me ? 'a' : doc.seats.b === me ? 'b' : null;
+  if (doc.mm && doc.phase === 'lobby' && seat && !local) {   /* 랜덤 매칭 방: 둘 다 들어오면 저절로 준비하고 방장이 단판으로 시작 */
+    if (!doc.ready[seat] && onDoc.mmR !== code + seat) { onDoc.mmR = code + seat; W({ ready: { [seat]: true } }); }
+    else if (seat === 'a' && doc.seats.b && doc.ready.a && doc.ready.b && onDoc.mmS !== code) { onDoc.mmS = code; W({ phase: 'select', mode: 'single', pick: { a: null, b: null }, ban: { a: null, b: null }, score: { a: 0, b: 0 }, gid: doc.gid + 1 }); }
+  }
   if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user && !AUTH.guest) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
   if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
   let job = null;
@@ -6312,6 +6348,7 @@ function gateHTML() {
   else if (menuTab === 'multi') { const on = netReady && db, st = on ? ['ok', '온라인 연결됨'] : off ? ['off', '이 화면에서는 온라인 대전을 쓸 수 없습니다'] : ['wait', '연결하는 중'];
     const last = ls('ssd-last'), k1 = CLS[last] ? last : MENU_DUEL[0], k2 = MENU_DUEL[1] !== k1 ? MENU_DUEL[1] : 'samurai';
     body = `<div class="m-sub multi2${ta ? ' pop' : ''}"><div class="mu-head"><h2>멀티 플레이</h2><span class="mu-net ${st[0]}"><i></i>${st[1]}</span></div>
+      ${MM.on ? mmHTML() : `<button type="button" class="mbtn red mu-rand" data-mm="go" ${on ? '' : 'disabled'}><b>${mE('랜덤 매칭', 'Random match')}</b><span>${AUTH.user && !AUTH.guest ? mE('아무나와 바로 단판 대결 · 승리 메달 30', 'Quick 1v1 with anyone · 30 medals per win') : mE('로그인한 계정만 쓸 수 있습니다', 'Requires an account')}</span></button>`}
       <div class="mu-grid">
         <section class="mu-host" style="--i:0" aria-labelledby="mu-h1">
           <div class="mu-art" aria-hidden="true"><i class="px a-${k1}"></i><b>VS</b><i class="px a-${k2} flip"></i></div>
@@ -6677,6 +6714,8 @@ async function walletPull() {
   if (!AUTH.user || AUTH.guest || !AUTH.tok) return; await authFresh();
   const [w] = await sb('/rest/v1/wallet?select=medals') || []; AUTH.wallet = w ? w.medals : 0;
   AUTH.owned = (await sb('/rest/v1/owned_skins?select=cls,skin') || []).map(r => r.cls + ':' + r.skin);
+  try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
+  if (AUTH.gift) setTimeout(welcomeShow, 600);
 }
 function authKeep(ses) {
   AUTH.tok = { access_token: ses.access_token, refresh_token: ses.refresh_token, exp: Date.now() + (ses.expires_in || 3600) * 1000 };
@@ -6788,6 +6827,65 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
     const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
     const v = parseInt(window.prompt('', '1000') || '', 10); if (!(v > 0)) return;
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
+/* ===== 랜덤 매칭: 서버 줄(mm_queue)에서 짝을 찾고, 먼저 기다린 쪽이 방을 연다 ===== */
+const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0 };
+async function mmStart() {
+  if (!AUTH.user || AUTH.guest) return toast(mE('로그인해야 랜덤 매칭을 쓸 수 있습니다', 'Log in to use random match'));
+  if (!netReady || !db) return toast(mE('온라인 연결을 기다리는 중입니다', 'Waiting for the network'));
+  Object.assign(MM, { on: true, st: 'wait', t0: Date.now(), opp: '', n: 0 }); SND.play('pop'); render();
+  try { await mmGot(await rpc('mm_join')); } catch (e) { mmStop(true); return toast(e.net ? mE('서버에 연결하지 못했습니다', 'Could not reach the server') : mE('매칭을 시작하지 못했습니다', 'Could not start matching')); }
+  mmLoop();
+}
+function mmLoop() {
+  clearTimeout(MM.timer); if (!MM.on || MM.st !== 'wait') return;
+  MM.timer = setTimeout(async () => {
+    if (!MM.on || MM.st !== 'wait') return;
+    try { let r = await rpc('mm_poll'); if (r && r.state === 'gone') r = await rpc('mm_join'); await mmGot(r); MM.n = await rpc('mm_count').catch(() => MM.n); } catch (e) { /* 다음 차례에 다시 */ }
+    if (MM.on && MM.st === 'wait') { if (!doc && menuTab === 'multi') render(); mmLoop(); }
+  }, 2000);
+}
+async function mmGot(r) {
+  if (!MM.on || !r || r.state !== 'matched') return; clearTimeout(MM.timer);
+  MM.st = 'found'; MM.opp = r.opp_nick || ''; SND.play('relicGood'); render();
+  let ok = false;
+  if (r.host) ok = await createRoom(r.room);
+  else for (let n = 0; n < 6 && MM.on && !ok; n++) { await new Promise(res => setTimeout(res, n ? 2500 : 3000)); if (!MM.on) break; ok = await joinRoom(r.room, true); }   /* 방장이 방을 여는 동안 잠깐 기다렸다 들어간다 */
+  MM.on = false; rpc('mm_leave').catch(() => {});
+  if (!ok) { toast(mE('상대와 연결하지 못했습니다. 다시 찾습니다', 'Could not connect. Searching again')); setTimeout(mmStart, 800); }
+}
+function mmStop(quiet) { const was = MM.on; MM.on = false; MM.st = ''; clearTimeout(MM.timer); if (was) rpc('mm_leave').catch(() => {}); if (!quiet) { SND.play('tap'); render(); } }
+function mmHTML() {
+  const sec = Math.floor((Date.now() - MM.t0) / 1000), found = MM.st === 'found';
+  return `<div class="mm-box${found ? ' found' : ''}" role="status" aria-live="polite">
+    <div class="mm-ring" aria-hidden="true">${ALL.map(n => `<i style="--i:${n}"></i>`).join('')}</div>
+    <h3>${found ? mE('상대를 찾았습니다!', 'Opponent found!') : mE('상대를 찾는 중', 'Searching for an opponent')}</h3>
+    <p class="mm-t">${found ? `<b data-notr>${esc(MM.opp)}</b> ${mE('님과 연결하는 중', 'connecting')}…` : `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}${MM.n ? ` · ${mE(`기다리는 사람 ${MM.n}명`, `${MM.n} waiting`)}` : ''}`}</p>
+    ${found ? '' : `<div class="mm-go"><button type="button" class="btn ghost" data-mm="stop">${mE('취소', 'Cancel')}</button>${sec >= 30 ? `<button type="button" class="btn" data-a="local">${mE('봇과 연습하기', 'Practice vs bot')}</button>` : ''}</div>`}
+  </div>`;
+}
+setInterval(() => { if (MM.on && MM.st === 'wait' && !doc && menuTab === 'multi') { const t = app.querySelector('.mm-t'); if (t) render(); } }, 1000);
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-mm],[data-a="local"],[data-a="mback"],[data-a="create"],[data-a="join"]'); if (!b) return;
+  if (b.dataset.mm === 'go') { e.stopPropagation(); mmStart(); } else if (b.dataset.mm === 'stop') { e.stopPropagation(); mmStop(); } else if (MM.on) mmStop(true); }, true);
+window.addEventListener('pagehide', () => { if (MM.on && AUTH.tok) { try { fetch(SB_URL + '/rest/v1/rpc/mm_leave', { method: 'POST', keepalive: true, headers: { apikey: SB_KEY, Authorization: 'Bearer ' + AUTH.tok.access_token, 'Content-Type': 'application/json' }, body: '{}' }); } catch (e) { /* 무시 */ } } });
+
+/* ===== 환영 선물: 계정마다 한 번, 메달 300. 메뉴에 처음 들어오면 선물 상자가 뜬다 ===== */
+function welcomeShow() {
+  const ov = ovEl(); if (!ov || doc || !AUTH.gift || AUTH.giftShown || ov.querySelector('.fate')) return; AUTH.giftShown = true;
+  ov.innerHTML = `<div class="wel" role="dialog" aria-modal="true" aria-label="${mE('환영 선물', 'Welcome gift')}"><div class="wel-card">
+    <p class="cap">${mE('삼삼결투에 온 걸 환영합니다', 'Welcome to 3x3 Battle')}</p><h2 data-notr>${esc(AUTH.nick)}${mE('님, 반가워요!', ', glad you are here!')}</h2>
+    <div class="wel-box" aria-hidden="true"><i class="wb-lid"></i><i class="wb-body"></i><i class="wb-rib"></i>${Array.from({ length: 10 }, (_, i) => `<i class="wb-m" style="--i:${i}"></i>`).join('')}</div>
+    <p class="wel-t">${mE('결투장에 처음 온 기념으로 작은 선물을 준비했어요.', 'We prepared a small gift for your first visit.')}</p>
+    <div class="wel-go"><button type="button" class="btn red big" data-wel="open">${mE('선물 열기', 'Open gift')}</button></div></div></div>`;
+  SND.play('pop');
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-wel]'); if (!b) return; e.stopPropagation(); const ov = ovEl(), root = ov && ov.querySelector('.wel'); if (!root) return;
+  const k = b.dataset.wel;
+  if (k === 'open') { b.disabled = true; rpc('claim_gift', { p_kind: 'welcome' }).then(bal => { AUTH.wallet = bal; AUTH.gift = false; root.classList.add('open'); SND.play('relicGood'); setTimeout(() => SND.play('coin'), 450);
+      root.querySelector('.wel-t').innerHTML = `${MDL('+300')} <span>${mE('메달 300개를 받았습니다. 스킨 하나를 바로 살 수 있어요!', '300 medals! Enough for a skin right away.')}</span>`;
+      root.querySelector('.wel-go').innerHTML = `<button type="button" class="btn red big" data-wel="shop">${mE('스킨 상점 가기', 'Go to Skin Shop')}</button><button type="button" class="btn ghost big" data-wel="close">${mE('나중에', 'Later')}</button>`; render(); })
+    .catch(err => { AUTH.gift = false; if (/claimed/.test(err.message)) ov.innerHTML = ''; else { b.disabled = false; toast(mE('선물을 받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim the gift')); } }); }
+  else { ov.innerHTML = ''; if (k === 'shop') { shopTab = 'new'; openOv('shop'); } render(); } }, true);
+
 (async function boot() {
   const h = (location.hash || '').slice(1).toUpperCase(); if (/^[A-Z0-9]{4}$/.test(h)) prefill = h;
   render();
