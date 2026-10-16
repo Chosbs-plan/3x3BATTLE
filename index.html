@@ -2567,7 +2567,14 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pk-lv.lv1 { background: var(--green); } .pk-lv.lv2 { background: var(--amber); color: var(--sil); } .pk-lv.lv3 { background: var(--red); }
 .pk-fig { position: absolute; left: 50%; bottom: calc(var(--fs) * .52); width: var(--fs); height: var(--fs); translate: -50% 0; }
 .pk-fig > .px { position: absolute; inset: 0; } .pk-ha { opacity: 0; }
-.pk-skin { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; } .pk-skin b { min-width: 7em; text-align: center; } .pk-skin .btn { min-height: 32px; padding: 0 10px; }
+.pk-main.has-sk { grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1.1fr); }
+.pk-skins { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 0; }
+.pk-skins > .cap { letter-spacing: .2em; }
+.pk-sk { position: relative; width: 60px; height: 60px; padding: 0; overflow: hidden; border: 3px solid var(--sil); background: var(--paper); box-shadow: 3px 3px 0 rgba(0, 0, 0, .35); cursor: pointer; }
+.pk-sk > i { position: absolute; width: 160px; height: 160px; left: calc(27px - var(--fx) * 5px); top: calc(27px - var(--fy) * 5px); }
+.pk-sk:hover { translate: 0 -2px; } .pk-sk:disabled { cursor: default; opacity: .7; }
+.pk-sk.on { border-color: var(--ac); box-shadow: 0 0 0 3px var(--paper), 4px 4px 0 var(--ac-d, rgba(0, 0, 0, .35)); }
+.pk-skn { max-width: 80px; text-align: center; font-size: 12px; }
 .pk-light { position: absolute; left: 50%; bottom: 6%; width: 150%; height: 260%; translate: -50% 0; pointer-events: none;
   background: linear-gradient(transparent, rgba(255, 255, 255, .75)); clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); }
 .pk-ped { position: absolute; left: 50%; bottom: -10%; width: 125%; height: 24%; translate: -50% 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #fff, #ece4e2 60%, #d6cbc8);
@@ -2636,7 +2643,8 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 @media (max-width: 1100px) { .pk-roster.faces { grid-template-columns: repeat(15, minmax(0, 1fr)); } }
 @media (max-width: 719px) {
   #app > .gate.pick2 { gap: 8px; }
-  .pk-main { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 10px; }
+  .pk-main, .pk-main.has-sk { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 10px; }
+  .pk-skins { flex-direction: row; } .pk-skins > .cap { color: var(--ink, inherit); text-shadow: none; }
   .pk-show { --fs: clamp(110px, 18vh, 170px); min-height: 0; height: calc(var(--fs) * 1.75); box-shadow: 4px 4px 0 var(--ac); }
   .pk-name { bottom: 8px; left: 12px; } .pk-name h2 { font-size: 30px; } .pk-tag { font-size: 12px; } .pk-name .chips { display: none; }
   .pk-no { font-size: 18px; left: 10px; top: 6px; } .pk-lv { top: 8px; right: 8px; font-size: 11px; }
@@ -2846,6 +2854,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   .pick2 > .gate-top .row { flex-wrap: wrap; gap: 6px; max-width: 100%; }
   .pick2 > .gate-top .btn, .pick2 > .gate-top .oppst { flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 32px; padding: 3px 10px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pick2 .pk-main { display: contents; }
+  .pick2 .pk-skins { order: 1; flex: none; flex-direction: row; } .pick2 .pk-skins > .cap, .pick2 .pk-skn { color: inherit; text-shadow: none; }
   .pick2 .pk-show { order: 1; flex: none; --fs: clamp(78px, 14vh, 130px); height: calc(var(--fs) * 1.55); min-height: 0; box-shadow: 3px 3px 0 var(--ac); }
   .pick2 .pk-name h2 { font-size: 26px; } .pick2 .pk-tag { font-size: 12px; }
   .pick2 .pk-roster.faces { order: 2; flex: none; display: flex; justify-content: flex-start; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 10px 8px 8px; margin-inline: 0; scrollbar-width: none; }
@@ -2955,6 +2964,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
   .pick2 > .gate-top .oppst { display: none; }
   /* 가운데: 무대 · 정보판 · 상대 칸 */
   .pick2 .pk-main { grid-template-columns: minmax(0, 1fr) 740px 210px; gap: 34px; padding: 0 44px 6px; }
+  .pick2 .pk-main.has-sk { grid-template-columns: minmax(0, 1fr) 84px 740px 210px; gap: 26px; } .pick2 .pk-skins > .cap, .pick2 .pk-skn { color: var(--paper); text-shadow: 0 1px 0 rgba(0, 0, 0, .5); } .pk-sk { width: 72px; height: 72px; } .pk-sk > i { width: 192px; height: 192px; left: calc(33px - var(--fx) * 6px); top: calc(33px - var(--fy) * 6px); }
   .pick2 .pk-show { --fs: min(400px, 40vh); border: 0; box-shadow: none; background: none; overflow: hidden; min-height: 0; }
   .pick2 .pk-bg { display: none; }
   .pick2 .pk-rays { opacity: .55; bottom: 34%; }
@@ -3801,13 +3811,18 @@ const sandLine = (w, i) => !!w && (w.o === 'r' ? R(i) : C(i)) === w.i;
 const sandArrow = w => (w.o === 'r' ? (w.dir > 0 ? '→' : '←') : (w.dir > 0 ? '↓' : '↑'));
 const CLASS_IDS = Object.keys(CLS);
 /* 스킨 표는 tools/sprites.py build가 sprites/skins 시트에서 만든다 */
-/* SKINS:BEGIN */ const SKINS = {"alch": [{"id": "color", "n": "컬러", "en": "Color"}], "archaeologist": [{"id": "color", "n": "컬러", "en": "Color"}], "astronomer": [{"id": "color", "n": "컬러", "en": "Color"}], "balloon": [{"id": "color", "n": "컬러", "en": "Color"}], "bard": [{"id": "color", "n": "컬러", "en": "Color"}], "blacksmith": [{"id": "color", "n": "컬러", "en": "Color"}], "brawler": [{"id": "color", "n": "컬러", "en": "Color"}], "bunny": [{"id": "color", "n": "컬러", "en": "Color"}], "chicken": [{"id": "color", "n": "컬러", "en": "Color"}], "chrono": [{"id": "color", "n": "컬러", "en": "Color"}], "clown": [{"id": "color", "n": "컬러", "en": "Color"}], "druid": [{"id": "color", "n": "컬러", "en": "Color"}], "dullahan": [{"id": "color", "n": "컬러", "en": "Color"}], "gambler": [{"id": "color", "n": "컬러", "en": "Color"}], "grave": [{"id": "color", "n": "컬러", "en": "Color"}], "hunter": [{"id": "color", "n": "컬러", "en": "Color"}], "mage": [{"id": "color", "n": "컬러", "en": "Color"}], "mechanic": [{"id": "color", "n": "컬러", "en": "Color"}], "merfolk": [{"id": "color", "n": "컬러", "en": "Color"}], "mirror": [{"id": "color", "n": "컬러", "en": "Color"}], "mower": [{"id": "color", "n": "컬러", "en": "Color"}], "onmyoji": [{"id": "color", "n": "컬러", "en": "Color"}], "painter": [{"id": "color", "n": "컬러", "en": "Color"}], "samurai": [{"id": "color", "n": "컬러", "en": "Color"}], "scarecrow": [{"id": "color", "n": "컬러", "en": "Color"}], "shaman": [{"id": "color", "n": "컬러", "en": "Color"}], "slime": [{"id": "color", "n": "컬러", "en": "Color"}], "statue": [{"id": "color", "n": "컬러", "en": "Color"}], "tamer": [{"id": "color", "n": "컬러", "en": "Color"}], "vampire": [{"id": "color", "n": "컬러", "en": "Color"}]}; /* SKINS:END */
+/* SKINS:BEGIN */ const SKINS = {"alch":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"archaeologist":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"astronomer":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"balloon":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"bard":[{"id":"color","n":"컬러","en":"Color","f":[16,8]}],"blacksmith":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"brawler":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"bunny":[{"id":"color","n":"컬러","en":"Color","f":[14,7]}],"chicken":[{"id":"color","n":"컬러","en":"Color","f":[16,13]}],"chrono":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"clown":[{"id":"color","n":"컬러","en":"Color","f":[13,8]}],"druid":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"dullahan":[{"id":"color","n":"컬러","en":"Color","f":[13,13]}],"gambler":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"grave":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"hunter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"mage":[{"id":"color","n":"컬러","en":"Color","f":[16,7]}],"mechanic":[{"id":"color","n":"컬러","en":"Color","f":[14,9]}],"merfolk":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"mirror":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"mower":[{"id":"color","n":"컬러","en":"Color","f":[7,10]}],"onmyoji":[{"id":"color","n":"컬러","en":"Color","f":[14,8]}],"painter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"samurai":[{"id":"color","n":"컬러","en":"Color","f":[14,9]}],"scarecrow":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"shaman":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"slime":[{"id":"color","n":"컬러","en":"Color","f":[15,17]}],"statue":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"tamer":[{"id":"color","n":"컬러","en":"Color","f":[16,9]}],"vampire":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}]}; const SKIN_FACE = {"alch":[14,8],"archaeologist":[18,12],"astronomer":[17,8],"balloon":[16,10],"bard":[17,8],"blacksmith":[19,11],"brawler":[15,8],"bunny":[16,6],"chicken":[18,9],"chrono":[19,7],"clown":[16,9],"druid":[17,8],"dullahan":[21,9],"gambler":[16,9],"grave":[17,9],"hunter":[14,7],"mage":[18,9],"mechanic":[17,9],"merfolk":[17,7],"mirror":[18,9],"mower":[10,10],"onmyoji":[16,6],"painter":[16,8],"samurai":[14,12],"scarecrow":[17,6],"shaman":[18,7],"slime":[16,17],"statue":[16,12],"tamer":[15,6],"vampire":[16,8]}; /* SKINS:END */
 /* 스킨: 직업마다 고른 모습. 고른 것은 이 기기에 저장하고, 결투에서는 doc.skin[자리]로 상대에게도 같은 모습이 보인다 */
 const skinList = c => SKINS[c] || [];
 function skinOf(c) { let v = ''; try { v = (JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {})[c] || ''; } catch (e) { /* 저장소 없음 */ } return skinList(c).some(x => x.id === v) ? v : ''; }
 function setSkin(c, id) { try { const o = JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {}; o[c] = id; localStorage.setItem('ssd-skins', JSON.stringify(o)); } catch (e) { /* 저장소 없음 */ } }
 const skc = (c, id) => (id && skinList(c).some(x => x.id === id) ? ` sk-${c}-${id}` : '');
-function skOf(k) { if (typeof G === 'undefined' || !G || !G.P[k]) return ''; const id = (doc && doc.skin && doc.skin[k]) || (k === 'a' && typeof run !== 'undefined' && run && doc && doc.mode === 'stage' ? run.skin : '') || ''; return skc(G.P[k].cls, id); }
+function skOf(k) {
+  if (typeof G === 'undefined' || !G || !G.P[k]) return ''; const c = G.P[k].cls;
+  let id = (doc && doc.skin && doc.skin[k]) || (k === 'a' && typeof run !== 'undefined' && run && doc && doc.mode === 'stage' ? run.skin : '') || '';
+  if (!id && doc && doc.seats && doc.seats[k] === 'bot') { const ids = ['', ...skinList(c).map(x => x.id)]; let h = (G.seed || 0) + doc.gid * 31; for (const ch of c) h = (h * 33 + ch.charCodeAt(0)) >>> 0; id = ids[h % ids.length]; }   /* 봇: 판마다 정해진 무작위 스킨 */
+  return skc(c, id);
+}
 const HP_MAX = 5, HAND = 4, COLLAPSE_FROM = 15, KI_MAX = 3, TRAP_MAX = 3;
 const hpBase = cls => HP_MAX - (cls === 'dullahan' ? 1 : 0) + (cls === 'vampire' ? 1 : 0);
 const hpMaxOf = p => p.hpMax || HP_MAX, manaMaxOf = p => CLS[p.cls].max + (p.mx || 0);
@@ -5186,7 +5201,7 @@ function stageMapHTML() {
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${XS.map((x, i) => x + ',' + (YS[i] + 6)).join(' ')}" /></svg>
       ${STAGES.map(node).join('')}</div>
     <div class="st-cols">
-      <div class="panel st-me c-${run.cls}"><p class="cap">내 상태</p><div class="st-row"><i class="px a-${run.cls}" aria-hidden="true"></i><div><h3>${CLS[run.cls].n}</h3>
+      <div class="panel st-me c-${run.cls}"><p class="cap">내 상태</p><div class="st-row"><i class="px a-${run.cls}${skc(run.cls, run.skin)}" aria-hidden="true"></i><div><h3>${CLS[run.cls].n}</h3>
         <p>체력 ${pips('hp', run.hp, run.maxHp)} <b>${run.hp} / ${run.maxHp}</b></p><p>누적 ${run.turns}턴</p></div></div>
         <p class="cap">얻은 특전</p><p class="chipr">${perks}</p>
         <p class="cap">이기면 체력 +1 회복(중보스를 꺾으면 +2). 지면 처음부터 다시 합니다.</p></div>
@@ -6396,9 +6411,10 @@ function selectHTML() {
   const names = ids => Object.entries(ids.reduce((m, id) => (m[id] = (m[id] || 0) + 1, m), {})).map(([id, n]) => `${CARDS[id].n}×${n}`).join(', ');
   const face = k => `<button type="button" class="face c-${k}${view === k ? ' sel' : ''}${mine === k ? ' done' : ''}${bans.includes(k) ? ' banned' : ''}" data-a="cls" data-k="${k}" ${mine || bans.includes(k) ? 'disabled' : ''} aria-pressed="${view === k}">
       <i class="px a-t${CLASS_IDS.indexOf(k) % 2}"><i class="spr px a-${k}"></i></i><span>${bans.includes(k) ? '금지' : CLS[k].n}</span></button>`;
-  const sks = skinList(view), skCur = skinOf(view), skI = sks.findIndex(x => x.id === skCur);
-  const skinRow = sks.length && !banning ? `<div class="pk-skin"><span class="cap">${mE('스킨', 'Skin')}</span><button type="button" class="btn ghost" data-a="skin" data-k="${view}" data-d="-1" ${mine ? 'disabled' : ''} aria-label="${mE('이전 스킨', 'Previous skin')}">◀</button><b>${skI < 0 ? mE('기본', 'Default') : esc(mE(sks[skI].n, sks[skI].en))}</b><button type="button" class="btn ghost" data-a="skin" data-k="${view}" data-d="1" ${mine ? 'disabled' : ''} aria-label="${mE('다음 스킨', 'Next skin')}">▶</button><span class="cap">${skI + 2} / ${sks.length + 1}</span></div>` : '';
-  const footer = skinRow + `<div class="d-go"><button type="button" class="btn red big" data-a="pickok" data-k="${view}" ${mine ? 'disabled' : ''}>${banning ? (mine ? `${c.n} 금지함. 상대를 기다립니다` : `${c.n} 금지하기`) : mine ? `${c.n} 확정됨. 상대를 기다립니다` : `${c.n}(으)로 확정`}</button>
+  /* 스킨 고르기: 무대와 정보판 사이 세로 칸. 스킨마다 얼굴만 잘라 보여 준다 */
+  const sks = skinList(view), skCur = skinOf(view), faceI = (id, f) => `<i class="px a-${view}${skc(view, id)}" style="--fx:${f[0]};--fy:${f[1]}"></i>`;
+  const skCol = sks.length && !banning ? `<div class="pk-skins" role="group" aria-label="${mE('스킨', 'Skin')}"><span class="cap">${mE('스킨', 'Skin')}</span>${[{ id: '', n: '기본', en: 'Default', f: SKIN_FACE[view] || [16, 10] }, ...sks].map(x => `<button type="button" class="pk-sk${x.id === skCur ? ' on' : ''}" data-a="skin" data-k="${view}" data-id="${x.id}" ${mine ? 'disabled' : ''} aria-pressed="${x.id === skCur}" aria-label="${esc(mE(x.n, x.en))}" title="${esc(mE(x.n, x.en))}">${faceI(x.id, x.f)}</button>`).join('')}<b class="pk-skn">${esc(mE(...(sks.find(x => x.id === skCur) ? [sks.find(x => x.id === skCur).n, sks.find(x => x.id === skCur).en] : ['기본', 'Default'])))}</b></div>` : '';
+  const footer = `<div class="d-go"><button type="button" class="btn red big" data-a="pickok" data-k="${view}" ${mine ? 'disabled' : ''}>${banning ? (mine ? `${c.n} 금지함. 상대를 기다립니다` : `${c.n} 금지하기`) : mine ? `${c.n} 확정됨. 상대를 기다립니다` : `${c.n}(으)로 확정`}</button>
           <span class="cap">${banning ? '서로의 금지는 둘 다 고른 뒤에 공개됩니다. 금지된 직업은 양쪽 모두 고를 수 없습니다.' : '상대의 선택은 결투가 시작될 때 공개됩니다.'}</span></div>`;
   /* 무대: 고른 직업이 조명 아래 크게 선다. 고른 직업이 바뀔 때만 등장 연출 */
   const key = view + '|' + doc.gid + doc.phase, enter = pkSeen !== key; pkSeen = key;
@@ -6413,7 +6429,7 @@ function selectHTML() {
   return `<div class="gate pick2 c-${view}${enter ? ' pk-enter' : ''}"><i class="pk-bgx" aria-hidden="true"><b class="pk-wm" data-notr>${esc(wm)}</b><b class="pk-wm b2" data-notr>${esc(wm)}</b></i><div class="gate-top"><div><p class="cap">방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf()[seat]} : ${scoreOf()[opp(seat)]}` : ''}${bans.length ? ' · 금지: ' + bans.map(x => CLS[x].n).join(', ') : ''}</p><h2>${banning ? '금지할 직업을 고르세요' : stageOn() ? '끝까지 함께할 직업을 고르세요' : '직업을 고르세요'}</h2></div>
       <span class="row"><button type="button" class="btn ghost" data-a="rand" ${mine ? 'disabled' : ''}>무작위</button>${last && CLS[last] ? `<button type="button" class="btn ghost" data-a="last" ${mine ? 'disabled' : ''}>지난 판: ${CLS[last].n}</button>` : ''}
       <span class="oppst${theirs ? ' ok' : ''}">${theirs ? (banning ? '상대: 금지 완료' : '상대: 선택 완료') : '상대: 고르는 중'}</span><button type="button" class="btn ghost" data-a="leave">나가기</button></span></div>
-    <div class="pk-main">${show}${detailHTML(view, footer)}${vs}</div>
+    <div class="pk-main${skCol ? ' has-sk' : ''}">${show}${skCol}${detailHTML(view, footer)}${vs}</div>
     <div class="faces pk-roster" role="group" aria-label="직업 초상화">${CLASS_IDS.map(face).join('')}</div></div>`;
 }
 /* 직업 선택 키보드: 방향키로 명단을 옮겨 다니고 Enter로 확정, R은 무작위, Q·E는 정보판 탭 넘기기 */
@@ -6520,7 +6536,7 @@ app.addEventListener('click', e => {
   else if (a === 'rand') { selCls = pick(CLASS_IDS.filter(x => x !== selCls && !(doc.phase === 'select' && bansOf().includes(x)))); SND.play('tap'); render(); }
   else if (a === 'last') { const l = ls('ssd-last'); if (CLS[l]) { selCls = l; SND.play('tap'); render(); } }
   else if (a === 'unlock') unLock();
-  else if (a === 'skin') { const c = b.dataset.k, ids = ['', ...skinList(c).map(x => x.id)], i = ids.indexOf(skinOf(c)); setSkin(c, ids[(i + +b.dataset.d + ids.length) % ids.length]); pkSeen = ''; SND.play('tap'); render(); }
+  else if (a === 'skin') { const c = b.dataset.k; if (skinOf(c) === b.dataset.id) return; setSkin(c, b.dataset.id); pkSeen = ''; SND.play('tap'); render(); }
   else if (a === 'pickok') { const c = b.dataset.k; if (doc.phase === 'ban') W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) } }); } }
   else if (a === 'card') clickCard(+b.dataset.i);
   else if (a === 'ab') clickAbility();
@@ -7388,7 +7404,7 @@ async function finisherIn(k, ac, name) {
   const sg = ac && SIG[ac], fromL = k !== seat;   /* 결정타를 넣은 쪽이 나면 왼쪽에서 들어온다 */
   const e = document.createElement('div'); e.className = 'finfx' + (k === seat ? ' bad' : ''); e.setAttribute('aria-hidden', 'true');
   const ic = sg ? abIcon(ac) : '', extra = !sg ? '' : sg[0] === 'rain' ? `<span class="sg-rain">${ic}${ic}${ic}</span>` : '', shards = sg && sg[0] === 'shatter' ? ['q1', 'q2', 'q3', 'q4'].map(q => `<span class="sg-sh ${q}">${ic}</span>`).join('') : '';
-  e.innerHTML = '<i></i>' + (sg ? `<div class="sig sg-${sg[0]} en-${sg[3] || 'dash'} bd-${sg[4] || 'diag'} c-${ac}${fromL ? '' : ' rv'}"><i class="sg-bg"></i>${extra}<i class="px sg-pose a-${ac}-s${fromL ? '' : ' flip'}"></i><b class="sg-w"><small>${mE('결정타', 'FINISH')}</small>${name ? (typeof I18N !== 'undefined' ? I18N.tr(name) : name) : mE(sg[1], sg[2])}</b><span class="sg-ic">${ic}${shards}</span></div>` : '<b>' + mE('결정타', 'FINISH') + '</b>');
+  e.innerHTML = '<i></i>' + (sg ? `<div class="sig sg-${sg[0]} en-${sg[3] || 'dash'} bd-${sg[4] || 'diag'} c-${ac}${fromL ? '' : ' rv'}"><i class="sg-bg"></i>${extra}<i class="px sg-pose a-${ac}-s${skOf(opp(k))}${fromL ? '' : ' flip'}"></i><b class="sg-w"><small>${mE('결정타', 'FINISH')}</small>${name ? (typeof I18N !== 'undefined' ? I18N.tr(name) : name) : mE(sg[1], sg[2])}</b><span class="sg-ic">${ic}${shards}</span></div>` : '<b>' + mE('결정타', 'FINISH') + '</b>');
   ar.appendChild(e); if (sg) { play('sig_' + sg[0]); if (typeof cry === 'function') setTimeout(() => cry(ac, null, true), 260); }
   setTimeout(() => e.remove(), 2000); setTimeout(() => ar.classList.remove('fin'), 1800);
   await sleep(1020);
@@ -8074,7 +8090,7 @@ function stageMapHTML() {
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${XS.map((x, i) => x + ',' + (YS[i] + 6)).join(' ')}" /></svg>
       ${ROUTE.map(node).join('')}</div>
     <div class="st-cols">
-      <div class="panel st-me c-${run.cls}"><p class="cap">내 상태</p><div class="st-row"><i class="px a-${run.cls}" aria-hidden="true"></i><div><h3>${CLS[run.cls].n}</h3></div></div>${stStatus()}
+      <div class="panel st-me c-${run.cls}"><p class="cap">내 상태</p><div class="st-row"><i class="px a-${run.cls}${skc(run.cls, run.skin)}" aria-hidden="true"></i><div><h3>${CLS[run.cls].n}</h3></div></div>${stStatus()}
         <p class="cap">이기면 금화와 카드 한 장, 체력 +1(중보스는 +2와 특전). 지면 처음부터 다시 합니다.</p></div>
       ${run.cleared ? `<div class="panel st-foe"><p class="cap">결과</p><h3>${CLS[run.cls].n}(으)로 ${run.turns}턴 만에 돌파</h3><p>${rec[run.cls] === run.turns ? '이 직업의 최고 기록입니다.' : `이 직업의 최고 기록은 ${rec[run.cls]}턴입니다.`}</p>
         <button type="button" class="btn red big" data-a="strestart">다른 직업으로 다시 도전</button></div>`
@@ -9413,7 +9429,7 @@ function showPeek(k) {
 }
 infoEl.addEventListener('click', e => { const b = e.target.closest('[data-pk]'); if (b) { e.stopPropagation(); showInfo(b.dataset.pk); if (typeof fitAll === 'function') fitAll(); } }, true);
 /* 결과 공유: 결과 그림 한 장과 문구. 공유 창이 없으면 그림을 내려받고 문구를 복사한다 */
-function sprImg(cls, suf) { return new Promise(res => { const el = document.createElement('i'); el.className = 'px a-' + cls + (suf || ''); el.style.cssText = 'position:absolute;left:-99px;top:-99px;width:32px;height:32px'; document.body.appendChild(el); const m = /url\(["']?(data:[^"')]+)["']?\)/.exec(getComputedStyle(el).backgroundImage || ''); el.remove(); if (!m) return res(null); const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = m[1]; }); }
+function sprImg(cls, suf, sk) { return new Promise(res => { const el = document.createElement('i'); el.className = 'px a-' + cls + (suf || '') + (sk || ''); el.style.cssText = 'position:absolute;left:-99px;top:-99px;width:32px;height:32px'; document.body.appendChild(el); const m = /url\(["']?(data:[^"')]+)["']?\)/.exec(getComputedStyle(el).backgroundImage || ''); el.remove(); if (!m) return res(null); const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = m[1]; }); }
 /* 공유 그림 문구: 경기 내용에 맞춰 이긴 쪽은 치켜세우고 진 쪽은 놀린다. 같은 판은 늘 같은 문구 */
 function shareLines(w, l, turns) {
   const st = G.st || {}, sw = st[w] || {}, sl = st[l] || {}, P = G.P, hitR = q => (q.atk ? q.hit / q.atk : 0), seed = (G.turn * 7 + (G.arena || '').length) % 3;
@@ -9455,7 +9471,7 @@ async function shareCanvas() {
     g.restore(); return ac; };
   const acL = stage(L, w === seat), acR = stage(Rr, w === o);
   /* 인물: 이긴 쪽은 크게 공격 자세 + 왕관, 진 쪽은 쓰러진 자세를 잿빛으로 */
-  const [imL, imR] = await Promise.all([sprImg(me.cls, draw ? '-ko' : w === seat ? '-act' : '-ko'), sprImg(fo.cls, draw ? '-ko' : w === o ? '-act' : '-ko')]);
+  const [imL, imR] = await Promise.all([sprImg(me.cls, draw ? '-ko' : w === seat ? '-act' : '-ko', skOf(seat)), sprImg(fo.cls, draw ? '-ko' : w === o ? '-act' : '-ko', skOf(o))]);
   const fig = (sd, im, win, flip) => { const cx = sd.x + sideW / 2, S = win ? 10 : 8, sz = 32 * S, y = win ? 128 : 190;
     g.fillStyle = 'rgba(20,12,18,.35)'; g.beginPath(); g.ellipse(cx, y + sz - S * 3, sz * 0.36, 16, 0, 0, 7); g.fill();
     if (im) { g.save(); if (!win) g.filter = 'grayscale(1) brightness(.85) contrast(.9)'; g.translate(cx + (flip ? sz / 2 : -sz / 2), y); g.scale(flip ? -1 : 1, 1); g.drawImage(im, 0, 0, sz, sz); g.restore(); }
@@ -10156,7 +10172,7 @@ function stHud() {
   const acts = run.map.map((m, i) => { const past = i < run.act || run.cleared, on = i === run.act && !run.cleared;
     return `<li class="th-${m.ar}${past ? ' past' : ''}${on ? ' on' : ''}"${on ? ' aria-current="step"' : ''}><b>${L(`${i + 1}막`, `Act ${i + 1}`)}</b><span class="an">${L(ARENAS[m.ar] || m.ar, TR(ARENAS[m.ar] || m.ar))}</span>${on ? `<span class="adots" role="img" aria-label="${L(`${n}걸음 가운데 ${prog}걸음`, `Step ${prog} of ${n}`)}">${Array.from({ length: n }, (_, k) => `<i class="${k < prog ? 'f' : ''}${k === n - 1 ? ' b' : ''}"></i>`).join('')}</span>` : ''}</li>`; }).join('');
   return `<header class="sm-hud">
-    <div class="hud-me c-${run.cls}"><i class="px a-${run.cls}" aria-hidden="true"></i><div><p class="cap">${L('모험 모드', 'Adventure')}</p><b>${CLS[run.cls].n}</b></div></div>
+    <div class="hud-me c-${run.cls}"><i class="px a-${run.cls}${skc(run.cls, run.skin)}" aria-hidden="true"></i><div><p class="cap">${L('모험 모드', 'Adventure')}</p><b>${CLS[run.cls].n}</b></div></div>
     <div class="hud-st">
       <span class="hs hs-hp" title="${L('체력', 'HP')}">${pxi('heart')}${pips('hp', run.hp, run.maxHp)}<b>${run.hp}<small>/${run.maxHp}</small></b></span>
       <span class="hs hs-gold" title="${L('금화', 'Gold')}">${GOLD}<b>${run.gold}</b></span>
@@ -10174,13 +10190,13 @@ function stBag() {
   const ids = Object.keys(cnt).sort((a, b) => (CARDS[a].relic ? 1 : 0) - (CARDS[b].relic ? 1 : 0) || (ord[CARDS[a].t] || 0) - (ord[CARDS[b].t] || 0) || CARDS[a].c - CARDS[b].c);
   const rls = run.rl.map(k => `<li><b>${rlName(k)}</b><span>${L(RL[k][1], RL[k][3])}</span></li>`).join('') + (run.abup ? `<li class="abup"><b>${L(ABUP[0], ABUP[2])}</b><span>${L(ABUP[1], ABUP[3])}</span></li>` : '');
   const deck = ids.map(id => { const k = CARDS[id]; return `<li class="k-${k.relic ? 'relic' : k.t}${add[id] ? ' add' : ''}" tabindex="0"><b class="cost" aria-label="${L('마나', 'Mana')} ${k.c}">${k.c}</b><span class="nm">${k.n}</span>${cnt[id] > 1 ? `<em>×${cnt[id]}</em>` : ''}${add[id] ? `<i class="nw" title="${L('이번 도전에서 더한 카드', 'Added this run')}">+${add[id]}</i>` : ''}<span class="ds">${hl(k.d)}</span></li>`; }).join('');
-  const body = `<div class="sb-me c-${run.cls}"><i class="px a-${run.cls}" aria-hidden="true"></i><div><h3>${c.n}</h3><p class="cap">${c.tag}</p></div></div>
+  const body = `<div class="sb-me c-${run.cls}"><i class="px a-${run.cls}${skc(run.cls, run.skin)}" aria-hidden="true"></i><div><h3>${c.n}</h3><p class="cap">${c.tag}</p></div></div>
     <dl class="sd-kv sb-kv"><dt>${L('체력', 'HP')}</dt><dd>${pips('hp', run.hp, run.maxHp)} <b>${run.hp} / ${run.maxHp}</b></dd><dt>${L('금화', 'Gold')}</dt><dd>${GOLD}<b>${run.gold}</b></dd>
       <dt>${L('이긴 결투', 'Duels won')}</dt><dd><b>${run.fights || 0}</b>${run.elite ? ` <span class="cap">(${L('정예', 'elite')} ${run.elite})</span>` : ''}</dd><dt>${L('누적 턴', 'Turns')}</dt><dd><b>${run.turns}</b></dd></dl>
     <section class="sb-sec"><h4>${pxi('relic')}${L('유물', 'Relics')} <span>${run.rl.length + (run.abup ? 1 : 0)}</span></h4>${rls ? `<ul class="sb-rl">${rls}</ul>` : `<p class="cap">${L('아직 없습니다. 정예·보스·보물·상점에서 얻습니다.', 'None yet. Elites, bosses, treasure and shops give relics.')}</p>`}</section>
     <section class="sb-sec"><h4>${pxi('deck')}${L('덱', 'Deck')} <span>${d.length}${L('장', '')}</span>${(run.cards || []).length || (run.cut || []).length ? `<small>${L(`더함 ${(run.cards || []).length}${(run.cut || []).length ? ' · 뺌 ' + run.cut.length : ''}`, `+${(run.cards || []).length}${(run.cut || []).length ? ' · −' + run.cut.length : ''}`)}</small>` : ''}</h4>
       <ul class="sb-deck">${deck}</ul><p class="cap sb-tip">${L('카드에 마우스를 대면 설명이 나옵니다.', 'Hover a card to read it.')}</p></section>`;
-  return stDrawer('l', L('내 상태', 'My status'), `<i class="px a-${run.cls} sdr-ic" aria-hidden="true"></i>`, body);
+  return stDrawer('l', L('내 상태', 'My status'), `<i class="px a-${run.cls}${skc(run.cls, run.skin)} sdr-ic" aria-hidden="true"></i>`, body);
 }
 /* ===== 전투 손패: 카드에 마우스를 대면 커서 쪽으로 기울고 빛이 따라온다 ===== */
 document.addEventListener('pointermove', e => {
@@ -10259,7 +10275,7 @@ function stSumHTML() {
   const rls = run.rl.map(k => `<li><b>${rlName(k)}</b><span>${L(RL[k][1], RL[k][3])}</span></li>`).join('') + (run.abup ? `<li><b>${L(ABUP[0], ABUP[2])}</b><span>${L(ABUP[1], ABUP[3])}</span></li>` : '');
   const where = ln ? L(`${run.act + 1}막 ${nodeN(ln.t)}에서 ${ln.foe ? CLS[ln.foe].n + '에게 ' : ''}쓰러졌습니다`, `Fell at Act ${run.act + 1} ${nodeN(ln.t)}${ln.foe ? ' to the ' + TR(CLS[ln.foe].n) : ''}`) : '';
   return `<div class="gate stmap ssum${won ? ' won' : ' lost'}">
-    <header class="ss-top c-${run.cls}"><i class="px a-${run.cls}${won ? '-act' : '-ko'}" aria-hidden="true"></i>
+    <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
       <div><p class="cap">${L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
     <div class="ss-body">

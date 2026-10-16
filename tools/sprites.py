@@ -66,6 +66,14 @@ def ko_from(im):
     return out
 
 
+def face_of(im):
+    """초상 칸에 쓸 얼굴 중심(x, y). 맨 윗줄부터 10줄 안의 불투명 픽셀 가운데"""
+    a = im.getchannel('A').point(lambda v: 255 if v == 255 else 0); bb = a.getbbox()
+    if not bb: return [16, 10]
+    t = bb[1]; xs = [x for y in range(t, min(32, t + 10)) for x in range(32) if a.getpixel((x, y))]
+    return [round(sum(xs) / len(xs)) if xs else 16, min(26, t + 6)]
+
+
 def read_sheet(path):
     im = Image.open(path).convert('RGBA')
     if im.size != (224, 32):
@@ -115,12 +123,12 @@ def css_for(c, fr, ko, sk=None):
 def build():
     src = open(HTML, encoding='utf-8').read(); ids = class_ids(src)
     names = json.load(open(NAMES, encoding='utf-8')) if os.path.exists(NAMES) else {}
-    out, table = [], {}
+    out, table, face = [], {}, {}
     for c in ids:
         p = os.path.join(BASE, c + '.png')
         if not os.path.exists(p): raise SystemExit(f'{p} 가 없습니다. 먼저 export 하세요')
         fr = read_sheet(p); kp = os.path.join(BASE, c + '_ko.png')
-        out.append(css_for(c, fr, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(fr['idle1'])))
+        out.append(css_for(c, fr, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(fr['idle1']))); face[c] = face_of(fr['idle1'])
         d = os.path.join(SKINS, c)
         if os.path.isdir(d):
             for f in sorted(os.listdir(d)):
@@ -130,7 +138,7 @@ def build():
                 sf = read_sheet(os.path.join(d, f)); kp = os.path.join(d, sk + '_ko.png')
                 out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk))
                 nm = (names.get(c) or {}).get(sk) or {}
-                table.setdefault(c, []).append({'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk))})
+                table.setdefault(c, []).append({'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': face_of(sf['idle1'])})
     # 예전 자리에 흩어져 있던 직업 그림 규칙은 지우고 한 덩어리로 넣는다
     rule = re.compile(r'^\.a-(' + '|'.join(ids) + r')(-act|-w|-s|-hit|-ko)?\{[^\n]*\}\n', re.M)
     at = None
@@ -143,7 +151,7 @@ def build():
     head, tail = rule.sub('', src[:at]), rule.sub('', src[at:])
     block = B_CSS + '\n' + '\n'.join(out) + '\n' + E_CSS + '\n'
     src = head + block + tail
-    js = B_JS + ' const SKINS = ' + json.dumps(table, ensure_ascii=False) + '; ' + E_JS
+    js = B_JS + ' const SKINS = ' + json.dumps(table, ensure_ascii=False, separators=(',', ':')) + '; const SKIN_FACE = ' + json.dumps(face, separators=(',', ':')) + '; ' + E_JS
     if B_JS in src: src = re.sub(re.escape(B_JS) + r'.*?' + re.escape(E_JS), lambda m: js, src, count=1, flags=re.S)
     else: raise SystemExit('index.html에 스킨 표 자리(SKINS:BEGIN)가 없습니다')
     open(HTML, 'w', encoding='utf-8').write(src)
