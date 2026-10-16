@@ -3272,15 +3272,52 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 @keyframes inkDrop { 0% { translate: 0 -30px; opacity: 0; } 70% { translate: 0 4px; opacity: 1; } }
 
 /* 로그인 */
-.login2 { display: grid; gap: 10px; box-sizing: border-box; width: min(380px, calc(100vw - 32px)); max-width: 100%; padding: 20px 22px; background: var(--paper); border: 3px solid var(--sil); box-shadow: 5px 5px 0 rgba(0, 0, 0, .35); }
-.login2 h2 { margin: 0; font-size: 26px; } .login2 .cap { margin: 0; }
-.login2 label { display: grid; gap: 4px; } .login2 label span { font-size: 13px; color: var(--ash); }
-.login2 input { box-sizing: border-box; width: 100%; min-width: 0; font: inherit; font-size: 20px; padding: 8px 10px; border: 2px solid var(--sil); background: #fff; color: var(--sil); }
-.login2 input:focus { outline: 3px solid var(--red); outline-offset: 1px; }
-.login2 #lg-pin { letter-spacing: .5em; }
-.lg-err { min-height: 1.3em; margin: 0; color: var(--red); font-size: 14px; }
-.lg-go { display: flex; gap: 8px; flex-wrap: wrap; } .lg-go .btn { flex: 1 1 8em; min-width: 0; }
-.lg-off { font-size: 13px; }
+.ac-wrap { position: absolute; inset: 0 0 64px; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 16px; overflow-y: auto; }
+.ac-wrap .logo { margin: 0; }
+.ac-card { box-sizing: border-box; width: min(420px, 100%); display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; background: var(--paper); border: 4px solid var(--sil); box-shadow: 6px 6px 0 rgba(42, 31, 36, .45); }
+.ac-top { display: flex; align-items: center; gap: 14px; padding-bottom: 12px; border-bottom: 2px dashed var(--line); }
+.ac-top h2 { margin: 0; font-size: 24px; line-height: 1.2; } .ac-top p { margin: 4px 0 0; font-size: 13px; color: var(--ash); }
+.ac-key { flex: none; width: 40px; height: 40px; background: var(--red); box-shadow: inset -4px -4px 0 rgba(0, 0, 0, .2), 3px 3px 0 var(--sil);
+  -webkit-mask: radial-gradient(circle at 34% 34%, transparent 0 4px, #000 5px 11px, transparent 12px) , linear-gradient(#000, #000) 52% 62% / 60% 8px no-repeat, linear-gradient(#000, #000) 86% 74% / 8px 10px no-repeat; mask: radial-gradient(circle at 34% 34%, transparent 0 4px, #000 5px 11px, transparent 12px), linear-gradient(#000, #000) 52% 62% / 60% 8px no-repeat, linear-gradient(#000, #000) 86% 74% / 8px 10px no-repeat; }
+.ac-f { display: flex; flex-direction: column; gap: 5px; } .ac-f > span { font-size: 13px; color: var(--ash); }
+.ac-f input { box-sizing: border-box; width: 100%; min-width: 0; margin: 0; font: inherit; font-size: 20px; padding: 10px 12px; border: 3px solid var(--sil); background: #fff; color: var(--sil); border-radius: 0; }
+.ac-f input:focus { outline: none; border-color: var(--red); box-shadow: 3px 3px 0 var(--red); }
+.ac-f input:disabled { opacity: .6; }
+.ac-pin { text-align: center; font-size: 26px !important; letter-spacing: .6em; padding-left: calc(12px + .6em) !important; }
+.ac-err { min-height: 1.3em; margin: -2px 0 0; color: var(--red); font-size: 14px; line-height: 1.35; }
+.ac-card .btn.big { width: 100%; margin: 0; }
+.ac-or { display: flex; align-items: center; gap: 10px; margin: 2px 0 0; font-size: 12px; color: var(--ash); } .ac-or::before, .ac-or::after { content: ''; flex: 1; border-top: 2px dashed var(--line); }
+.ac-off { align-self: center; margin-top: 2px; padding: 4px 8px; border: 0; background: none; font: inherit; font-size: 13px; color: var(--ash); text-decoration: underline; cursor: pointer; }
+.ac-wait { margin: 0; text-align: center; color: var(--ash); }
+.ac-me h2 { margin: 2px 0 8px; font-size: 26px; } .ac-me dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 8px; } .ac-me dt { color: var(--ash); } .ac-me dd { margin: 0; font-weight: 700; }
+.ac-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+@media (max-width: 720px) { .ac-wrap { justify-content: flex-start; padding-top: 20px; gap: 12px; } .ac-card { padding: 16px; } .ac-top h2 { font-size: 20px; } }
+/* 메달 */
+.mdl-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
+.mdl { display: inline-block; width: 14px; height: 14px; flex: none; background: radial-gradient(circle at 50% 50%, #fff2b0 0 22%, #f2c230 23% 58%, #b08014 59% 70%, transparent 71%); box-shadow: 0 -5px 0 -3px #d8475a; }
+.qk-m { margin-left: 4px; padding-left: 6px; border-left: 1px solid currentColor; }
+.v-rw { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0 0; padding: 6px 10px; background: #fff6d8; border: 2px solid #f2c230; font-size: 15px; }
+.v-rw .mdl-n { font-size: 18px; color: #9a7212; }
+.ss-rw { max-width: 520px; margin: 10px auto; }
+/* 스킨 상점 */
+.shop-box { max-width: min(1100px, 96vw) !important; }
+.sh-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; } .sh-head h1 { margin: 0; }
+.sh-bal { margin: 0; font-size: 18px; } .sh-bal .mdl-n { font-size: 22px; color: #9a7212; }
+.sh-tabs { display: flex; gap: 6px; margin: 4px 0; }
+.sh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-height: min(60vh, 640px); overflow-y: auto; padding: 4px 4px 8px; overscroll-behavior: contain; }
+.sh-it { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; background: #fff; border: 3px solid var(--line); box-shadow: 3px 3px 0 var(--ac, var(--sil)); }
+.sh-it.own { background: var(--wash, #f6f2ea); }
+.sh-it b { font-size: 15px; } .sh-it .btn { width: 100%; min-height: 34px; margin-top: 4px; }
+.sh-fig { position: relative; width: 96px; height: 96px; background: radial-gradient(ellipse at 50% 88%, rgba(0, 0, 0, .14) 0 30%, transparent 31%); }
+.sh-fig > .px { position: absolute; inset: 0; } .sh-a { opacity: 0; }
+.sh-it:hover .sh-a { opacity: 1; } .sh-it:hover .sh-s { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { .sh-s { animation: breathe 1.3s steps(1) infinite; } .sh-it:hover .sh-a { animation: spAnim .45s steps(1) infinite; } }
+/* 선택 화면: 잠긴 스킨 */
+.pk-sk.lock > i { filter: grayscale(1) brightness(.7); }
+.pk-lock { position: absolute; left: 0; right: 0; bottom: 0; padding: 1px 0; background: rgba(42, 31, 36, .85); color: #ffe796; font-size: 11px; display: flex; justify-content: center; }
+.pk-lock .mdl { width: 10px; height: 10px; box-shadow: none; }
+/* 결투 화면 닉네임 */
+.uf-nick { max-width: 9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 6px; margin-right: 4px; background: var(--sil); color: var(--paper); font-size: 12px; line-height: 18px; }
 .qk.acct { display: inline-flex; align-items: center; gap: 6px; max-width: 12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .qk-me { width: 10px; height: 12px; background: radial-gradient(circle at 50% 28%, currentColor 0 26%, transparent 27%), radial-gradient(ellipse at 50% 100%, currentColor 0 48%, transparent 49%); }
 </style>
@@ -3827,8 +3864,22 @@ const CLASS_IDS = Object.keys(CLS);
 /* SKINS:BEGIN */ const SKINS = {"alch":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"archaeologist":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"astronomer":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"balloon":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"bard":[{"id":"color","n":"컬러","en":"Color","f":[16,8]}],"blacksmith":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"brawler":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"bunny":[{"id":"color","n":"컬러","en":"Color","f":[14,7]}],"chicken":[{"id":"color","n":"컬러","en":"Color","f":[16,13]}],"chrono":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"clown":[{"id":"color","n":"컬러","en":"Color","f":[13,8]}],"druid":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"dullahan":[{"id":"color","n":"컬러","en":"Color","f":[13,13]}],"gambler":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"grave":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"hunter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"mage":[{"id":"color","n":"컬러","en":"Color","f":[16,7]}],"mechanic":[{"id":"color","n":"컬러","en":"Color","f":[14,9]}],"merfolk":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"mirror":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"mower":[{"id":"color","n":"컬러","en":"Color","f":[7,10]}],"onmyoji":[{"id":"color","n":"컬러","en":"Color","f":[14,8]}],"painter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"samurai":[{"id":"color","n":"컬러","en":"Color","f":[14,9]}],"scarecrow":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"shaman":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"slime":[{"id":"color","n":"컬러","en":"Color","f":[15,17]}],"statue":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"tamer":[{"id":"color","n":"컬러","en":"Color","f":[16,9]}],"vampire":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}]}; const SKIN_FACE = {"alch":[14,8],"archaeologist":[18,12],"astronomer":[17,8],"balloon":[16,10],"bard":[17,8],"blacksmith":[19,11],"brawler":[15,8],"bunny":[16,6],"chicken":[18,9],"chrono":[19,7],"clown":[16,9],"druid":[17,8],"dullahan":[21,9],"gambler":[16,9],"grave":[17,9],"hunter":[14,7],"mage":[18,9],"mechanic":[17,9],"merfolk":[17,7],"mirror":[18,9],"mower":[10,10],"onmyoji":[16,6],"painter":[16,8],"samurai":[14,12],"scarecrow":[17,6],"shaman":[18,7],"slime":[16,17],"statue":[16,12],"tamer":[15,6],"vampire":[16,8]}; /* SKINS:END */
 /* 스킨: 직업마다 고른 모습. 고른 것은 이 기기에 저장하고, 결투에서는 doc.skin[자리]로 상대에게도 같은 모습이 보인다 */
 const skinList = c => SKINS[c] || [];
-function skinOf(c) { let v = ''; try { v = (JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {})[c] || ''; } catch (e) { /* 저장소 없음 */ } return skinList(c).some(x => x.id === v) ? v : ''; }
+function skinOf(c) { let v = ''; try { v = (JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {})[c] || ''; } catch (e) { /* 저장소 없음 */ } return skinList(c).some(x => x.id === v) && skinOwned(c, v) ? v : ''; }
+/* 계정 머니: 메달. 모험 클리어율과 대전 승패로 받고, 상점에서 스킨을 산다 */
+const SKIN_PRICE = 300;
+function medals() { try { return Math.max(0, parseInt(localStorage.getItem('ssd-medal') || '0', 10) || 0); } catch (e) { return 0; } }
+function ownedSkins() { try { const a = JSON.parse(localStorage.getItem('ssd-owned') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+const skinOwned = (c, id) => !id || ownedSkins().includes(c + ':' + id);
+const MDL = n => `<span class="mdl-n"><i class="mdl" aria-hidden="true"></i>${n}</span>`;
+function medalAdd(n) { if (!n) return; try { localStorage.setItem('ssd-medal', String(medals() + n)); } catch (e) { /* 저장소 없음 */ } }
+function buySkin(c, id) {
+  if (skinOwned(c, id)) return 'own'; if (medals() < SKIN_PRICE) return 'poor';
+  try { localStorage.setItem('ssd-owned', JSON.stringify([...ownedSkins(), c + ':' + id])); localStorage.setItem('ssd-medal', String(medals() - SKIN_PRICE)); } catch (e) { return 'err'; }
+  return 'ok';
+}
 function setSkin(c, id) { try { const o = JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {}; o[c] = id; localStorage.setItem('ssd-skins', JSON.stringify(o)); } catch (e) { /* 저장소 없음 */ } }
+/* 닉네임: 각 자리가 결투 문서에 적어 둔다. 봇은 '봇', 모험의 내 자리는 계정 닉네임 */
+function nickOf(k) { const n = doc && doc.nick && doc.nick[k]; if (n) return n; if (k === seat && typeof AUTH !== 'undefined' && AUTH.nick) return AUTH.nick; return doc && doc.seats && doc.seats[k] === 'bot' ? mE('봇', 'Bot') : ''; }
 const skc = (c, id) => (id && skinList(c).some(x => x.id === id) ? ` sk-${c}-${id}` : '');
 function skOf(k) {
   if (typeof G === 'undefined' || !G || !G.P[k]) return ''; const c = G.P[k].cls;
@@ -5303,6 +5354,7 @@ function leave() { run = null; busy = false; if (!local && p2p()) db.close(); if
 function onDoc() {
   if (!doc) return render();
   seat = doc.seats.a === me ? 'a' : doc.seats.b === me ? 'b' : null;
+  if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick } }); }
   let job = null;
   if (doc.game && doc.game !== gameStr) {
     const old = G;
@@ -5337,10 +5389,19 @@ async function startReplay(job) {
   const drawn = k => { const q = neu.rp.P[k]; return Math.max(0, neu.P[k].hand.length - (job.old.P[k].hand.length - (q.mvId ? 1 : 0) - (q.actId ? 1 : 0) - (q.regroup || 0))); };
   dealN = drawn(seat); dealOpp = drawn(opp(seat));
   replaying = false; rpLocked = null; deadline = Date.now() + TURN_MS;
+  if (doc && doc.phase === 'over') matchReward(neu);
   render();
   if (doc && doc.phase === 'over') SND.play(neu.winner === seat ? 'win' : neu.winner === 'draw' ? 'turn' : 'lose'); else { SND.play('turn'); turnBanner(); }
   if (doc && doc.phase === 'play' && neu.P[seat].hp === 1 && job.old.P[seat].hp > 1) crisis();
   if (local && Math.random() < 0.3) { const r = neu.rp.R, hitMe = r.a && r.a.dmg > 0, hitBot = r.b && r.b.dmg > 0; W({ emote: { b: { i: hitMe ? 5 + Math.floor(Math.random() * 5) : hitBot ? 2 : 3, n: Date.now() } } }); }
+}
+/* 결투가 끝나면 메달 지급. 사람과의 대전은 크게, 봇 연습은 봇 수준만큼. 모험 결투는 모험이 끝날 때 한꺼번에 */
+let lastRw = null;
+function matchReward(g) {
+  if (stageOn() || !seat || !g || !g.winner) return; const key = (code || '') + ':' + doc.gid + ':' + g.turn + ':' + g.winner; if (lastRw && lastRw.key === key) return;
+  const w = g.winner, win = w === seat, draw = w === 'draw', vsBot = local;
+  const n = vsBot ? (win ? ({ easy: 5, normal: 8, hard: 12 }[botLv] || 8) : draw ? 3 : 2) : win ? 30 : draw ? 15 : 10;
+  lastRw = { key, n, why: vsBot ? mE('봇 연습', 'Bot practice') : win ? mE('대전 승리', 'PvP win') : draw ? mE('대전 무승부', 'PvP draw') : mE('대전 참가', 'PvP played') }; medalAdd(n);
 }
 function refreshStat(k) {
   const el = app.querySelector('.side.' + (k === seat ? 'me' : 'op') + ' .stat'); if (!el) return;
@@ -5600,7 +5661,7 @@ function unLock() {
 /* 연출 오버레이: 대결 인트로, 체력 위기 */
 function showIntro() {
   const ov = ovEl(); if (noMotion || !ov || !G) return;
-  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${k === seat ? '나' : '상대'}</span></div>`;
+  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${nickOf(k) ? esc(nickOf(k)) : k === seat ? '나' : '상대'}</span></div>`;
   ov.innerHTML = `<div class="intro"><p class="in-ar">${stageOn() ? stLab() : MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf().a + scoreOf().b + 1}번째 판` : ''} · 결투장 ${ARENAS[G.arena] || ARENAS.castle}</p><div class="in-row">${side(seat, false)}<b class="in-vs">VS</b>${side(opp(seat), true)}</div></div>`;
   SND.play('cutin'); const e = ov.firstChild; setTimeout(() => { if (e.parentNode) e.remove(); }, 1900);
 }
@@ -5782,7 +5843,7 @@ function statHTML(k) {
   return `<div class="stat uf ${mine ? 'me' : 'op'} c-${p.cls}${hp <= 1 && doc.phase === 'play' ? ' low' : ''}">
     <span class="uf-por" aria-hidden="true"><i class="px a-${p.cls}${skOf(k)}${mine ? '' : ' flip'}"></i></span>
     <span class="uf-main">
-      <span class="uf-name"><span class="uf-who">${mine ? '나' : '상대'}</span><b>${c.n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${c.n} 설명 보기">설명</button></span>
+      <span class="uf-name"><span class="uf-who">${mine ? '나' : '상대'}</span>${nickOf(k) ? `<span class="uf-nick" data-notr>${esc(nickOf(k))}</span>` : ''}<b>${c.n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${c.n} 설명 보기">설명</button></span>
       <span class="uf-bar uf-hp" role="img" aria-label="체력 ${hp} / ${hm}"><span class="uf-ic" aria-hidden="true">♥</span>${hpBar(k, hp, hm)}<b>${hp}<small>/${hm}</small></b></span>
       <span class="uf-bar uf-mp" role="img" aria-label="${L(`마나 ${p.mana} / ${mm}${sp ? ', 이번 계획에 ' + Math.min(sp, p.mana) + ' 사용' : ''}`, `Mana ${p.mana} / ${mm}${sp ? ', spending ' + Math.min(sp, p.mana) + ' this plan' : ''}`)}"><span class="uf-ic" aria-hidden="true">◆</span>${pips('mp', p.mana, mm, sp)}<b>${p.mana}<small>/${mm}</small></b></span>
       <span class="uf-ks"><span class="uf-k pas" tabindex="0"><em>패시브</em><b>${c.pas[0]}</b><span class="uf-tip" role="tooltip">${hl(c.pas[1])}</span></span><span class="uf-k act" tabindex="0">${abIcon(p.cls)}<em>능력</em><b>${c.act[0]}</b><span class="uf-tip" role="tooltip">${hl(c.act[1])}</span></span></span>
@@ -6134,7 +6195,7 @@ function playHTML() {
     const vrow = (k, a, b) => `<span class="vk" role="rowheader">${k}</span><b role="cell">${a}</b><b role="cell">${b}</b>`;
     const stats = S ? `<div class="vst" role="table" aria-label="${L('결투 기록', 'Duel stats')}"><span class="vh" role="columnheader"></span><span class="vh" role="columnheader">나 · ${CLS[p.cls].n}</span><span class="vh" role="columnheader">상대 · ${CLS[G.P[o].cls].n}</span>
       ${vrow('준 피해', S[o].lost, S[seat].lost)}${vrow('즉발 공격 적중', `${S[seat].hit}/${S[seat].atk} (${rate(seat)})`, `${S[o].hit}/${S[o].atk} (${rate(o)})`)}${vrow('가장 큰 한 방', S[seat].best, S[o].best)}${vrow('남은 체력', Math.max(0, p.hp), Math.max(0, G.P[o].hp))}</div>` : '';
-    verdict = `<div class="panel verdict v-${w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose'}"><div class="v-top">${w === 'draw' ? '' : `<i class="px spa a-${G.P[w].cls}-act${skOf(w)}${w === seat ? '' : ' flip'}" aria-hidden="true"></i>`}<div><h2>${txt}</h2><p>${G.turn - 1}턴 만에 끝났습니다.</p></div></div>${w !== 'draw' && typeof WINL === 'object' && WINL[G.P[w].cls] ? `<p class="vline c-${G.P[w].cls}"><q>${WINL[G.P[w].cls]}</q><span>${CLS[G.P[w].cls].n}</span></p>` : ''}${stats}
+    verdict = `<div class="panel verdict v-${w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose'}"><div class="v-top">${w === 'draw' ? '' : `<i class="px spa a-${G.P[w].cls}-act${skOf(w)}${w === seat ? '' : ' flip'}" aria-hidden="true"></i>`}<div><h2>${txt}</h2><p>${G.turn - 1}턴 만에 끝났습니다.</p></div></div>${w !== 'draw' && typeof WINL === 'object' && WINL[G.P[w].cls] ? `<p class="vline c-${G.P[w].cls}"><q>${WINL[G.P[w].cls]}</q><span>${CLS[G.P[w].cls].n}</span></p>` : ''}${lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? `<p class="v-rw">${MDL('+' + lastRw.n)}<span>${lastRw.why}</span></p>` : ''}${stats}
       ${modeOf() === 'bo3' ? `<p class="vscore">${matchDone() ? (scoreOf()[seat] >= 2 ? '매치 승리' : '매치 패배') : '3판 2선승'} · <b>${scoreOf()[seat]} : ${scoreOf()[o]}</b></p>` : ''}
       ${stageOn() ? stOverHTML(w === seat)
       : tutOn() ? `<p class="vscore">튜토리얼을 마쳤습니다. 연습 모드에서 다른 직업도 써 보세요.</p><button type="button" class="btn red" data-a="leave">메뉴로 돌아가기</button>`
@@ -6166,6 +6227,7 @@ function playHTML() {
     </div>`;
 }
 /* ===== 메인 메뉴 ===== */
+let shopTab = 'all';
 let menuSt = 'splash', menuTab = null, menuAnim = false, tabAnim = false, ovKind = null, cxView = null;
 const MENU_TH = pick(['castle', 'snow', 'forest', 'desert']);
 const MENU_CAST = shuffle(CLASS_IDS.slice());
@@ -6233,11 +6295,11 @@ function gateHTML() {
   const touch = matchMedia('(hover: none)').matches;
   const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span><span class="m-cr cap" data-notr>© 2026 CHOSBS. All rights reserved.</span>
       ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
-      <span class="m-qk">${AUTH.user || AUTH.guest ? `<button type="button" class="qk acct" data-a="mtab" data-m="acct" data-notr aria-label="${mE('계정', 'Account')}"><i class="qk-me" aria-hidden="true"></i>${esc(AUTH.nick)}</button>` : ''}<button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
+      <span class="m-qk">${AUTH.user || AUTH.guest ? `<button type="button" class="qk acct" data-a="mtab" data-m="acct" data-notr aria-label="${mE('계정', 'Account')}"><i class="qk-me" aria-hidden="true"></i>${esc(AUTH.nick)}<span class="qk-m">${MDL(medals())}</span></button>` : ''}<button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
   let body;
-  if (!AUTH.user && !AUTH.guest) body = loginHTML();
-  else if (menuTab === 'acct') body = acctHTML();
+  if (!AUTH.user && !AUTH.guest) return `<div class="menu t2 ac-mode">${scene}<div class="ac-wrap">${logo}${loginHTML()}</div>${foot}</div>`;
+  if (menuTab === 'acct') body = acctHTML();
   else if (menuTab === 'single') body = singleHTML(ta);
   else if (menuTab === 'multi') { const on = netReady && db, st = on ? ['ok', '온라인 연결됨'] : off ? ['off', '이 화면에서는 온라인 대전을 쓸 수 없습니다'] : ['wait', '연결하는 중'];
     const last = ls('ssd-last'), k1 = CLS[last] ? last : MENU_DUEL[0], k2 = MENU_DUEL[1] !== k1 ? MENU_DUEL[1] : 'samurai';
@@ -6266,7 +6328,8 @@ function gateHTML() {
       ${sv && CLS[sv.cls] ? `<button type="button" class="mi go c-${sv.cls}" data-a="stage" style="--i:0"><i class="px a-${sv.cls}" aria-hidden="true"></i><b>${mE('이어하기', 'Continue')}</b><span>${mE('모험', 'Adventure')} · ${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)} · ${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp}</span></button>` : ''}
       ${mi('data-a="mtab" data-m="single"', '싱글 플레이', 'Single Player', '모험 모드 · 연습 · 튜토리얼', 'Adventure · Practice · Tutorial', 1)}
       ${mi('data-a="mtab" data-m="multi"', '멀티 플레이', 'Multiplayer', '방 만들기 · 접속하기', 'Create room · Join', 2)}
-      <div class="mi-row" style="--i:3">${mi('data-a="ov" data-o="codex"', '직업 도감', 'Classes', '', '', 3, ' sm')}${mi('data-a="ov" data-o="records"', '기록', 'Records', '', '', 3, ' sm')}${mi('data-a="ov" data-o="rules"', '규칙', 'Rules', '', '', 3, ' sm')}${mi('data-a="ov" data-o="settings"', '설정', 'Settings', '', '', 3, ' sm')}</div></nav>`; }
+      <div class="mi-row" style="--i:3">${mi('data-a="ov" data-o="codex"', '직업 도감', 'Classes', '', '', 3, ' sm')}${mi('data-a="ov" data-o="records"', '기록', 'Records', '', '', 3, ' sm')}${mi('data-a="ov" data-o="rules"', '규칙', 'Rules', '', '', 3, ' sm')}${mi('data-a="ov" data-o="settings"', '설정', 'Settings', '', '', 3, ' sm')}</div>
+      ${mi('data-a="ov" data-o="shop"', '스킨 상점', 'Skin Shop', `보유 메달 ${medals()}`, `${medals()} medals`, 4)}</nav>`; }
   return `<div class="menu t2${anim ? ' anim' : ''}${menuTab ? ' sub' : ''}">${scene}<div class="m-ui">${logo}${body}</div>${foot}</div>`;
 }
 /* 타이틀 빠른 버튼: 언어 전환. 메뉴 목록은 위아래 화살표로 고른다. 첫 화면은 아무 키나 */
@@ -6303,6 +6366,16 @@ function ovHTML() {
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">모험 기록 초기화</button></div></div>
       <p class="cap">설정은 이 브라우저에 저장됩니다.${doc ? ' 언어는 첫 화면에서 바꿀 수 있습니다.' : ''}</p>${close}</section></div>`; }
+  if (ovKind === 'shop') { const own = ownedSkins(), m = medals(), f = shopTab;
+    const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
+    const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
+      return `<div class="sh-it c-${c}${owned ? ' own' : ''}"><div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+        <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
+        ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < SKIN_PRICE ? 'disabled' : ''}>${MDL(SKIN_PRICE)}</button>`}</div>`; };
+    return `<div class="info-in"><section class="detail ov-box shop-box"><div class="sh-head"><h1>${mE('스킨 상점', 'Skin Shop')}</h1><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p></div>
+      <p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
+      <div class="sh-tabs">${[['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div>
+      <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>${close}</section></div>`; }
   if (ovKind === 'records') { const rec = stageRec(), n = Object.keys(rec).length;
     return `<div class="info-in"><section class="detail ov-box"><h1>기록</h1><p>모험 모드를 돌파한 직업 <b class="k k-d">${n}</b> / ${CLASS_IDS.length}. 숫자는 다섯 판에 걸린 가장 적은 턴 수입니다.</p>
       <div class="recs">${CLASS_IDS.map(k => `<span class="rec${rec[k] ? ' ok' : ''} c-${k}"><i class="px a-${k}" aria-hidden="true"></i><b>${CLS[k].n}</b><span>${rec[k] ? rec[k] + '턴' : '-'}</span></span>`).join('')}</div>${close}</section></div>`; }
@@ -6319,7 +6392,7 @@ function roomHTML() {
     return `<div class="rm-p ${k === 'a' ? 'l' : 'r'}${here ? ' in' : ' empty'}${rdy ? ' ok' : ''}${mine ? ' me' : ''}">
       <span class="rm-tag">${k === 'a' ? 'P1' : 'P2'}${k === 'a' ? ' · 방장' : ''}</span>
       <div class="rm-av${here && mine ? ' c-' + myCls : ''}">${!here ? '<i class="rm-dots"><b></b><b></b><b></b></i>' : mine ? `<i class="px a-${myCls}${k === 'b' ? ' flip' : ''}"></i>` : `<i class="rm-q${bot ? ' bot' : ''}">${bot ? 'BOT' : '?'}</i>`}</div>
-      <b class="rm-nm">${mine ? '나' : bot ? '봇 · ' + BOTS[botLv][0] : here ? '상대' : '빈 자리'}</b>
+      <b class="rm-nm">${bot ? '봇 · ' + BOTS[botLv][0] : here && nickOf(k) ? esc(nickOf(k)) + (mine ? ' (나)' : '') : mine ? '나' : here ? '상대' : '빈 자리'}</b>
       <span class="rm-st ${st[0]}">${st[0] === 'ok' ? '✓ ' : ''}${st[1]}</span></div>`; };
   const why = canStart ? '모두 준비됐습니다. 결투를 시작하세요!' : !both ? '상대가 들어오면 시작할 수 있습니다.' : !doc.ready[seat] ? '준비 완료를 눌러 주세요.' : !doc.ready[o] ? (host ? '상대가 준비하기를 기다립니다.' : '방장이 시작하기를 기다립니다.') : '방장이 시작하기를 기다립니다.';
   const tiles = [...String(code)].map((ch, n) => `<i style="--i:${n}">${esc(ch)}</i>`).join('');
@@ -6428,7 +6501,7 @@ function selectHTML() {
       <i class="px a-t${CLASS_IDS.indexOf(k) % 2}"><i class="spr px a-${k}"></i></i><span>${bans.includes(k) ? '금지' : CLS[k].n}</span></button>`;
   /* 스킨 고르기: 무대와 정보판 사이 세로 칸. 스킨마다 얼굴만 잘라 보여 준다 */
   const sks = skinList(view), skCur = skinOf(view), faceI = (id, f) => `<i class="px a-${view}${skc(view, id)}" style="--fx:${f[0]};--fy:${f[1]}"></i>`;
-  const skCol = sks.length && !banning ? `<div class="pk-skins" role="group" aria-label="${mE('스킨', 'Skin')}"><span class="cap">${mE('스킨', 'Skin')}</span>${[{ id: '', n: '기본', en: 'Default', f: SKIN_FACE[view] || [16, 10] }, ...sks].map(x => `<button type="button" class="pk-sk${x.id === skCur ? ' on' : ''}" data-a="skin" data-k="${view}" data-id="${x.id}" ${mine ? 'disabled' : ''} aria-pressed="${x.id === skCur}" aria-label="${esc(mE(x.n, x.en))}" title="${esc(mE(x.n, x.en))}">${faceI(x.id, x.f)}</button>`).join('')}<b class="pk-skn">${esc(mE(...(sks.find(x => x.id === skCur) ? [sks.find(x => x.id === skCur).n, sks.find(x => x.id === skCur).en] : ['기본', 'Default'])))}</b></div>` : '';
+  const skCol = sks.length && !banning ? `<div class="pk-skins" role="group" aria-label="${mE('스킨', 'Skin')}"><span class="cap">${mE('스킨', 'Skin')}</span>${[{ id: '', n: '기본', en: 'Default', f: SKIN_FACE[view] || [16, 10] }, ...sks].map(x => `<button type="button" class="pk-sk${x.id === skCur ? ' on' : ''}${skinOwned(view, x.id) ? '' : ' lock'}" data-a="skin" data-k="${view}" data-id="${x.id}" ${mine ? 'disabled' : ''} aria-pressed="${x.id === skCur}" aria-label="${esc(mE(x.n, x.en))}${skinOwned(view, x.id) ? '' : ' · ' + mE('상점에서 구매', 'buy in shop')}" title="${esc(mE(x.n, x.en))}">${faceI(x.id, x.f)}${skinOwned(view, x.id) ? '' : `<span class="pk-lock">${MDL(SKIN_PRICE)}</span>`}</button>`).join('')}<b class="pk-skn">${esc(mE(...(sks.find(x => x.id === skCur) ? [sks.find(x => x.id === skCur).n, sks.find(x => x.id === skCur).en] : ['기본', 'Default'])))}</b></div>` : '';
   const footer = `<div class="d-go"><button type="button" class="btn red big" data-a="pickok" data-k="${view}" ${mine ? 'disabled' : ''}>${banning ? (mine ? `${c.n} 금지함. 상대를 기다립니다` : `${c.n} 금지하기`) : mine ? `${c.n} 확정됨. 상대를 기다립니다` : `${c.n}(으)로 확정`}</button>
           <span class="cap">${banning ? '서로의 금지는 둘 다 고른 뒤에 공개됩니다. 금지된 직업은 양쪽 모두 고를 수 없습니다.' : '상대의 선택은 결투가 시작될 때 공개됩니다.'}</span></div>`;
   /* 무대: 고른 직업이 조명 아래 크게 선다. 고른 직업이 바뀔 때만 등장 연출 */
@@ -6551,7 +6624,7 @@ app.addEventListener('click', e => {
   else if (a === 'rand') { selCls = pick(CLASS_IDS.filter(x => x !== selCls && !(doc.phase === 'select' && bansOf().includes(x)))); SND.play('tap'); render(); }
   else if (a === 'last') { const l = ls('ssd-last'); if (CLS[l]) { selCls = l; SND.play('tap'); render(); } }
   else if (a === 'unlock') unLock();
-  else if (a === 'skin') { const c = b.dataset.k; if (skinOf(c) === b.dataset.id) return; setSkin(c, b.dataset.id); pkSeen = ''; SND.play('tap'); render(); }
+  else if (a === 'skin') { const c = b.dataset.k; if (!skinOwned(c, b.dataset.id)) { shopTab = 'new'; SND.play('tap'); return openOv('shop'); } if (skinOf(c) === b.dataset.id) return; setSkin(c, b.dataset.id); pkSeen = ''; SND.play('tap'); render(); }
   else if (a === 'pickok') { const c = b.dataset.k; if (doc.phase === 'ban') W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) } }); } }
   else if (a === 'card') clickCard(+b.dataset.i);
   else if (a === 'ab') clickAbility();
@@ -6662,25 +6735,37 @@ async function authGo(make) {
 }
 function authOut() { try { localStorage.removeItem('ssd-auth'); } catch (e) { /* 무시 */ } if (AUTH.tok) sb('/auth/v1/logout', { method: 'POST' }).catch(() => {}); Object.assign(AUTH, { user: null, nick: '', tok: null, guest: false, err: '' }); menuTab = null; render(); }
 function loginHTML() {
-  if (!AUTH.ready) return `<div class="m-sub login2"><p class="cap">${mE('계정을 확인하는 중', 'Checking account')}…</p></div>`;
-  return `<form class="m-sub login2" data-lg onsubmit="return false">
-    <h2>${mE('들어가기', 'Sign in')}</h2><p class="cap">${mE('아이디는 그대로 닉네임으로 쓰입니다', 'Your ID is your nickname')}</p>
-    <label><span>${mE('아이디', 'ID')}</span><input id="lg-id" name="username" maxlength="12" autocomplete="username" spellcheck="false" value="${esc(AUTH.form.id)}" placeholder="${mE('한글·영문·숫자 2~12자', '2–12 characters')}"></label>
-    <label><span>${mE('비밀번호', 'PIN')}</span><input id="lg-pin" name="password" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="current-password" value="${esc(AUTH.form.pin)}" placeholder="${mE('숫자 4자리', '4 digits')}"></label>
-    <p class="lg-err" aria-live="polite">${esc(AUTH.err)}</p>
-    <div class="lg-go"><button type="submit" class="btn red big" data-a="login" ${AUTH.busy ? 'disabled' : ''}>${AUTH.busy ? mE('확인 중', 'Checking') + '…' : mE('로그인', 'Log in')}</button><button type="button" class="btn ghost big" data-a="signup" ${AUTH.busy ? 'disabled' : ''}>${mE('새 계정 만들기', 'Create account')}</button></div>
-    ${!AUTH.net ? `<button type="button" class="btn ghost lg-off" data-a="guest">${mE('서버 없이 이 기기에서만 하기', 'Play offline on this device')}</button>` : ''}
+  if (!AUTH.ready) return `<div class="ac-card"><p class="ac-wait">${mE('계정을 확인하는 중', 'Checking account')}…</p></div>`;
+  const dis = AUTH.busy ? 'disabled' : '';
+  return `<form class="ac-card" data-lg onsubmit="return false" novalidate>
+    <div class="ac-top"><i class="ac-key" aria-hidden="true"></i><div><h2>${mE('결투장 입장', 'Enter the arena')}</h2><p>${mE('아이디는 그대로 닉네임이 됩니다', 'Your ID is your nickname')}</p></div></div>
+    <label class="ac-f"><span>${mE('아이디', 'ID')}</span><input id="lg-id" name="username" maxlength="12" autocomplete="username" spellcheck="false" autocapitalize="off" value="${esc(AUTH.form.id)}" placeholder="${mE('한글·영문·숫자 2~12자', '2–12 characters')}" ${dis}></label>
+    <label class="ac-f"><span>${mE('비밀번호 · 숫자 4자리', 'PIN · 4 digits')}</span><input id="lg-pin" class="ac-pin" name="password" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="current-password" value="${esc(AUTH.form.pin)}" placeholder="••••" ${dis}></label>
+    <p class="ac-err" aria-live="polite">${esc(AUTH.err)}</p>
+    <button type="submit" class="btn red big ac-main" data-a="login" ${dis}>${AUTH.busy ? mE('확인 중', 'Checking') + '…' : mE('로그인', 'Log in')}</button>
+    <p class="ac-or"><span>${mE('처음 오셨나요?', 'First time?')}</span></p>
+    <button type="button" class="btn ghost big ac-new" data-a="signup" ${dis}>${mE('이 아이디로 새 계정 만들기', 'Create account with this ID')}</button>
+    ${!AUTH.net ? `<button type="button" class="ac-off" data-a="guest">${mE('서버 없이 이 기기에서만 하기', 'Play offline on this device')}</button>` : ''}
   </form>`;
 }
 function acctHTML() {
-  return `<div class="m-sub login2 acct"><h2>${esc(AUTH.nick)}</h2><p class="cap">${AUTH.guest ? mE('오프라인 플레이 중. 기록은 이 기기에만 남습니다', 'Offline. Progress stays on this device') : AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('방금 저장', 'saved') : '') : mE('서버에 연결하지 못해 이 기기에 먼저 저장합니다', 'Offline; will sync later')}</p>
-    <div class="lg-go"><button type="button" class="btn ghost big" data-a="logout">${AUTH.guest ? mE('로그인 화면으로', 'Back to sign in') : mE('로그아웃', 'Log out')}</button><button type="button" class="btn ghost mb-back" data-a="mback">${mE('뒤로', 'Back')}</button></div></div>`;
+  const st = AUTH.guest ? mE('오프라인 플레이 중. 기록은 이 기기에만 남습니다', 'Offline. Progress stays on this device') : AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('저장됨', 'saved') : '') : mE('서버에 연결하지 못해 이 기기에 먼저 저장합니다', 'Offline; will sync later');
+  return `<div class="m-sub ac-me"><p class="cap">${mE('계정', 'Account')}</p><h2 data-notr>${esc(AUTH.nick)}</h2>
+    <dl><dt>${mE('메달', 'Medals')}</dt><dd>${MDL(medals())}</dd><dt>${mE('보유 스킨', 'Skins owned')}</dt><dd>${ownedSkins().length}</dd></dl><p class="cap">${st}</p>
+    <div class="ac-row"><button type="button" class="btn ghost" data-a="logout">${AUTH.guest ? mE('로그인 화면으로', 'Back to sign in') : mE('로그아웃', 'Log out')}</button><button type="button" class="btn ghost mb-back" data-a="mback">${mE('뒤로', 'Back')}</button></div></div>`;
 }
 document.addEventListener('input', e => { const t = e.target; if (t.id === 'lg-id') AUTH.form.id = t.value; else if (t.id === 'lg-pin') { const v = t.value.replace(/\D/g, '').slice(0, 4); if (v !== t.value) t.value = v; AUTH.form.pin = v; } });
 document.addEventListener('submit', e => { if (e.target.matches && e.target.matches('[data-lg]')) { e.preventDefault(); authGo(false); } });
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="login"],[data-a="signup"],[data-a="guest"],[data-a="logout"]'); if (!b || doc) return; e.preventDefault(); e.stopPropagation();
   const a = b.dataset.a; if (a === 'login') authGo(false); else if (a === 'signup') authGo(true); else if (a === 'guest') { AUTH.guest = true; AUTH.nick = mE('손님', 'Guest'); render(); } else authOut(); }, true);
 
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-shop]'); if (!b) return; e.stopPropagation();
+  const k = b.dataset.shop, c = b.dataset.c, id = b.dataset.id;
+  if (k === 'tab') shopTab = b.dataset.t;
+  else if (k === 'wear') { setSkin(c, id); SND.play('tap'); }
+  else if (k === 'buy') { const r = buySkin(c, id); if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, `Bought and equipped`)); } else if (r === 'poor') toast(mE('메달이 모자랍니다', 'Not enough medals')); }
+  if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; }
+  render(); }, true);
 (async function boot() {
   const h = (location.hash || '').slice(1).toUpperCase(); if (/^[A-Z0-9]{4}$/.test(h)) prefill = h;
   render();
@@ -8269,7 +8354,7 @@ function tutHTML() { const n = Math.min(G.turn, 5), s = TUT[n]; return `<div cla
 /* ----- 대결 인트로: 결투장 슬롯이 돌다가 멈추고, 그 결투장의 규칙 한 줄이 뜬다 ----- */
 function showIntro() {
   const ov = ovEl(); if (noMotion || !ov || !G) return;
-  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${k === seat ? '나' : '상대'}</span></div>`;
+  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${nickOf(k) ? esc(nickOf(k)) : k === seat ? '나' : '상대'}</span></div>`;
   const ids = Object.keys(ARENAS), goal = ARENAS[G.arena] ? G.arena : 'castle', tutM = typeof tutOn === 'function' && tutOn();
   ov.innerHTML = `<div class="intro intro2"><p class="in-ar">${tutM ? '튜토리얼' : stageOn() ? stLab() : MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf().a + scoreOf().b + 1}번째 판` : ''}</p>
     <div class="in-row">${side(seat, false)}<b class="in-vs">VS</b>${side(opp(seat), true)}</div>
@@ -10092,7 +10177,7 @@ function stageWin() {
   const gain = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? 2 : 0) + (has('purse') ? 2 : 0), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
   run.hp = Math.min(run.maxHp, left + heal); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
-  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
+  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
   const spoil = shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, spoil ? 2 : 3);
   run.offer = { gold: gain, clean, heal, step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
   if (run.offer.perks && !run.offer.perks.length) run.offer.perks = null;
@@ -10389,8 +10474,13 @@ document.addEventListener('click', e => {
   const b = e.target.closest && e.target.closest('[data-a="stsum"]'); if (!b || !run || !stageOn()) return;
   const ov = ovEl(); if (ov) ov.innerHTML = '';
   if (G && !run.over) run.turns += Math.max(0, G.turn - 1);
-  run.over = true; SND.play('tap'); W({ phase: 'map' });
+  run.over = true; stMedal(false); SND.play('tap'); W({ phase: 'map' });
 });
+/* 모험 보상: 지나온 칸 비율(클리어율)만큼, 끝까지 깨면 보너스. 한 모험에 한 번 */
+function stMedal(won) {
+  if (!run || run.medal != null) return; const total = run.map ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18, done = (run.path || []).length;
+  run.rate = Math.min(1, done / total); run.medal = Math.round(run.rate * 200) + (won ? 100 : 0); medalAdd(run.medal);
+}
 function stSumHTML() {
   const won = !!run.cleared, ln = won ? null : stCurNode(), rec = stageRec3(), c = CLS[run.cls], log = run.log || [];
   const ar = m => L(ARENAS[m.ar] || m.ar, TR(ARENAS[m.ar] || m.ar));
@@ -10410,6 +10500,7 @@ function stSumHTML() {
     <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
       <div><p class="cap">${L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
+    ${run.medal != null ? `<p class="v-rw ss-rw">${MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
     <div class="ss-body">
       <section class="ss-route"><h3>${L('지나온 길', 'Your route')}</h3><ol class="sr-acts">${route}</ol></section>
       <section class="ss-side">
