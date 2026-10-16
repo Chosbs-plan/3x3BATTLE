@@ -2684,7 +2684,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pf-r .lb-face { --s: 34px; --z: 2.2; grid-row: span 2; box-shadow: none; } .pf-r > b { font-size: 13px; } .pf-r > span:last-child { font-size: 11px; color: var(--ash); }
 .pf-acc { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; } .pf-acc .cap { margin-right: auto; }
 /* 도감 */
-.hub-codex .hub-body { display: flex; overflow: hidden; }
+.hub-codex .hub-body, .pg-codex .pc-pb { display: flex; overflow: hidden; }
 .cx2 { flex: 1 1 auto; display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; min-height: 0; }
 .cx2-list { overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); gap: 6px; align-content: start; padding: 2px 6px 2px 2px; }
 .cx2-f { display: grid; justify-items: center; gap: 4px; padding: 6px 2px; font: inherit; font-size: 12px; color: var(--sil); cursor: pointer; background: #fff; border: 2px solid var(--line); }
@@ -2709,8 +2709,8 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .cl-s.lock .lb-face { filter: grayscale(1) brightness(.75); }
 .cl-s em { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; font-style: normal; font-size: 10px; color: #fff3c4; background: rgba(42, 31, 36, .85); } .cl-s em .mdl { width: 9px; height: 9px; }
 /* 상점(큰 판) */
-.hub .sh-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-.hub .sh-head .sh-tabs { margin: 0; } .hub .sh-grid { max-height: none; overflow: visible; }
+:is(.hub, .pc-page) .sh-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+:is(.hub, .pc-page) .sh-head .sh-tabs { margin: 0; } :is(.hub, .pc-page) .sh-grid { max-height: none; overflow: visible; }
 /* 세로 화면(휴대폰) */
 @media (max-aspect-ratio: 1/1) {
   .menu.t2.lobby { --fh: clamp(150px, 26vh, 220px); }
@@ -2745,6 +2745,145 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   .lb-dk { width: 54px; padding: 5px 2px; font-size: 10px; } .lb-dk .pxi { width: 18px; height: 18px; } .lb-dock { bottom: 40px; }
   .menu.t2.lobby .logo { display: none; }
 }
+/* ===== PC 전용 로비 ===== */
+.pc-ui { position: absolute; left: 0; top: 0; z-index: 3; width: var(--pcw, 100vw); height: var(--pch, 100vh); zoom: var(--pcz, 1); display: grid; grid-template-rows: 78px minmax(0, 1fr) 40px; }
+.menu.t2.pcm .m-duel { left: 50%; --hs: clamp(150px, 27vh, 300px); }
+.menu.t2.pcm.home .m-veil { background: linear-gradient(90deg, rgba(255, 255, 255, .45), transparent 32%, transparent 66%, rgba(255, 255, 255, .45)); }
+.menu.t2.pcm.pg .m-veil { background: rgba(255, 255, 255, .55); backdrop-filter: blur(3px); }
+/* 위 바 */
+.pc-top { position: relative; z-index: 2; display: flex; align-items: stretch; gap: 26px; padding: 0 22px 0 26px; background: linear-gradient(#3d2d2b, #2a1e1d); border-bottom: 3px solid #1d1413; box-shadow: 0 3px 0 var(--red), 0 10px 20px rgba(29, 20, 19, .25); }
+.menu.t2 .pc-top .logo { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.menu.t2 .pc-top .logo h1 { font-size: 32px; letter-spacing: 2px; color: #fdf7ee; text-shadow: 3px 3px 0 #1d1413; }
+.menu.t2 .pc-top .lg-sub { display: none; } .menu.t2 .pc-top .lg-mark { grid-template-columns: repeat(3, 10px); gap: 2px; } .menu.t2 .pc-top .lg-mark i { background: #fdf7ee; } .menu.t2 .pc-top .lg-mark b { height: 3px; margin-top: -1.5px; }
+.pc-nav { display: flex; }
+.pc-nv { position: relative; padding: 0 20px; font: inherit; font-size: 19px; font-weight: 700; letter-spacing: 1px; color: #bfaea9; background: none; border: 0; cursor: pointer; white-space: nowrap; }
+.pc-nv::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: -3px; height: 6px; background: var(--red); transition: left .15s, right .15s; }
+.pc-nv:hover, .pc-nv:focus-visible { color: #fff; outline: none; } .pc-nv:hover::after, .pc-nv:focus-visible::after { left: 28%; right: 28%; }
+.pc-nv.on { color: #fff; background: linear-gradient(transparent 30%, rgba(216, 71, 90, .28)); } .pc-nv.on::after { left: 0; right: 0; }
+.pc-nv.on::before { content: ''; position: absolute; left: 50%; bottom: 3px; translate: -50% 0; border: 7px solid transparent; border-bottom-color: var(--red); }
+.pc-tr { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.pc-cur { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 6px 0 14px; font: inherit; font-size: 21px; color: #fff3c4; cursor: pointer; background: #1d1413; border: 2px solid #5a4644; }
+.pc-cur .mdl { width: 22px; height: 22px; } .pc-cur:hover, .pc-cur:focus-visible { outline: none; border-color: var(--amber); }
+.pc-cur > i { display: grid; place-items: center; width: 32px; height: 32px; font-style: normal; font-weight: 700; font-size: 22px; line-height: 1; color: var(--sil); background: var(--amber); box-shadow: inset 0 -3px 0 var(--amber-d); }
+.pc-ics { display: flex; gap: 4px; padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, .12); }
+.pc-ic { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; font: inherit; font-size: 15px; font-weight: 700; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .06); border: 2px solid transparent; }
+.pc-ic .pxi { width: 22px; height: 22px; } .pc-ic .qk-ic { width: 18px; height: 18px; background: currentColor; }
+.pc-ic:hover, .pc-ic:focus-visible { outline: none; color: #fff; background: rgba(255, 255, 255, .12); border-color: #5a4644; }
+.pc-ic.off { opacity: .5; } .pc-ic.off .qk-ic::after { content: ''; position: absolute; left: -3px; right: -3px; top: 50%; height: 2px; background: var(--red); rotate: -40deg; }
+.pc-me { display: flex; align-items: center; gap: 12px; align-self: center; height: 60px; padding: 0 18px 0 6px; font: inherit; color: #fff; text-align: left; cursor: pointer; background: rgba(255, 255, 255, .07); border: 2px solid #5a4644; }
+.pc-me .lb-face { --s: 46px; --z: 2.9; box-shadow: inset 0 0 0 2px #1d1413; } .pc-me b { display: block; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; } .pc-me small { font-size: 12px; color: #bfaea9; }
+.pc-me:hover, .pc-me:focus-visible, .pc-me.on { outline: none; border-color: var(--red); background: rgba(216, 71, 90, .2); }
+/* 아래 줄 */
+.pc-foot { display: flex; align-items: center; gap: 24px; padding: 0 26px; font-size: 13px; color: #d9cbc7; background: rgba(29, 20, 19, .9); border-top: 2px solid #1d1413; }
+.pc-net { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; } .pc-net i { width: 9px; height: 9px; background: var(--amber); } .pc-net.ok i { background: #7fe08a; } .pc-net.off i { background: var(--red); }
+.pc-tip { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .pc-tip b { margin-right: 10px; padding: 0 6px; font-size: 12px; color: var(--sil); background: var(--amber); }
+.pc-cr { white-space: nowrap; color: #8f7f7b; }
+/* 홈 */
+.pc-main { position: relative; min-height: 0; }
+.pc-card, .pc-play { color: #f1e9e6; background: rgba(42, 31, 36, .9); border: 2px solid #1d1413; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.pc-news { position: absolute; left: 34px; top: 30px; width: 430px; display: grid; gap: 14px; filter: drop-shadow(0 6px 0 rgba(29, 20, 19, .3)); }
+.pc-card { display: grid; gap: 12px; padding: 16px 18px 18px; font: inherit; text-align: left; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+.pc-ch { display: flex; align-items: center; justify-content: space-between; padding-bottom: 9px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.pc-more { padding: 0; font: inherit; font-size: 12px; letter-spacing: 0; color: #d9cbc7; cursor: pointer; background: none; border: 0; } .pc-more:hover, .pc-more:focus-visible { outline: none; color: #fff; }
+.pc-cont { cursor: pointer; background: linear-gradient(110deg, rgba(216, 71, 90, .5), rgba(42, 31, 36, .92) 60%); } .pc-cont:hover, .pc-cont:focus-visible { outline: none; background: linear-gradient(110deg, rgba(216, 71, 90, .7), rgba(42, 31, 36, .92) 70%); }
+.pc-cb { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.pc-cb .lb-face { --s: 64px; --z: 4; box-shadow: inset 0 0 0 2px #1d1413; } .pc-cb b { display: block; font-size: 20px; color: #fff; } .pc-cb small { font-size: 13px; color: #d9cbc7; }
+.pc-cb em { font-style: normal; font-weight: 700; color: #fff; padding: 6px 10px; background: var(--red); box-shadow: inset 0 -3px 0 var(--red-d); }
+.pc-stats { margin: 0; display: grid; gap: 12px; } .pc-stats > div { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 6px; }
+.pc-stats dt { font-size: 14px; color: #d9cbc7; } .pc-stats dd { margin: 0; font-size: 22px; font-weight: 700; color: #fff; } .pc-stats dd small { margin-left: 6px; font-size: 13px; font-weight: 400; color: #bfaea9; }
+.pc-stats .pf-bar { grid-column: 1 / -1; margin: 0; height: 6px; background: rgba(255, 255, 255, .12); box-shadow: none; }
+.pc-tipc p { margin: 0; font-size: 15px; line-height: 1.65; color: #f1e9e6; }
+.pc-play { position: absolute; right: 34px; bottom: 30px; width: 520px; display: grid; gap: 8px; padding: 18px; filter: drop-shadow(0 8px 0 rgba(29, 20, 19, .3)); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
+.pc-ph3 { margin: 0 0 4px; font-size: 13px; letter-spacing: 3px; color: #ffd75e; }
+.pc-modes { display: grid; gap: 6px; }
+.pc-mode { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 9px 14px 9px 9px; font: inherit; text-align: left; color: #f1e9e6; cursor: pointer; background: rgba(255, 255, 255, .05); border: 2px solid transparent; border-left-width: 5px; transition: background .1s; }
+.pc-mode:hover, .pc-mode:focus-visible { outline: none; background: rgba(255, 255, 255, .11); }
+.pc-mode.on { background: linear-gradient(90deg, rgba(216, 71, 90, .45), rgba(216, 71, 90, .12)); border-color: rgba(216, 71, 90, .65); border-left-color: var(--red); }
+.pc-mi { display: grid; place-items: center; width: 56px; height: 56px; color: #bfaea9; background: #1d1413; box-shadow: inset 0 0 0 2px #5a4644; } .pc-mi .pxi { width: 32px; height: 32px; }
+.pc-mode.on .pc-mi { color: #fff; background: var(--red); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .3); }
+.pc-mode b { display: block; font-size: 21px; color: #fff; } .pc-mode small { font-size: 13px; color: #bfaea9; } .pc-mode.on small { color: #ffe1e6; }
+.pc-mode em { font-style: normal; font-size: 14px; color: #fff3c4; } .pc-mode em .mdl-n { gap: 5px; }
+.pc-lv { display: flex; align-items: center; gap: 6px; padding: 4px 0; } .pc-lv > span { margin-right: 6px; font-size: 13px; color: #bfaea9; }
+.pc-lv button { flex: 1 1 0; height: 36px; font: inherit; font-weight: 700; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .06); border: 2px solid #5a4644; }
+.pc-lv button:hover { color: #fff; } .pc-lv button.on { color: var(--sil); background: var(--amber); border-color: var(--amber-d); }
+.pc-sub { justify-self: end; padding: 0; font: inherit; font-size: 13px; color: #d9cbc7; text-decoration: underline; cursor: pointer; background: none; border: 0; } .pc-sub:hover { color: #fff; }
+.pc-go { position: relative; overflow: hidden; display: grid; justify-items: center; align-content: center; gap: 0; height: 108px; margin-top: 8px; font: inherit; color: #fff; cursor: pointer; border: 0;
+  background: linear-gradient(#ec6377, var(--red) 48%, #c53e51 52%, var(--red-d));
+  box-shadow: inset 0 0 0 3px #1d1413, inset 0 7px 0 3px rgba(255, 255, 255, .22), inset 0 -9px 0 3px rgba(0, 0, 0, .22);
+  clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+.pc-go b { font-size: 42px; line-height: 1.1; letter-spacing: 4px; text-shadow: 3px 3px 0 #1d1413; } .pc-go span { font-size: 13px; font-weight: 700; letter-spacing: 8px; color: #ffe1e6; }
+.pc-go:hover:not(:disabled), .pc-go:focus-visible { outline: none; filter: brightness(1.08); } .pc-go:active:not(:disabled) { translate: 0 2px; }
+.pc-go:disabled { filter: grayscale(.7); opacity: .7; cursor: default; }
+/* 하위 페이지 */
+.pc-page { position: absolute; inset: 22px 34px 20px; display: flex; flex-direction: column; background: var(--paper); border: 3px solid #1d1413; box-shadow: 0 0 0 3px rgba(255, 255, 255, .6), 10px 10px 0 rgba(42, 31, 36, .3); }
+.pc-ph { flex: none; display: flex; align-items: baseline; gap: 18px; padding: 16px 28px 14px; background: linear-gradient(90deg, var(--wash), #fff 60%); border-bottom: 3px solid var(--sil); }
+.pc-ph h2 { margin: 0; font-size: 34px; color: var(--sil); text-shadow: 3px 3px 0 var(--line); } .pc-ph p { margin: 0; font-size: 15px; color: var(--ash); }
+.pc-ph-r { margin-left: auto; font-size: 22px; } .pc-ph-r .mdl { width: 22px; height: 22px; }
+.pc-pb { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 22px 28px; }
+@media (prefers-reduced-motion: no-preference) {
+  .pc-page.pop { animation: sgIn .3s steps(5) backwards; }
+  .menu.t2.pcm.anim .pc-top { animation: pcDrop .4s steps(5) 1.1s backwards; }
+  .menu.t2.pcm.anim .pc-news > *, .menu.t2.pcm.anim .pc-play { animation: sgIn .4s steps(5) calc(1.3s + var(--i, 2) * .1s) backwards; }
+  .pc-go::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 45%, transparent 60%) -200% 0 / 200% 100% no-repeat; animation: goShine 3.2s linear infinite; }
+}
+@keyframes pcDrop { from { translate: 0 -100%; } }
+/* PC 버튼: 모서리를 깎은 입체 버튼 */
+.pcb { --bg: #3b2b29; --hi: rgba(255, 255, 255, .16); --lo: rgba(0, 0, 0, .3); position: relative; display: grid; place-items: center; min-height: 52px; padding: 0 22px; font: inherit; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #fff; cursor: pointer; border: 0;
+  background: var(--bg); box-shadow: inset 0 0 0 3px #1d1413, inset 0 5px 0 3px var(--hi), inset 0 -6px 0 3px var(--lo);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); transition: filter .1s, translate .1s; }
+.pcb.big { min-height: 76px; font-size: 26px; letter-spacing: 3px; text-shadow: 2px 2px 0 rgba(0, 0, 0, .35); }
+.pcb.red { --bg: linear-gradient(#ec6377, var(--red) 48%, #c53e51 52%, var(--red-d)); }
+.pcb.gold { --bg: linear-gradient(#f4c065, var(--amber) 48%, #d7962f 52%, var(--amber-d)); color: #2a1e1d; text-shadow: 1px 1px 0 rgba(255, 255, 255, .4); }
+.pcb.dark { --bg: linear-gradient(#6b5452, var(--sil) 50%, #4a3836); }
+.pcb.ghost { --bg: transparent; --hi: transparent; --lo: transparent; color: #d9cbc7; box-shadow: inset 0 0 0 2px #6b5452; }
+.pcb:hover:not(:disabled), .pcb:focus-visible { outline: none; filter: brightness(1.1); } .pcb.ghost:hover { color: #fff; box-shadow: inset 0 0 0 2px #d9cbc7; }
+.pcb:active:not(:disabled) { translate: 0 2px; } .pcb:disabled { filter: grayscale(.7); opacity: .6; cursor: default; }
+/* 모드 카드 */
+.pg-single .pc-pb, .pg-multi .pc-pb { display: flex; flex-direction: column; gap: 12px; background: linear-gradient(#f6f3f2, #fff 40%); }
+.pmcs { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 22px; }
+.pmc { position: relative; display: grid; grid-template-rows: minmax(0, 42%) minmax(0, 1fr) auto; min-height: 560px; color: #f1e9e6; overflow: hidden;
+  background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, inset 0 0 0 4px rgba(255, 255, 255, .07);
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); transition: translate .15s; filter: drop-shadow(6px 8px 0 rgba(42, 31, 36, .22)); }
+.pmc:hover { translate: 0 -4px; }
+.pmc.red { background: linear-gradient(165deg, #e0566a, var(--red) 40%, #a8364a); }
+.pmc.light { grid-template-rows: minmax(0, 1fr) auto; color: var(--sil); background: linear-gradient(#fff, var(--wash)); box-shadow: inset 0 0 0 3px #1d1413; }
+.pmc-art { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 18px; padding: 16px; overflow: hidden; border-bottom: 3px solid #1d1413;
+  background: radial-gradient(ellipse 60% 45% at 50% 100%, rgba(255, 215, 94, .25), transparent 70%), radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, radial-gradient(#ffd75e 1px, transparent 1.5px) 20px 14px / 70px 60px, #2a1e1d; }
+.pmc.red .pmc-art { background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .08) 0 26px, transparent 26px 52px), rgba(0, 0, 0, .18); }
+.pmc-hero { width: min(240px, 60%); aspect-ratio: 1; height: auto; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .4)); }
+.pmc-acts { position: absolute; left: 16px; top: 16px; right: 16px; display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.pmc-acts li { flex: 1 1 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--sil); background: var(--tint); box-shadow: inset 0 0 0 2px #1d1413, inset 0 -4px 0 rgba(0, 0, 0, .12); }
+.pmc-acts li.th-forest { --tint: #cfe3c4; } .pmc-acts li.th-snow { --tint: #d6e4f3; } .pmc-acts li.th-castle { --tint: #e3d9d5; }
+.pmc-acts i { width: 20px; height: 20px; display: block; } .pmc-acts .pxi { width: 100%; height: 100%; } .pmc-acts li:last-child i { color: var(--amber-d); } .pmc-acts b { font-size: 16px; }
+.pmc-a { width: min(150px, 40%); aspect-ratio: 1; height: auto; }
+.pmc-vs { align-self: center; font-size: 46px; color: #fff; text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #1d1413; rotate: -8deg; }
+.pmc-bot { position: relative; display: contents; } .pmc-bot em { position: absolute; right: 16px; top: 16px; padding: 2px 10px; font-style: normal; font-weight: 700; color: var(--sil); background: var(--amber); }
+.tut-art { align-items: center; background: linear-gradient(#f6f3f2, #e9e2df); }
+.pmc-pad { display: grid; grid-template-columns: repeat(3, 58px); gap: 8px; padding: 12px; transform: perspective(500px) rotateX(38deg); background: rgba(74, 59, 59, .12); box-shadow: 0 0 0 4px rgba(74, 59, 59, .2); }
+.pmc-pad i { aspect-ratio: 1; background: #fff; box-shadow: inset 0 0 0 3px #d9cfcc, 4px 4px 0 rgba(74, 59, 59, .2); }
+.pmc-pad i.me { background: #dfe9fb; box-shadow: inset 0 0 0 3px var(--blue), 4px 4px 0 rgba(74, 59, 59, .2); } .pmc-pad i.hit { background: #fde6e9; box-shadow: inset 0 0 0 3px var(--red), 4px 4px 0 rgba(74, 59, 59, .2); }
+.rand-art { align-items: center; gap: 28px; }
+.pmc-f { display: grid; justify-items: center; gap: 10px; } .pmc-f .lb-face { --s: 130px; --z: 8; box-shadow: inset 0 0 0 4px #1d1413, 6px 6px 0 #1d1413; } .pmc-f > b { font-size: 18px; color: #fff; text-shadow: 2px 2px 0 #1d1413; }
+.pmc-f .lb-face.q > i { font-size: 64px; }
+.pmc-tx { display: flex; flex-direction: column; gap: 10px; min-height: 0; padding: 20px 24px 10px; overflow: auto; }
+.pmc-tx > p { margin: 0; font-size: 15px; line-height: 1.6; color: #d9cbc7; } .pmc.red .pmc-tx > p { color: #ffe8ec; } .pmc.light .pmc-tx > p { color: var(--ash); }
+.pmc-tx h3 { margin: 0; font-size: 40px; line-height: 1.1; color: #fff; text-shadow: 3px 3px 0 #1d1413; } .pmc.light h3 { color: var(--sil); text-shadow: 3px 3px 0 var(--line); }
+.pmc-tx > .pmc-k { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; } .pmc.light .pmc-k { color: var(--red-d); }
+.pmc-k .mu-net { letter-spacing: 0; color: var(--sil); }
+.pmc-tx > .pmc-rw { font-size: 14px; color: #bfaea9; } .pmc-rw b { color: #fff3c4; } .pmc.light .pmc-rw { color: var(--ash); }
+.pmc-chips { display: flex; flex-wrap: wrap; gap: 6px; } .pmc-chips > span { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; font-size: 14px; color: #fff; background: rgba(0, 0, 0, .28); } .pmc-chips .mdl-n { color: #fff3c4; }
+.pmc-run { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 10px; background: rgba(216, 71, 90, .22); box-shadow: inset 0 0 0 2px var(--red); }
+.pmc-run .lb-face { --s: 56px; --z: 3.5; } .pmc-run small { display: block; font-size: 12px; color: #ffd75e; } .pmc-run b { display: block; font-size: 18px; color: #fff; } .pmc-run em { font-style: normal; font-size: 13px; color: #d9cbc7; }
+.pmc-best { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 13px; } .pmc-best > span { display: inline-flex; align-items: center; gap: 6px; } .pmc-best .lb-face { --s: 26px; --z: 1.7; } .pmc-best b { color: #ffd75e; }
+.pmc-steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 6px; }
+.pmc-steps li { counter-increment: s; display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 15px; color: #f1e9e6; background: rgba(255, 255, 255, .06); }
+.pmc-steps li::before { content: counter(s); display: grid; place-items: center; width: 26px; height: 26px; font-weight: 700; color: var(--sil); background: var(--amber); }
+.pmc .pc-lv button { height: 42px; }
+.pmc-go { display: grid; gap: 8px; padding: 12px 24px 24px; } .pmc-go:has(> :nth-child(2)) { grid-template-columns: 1fr auto; }
+.pmc-go .mm-box { margin: 0; }
+.pmc.light .mu-slots { max-width: 360px; } .pmc.light .mu-slots i { aspect-ratio: 1; }
+.pmc-note { margin: 0; font-size: 13px; color: var(--ash); }
+@media (prefers-reduced-motion: no-preference) { .pc-page.pop .pmc { animation: sgIn .35s steps(5) calc(var(--i) * 80ms) backwards; } }
 /* ===== 직업 선택 v2: 조명 무대 + 정보판 + 아래 명단 ===== */
 #app > .gate.pick2 { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; align-content: stretch; }
 .pk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: minmax(0, 1fr); gap: 18px; min-height: 0; }
@@ -6544,6 +6683,7 @@ function gateHTML() {
       <span class="m-qk"><button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
   if (!AUTH.user) return `<div class="menu t2 ac-mode">${scene}<div class="ac-wrap">${logo}${loginHTML()}</div>${foot}</div>`;
+  if (isPC()) return pcHTML(scene, logo, off, ta, anim);
   if (HUB[menuTab]) return `<div class="menu t2 sub hubm">${scene}<div class="m-ui">${hubHTML(menuTab, off, ta)}</div>${foot}</div>`;
   menuTab = null;
   return `<div class="menu t2 lobby${anim ? ' anim' : ''}">${scene}<div class="m-ui">${lobbyHTML(logo)}</div>${foot}</div>`;
@@ -6711,6 +6851,124 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   else if (a === 'colltab') collTab = b.dataset.t;
   else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); render(); return mmStart(); }
   SND.play('tap'); render(); }, true);
+/* ===== PC 전용 로비: 위 내비게이션 바 + 모드 고르기와 게임 시작 + 소식 패널 =====
+   1920×1080을 기준 화면으로 그리고 창 크기에 맞춰 통째로 확대·축소한다. 하위 메뉴는 위 바 아래 전체 페이지로 연다 */
+const PC_MQ = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 1000px) and (min-height: 600px)');
+const isPC = () => PC_MQ.matches;
+PC_MQ.addEventListener('change', () => { if (!doc) render(); });
+function pcZoom() { const z = Math.max(0.5, Math.min(2, innerWidth / 1920, innerHeight / 1080)), r = document.documentElement.style;
+  r.setProperty('--pcz', z.toFixed(4)); r.setProperty('--pcw', (innerWidth / z).toFixed(1) + 'px'); r.setProperty('--pch', (innerHeight / z).toFixed(1) + 'px'); }
+pcZoom(); addEventListener('resize', pcZoom);
+let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
+const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
+  coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['직업 도감', 'Classes', '30개 직업의 패시브, 능력, 전용 카드', 'Passives, abilities and cards of every class'],
+  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'] };
+
+function pcHTML(scene, logo, off, ta, anim) {
+  const kind = PC_PAGES[menuTab] ? menuTab : null; if (!kind) menuTab = null;
+  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '직업 도감', 'Classes'], ['shop', '상점', 'Shop']];
+  const top = `<header class="pc-top">
+      ${logo}
+      <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
+      <div class="pc-tr">
+        <button type="button" class="pc-cur" data-a="mtab" data-m="shop" aria-label="${mE('메달, 상점 열기', 'Medals, open shop')}">${MDL(medals())}<i aria-hidden="true">+</i></button>
+        <span class="pc-ics">
+          <button type="button" class="pc-ic" data-a="ov" data-o="rules" title="${mE('규칙', 'Rules')}" aria-label="${mE('규칙', 'Rules')}">${lbIc('rules')}</button>
+          <button type="button" class="pc-ic${SND.on ? '' : ' off'}" data-a="snd" title="${mE('효과음', 'Sound')}" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button>
+          <button type="button" class="pc-ic${SND.bgm ? '' : ' off'}" data-a="bgm" title="${mE('배경음', 'Music')}" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button>
+          <button type="button" class="pc-ic tx" data-a="lang" data-notr aria-label="Language">${mE('EN', '한')}</button>
+          <button type="button" class="pc-ic" data-a="ov" data-o="settings" title="${mE('설정', 'Settings')}" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></span>
+        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${CLS[rep].n}</small></span></button>
+      </div></header>`;
+  const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
+      <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
+  const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
+        ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
+      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
+  return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
+}
+
+/* PC 싱글·멀티: 큰 세로 카드 세 장(모드 고르기 화면) */
+function pcSingleBody() {
+  const sv = typeof stLoad === 'function' ? stLoad() : null, hasRun = sv && CLS[sv.cls], rep = repCls(), rec = typeof stageRec3 === 'function' ? stageRec3() : {};
+  const top = Object.entries(rec).filter(([k]) => CLS[k]).sort((a, b) => b[1] - a[1]).slice(0, 3), foe = MENU_DUEL.find(k => k !== rep) || 'samurai';
+  const ic = k => (typeof pxi === 'function' ? pxi(k) : '');
+  return `<div class="pmcs">
+    <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art"><ol class="pmc-acts">${[['forest', '1막', 'Act 1', 'fight'], ['snow', '2막', 'Act 2', 'elite'], ['castle', '3막', 'Act 3', 'boss']].map(([th, a, b, k]) => `<li class="th-${th}"><i>${ic(k)}</i><b>${mE(a, b)}</b></li>`).join('')}</ol>
+        <i class="px pmc-hero a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('메인 모드', 'Main mode')}</p><h3>${mE('모험 모드', 'Adventure')}</h3>
+        <p>${mE('직업 하나로 세 막을 돌파합니다. 갈림길 지도에서 길을 고르고, 이길 때마다 금화와 카드, 정예와 보스는 유물. 지면 처음부터.', 'Take one class through three acts. Pick your path, win gold and cards; elites and bosses drop relics. Lose and start over.')}</p>
+        ${hasRun ? `<div class="pmc-run">${faceOf(sv.cls, sv.skin || '')}<span><small>${mE('진행 중', 'In progress')}</small><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><em>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</em></span></div>` : ''}
+        <p class="pmc-rw">${mE('보상', 'Reward')} <b>${mE('클리어율 × 200 · 완주 +100', 'Clear rate × 200 · +100 full clear')}</b></p>
+        ${top.length ? `<p class="pmc-best">${mE('최고 점수', 'Best')} ${top.map(([k, v]) => `<span>${faceOf(k, skinOf(k))}${CLS[k].n} <b>${v}</b></span>`).join('')}</p>` : ''}</div>
+      <div class="pmc-go">${hasRun ? `<button type="button" class="pcb red big" data-a="stage">${mE('이어하기', 'Continue')}</button><button type="button" class="pcb ghost" data-a="stnew">${mE('새로 시작', 'New run')}</button>` : `<button type="button" class="pcb red big" data-a="stage">${mE('모험 시작', 'Start Adventure')}</button>`}</div></section>
+    <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><span class="pmc-bot"><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i><em>BOT</em></span></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('혼자 연습', 'Solo')}</p><h3>${mE('연습 대전', 'Practice')}</h3><p>${mE('봇과 한 판. 직업과 대전 방식을 자유롭게 고릅니다.', 'One match against a bot. Any class, any format.')}</p>
+        <div class="pc-lv" role="group" aria-label="${mE('봇 난이도', 'Bot difficulty')}"><span>${mE('난이도', 'Difficulty')}</span>${Object.entries(BOTS).map(([k, [nm]]) => `<button type="button" class="${botLv === k ? 'on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${nm}</button>`).join('')}</div>
+        <p class="pmc-rw">${mE('보상', 'Reward')} <b>${mE('승리 5 · 8 · 12 / 패배 2', 'Win 5 · 8 · 12 / Loss 2')}</b></p></div>
+      <div class="pmc-go"><button type="button" class="pcb red big" data-a="local">${mE('연습 시작', 'Start Practice')}</button></div></section>
+    <section class="pmc" style="--i:2"><div class="pmc-art tut-art"><span class="pmc-pad">${ALL.map(n => `<i${n === 4 ? ' class="me"' : n === 1 ? ' class="hit"' : ''}></i>`).join('')}</span></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('처음이라면', 'New here?')}</p><h3>${mE('튜토리얼', 'Tutorial')}</h3><p>${mE('다섯 턴 동안 결투의 기본을 배웁니다.', 'Learn the basics in five turns.')}</p>
+        <ol class="pmc-steps">${[['이동과 마나', 'Moving and mana'], ['상대 위치 예측', 'Reading the opponent'], ['예고 공격', 'Delayed attacks'], ['피하기', 'Dodging']].map(([a, b]) => `<li>${mE(a, b)}</li>`).join('')}</ol></div>
+      <div class="pmc-go"><button type="button" class="pcb gold big" data-a="tut">${mE('튜토리얼 시작', 'Start Tutorial')}</button></div></section>
+  </div><p class="pmc-note">${mE('너무 빨리 끝난 판과 하루 한도를 넘긴 판은 메달을 받지 않습니다.', 'Very short games and games past the daily cap pay no medals.')}</p>`;
+}
+function pcMultiBody(off) {
+  const on = netReady && db, rep = repCls(), foe = MENU_DUEL.find(k => k !== rep) || 'samurai', t = Object.assign({ w: 0, d: 0, l: 0 }, tallyOf().pvp);
+  const st = on ? ['ok', mE('온라인 연결됨', 'Online')] : off ? ['off', mE('온라인 대전을 쓸 수 없습니다', 'Online unavailable')] : ['wait', mE('연결하는 중', 'Connecting')];
+  return `<div class="pmcs">
+    <section class="pmc wide red" style="--i:0"><div class="pmc-art rand-art"><span class="pmc-f">${faceOf(rep, skinOf(rep))}<b data-notr>${esc(AUTH.nick)}</b></span><b class="pmc-vs">VS</b><span class="pmc-f"><span class="lb-face q"><i>?</i></span><b>${mE('누군가', 'Anyone')}</b></span></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('추천', 'Recommended')} <span class="mu-net ${st[0]}"><i></i>${st[1]}</span></p><h3>${mE('랜덤 매칭', 'Random Match')}</h3>
+        <p>${mE('기다리는 사람 중 한 명과 바로 단판 대결을 합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Get paired with someone waiting for a single game. Both players confirm the result.')}</p>
+        <p class="pmc-chips"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span></p>
+        <p class="pmc-rw">${mE('내 전적', 'My record')} <b>${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</b></p></div>
+      <div class="pmc-go">${MM.on ? mmHTML() : `<button type="button" class="pcb gold big" data-mm="go" ${on ? '' : 'disabled'}>${mE('매칭 시작', 'Find Match')}</button>`}</div></section>
+    <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3>${mE('방 만들기', 'Create Room')}</h3>
+        <p>${mE('방을 열면 4글자 코드와 초대 링크가 생깁니다. 친구가 들어오면 대기실에서 대전 방식을 고르세요.', 'Get a 4-letter code and invite link, then pick the format in the lobby.')}</p>
+        <p class="pmc-chips">${Object.entries(MODES).filter(([m]) => m !== 'stage').map(([m, [n]]) => `<span>${n}</span>`).join('')}</p></div>
+      <div class="pmc-go"><button type="button" class="pcb red big" data-a="create" ${on ? '' : 'disabled'}>${mE('방 만들기', 'Create Room')}</button></div></section>
+    <section class="pmc light" style="--i:2"><div class="pmc-tx"><p class="pmc-k">${mE('초대받았다면', 'Got invited?')}</p><h3>${mE('코드로 입장', 'Join with Code')}</h3>
+        <p>${mE('친구가 알려 준 4글자 코드를 넣으세요. 초대 링크로 들어오면 미리 채워집니다.', 'Enter the 4-letter code. Invite links fill it in.')}</p>
+        <label class="mu-code" for="code"><span class="sr">${mE('방 코드', 'Room code')}</span><input id="code" class="code-in" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(prefill)}" placeholder="····" aria-describedby="mu-ch">
+          <span class="mu-slots" aria-hidden="true">${[0, 1, 2, 3].map(n => `<i>${esc((prefill || '')[n] || '')}</i>`).join('')}</span></label>
+        <p class="pmc-rw" id="mu-ch">${mE('영문과 숫자 4글자 · Enter로 입장', '4 letters or digits · Enter to join')}</p></div>
+      <div class="pmc-go"><button type="button" class="pcb dark big" data-a="join" ${on ? '' : 'disabled'}>${mE('입장', 'Join')}</button></div></section>
+  </div>`;
+}
+function pcHomeHTML(on) {
+  const sv = typeof stLoad === 'function' ? stLoad() : null, hasRun = sv && CLS[sv.cls], ty = tallyOf(), pv = Object.assign({ w: 0, d: 0, l: 0 }, ty.pvp);
+  const clr = Object.keys(stageRec()).filter(k => CLS[k]).length, own = ownedSkins().length, tot = skinTotal(), n = pv.w + pv.d + pv.l;
+  const modes = [
+    ['adv', 'boss', '모험 모드', 'Adventure', hasRun ? mE(`이어하기 · ${CLS[sv.cls].n} ${(sv.act || 0) + 1}막`, `Continue · ${CLS[sv.cls].n} Act ${(sv.act || 0) + 1}`) : mE('직업 하나로 세 막을 돌파', 'Three acts with one class'), mE('최대', 'Up to') + ' ' + MDL(300)],
+    ['bot', 'fight', '연습 대전', 'Practice', mE(`봇과 한 판 · ${BOTS[botLv][0]}`, `One game vs bot · ${BOTS[botLv][0]}`), MDL('5~12')],
+    ['rand', 'elite', '랜덤 매칭', 'Random Match', mE('아무나와 바로 단판 대결', 'Quick 1v1 with anyone'), MDL(30)],
+    ['room', 'treasure', '친구 대전', 'Friendly Duel', mE('방을 만들거나 코드로 입장', 'Create a room or join by code'), ''],
+  ];
+  const go = { adv: 'data-a="stage"', bot: 'data-a="local"', rand: `data-a="mmquick"${on ? '' : ' disabled'}`, room: 'data-a="mtab" data-m="multi"' }[pcMode];
+  const goTx = { adv: hasRun ? ['이어하기', 'Continue'] : ['모험 시작', 'Start Adventure'], bot: ['연습 시작', 'Start Practice'], rand: ['매칭 시작', 'Find Match'], room: ['친구 대전', 'Friendly Duel'] }[pcMode];
+  return `<aside class="pc-news" aria-label="${mE('소식', 'News')}">
+      ${hasRun ? `<button type="button" class="pc-card pc-cont c-${sv.cls}" data-a="stage" style="--i:0"><span class="pc-ch">${mE('진행 중인 모험', 'Run in progress')}</span><span class="pc-cb">${faceOf(sv.cls, sv.skin || '')}<span><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><small>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</small></span><em>${mE('이어하기', 'Continue')} ▶</em></span></button>` : ''}
+      <section class="pc-card" style="--i:1"><span class="pc-ch">${mE('내 기록', 'My records')}<button type="button" class="pc-more" data-a="mtab" data-m="acct">${mE('프로필', 'Profile')} ▶</button></span>
+        <dl class="pc-stats"><div><dt>${mE('대전 전적', 'PvP')}</dt><dd>${pv.w}${mE('승', 'W')} ${pv.d}${mE('무', 'D')} ${pv.l}${mE('패', 'L')}<small>${n ? Math.round(pv.w / n * 100) + '%' : '-'}</small></dd></div>
+          <div><dt>${mE('모험 돌파', 'Adventure')}</dt><dd>${clr}<small>/ ${CLASS_IDS.length}</small></dd><span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span></div>
+          <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
+      <section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3) % RULES.length])}</p></section>
+    </aside>
+    <section class="pc-play" aria-label="${mE('게임 모드', 'Game mode')}">
+      <h3 class="pc-ph3">${mE('게임 모드', 'Game Mode')}</h3>
+      <div class="pc-modes" role="radiogroup">${modes.map(([k, ic, a, b, d, rw], i) => `<button type="button" class="pc-mode${pcMode === k ? ' on' : ''}" data-a="pmode" data-k="${k}" role="radio" aria-checked="${pcMode === k}" style="--i:${i}">
+          <i class="pc-mi">${typeof pxi === 'function' ? pxi(ic) : ''}</i><span><b>${mE(a, b)}</b><small>${d}</small></span>${rw ? `<em>${rw}</em>` : ''}</button>`).join('')}</div>
+      ${pcMode === 'bot' ? `<div class="pc-lv" role="group" aria-label="${mE('봇 난이도', 'Bot difficulty')}"><span>${mE('난이도', 'Difficulty')}</span>${Object.entries(BOTS).map(([k, [nm]]) => `<button type="button" class="${botLv === k ? 'on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${nm}</button>`).join('')}</div>` : ''}
+      ${pcMode === 'adv' && hasRun ? `<button type="button" class="pc-sub" data-a="stnew">${mE('새 모험 시작', 'Start a new run')}</button>` : ''}
+      <button type="button" class="pc-go" ${go}><b>${mE(goTx[0], goTx[1])}</b><span>${mE('게임 시작', 'PLAY')}</span></button>
+    </section>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="pmode"]'); if (!b || doc) return; e.stopPropagation();
+  if (pcMode === b.dataset.k) return; pcMode = b.dataset.k; ls('ssd-pmode', pcMode); SND.play('tap'); render(); }, true);
+document.addEventListener('dblclick', e => { const b = e.target.closest && e.target.closest('.pc-mode'); if (!b || doc) return; const g = app.querySelector('.pc-go'); if (g && !g.disabled) g.click(); });
+/* Esc: 하위 페이지에서 홈으로 */
+document.addEventListener('keydown', e => { if (e.key !== 'Escape' || doc || !infoEl.hidden || !menuTab || menuSt !== 'main' || !AUTH.user) return; if (MM.on) mmStop(true); menuTab = null; tabAnim = true; SND.play('tap'); render(); }, true);
 /* 타이틀 빠른 버튼: 언어 전환. 메뉴 목록은 위아래 화살표로 고른다. 첫 화면은 아무 키나 */
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="lang"]'); if (b && !doc) setLang(mE('en', 'ko')); });
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="tbgm"]'); if (!b || doc) return;
