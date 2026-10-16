@@ -2553,6 +2553,337 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   .menu.t2 .lg-sub { display: none; } .mi { min-height: 40px; padding-block: 4px; } .mi.go { min-height: 46px; } .mi span { display: none; } .mi.go span { display: block; }
   .menu.t2 .m-cast { display: none; }
 }
+/* ===== 로비(로그인 뒤 메인 화면) ===== */
+.lb-face { --s: 52px; --z: 3.2; position: relative; display: block; flex: none; width: var(--s); height: var(--s); overflow: hidden; background: color-mix(in srgb, var(--ac, var(--line)) 28%, #fff); box-shadow: inset 0 0 0 2px var(--sil); }
+.lb-face > i { position: absolute; width: calc(32px * var(--z)); height: calc(32px * var(--z)); left: calc(var(--s) / 2 - var(--fx) * var(--z) * 1px); top: calc(var(--s) / 2 - var(--fy) * var(--z) * 1px); }
+.menu.t2.lobby .m-ui { inset: 0; width: auto; padding: 0; display: block; box-sizing: border-box; }
+.menu.t2.lobby .m-duel { left: 44%; }
+.menu.t2.lobby .m-veil { background: linear-gradient(270deg, rgba(255, 255, 255, .8), rgba(255, 255, 255, .35) 30%, transparent 44%), linear-gradient(rgba(255, 255, 255, .7), transparent 20%); }
+.m-tag { position: absolute; left: 50%; bottom: 96%; translate: -50% 0; padding: 2px 10px; background: var(--sil); color: #fff; font-size: clamp(12px, 1.6vh, 16px); white-space: nowrap; box-shadow: 3px 3px 0 var(--red); }
+.m-tag::after { content: ''; position: absolute; left: 50%; top: 100%; translate: -50% 0; border: 6px solid transparent; border-top-color: var(--sil); border-bottom: 0; }
+/* 위 줄 */
+.lb-top { position: absolute; left: clamp(12px, 2.5vw, 36px); right: clamp(12px, 2.5vw, 36px); top: clamp(10px, 2vh, 22px); z-index: 4; display: flex; align-items: center; gap: 14px; }
+.lb-prof { display: flex; align-items: center; gap: 12px; padding: 6px 18px 6px 6px; min-width: 0; font: inherit; color: var(--sil); text-align: left; cursor: pointer;
+  background: rgba(255, 255, 255, .95); border: 3px solid var(--sil); box-shadow: 4px 4px 0 rgba(42, 31, 36, .35); transition: translate .12s; }
+.lb-prof:hover, .lb-prof:focus-visible { translate: 0 -2px; outline: none; box-shadow: 4px 6px 0 var(--red); }
+.lb-pn { display: grid; min-width: 0; } .lb-pn b { font-size: 19px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .lb-pn span { font-size: 12px; color: var(--ash); white-space: nowrap; }
+.menu.t2.lobby .logo { display: flex; flex-direction: row; align-items: center; gap: 10px; margin: 0 auto; }
+.menu.t2.lobby .logo h1 { font-size: clamp(26px, 4vh, 38px); letter-spacing: 2px; text-shadow: 3px 3px 0 var(--line), 0 0 20px rgba(255, 255, 255, .9); }
+.menu.t2.lobby .lg-sub { display: none; } .menu.t2.lobby .lg-mark { grid-template-columns: repeat(3, 11px); gap: 2px; } .menu.t2.lobby .lg-mark b { height: 3px; margin-top: -1.5px; }
+.lb-cur { display: flex; gap: 8px; margin-left: auto; }
+.lb-coin { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 6px 0 14px; font: inherit; font-size: 19px; color: #fff3c4; cursor: pointer; background: rgba(42, 31, 36, .86); border: 3px solid var(--sil); box-shadow: 4px 4px 0 rgba(42, 31, 36, .3); }
+.lb-coin .mdl { width: 20px; height: 20px; } .lb-coin:hover, .lb-coin:focus-visible { outline: none; border-color: var(--amber); }
+.lb-plus { display: grid; place-items: center; width: 28px; height: 28px; font-style: normal; font-weight: 700; font-size: 20px; line-height: 1; color: var(--sil); background: var(--amber); box-shadow: inset 0 -3px 0 var(--amber-d); }
+.lb-ib { display: grid; place-items: center; width: 46px; height: 46px; padding: 0; color: var(--sil); cursor: pointer; background: rgba(255, 255, 255, .95); border: 3px solid var(--sil); box-shadow: 4px 4px 0 rgba(42, 31, 36, .3); }
+.lb-ib .pxi { width: 24px; height: 24px; } .lb-ib:hover, .lb-ib:focus-visible { outline: none; color: var(--red); }
+/* 오른쪽 모드 타일 */
+.lb-modes { position: absolute; right: clamp(16px, 3vw, 52px); top: 50%; translate: 0 -54%; z-index: 3; width: clamp(340px, 31vw, 520px); display: grid; gap: 12px; }
+.lb-tile { position: relative; display: grid; grid-template-columns: 44% minmax(0, 1fr); min-height: clamp(124px, 18vh, 184px); padding: 0; overflow: hidden; font: inherit; text-align: left; cursor: pointer;
+  border: 3px solid #1d1413; box-shadow: 0 5px 0 #1d1413, 8px 10px 0 rgba(42, 31, 36, .2); transition: translate .12s, box-shadow .12s; }
+.lb-tile.sg { color: #fdf7ee; background: linear-gradient(160deg, #3b2b29, #2a1e1d 60%, #3a2622); }
+.lb-tile.sg::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .45; background: radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, radial-gradient(#ffd75e 1px, transparent 1.5px) 20px 14px / 70px 60px; }
+.lb-tile.mu { color: #fff; background: linear-gradient(160deg, #e0566a, var(--red) 45%, var(--red-d)); }
+.lb-tile.mu::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .07) 0 24px, transparent 24px 48px); }
+.lb-tile::after { content: '▶'; position: absolute; right: 14px; bottom: 10px; font-size: 14px; opacity: .7; }
+.lb-tile:hover, .lb-tile:focus-visible { translate: 0 -4px; outline: none; box-shadow: 0 9px 0 #1d1413, 8px 14px 0 rgba(42, 31, 36, .2); }
+.lb-tile > * { position: relative; }
+.lb-art { display: flex; align-items: flex-end; justify-content: center; background: radial-gradient(ellipse 70% 40% at 50% 100%, rgba(255, 215, 94, .28), transparent 70%); }
+.lb-spr { width: clamp(100px, 15vh, 150px); height: clamp(100px, 15vh, 150px); }
+.lb-acts { position: absolute; left: 10px; top: 10px; display: flex; gap: 4px; }
+.lb-acts > i { display: block; width: 22px; height: 22px; padding: 3px; box-sizing: border-box; color: var(--sil); background: #fdf7ee; } .lb-acts > i:last-child { color: var(--amber-d); }
+.lb-acts .pxi { width: 100%; height: 100%; }
+.lb-tile.mu .lb-art { align-items: flex-end; gap: 0; } .lb-tile.mu .lb-spr { width: clamp(72px, 10.5vh, 104px); height: clamp(72px, 10.5vh, 104px); }
+.lb-tile.mu .lb-art b { align-self: center; font-size: clamp(22px, 3.2vh, 30px); text-shadow: 3px 3px 0 #1d1413; rotate: -8deg; }
+.lb-tx { display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 12px 34px 12px 4px; min-width: 0; }
+.lb-tx small { font-size: 12px; letter-spacing: 1px; color: #ffd75e; } .lb-tile.mu .lb-tx small { color: #ffe1e6; }
+.lb-tx b { font-size: clamp(26px, 3.8vh, 40px); line-height: 1.1; text-shadow: 3px 3px 0 rgba(0, 0, 0, .35); }
+.lb-chip { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 2px 10px; font-size: 12px; background: rgba(0, 0, 0, .28); }
+.lb-dot { width: 8px; height: 8px; background: var(--amber); } .lb-dot.ok { background: #7fe08a; }
+.lb-quick { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 18px; font: inherit; color: var(--sil); cursor: pointer; background: var(--amber); border: 3px solid #1d1413; box-shadow: 0 5px 0 #1d1413; transition: translate .12s; }
+.lb-quick b { font-size: 21px; } .lb-quick > span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.lb-quick:hover:not(:disabled), .lb-quick:focus-visible { translate: 0 -3px; outline: none; background: #f0b44c; } .lb-quick:disabled { opacity: .55; cursor: default; }
+.lb-cont { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 7px 14px 7px 7px; font: inherit; text-align: left; color: var(--sil); cursor: pointer; background: #fff; border: 3px solid var(--sil); box-shadow: 4px 4px 0 var(--red); }
+.lb-cont .lb-face { --s: 44px; --z: 2.8; } .lb-cont small { display: block; font-size: 11px; font-weight: 700; color: var(--red-d); } .lb-cont b { font-size: 16px; } .lb-cont em { font-style: normal; font-size: 12px; color: var(--ash); }
+.lb-cont:hover, .lb-cont:focus-visible { outline: none; translate: 0 -2px; }
+/* 아래 메뉴 */
+.lb-dock { position: absolute; left: clamp(12px, 2.5vw, 36px); bottom: calc(46px + 1.2vh); z-index: 3; display: flex; gap: 6px; padding: 7px; background: rgba(42, 31, 36, .8); border: 3px solid #1d1413; box-shadow: 0 5px 0 rgba(0, 0, 0, .2); }
+.lb-dk { display: grid; justify-items: center; gap: 4px; width: 70px; padding: 9px 4px 7px; font: inherit; font-size: 12px; font-weight: 700; color: var(--sil); cursor: pointer; background: rgba(255, 255, 255, .96); border: 0; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .12); transition: translate .1s; }
+.lb-dk .pxi { width: 26px; height: 26px; }
+.lb-dk:hover, .lb-dk:focus-visible { translate: 0 -4px; color: var(--red); outline: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .menu.t2.lobby.anim .lb-modes > *, .menu.t2.lobby.anim .lb-dk { animation: mPop .3s steps(6) calc(1.4s + var(--i, 0) * .08s) backwards; }
+  .menu.t2.lobby.anim .lb-top { animation: sgIn .4s steps(5) 1.2s backwards; }
+  .lb-quick::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .4) 45%, transparent 60%) -200% 0 / 200% 100% no-repeat; animation: goShine 3.2s linear infinite; pointer-events: none; }
+  .lb-quick { position: relative; overflow: hidden; }
+  .pf-spr { animation: breathe 1.3s steps(1) infinite; }
+}
+/* ===== 큰 판(프로필·도감·컬렉션·상점·싱글·멀티) ===== */
+.menu.t2.sub.hubm .m-ui { inset: 0; width: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; gap: 0; padding: clamp(10px, 2vh, 24px) clamp(10px, 2vw, 32px) calc(46px + 1vh); box-sizing: border-box; }
+.menu.t2.sub.hubm .m-cr { display: none; }
+.menu.t2.sub.hubm .m-veil { background: rgba(255, 255, 255, .55); backdrop-filter: blur(3px); }
+.menu.t2.sub.hubm .m-ui > .hub { flex: 1 1 auto; }
+.hub { width: min(1360px, 100%); min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; background: var(--paper); border: 3px solid var(--sil); box-shadow: 8px 8px 0 rgba(42, 31, 36, .35); }
+.hub-bar { flex: none; display: flex; align-items: center; gap: 14px; padding: 9px 12px; background: var(--sil); color: #fff; }
+.hub-back { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 12px; font: inherit; font-weight: 700; color: var(--sil); cursor: pointer; background: #fff; border: 0; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .15); }
+.hub-back i { width: 0; height: 0; border: 7px solid transparent; border-right: 10px solid currentColor; border-left: 0; } .hub-back:hover, .hub-back:focus-visible { outline: none; color: var(--red); }
+.hub-bar h2 { margin: 0; font-size: clamp(20px, 3vh, 28px); color: #fff; text-shadow: 2px 2px 0 rgba(0, 0, 0, .35); white-space: nowrap; }
+.hub-tabs { display: flex; gap: 4px; margin-left: 10px; }
+.hub-tab { display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; font: inherit; font-weight: 700; color: #f1e9e6; cursor: pointer; background: rgba(255, 255, 255, .12); border: 0; }
+.hub-tab .pxi { width: 18px; height: 18px; } .hub-tab:hover, .hub-tab:focus-visible { outline: none; background: rgba(255, 255, 255, .24); }
+.hub-tab.on { background: #fff; color: var(--sil); box-shadow: inset 0 -4px 0 var(--red); }
+.hub-bar .lb-coin { margin-left: auto; height: 40px; box-shadow: none; border-color: #1d1413; }
+.hub-body { flex: 1 1 auto; min-height: 0; overflow: auto; padding: clamp(12px, 2vh, 22px) clamp(12px, 2vw, 26px); }
+@media (prefers-reduced-motion: no-preference) { .hub.pop { animation: sgIn .3s steps(5) backwards; } }
+/* 싱글 */
+.m-sub.single2.inhub { width: 100%; min-height: 100%; padding: 0; background: none; border: 0; box-shadow: none; display: flex; flex-direction: column; }
+.inhub > .sg-grid { flex: 1 1 auto; } .inhub .sg-card { align-content: start; }
+.sg-rw { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; } .sg-rw li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; background: var(--wash); } .sg-rw b { white-space: nowrap; }
+.inhub .sg-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; }
+.inhub .adv { padding: 22px 26px; gap: 14px; } .inhub .adv h3 { font-size: clamp(32px, 5vh, 46px); } .inhub .adv-d { max-width: 64%; font-size: 14px; }
+.adv > .adv-spr { position: absolute; right: 24px; bottom: 18px; width: clamp(150px, 30vh, 300px); height: clamp(150px, 30vh, 300px); filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
+.inhub .adv-acts li { min-height: 70px; } .inhub .sg-card { padding: 16px 18px; } .inhub .sg-card h3 { font-size: 22px; }
+/* 멀티 */
+.mu2 { display: grid; gap: 16px; } .mu2 .mu-grid { margin-top: 0; }
+.mu2-rand { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); color: #fff; overflow: hidden; background: linear-gradient(150deg, #e0566a, var(--red) 45%, var(--red-d)); border: 3px solid #1d1413; box-shadow: 0 5px 0 #1d1413; }
+.mu2-art { display: flex; align-items: center; justify-content: center; gap: clamp(10px, 2vw, 24px); padding: 18px; background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .07) 0 22px, transparent 22px 44px), rgba(0, 0, 0, .14); }
+.mu2-me, .mu2-op { display: grid; justify-items: center; gap: 8px; min-width: 0; } .mu2-me > b, .mu2-op > b { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; text-shadow: 2px 2px 0 #1d1413; }
+.mu2-art .lb-face { --s: clamp(84px, 13vh, 124px); --z: 6; box-shadow: inset 0 0 0 3px #1d1413, 5px 5px 0 #1d1413; }
+.lb-face.q { display: grid; place-items: center; background: #fdf7ee; } .lb-face.q > i { position: static; width: auto; height: auto; font-style: normal; font-size: clamp(40px, 6vh, 60px); font-weight: 700; color: var(--sil); }
+.mu2-vs { font-size: clamp(30px, 5vh, 44px); text-shadow: 3px 3px 0 #1d1413; rotate: -8deg; }
+.mu2-tx { display: grid; gap: 8px; align-content: center; padding: 18px 22px; }
+.mu2-tx > p { margin: 0; font-size: 13px; line-height: 1.55; color: #ffe8ec; } .mu2-tx .cap { display: flex; align-items: center; gap: 8px; color: #ffd75e; letter-spacing: 1px; }
+.mu2-tx h3 { margin: 0; font-size: clamp(30px, 4.6vh, 42px); color: #fff; text-shadow: 3px 3px 0 #1d1413; }
+.mu2-tx .mu-net { color: var(--sil); letter-spacing: 0; }
+.mu2-rw { display: flex; flex-wrap: wrap; gap: 6px; } .mu2-rw > span { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; font-size: 12px; background: rgba(0, 0, 0, .24); } .mu2-rw .mdl-n { color: #fff3c4; }
+.mu2 .mu-slots { max-width: 380px; } .mu2 .mu-slots i { aspect-ratio: 1; }
+.mu2-rand .mu-rand { margin: 4px 0 0; padding-left: 34px; background: var(--amber); color: var(--sil); border-color: #1d1413; box-shadow: 0 4px 0 #1d1413; } .mu2-rand .mu-rand span { color: var(--sil); opacity: .8; }
+.mu2-rand .mm-box { margin: 4px 0 0; color: var(--sil); }
+/* 프로필 */
+.pf { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 2fr); gap: 18px; align-items: start; }
+.pf-card { display: grid; justify-items: center; gap: 8px; padding: 16px; text-align: center; border: 3px solid var(--sil); background: linear-gradient(170deg, color-mix(in srgb, var(--ac) 34%, #fff), #fff 70%); box-shadow: 5px 5px 0 var(--ac); }
+.pf-stage { position: relative; width: 100%; height: clamp(170px, 30vh, 270px); display: flex; justify-content: center; align-items: flex-end; }
+.pf-spr { position: relative; width: clamp(150px, 27vh, 240px); height: clamp(150px, 27vh, 240px); }
+.pf-sh { position: absolute; bottom: 4px; left: 50%; translate: -50% 0; width: 46%; height: 14px; background: rgba(74, 59, 59, .25); border-radius: 50%; }
+.pf-card h3 { margin: 0; font-size: 28px; word-break: break-all; } .pf-cls { margin: 0; font-size: 13px; color: var(--ash); } .pf-cls b { color: var(--sil); }
+.pf-chg { width: 100%; }
+.pf-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 4px; width: 100%; justify-items: center; }
+.pf-pk { padding: 0; cursor: pointer; background: #fff; border: 2px solid var(--line); } .pf-pk .lb-face { --s: 40px; --z: 2.6; box-shadow: none; }
+.pf-pk:hover, .pf-pk:focus-visible { outline: none; border-color: var(--sil); } .pf-pk.on { border-color: var(--red); box-shadow: 0 0 0 2px var(--red); }
+.pf-side { display: grid; gap: 16px; min-width: 0; }
+.pf-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.pf-st { display: grid; gap: 4px; align-content: start; padding: 12px 14px; background: var(--wash); border: 2px solid var(--sil); box-shadow: 3px 3px 0 var(--line); }
+.pf-st > b { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; font-size: clamp(18px, 1.5vw, 24px); line-height: 1.2; } .pf-st > b i { font-style: normal; font-size: 14px; color: var(--ash); } .pf-st small { font-size: 12px; color: var(--ash); }
+.pf-st.gold { background: #fff7dc; } .pf-st .mdl { width: 20px; height: 20px; }
+.pf-bar { display: block; height: 8px; margin-top: 2px; background: #fff; box-shadow: inset 0 0 0 2px var(--line); } .pf-bar i { display: block; height: 100%; background: var(--red); }
+.lnk { justify-self: start; padding: 0; font: inherit; font-size: 12px; color: var(--red-d); text-decoration: underline; cursor: pointer; background: none; border: 0; }
+.pf-rec { padding: 14px; background: #fff; border: 2px solid var(--sil); }
+.pf-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 10px; } .pf-h h4 { margin: 0; display: flex; align-items: center; gap: 6px; font-size: 18px; } .pf-h .pxi { width: 18px; height: 18px; color: var(--amber-d); }
+.pf-recs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.pf-r { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 8px; align-items: center; padding: 4px 8px 4px 4px; background: var(--wash); opacity: .55; }
+.pf-r.ok { opacity: 1; background: #fff; box-shadow: inset 0 0 0 2px var(--ac, var(--line)); }
+.pf-r .lb-face { --s: 34px; --z: 2.2; grid-row: span 2; box-shadow: none; } .pf-r > b { font-size: 13px; } .pf-r > span:last-child { font-size: 11px; color: var(--ash); }
+.pf-acc { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; } .pf-acc .cap { margin-right: auto; }
+/* 도감 */
+.hub-codex .hub-body, .pg-codex .pc-pb { display: flex; overflow: hidden; }
+.cx2 { flex: 1 1 auto; display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; min-height: 0; }
+.cx2-list { overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); gap: 6px; align-content: start; padding: 2px 6px 2px 2px; }
+.cx2-f { display: grid; justify-items: center; gap: 4px; padding: 6px 2px; font: inherit; font-size: 12px; color: var(--sil); cursor: pointer; background: #fff; border: 2px solid var(--line); }
+.cx2-f .lb-face { --s: 54px; --z: 3.4; } .cx2-f:hover, .cx2-f:focus-visible { outline: none; border-color: var(--sil); }
+.cx2-f.on { border-color: var(--sil); background: var(--wash); box-shadow: 3px 3px 0 var(--ac, var(--red)); }
+.cx2-main { min-height: 0; overflow: auto; }
+.cx2-main > .detail { margin: 0; max-width: none; width: auto; box-shadow: none; }
+.cx2-sk { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 2px dashed var(--line); }
+.cx2-s { display: grid; justify-items: center; gap: 3px; padding: 4px; font: inherit; font-size: 11px; color: var(--sil); cursor: pointer; background: #fff; border: 2px solid var(--line); }
+.cx2-s .lb-face { --s: 48px; --z: 3; } .cx2-s.on { border-color: var(--red); } .cx2-s.lock .lb-face { filter: grayscale(1) brightness(.8); } .cx2-s .mdl { width: 10px; height: 10px; }
+/* 컬렉션 */
+.cl-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 6px; }
+.cl-prog { display: grid; grid-template-columns: auto auto; justify-content: start; align-items: baseline; column-gap: 10px; min-width: 260px; } .cl-prog b { font-size: 24px; } .cl-prog .pf-bar { grid-column: 1 / -1; margin-top: 6px; height: 10px; }
+.cl-head .sh-tabs { margin: 0; }
+.cl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; margin-top: 10px; }
+.cl-it { display: grid; justify-items: center; gap: 6px; padding: 10px; background: #fff; border: 2px solid var(--sil); box-shadow: 3px 3px 0 var(--line); }
+.cl-fig { width: 100%; height: 100px; display: flex; justify-content: center; align-items: flex-end; background: linear-gradient(color-mix(in srgb, var(--ac) 24%, #fff), #fff); }
+.cl-fig .px { width: 92px; height: 92px; } .cl-it > b { font-size: 15px; }
+.cl-sks { display: flex; gap: 6px; }
+.cl-s { position: relative; padding: 0; cursor: pointer; background: #fff; border: 2px solid var(--line); } .cl-s .lb-face { --s: 44px; --z: 2.8; box-shadow: none; }
+.cl-s:hover, .cl-s:focus-visible { outline: none; border-color: var(--sil); } .cl-s.on { border-color: var(--red); box-shadow: 0 0 0 2px var(--red); }
+.cl-s.lock .lb-face { filter: grayscale(1) brightness(.75); }
+.cl-s em { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; font-style: normal; font-size: 10px; color: #fff3c4; background: rgba(42, 31, 36, .85); } .cl-s em .mdl { width: 9px; height: 9px; }
+/* 상점(큰 판) */
+:is(.hub, .pc-page) .sh-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+:is(.hub, .pc-page) .sh-head .sh-tabs { margin: 0; } :is(.hub, .pc-page) .sh-grid { max-height: none; overflow: visible; }
+/* 세로 화면(휴대폰) */
+@media (max-aspect-ratio: 1/1) {
+  .menu.t2.lobby { --fh: clamp(150px, 26vh, 220px); }
+  .menu.t2.lobby .m-duel { left: 50%; } .menu.t2.lobby .m-foot { display: none; }
+  .menu.t2.lobby .m-veil { background: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .5) 50%, transparent 66%); }
+  .lb-top { left: 10px; right: 10px; top: 10px; gap: 8px; } .menu.t2.lobby .logo { display: none; }
+  .lb-prof { padding: 4px 12px 4px 4px; gap: 8px; } .lb-prof .lb-face { --s: 42px; --z: 2.6; } .lb-pn b { font-size: 16px; }
+  .lb-coin { height: 42px; font-size: 16px; padding-left: 10px; gap: 6px; } .lb-plus { width: 24px; height: 24px; } .lb-ib { width: 42px; height: 42px; }
+  .lb-modes { left: 10px; right: 10px; top: 72px; translate: none; width: auto; gap: 8px; }
+  .lb-tile { min-height: clamp(92px, 13vh, 120px); grid-template-columns: 38% minmax(0, 1fr); } .lb-tx b { font-size: 24px; } .lb-tx small { font-size: 11px; }
+  .lb-spr { width: clamp(76px, 11vh, 100px); height: clamp(76px, 11vh, 100px); } .lb-tile.mu .lb-spr { width: clamp(56px, 8vh, 76px); height: clamp(56px, 8vh, 76px); }
+  .lb-acts > i { width: 18px; height: 18px; padding: 2px; } .lb-quick { padding: 10px 14px; } .lb-quick b { font-size: 18px; }
+  .lb-dock { left: 0; right: 0; bottom: 0; gap: 0; padding: 6px 4px max(6px, env(safe-area-inset-bottom, 0px)); border-width: 3px 0 0; justify-content: space-around; }
+  .lb-dk { flex: 1 1 0; width: auto; min-width: 0; padding: 7px 2px 5px; font-size: 11px; background: none; color: #f1e9e6; box-shadow: none; } .lb-dk .pxi { width: 22px; height: 22px; }
+  .menu.t2.sub.hubm .m-ui { padding: 8px; }
+  .hub-bar { flex-wrap: wrap; gap: 8px 10px; padding: 8px; } .hub-bar h2 { font-size: 20px; } .hub-back { height: 36px; padding: 0 10px; } .hub-bar .lb-coin { height: 36px; font-size: 15px; }
+  .hub-tabs { order: 3; width: 100%; margin: 0; } .hub-tab { flex: 1 1 0; justify-content: center; height: 36px; padding: 0 4px; font-size: 12px; gap: 4px; }
+  .hub-body { padding: 10px; }
+  .pf { grid-template-columns: 1fr; } .pf-stage { height: 150px; } .pf-spr { width: 140px; height: 140px; } .pf-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pf-st > b { font-size: 20px; }
+  .pf-recs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hub-codex .hub-body { display: block; overflow: auto; } .cx2 { grid-template-columns: 1fr; gap: 10px; }
+  .cx2-list { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 70px; overflow-x: auto; overflow-y: hidden; padding-bottom: 6px; } .cx2-f .lb-face { --s: 46px; --z: 2.9; } .cx2-main { overflow: visible; }
+  .cl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .cl-fig { height: 80px; } .cl-fig .px { width: 72px; height: 72px; } .cl-s .lb-face { --s: 38px; --z: 2.4; }
+  .mu2-rand { grid-template-columns: 1fr; } .mu2-art { padding: 12px; } .mu2-art .lb-face { --s: 72px; --z: 4.4; } .mu2-tx { padding: 14px; } .mu2-tx > p:not(.cap):not(.mu2-rw) { display: none; }
+  .inhub .sg-grid { grid-template-columns: 1fr; } .inhub .adv { padding: 14px; } .inhub .adv-d { max-width: 62%; } .adv > .adv-spr { width: 96px; height: 96px; right: 10px; top: 10px; bottom: auto; }
+}
+@media (max-width: 380px) { .lb-pn span { display: none; } .hub-tab span { display: none; } }
+/* 낮고 넓은 화면(가로로 든 휴대폰) */
+@media (max-height: 560px) and (min-aspect-ratio: 5/4) {
+  .lb-modes { top: 54%; gap: 6px; width: clamp(300px, 40vw, 420px); } .lb-tile { min-height: 84px; } .lb-tx b { font-size: 22px; } .lb-spr { width: 70px; height: 70px; } .lb-tile.mu .lb-spr { width: 54px; height: 54px; }
+  .lb-quick { padding: 6px 14px; } .lb-quick b { font-size: 16px; } .lb-cont { padding: 4px 10px 4px 4px; } .lb-cont .lb-face { --s: 34px; --z: 2.2; }
+  .lb-dk { width: 54px; padding: 5px 2px; font-size: 10px; } .lb-dk .pxi { width: 18px; height: 18px; } .lb-dock { bottom: 40px; }
+  .menu.t2.lobby .logo { display: none; }
+}
+/* ===== PC 전용 로비 ===== */
+.pc-ui { position: absolute; left: 0; top: 0; z-index: 3; width: var(--pcw, 100vw); height: var(--pch, 100vh); zoom: var(--pcz, 1); display: grid; grid-template-rows: 78px minmax(0, 1fr) 40px; }
+.menu.t2.pcm .m-duel { left: 50%; --hs: clamp(150px, 27vh, 300px); }
+.menu.t2.pcm.home .m-veil { background: linear-gradient(90deg, rgba(255, 255, 255, .45), transparent 32%, transparent 66%, rgba(255, 255, 255, .45)); }
+.menu.t2.pcm.pg .m-veil { background: rgba(255, 255, 255, .55); backdrop-filter: blur(3px); }
+/* 위 바 */
+.pc-top { position: relative; z-index: 2; display: flex; align-items: stretch; gap: 26px; padding: 0 22px 0 26px; background: linear-gradient(#3d2d2b, #2a1e1d); border-bottom: 3px solid #1d1413; box-shadow: 0 3px 0 var(--red), 0 10px 20px rgba(29, 20, 19, .25); }
+.menu.t2 .pc-top .logo { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.menu.t2 .pc-top .logo h1 { font-size: 32px; letter-spacing: 2px; color: #fdf7ee; text-shadow: 3px 3px 0 #1d1413; }
+.menu.t2 .pc-top .lg-sub { display: none; } .menu.t2 .pc-top .lg-mark { grid-template-columns: repeat(3, 10px); gap: 2px; } .menu.t2 .pc-top .lg-mark i { background: #fdf7ee; } .menu.t2 .pc-top .lg-mark b { height: 3px; margin-top: -1.5px; }
+.pc-nav { display: flex; }
+.pc-nv { position: relative; padding: 0 20px; font: inherit; font-size: 19px; font-weight: 700; letter-spacing: 1px; color: #bfaea9; background: none; border: 0; cursor: pointer; white-space: nowrap; }
+.pc-nv::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: -3px; height: 6px; background: var(--red); transition: left .15s, right .15s; }
+.pc-nv:hover, .pc-nv:focus-visible { color: #fff; outline: none; } .pc-nv:hover::after, .pc-nv:focus-visible::after { left: 28%; right: 28%; }
+.pc-nv.on { color: #fff; background: linear-gradient(transparent 30%, rgba(216, 71, 90, .28)); } .pc-nv.on::after { left: 0; right: 0; }
+.pc-nv.on::before { content: ''; position: absolute; left: 50%; bottom: 3px; translate: -50% 0; border: 7px solid transparent; border-bottom-color: var(--red); }
+.pc-tr { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.pc-cur { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 6px 0 14px; font: inherit; font-size: 21px; color: #fff3c4; cursor: pointer; background: #1d1413; border: 2px solid #5a4644; }
+.pc-cur .mdl { width: 22px; height: 22px; } .pc-cur:hover, .pc-cur:focus-visible { outline: none; border-color: var(--amber); }
+.pc-cur > i { display: grid; place-items: center; width: 32px; height: 32px; font-style: normal; font-weight: 700; font-size: 22px; line-height: 1; color: var(--sil); background: var(--amber); box-shadow: inset 0 -3px 0 var(--amber-d); }
+.pc-ics { display: flex; gap: 4px; padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, .12); }
+.pc-ic { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; font: inherit; font-size: 15px; font-weight: 700; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .06); border: 2px solid transparent; }
+.pc-ic .pxi { width: 22px; height: 22px; } .pc-ic .qk-ic { width: 18px; height: 18px; background: currentColor; }
+.pc-ic:hover, .pc-ic:focus-visible { outline: none; color: #fff; background: rgba(255, 255, 255, .12); border-color: #5a4644; }
+.pc-ic.off { opacity: .5; } .pc-ic.off .qk-ic::after { content: ''; position: absolute; left: -3px; right: -3px; top: 50%; height: 2px; background: var(--red); rotate: -40deg; }
+.pc-me { display: flex; align-items: center; gap: 12px; align-self: center; height: 60px; padding: 0 18px 0 6px; font: inherit; color: #fff; text-align: left; cursor: pointer; background: rgba(255, 255, 255, .07); border: 2px solid #5a4644; }
+.pc-me .lb-face { --s: 46px; --z: 2.9; box-shadow: inset 0 0 0 2px #1d1413; } .pc-me b { display: block; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; } .pc-me small { font-size: 12px; color: #bfaea9; }
+.pc-me:hover, .pc-me:focus-visible, .pc-me.on { outline: none; border-color: var(--red); background: rgba(216, 71, 90, .2); }
+/* 아래 줄 */
+.pc-foot { display: flex; align-items: center; gap: 24px; padding: 0 26px; font-size: 13px; color: #d9cbc7; background: rgba(29, 20, 19, .9); border-top: 2px solid #1d1413; }
+.pc-net { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; } .pc-net i { width: 9px; height: 9px; background: var(--amber); } .pc-net.ok i { background: #7fe08a; } .pc-net.off i { background: var(--red); }
+.pc-tip { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .pc-tip b { margin-right: 10px; padding: 0 6px; font-size: 12px; color: var(--sil); background: var(--amber); }
+.pc-cr { white-space: nowrap; color: #8f7f7b; }
+/* 홈 */
+.pc-main { position: relative; min-height: 0; }
+.pc-card, .pc-play { color: #f1e9e6; background: rgba(42, 31, 36, .9); border: 2px solid #1d1413; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.pc-news { position: absolute; left: 34px; top: 30px; width: 430px; display: grid; gap: 14px; filter: drop-shadow(0 6px 0 rgba(29, 20, 19, .3)); }
+.pc-card { display: grid; gap: 12px; padding: 16px 18px 18px; font: inherit; text-align: left; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+.pc-ch { display: flex; align-items: center; justify-content: space-between; padding-bottom: 9px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.pc-more { padding: 0; font: inherit; font-size: 12px; letter-spacing: 0; color: #d9cbc7; cursor: pointer; background: none; border: 0; } .pc-more:hover, .pc-more:focus-visible { outline: none; color: #fff; }
+.pc-cont { cursor: pointer; background: linear-gradient(110deg, rgba(216, 71, 90, .5), rgba(42, 31, 36, .92) 60%); } .pc-cont:hover, .pc-cont:focus-visible { outline: none; background: linear-gradient(110deg, rgba(216, 71, 90, .7), rgba(42, 31, 36, .92) 70%); }
+.pc-cb { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.pc-cb .lb-face { --s: 64px; --z: 4; box-shadow: inset 0 0 0 2px #1d1413; } .pc-cb b { display: block; font-size: 20px; color: #fff; } .pc-cb small { font-size: 13px; color: #d9cbc7; }
+.pc-cb em { font-style: normal; font-weight: 700; color: #fff; padding: 6px 10px; background: var(--red); box-shadow: inset 0 -3px 0 var(--red-d); }
+.pc-stats { margin: 0; display: grid; gap: 12px; } .pc-stats > div { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 6px; }
+.pc-stats dt { font-size: 14px; color: #d9cbc7; } .pc-stats dd { margin: 0; font-size: 22px; font-weight: 700; color: #fff; } .pc-stats dd small { margin-left: 6px; font-size: 13px; font-weight: 400; color: #bfaea9; }
+.pc-stats .pf-bar { grid-column: 1 / -1; margin: 0; height: 6px; background: rgba(255, 255, 255, .12); box-shadow: none; }
+.pc-tipc p { margin: 0; font-size: 15px; line-height: 1.65; color: #f1e9e6; }
+.pc-play { position: absolute; right: 34px; bottom: 30px; width: 520px; display: grid; gap: 8px; padding: 18px; filter: drop-shadow(0 8px 0 rgba(29, 20, 19, .3)); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
+.pc-ph3 { margin: 0 0 4px; font-size: 13px; letter-spacing: 3px; color: #ffd75e; }
+.pc-modes { display: grid; gap: 6px; }
+.pc-mode { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 9px 14px 9px 9px; font: inherit; text-align: left; color: #f1e9e6; cursor: pointer; background: rgba(255, 255, 255, .05); border: 2px solid transparent; border-left-width: 5px; transition: background .1s; }
+.pc-mode:hover, .pc-mode:focus-visible { outline: none; background: rgba(255, 255, 255, .11); }
+.pc-mode.on { background: linear-gradient(90deg, rgba(216, 71, 90, .45), rgba(216, 71, 90, .12)); border-color: rgba(216, 71, 90, .65); border-left-color: var(--red); }
+.pc-mi { display: grid; place-items: center; width: 56px; height: 56px; color: #bfaea9; background: #1d1413; box-shadow: inset 0 0 0 2px #5a4644; } .pc-mi .pxi { width: 32px; height: 32px; }
+.pc-mode.on .pc-mi { color: #fff; background: var(--red); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .3); }
+.pc-mode b { display: block; font-size: 21px; color: #fff; } .pc-mode small { font-size: 13px; color: #bfaea9; } .pc-mode.on small { color: #ffe1e6; }
+.pc-mode em { font-style: normal; font-size: 14px; color: #fff3c4; } .pc-mode em .mdl-n { gap: 5px; }
+.pc-lv { display: flex; align-items: center; gap: 6px; padding: 4px 0; } .pc-lv > span { margin-right: 6px; font-size: 13px; color: #bfaea9; }
+.pc-lv button { flex: 1 1 0; height: 36px; font: inherit; font-weight: 700; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .06); border: 2px solid #5a4644; }
+.pc-lv button:hover { color: #fff; } .pc-lv button.on { color: var(--sil); background: var(--amber); border-color: var(--amber-d); }
+.pc-sub { justify-self: end; padding: 0; font: inherit; font-size: 13px; color: #d9cbc7; text-decoration: underline; cursor: pointer; background: none; border: 0; } .pc-sub:hover { color: #fff; }
+.pc-go { position: relative; overflow: hidden; display: grid; justify-items: center; align-content: center; gap: 0; height: 108px; margin-top: 8px; font: inherit; color: #fff; cursor: pointer; border: 0;
+  background: linear-gradient(#ec6377, var(--red) 48%, #c53e51 52%, var(--red-d));
+  box-shadow: inset 0 0 0 3px #1d1413, inset 0 7px 0 3px rgba(255, 255, 255, .22), inset 0 -9px 0 3px rgba(0, 0, 0, .22);
+  clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+.pc-go b { font-size: 42px; line-height: 1.1; letter-spacing: 4px; text-shadow: 3px 3px 0 #1d1413; } .pc-go span { font-size: 13px; font-weight: 700; letter-spacing: 8px; color: #ffe1e6; }
+.pc-go:hover:not(:disabled), .pc-go:focus-visible { outline: none; filter: brightness(1.08); } .pc-go:active:not(:disabled) { translate: 0 2px; }
+.pc-go:disabled { filter: grayscale(.7); opacity: .7; cursor: default; }
+/* 하위 페이지 */
+.pc-page { position: absolute; inset: 22px 34px 20px; display: flex; flex-direction: column; background: var(--paper); border: 3px solid #1d1413; box-shadow: 0 0 0 3px rgba(255, 255, 255, .6), 10px 10px 0 rgba(42, 31, 36, .3); }
+.pc-ph { flex: none; display: flex; align-items: baseline; gap: 18px; padding: 16px 28px 14px; background: linear-gradient(90deg, var(--wash), #fff 60%); border-bottom: 3px solid var(--sil); }
+.pc-ph h2 { margin: 0; font-size: 34px; color: var(--sil); text-shadow: 3px 3px 0 var(--line); } .pc-ph p { margin: 0; font-size: 15px; color: var(--ash); }
+.pc-ph-r { margin-left: auto; font-size: 22px; } .pc-ph-r .mdl { width: 22px; height: 22px; }
+.pc-pb { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 22px 28px; }
+@media (prefers-reduced-motion: no-preference) {
+  .pc-page.pop { animation: sgIn .3s steps(5) backwards; }
+  .menu.t2.pcm.anim .pc-top { animation: pcDrop .4s steps(5) 1.1s backwards; }
+  .menu.t2.pcm.anim .pc-news > *, .menu.t2.pcm.anim .pc-play { animation: sgIn .4s steps(5) calc(1.3s + var(--i, 2) * .1s) backwards; }
+  .pc-go::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 45%, transparent 60%) -200% 0 / 200% 100% no-repeat; animation: goShine 3.2s linear infinite; }
+}
+@keyframes pcDrop { from { translate: 0 -100%; } }
+/* PC 버튼: 모서리를 깎은 입체 버튼 */
+.pcb { --bg: #3b2b29; --hi: rgba(255, 255, 255, .16); --lo: rgba(0, 0, 0, .3); position: relative; display: grid; place-items: center; min-height: 52px; padding: 0 22px; font: inherit; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #fff; cursor: pointer; border: 0;
+  background: var(--bg); box-shadow: inset 0 0 0 3px #1d1413, inset 0 5px 0 3px var(--hi), inset 0 -6px 0 3px var(--lo);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); transition: filter .1s, translate .1s; }
+.pcb.big { min-height: 76px; font-size: 26px; letter-spacing: 3px; text-shadow: 2px 2px 0 rgba(0, 0, 0, .35); }
+.pcb.red { --bg: linear-gradient(#ec6377, var(--red) 48%, #c53e51 52%, var(--red-d)); }
+.pcb.gold { --bg: linear-gradient(#f4c065, var(--amber) 48%, #d7962f 52%, var(--amber-d)); color: #2a1e1d; text-shadow: 1px 1px 0 rgba(255, 255, 255, .4); }
+.pcb.dark { --bg: linear-gradient(#6b5452, var(--sil) 50%, #4a3836); }
+.pcb.ghost { --bg: transparent; --hi: transparent; --lo: transparent; color: #d9cbc7; box-shadow: inset 0 0 0 2px #6b5452; }
+.pcb:hover:not(:disabled), .pcb:focus-visible { outline: none; filter: brightness(1.1); } .pcb.ghost:hover { color: #fff; box-shadow: inset 0 0 0 2px #d9cbc7; }
+.pcb:active:not(:disabled) { translate: 0 2px; } .pcb:disabled { filter: grayscale(.7); opacity: .6; cursor: default; }
+/* 모드 카드 */
+.pg-single .pc-pb, .pg-multi .pc-pb { display: flex; flex-direction: column; gap: 12px; background: linear-gradient(#f6f3f2, #fff 40%); }
+.pmcs { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 22px; }
+.pmc { position: relative; display: grid; grid-template-rows: minmax(0, 42%) minmax(0, 1fr) auto; min-height: 560px; color: #f1e9e6; overflow: hidden;
+  background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, inset 0 0 0 4px rgba(255, 255, 255, .07);
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); transition: translate .15s; filter: drop-shadow(6px 8px 0 rgba(42, 31, 36, .22)); }
+.pmc:hover { translate: 0 -4px; }
+.pmc.red { background: linear-gradient(165deg, #e0566a, var(--red) 40%, #a8364a); }
+.pmc.light { grid-template-rows: minmax(0, 1fr) auto; color: var(--sil); background: linear-gradient(#fff, var(--wash)); box-shadow: inset 0 0 0 3px #1d1413; }
+.pmc-art { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 18px; padding: 16px; overflow: hidden; border-bottom: 3px solid #1d1413;
+  background: radial-gradient(ellipse 60% 45% at 50% 100%, rgba(255, 215, 94, .25), transparent 70%), radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, radial-gradient(#ffd75e 1px, transparent 1.5px) 20px 14px / 70px 60px, #2a1e1d; }
+.pmc.red .pmc-art { background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .08) 0 26px, transparent 26px 52px), rgba(0, 0, 0, .18); }
+.pmc-hero { width: min(240px, 60%); aspect-ratio: 1; height: auto; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .4)); }
+.pmc-acts { position: absolute; left: 16px; top: 16px; right: 16px; display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.pmc-acts li { flex: 1 1 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--sil); background: var(--tint); box-shadow: inset 0 0 0 2px #1d1413, inset 0 -4px 0 rgba(0, 0, 0, .12); }
+.pmc-acts li.th-forest { --tint: #cfe3c4; } .pmc-acts li.th-snow { --tint: #d6e4f3; } .pmc-acts li.th-castle { --tint: #e3d9d5; }
+.pmc-acts i { width: 20px; height: 20px; display: block; } .pmc-acts .pxi { width: 100%; height: 100%; } .pmc-acts li:last-child i { color: var(--amber-d); } .pmc-acts b { font-size: 16px; }
+.pmc-a { width: min(150px, 40%); aspect-ratio: 1; height: auto; }
+.pmc-vs { align-self: center; font-size: 46px; color: #fff; text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #1d1413; rotate: -8deg; }
+.pmc-bot { position: relative; display: contents; } .pmc-bot em { position: absolute; right: 16px; top: 16px; padding: 2px 10px; font-style: normal; font-weight: 700; color: var(--sil); background: var(--amber); }
+.tut-art { align-items: center; background: linear-gradient(#f6f3f2, #e9e2df); }
+.pmc-pad { display: grid; grid-template-columns: repeat(3, 58px); gap: 8px; padding: 12px; transform: perspective(500px) rotateX(38deg); background: rgba(74, 59, 59, .12); box-shadow: 0 0 0 4px rgba(74, 59, 59, .2); }
+.pmc-pad i { aspect-ratio: 1; background: #fff; box-shadow: inset 0 0 0 3px #d9cfcc, 4px 4px 0 rgba(74, 59, 59, .2); }
+.pmc-pad i.me { background: #dfe9fb; box-shadow: inset 0 0 0 3px var(--blue), 4px 4px 0 rgba(74, 59, 59, .2); } .pmc-pad i.hit { background: #fde6e9; box-shadow: inset 0 0 0 3px var(--red), 4px 4px 0 rgba(74, 59, 59, .2); }
+.rand-art { align-items: center; gap: 28px; }
+.pmc-f { display: grid; justify-items: center; gap: 10px; } .pmc-f .lb-face { --s: 130px; --z: 8; box-shadow: inset 0 0 0 4px #1d1413, 6px 6px 0 #1d1413; } .pmc-f > b { font-size: 18px; color: #fff; text-shadow: 2px 2px 0 #1d1413; }
+.pmc-f .lb-face.q > i { font-size: 64px; }
+.pmc-tx { display: flex; flex-direction: column; gap: 10px; min-height: 0; padding: 20px 24px 10px; overflow: auto; }
+.pmc-tx > p { margin: 0; font-size: 15px; line-height: 1.6; color: #d9cbc7; } .pmc.red .pmc-tx > p { color: #ffe8ec; } .pmc.light .pmc-tx > p { color: var(--ash); }
+.pmc-tx h3 { margin: 0; font-size: 40px; line-height: 1.1; color: #fff; text-shadow: 3px 3px 0 #1d1413; } .pmc.light h3 { color: var(--sil); text-shadow: 3px 3px 0 var(--line); }
+.pmc-tx > .pmc-k { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; } .pmc.light .pmc-k { color: var(--red-d); }
+.pmc-k .mu-net { letter-spacing: 0; color: var(--sil); }
+.pmc-tx > .pmc-rw { font-size: 14px; color: #bfaea9; } .pmc-rw b { color: #fff3c4; } .pmc.light .pmc-rw { color: var(--ash); }
+.pmc-chips { display: flex; flex-wrap: wrap; gap: 6px; } .pmc-chips > span { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; font-size: 14px; color: #fff; background: rgba(0, 0, 0, .28); } .pmc-chips .mdl-n { color: #fff3c4; }
+.pmc-run { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 10px; background: rgba(216, 71, 90, .22); box-shadow: inset 0 0 0 2px var(--red); }
+.pmc-run .lb-face { --s: 56px; --z: 3.5; } .pmc-run small { display: block; font-size: 12px; color: #ffd75e; } .pmc-run b { display: block; font-size: 18px; color: #fff; } .pmc-run em { font-style: normal; font-size: 13px; color: #d9cbc7; }
+.pmc-best { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 13px; } .pmc-best > span { display: inline-flex; align-items: center; gap: 6px; } .pmc-best .lb-face { --s: 26px; --z: 1.7; } .pmc-best b { color: #ffd75e; }
+.pmc-steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 6px; }
+.pmc-steps li { counter-increment: s; display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 15px; color: #f1e9e6; background: rgba(255, 255, 255, .06); }
+.pmc-steps li::before { content: counter(s); display: grid; place-items: center; width: 26px; height: 26px; font-weight: 700; color: var(--sil); background: var(--amber); }
+.pmc .pc-lv button { height: 42px; }
+.pmc-go { display: grid; gap: 8px; padding: 12px 24px 24px; } .pmc-go:has(> :nth-child(2)) { grid-template-columns: 1fr auto; }
+.pmc-go .mm-box { margin: 0; }
+.pmc.light .mu-slots { max-width: 360px; } .pmc.light .mu-slots i { aspect-ratio: 1; }
+.pmc-note { margin: 0; font-size: 13px; color: var(--ash); }
+@media (prefers-reduced-motion: no-preference) { .pc-page.pop .pmc { animation: sgIn .35s steps(5) calc(var(--i) * 80ms) backwards; } }
 /* ===== 직업 선택 v2: 조명 무대 + 정보판 + 아래 명단 ===== */
 #app > .gate.pick2 { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; align-content: stretch; }
 .pk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: minmax(0, 1fr); gap: 18px; min-height: 0; }
@@ -5437,6 +5768,7 @@ let lastRw = null;
 function matchReward(g) {
   if (stageOn() || !seat || !g || !g.winner) return; const key = (code || '') + ':' + doc.gid + ':' + g.turn + ':' + g.winner; if (lastRw && lastRw.key === key) return;
   const w = g.winner, win = w === seat, draw = w === 'draw', vsBot = local, why = vsBot ? mE('봇 연습', 'Bot practice') : win ? mE('대전 승리', 'PvP win') : draw ? mE('대전 무승부', 'PvP draw') : mE('대전 참가', 'PvP played');
+  if (!(typeof tutOn === 'function' && tutOn())) tally(vsBot ? 'bot' : 'pvp', win ? 'w' : draw ? 'd' : 'l');
   const rw = lastRw = { key, n: null, why }, pl = AUTH.play && AUTH.play.key === (code || '') + ':' + doc.gid ? AUTH.play : null;
   if (!AUTH.user || !pl) { rw.n = 0; rw.why = AUTH.user ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
   const before = medals(), done = n => { rw.n = n; if (lastRw === rw) render(); };
@@ -6289,7 +6621,7 @@ function menuStart() {
 }
 /* ===== 싱글 플레이 화면: 모험 모드가 메인(왼쪽 큰 카드), 연습과 튜토리얼은 오른쪽 =====
    저장된 모험이 있으면 이어하기를 먼저 보여 준다 */
-function singleHTML(ta) {
+function singleHTML(ta, inHub) {
   const E = (ko, en) => (LANG === 'en' ? en : ko);
   const sv = typeof stLoad === 'function' ? stLoad() : null, rec = typeof stageRec3 === 'function' ? stageRec3() : {};
   const top = Object.entries(rec).filter(([k]) => CLS[k]).sort((a, b) => b[1] - a[1]).slice(0, 3);
@@ -6297,9 +6629,11 @@ function singleHTML(ta) {
   const strip = `<ol class="adv-acts" aria-label="${E('세 막', 'Three acts')}">${acts.map(([th, a, d], n) => `<li class="th-${th}"><b>${a}</b><span>${d}</span><i class="adv-ic">${typeof pxi === 'function' ? pxi(n === 2 ? 'boss' : n === 1 ? 'elite' : 'fight') : ''}</i></li>`).join('')}</ol>`;
   const cont = sv ? `<div class="adv-save c-${sv.cls}"><i class="px a-${sv.cls}" aria-hidden="true"></i><div><p class="cap">${E('저장된 모험', 'Saved run')}</p><b>${CLS[sv.cls].n} · ${E(`${(sv.act || 0) + 1}막 ${Math.max(0, (sv.row || 0) + 1)}걸음`, `Act ${(sv.act || 0) + 1}, step ${Math.max(0, (sv.row || 0) + 1)}`)}</b>
       <span>${E('체력', 'HP')} ${sv.hp} / ${sv.maxHp} · ${E('금화', 'Gold')} ${sv.gold || 0} · ${E('유물', 'Relics')} ${(sv.rl || []).length}</span></div></div>` : '';
-  return `<div class="m-sub single2${ta ? ' pop' : ''}"><h2>${E('싱글 플레이', 'Single Player')}</h2>
+  const rep = repCls();
+  return `<div class="m-sub single2${ta ? ' pop' : ''}${inHub ? ' inhub' : ''}">${inHub ? '' : `<h2>${E('싱글 플레이', 'Single Player')}</h2>`}
     <div class="sg-grid">
       <section class="adv" style="--i:0" aria-labelledby="adv-h">
+        <i class="px adv-spr a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i>
         <div class="adv-top"><p class="cap">${E('메인', 'Main')}</p><h3 id="adv-h">${E('모험 모드', 'Adventure')}</h3><p class="adv-d">${E('직업 하나로 세 막을 돌파합니다. 갈림길 지도에서 길을 고르고, 이길 때마다 금화와 카드, 정예와 보스는 유물. 지면 처음부터.', 'Take one class through three acts. Pick your path on a branching map; every win pays gold and cards, elites and bosses drop relics. Lose and you start over.')}</p></div>
         ${strip}${cont}
         <div class="adv-go">${sv ? `<button type="button" class="mbtn red" data-a="stage"><b>${E('이어하기', 'Continue')}</b><span>${E('저장된 곳에서 계속합니다', 'Pick up where you left off')}</span></button><button type="button" class="btn ghost" data-a="stnew">${E('새로 시작', 'New run')}</button>`
@@ -6312,9 +6646,14 @@ function singleHTML(ta) {
           <button type="button" class="mbtn" data-a="local"><b>${E('연습 시작', 'Start practice')}</b><span>${E('봇', 'Bot')} ${BOTS[botLv][0]}</span></button></section>
         <section class="sg-card" style="--i:2"><h3>${E('튜토리얼', 'Tutorial')}</h3><p>${E('다섯 턴으로 이동, 예측, 예고 공격, 회피를 배웁니다.', 'Learn moving, reading, delayed attacks and dodging in five turns.')}</p>
           <button type="button" class="btn ghost tutgo" data-a="tut">${E('튜토리얼 시작', 'Start tutorial')}</button></section>
+        ${inHub ? `<section class="sg-card" style="--i:3"><h3>${E('메달 보상', 'Medal rewards')}</h3><ul class="sg-rw">
+          <li><span>${E('모험 모드', 'Adventure')}</span><b>${E('클리어율 × 200 · 완주 +100', 'Clear rate × 200 · +100 full clear')}</b></li>
+          <li><span>${E('연습 승리', 'Practice win')}</span><b>${E('쉬움 5 · 보통 8 · 어려움 12', 'Easy 5 · Normal 8 · Hard 12')}</b></li>
+          <li><span>${E('연습 패배', 'Practice loss')}</span><b>2</b></li></ul>
+          <p>${E('너무 빨리 끝난 판과 하루 한도를 넘긴 판은 메달을 받지 않습니다.', 'Very short games and games past the daily cap pay nothing.')}</p></section>` : ''}
       </div>
     </div>
-    <button type="button" class="btn ghost mb-back" data-a="mback">${E('뒤로', 'Back')}</button></div>`;
+    ${inHub ? '' : `<button type="button" class="btn ghost mb-back" data-a="mback">${E('뒤로', 'Back')}</button>`}</div>`;
 }
 /* 새로 시작: 저장된 모험을 지우고 직업 고르기부터 */
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="stnew"]'); if (!b) return; if (typeof stLost === 'function') stLost(); SND.play('tap'); startStage(); });
@@ -6330,53 +6669,306 @@ function gateHTML() {
   const off = netReady && !db, anim = menuAnim, ta = tabAnim; menuAnim = false; tabAnim = false;
   const crowd = MENU_CAST.slice(2).map((k, n) => `<i class="px mc a-${k}${n % 2 ? ' flip' : ''}" style="--i:${n}"></i>`);
   const half = Math.ceil(crowd.length / 2);
-  const hero = (k, side) => `<span class="m-hero ${side} c-${k}"><i class="hs"></i><i class="px hi a-${k}${side === 'r' ? ' flip' : ''}"></i><i class="px ha a-${k}-act${side === 'r' ? ' flip' : ''}"></i></span>`;
+  const lob = !!AUTH.user && menuSt === 'main', duel = lob ? [repCls(), MENU_DUEL.find(k => k !== repCls()) || 'samurai'] : MENU_DUEL;
+  const hero = (k, side) => { const sk = lob && side === 'l' ? skc(k, skinOf(k)) : '';
+    return `<span class="m-hero ${side} c-${k}"><i class="hs"></i><i class="px hi a-${k}${sk}${side === 'r' ? ' flip' : ''}"></i><i class="px ha a-${k}-act${sk}${side === 'r' ? ' flip' : ''}"></i>${lob && side === 'l' ? `<b class="m-tag" data-notr>${esc(AUTH.nick)}</b>` : ''}</span>`; };
   const scene = `<div class="m-scene th-${MENU_TH}" aria-hidden="true"><i class="m-sky"></i><i class="m-sun"></i><i class="bl a-bfar"></i>${MENU_TH === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i>
       <div class="m-floor"><div class="m-cast l">${crowd.slice(0, half).join('')}</div><div class="m-cast r">${crowd.slice(half).join('')}</div></div>
-      <div class="m-duel"><div class="m-pad">${ALL.map(n => `<i${n === 4 ? ' class="c"' : ''}></i>`).join('')}</div>${hero(MENU_DUEL[0], 'l')}<i class="m-clash"></i>${hero(MENU_DUEL[1], 'r')}</div><i class="m-veil"></i></div>`;
+      <div class="m-duel"><div class="m-pad">${ALL.map(n => `<i${n === 4 ? ' class="c"' : ''}></i>`).join('')}</div>${hero(duel[0], 'l')}<i class="m-clash"></i>${hero(duel[1], 'r')}</div><i class="m-veil"></i></div>`;
   const logo = `<div class="logo"><span class="lg-mark" aria-hidden="true">${ALL.map(n => `<i style="--i:${n}"></i>`).join('')}<b></b></span>
       <h1 aria-label="삼삼결투">${[...'삼삼결투'].map((c, n) => `<span style="--i:${n}" aria-hidden="true">${c}</span>`).join('')}</h1><p class="lg-sub">1 대 1 · 동시 턴 · 3×3 카드 결투</p></div>`;
   const touch = matchMedia('(hover: none)').matches;
   const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span><span class="m-cr cap" data-notr>© 2026 CHOSBS. All rights reserved.</span>
       ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
-      <span class="m-qk">${AUTH.user ? `<button type="button" class="qk acct" data-a="mtab" data-m="acct" data-notr aria-label="${mE('계정', 'Account')}"><i class="qk-me" aria-hidden="true"></i>${esc(AUTH.nick)}<span class="qk-m">${MDL(medals())}</span></button>` : ''}<button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
+      <span class="m-qk"><button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
-  let body;
   if (!AUTH.user) return `<div class="menu t2 ac-mode">${scene}<div class="ac-wrap">${logo}${loginHTML()}</div>${foot}</div>`;
-  if (menuTab === 'acct') body = acctHTML();
-  else if (menuTab === 'single') body = singleHTML(ta);
-  else if (menuTab === 'multi') { const on = netReady && db, st = on ? ['ok', '온라인 연결됨'] : off ? ['off', '이 화면에서는 온라인 대전을 쓸 수 없습니다'] : ['wait', '연결하는 중'];
-    const last = ls('ssd-last'), k1 = CLS[last] ? last : MENU_DUEL[0], k2 = MENU_DUEL[1] !== k1 ? MENU_DUEL[1] : 'samurai';
-    body = `<div class="m-sub multi2${ta ? ' pop' : ''}"><div class="mu-head"><h2>멀티 플레이</h2><span class="mu-net ${st[0]}"><i></i>${st[1]}</span></div>
-      ${MM.on ? mmHTML() : `<button type="button" class="mbtn red mu-rand" data-mm="go" ${on ? '' : 'disabled'}><b>${mE('랜덤 매칭', 'Random match')}</b><span>${AUTH.user ? mE('아무나와 바로 단판 대결 · 승리 메달 30', 'Quick 1v1 with anyone · 30 medals per win') : mE('로그인한 계정만 쓸 수 있습니다', 'Requires an account')}</span></button>`}
-      <div class="mu-grid">
-        <section class="mu-host" style="--i:0" aria-labelledby="mu-h1">
-          <div class="mu-art" aria-hidden="true"><i class="px a-${k1}"></i><b>VS</b><i class="px a-${k2} flip"></i></div>
-          <p class="cap">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3 id="mu-h1">방 만들기</h3>
-          <p class="mu-d">방을 열면 4글자 코드와 초대 링크가 생깁니다. 친구가 들어오면 대기실에서 대전 방식을 고르고 시작하세요.</p>
-          <ul class="mu-modes">${Object.entries(MODES).filter(([m]) => m !== 'stage').map(([m, [n]]) => `<li>${n}</li>`).join('')}</ul>
-          <button type="button" class="mbtn red mu-go" data-a="create" ${on ? '' : 'disabled'}><b>방 만들기</b><span>코드를 받아 친구에게 보내기</span></button>
-        </section>
-        <section class="mu-join" style="--i:1" aria-labelledby="mu-h2">
-          <p class="cap">${mE('초대받았다면', 'Got invited?')}</p><h3 id="mu-h2">코드로 입장</h3>
-          <p class="mu-d">친구가 알려 준 4글자 코드를 넣으세요. 초대 링크로 들어오면 코드가 미리 채워집니다.</p>
-          <label class="mu-code" for="code"><span class="sr">방 코드</span><input id="code" class="code-in" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(prefill)}" placeholder="····" aria-describedby="mu-ch">
-            <span class="mu-slots" aria-hidden="true">${[0, 1, 2, 3].map(n => `<i>${esc((prefill || '')[n] || '')}</i>`).join('')}</span></label>
-          <p class="cap" id="mu-ch">영문과 숫자 4글자 · Enter로 입장</p>
-          <button type="button" class="btn mu-in" data-a="join" ${on ? '' : 'disabled'}>입장</button>
-        </section>
-      </div>
-      <button type="button" class="btn ghost mb-back" data-a="mback">뒤로</button></div>`; }
-  else { const sv = typeof stLoad === 'function' ? stLoad() : null;
-    const mi = (attrs, ko, en, sk, se, i, cls = '') => `<button type="button" class="mi${cls}" ${attrs} style="--i:${i}"><b>${mE(ko, en)}</b>${sk ? `<span>${mE(sk, se)}</span>` : ''}</button>`;
-    body = `<nav class="m-main t2nav" aria-label="${mE('메인 메뉴', 'Main menu')}">
-      ${sv && CLS[sv.cls] ? `<button type="button" class="mi go c-${sv.cls}" data-a="stage" style="--i:0"><i class="px a-${sv.cls}" aria-hidden="true"></i><b>${mE('이어하기', 'Continue')}</b><span>${mE('모험', 'Adventure')} · ${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)} · ${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp}</span></button>` : ''}
-      ${mi('data-a="mtab" data-m="single"', '싱글 플레이', 'Single Player', '모험 모드 · 연습 · 튜토리얼', 'Adventure · Practice · Tutorial', 1)}
-      ${mi('data-a="mtab" data-m="multi"', '멀티 플레이', 'Multiplayer', '방 만들기 · 접속하기', 'Create room · Join', 2)}
-      <div class="mi-row" style="--i:3">${mi('data-a="ov" data-o="codex"', '직업 도감', 'Classes', '', '', 3, ' sm')}${mi('data-a="ov" data-o="records"', '기록', 'Records', '', '', 3, ' sm')}${mi('data-a="ov" data-o="rules"', '규칙', 'Rules', '', '', 3, ' sm')}${mi('data-a="ov" data-o="settings"', '설정', 'Settings', '', '', 3, ' sm')}</div>
-      ${mi('data-a="ov" data-o="shop"', '스킨 상점', 'Skin Shop', `보유 메달 ${medals()}`, `${medals()} medals`, 4)}</nav>`; }
-  return `<div class="menu t2${anim ? ' anim' : ''}${menuTab ? ' sub' : ''}">${scene}<div class="m-ui">${logo}${body}</div>${foot}</div>`;
+  if (isPC()) return pcHTML(scene, logo, off, ta, anim);
+  if (HUB[menuTab]) return `<div class="menu t2 sub hubm">${scene}<div class="m-ui">${hubHTML(menuTab, off, ta)}</div>${foot}</div>`;
+  menuTab = null;
+  return `<div class="menu t2 lobby${anim ? ' anim' : ''}">${scene}<div class="m-ui">${lobbyHTML(logo)}</div>${foot}</div>`;
 }
+/* ===== 로비: 로그인한 뒤의 메인 화면 =====
+   위: 프로필과 메달. 가운데: 결투장(왼쪽 영웅이 내 대표 캐릭터). 오른쪽: 싱글·멀티 큰 타일. 아래: 프로필·도감·컬렉션·상점·규칙·설정
+   하위 화면(프로필, 도감, 컬렉션, 상점, 싱글, 멀티)은 모두 같은 큰 판(hub)에 열린다 */
+const repCls = () => { const r = ls('ssd-rep'), l = ls('ssd-last'); return CLS[r] ? r : CLS[l] ? l : 'samurai'; };
+const skinTotal = () => CLASS_IDS.reduce((t, c) => t + skinList(c).length, 0);
+const tallyOf = () => parse(ls('ssd-tally')) || {};
+function tally(kind, r) { if (!AUTH.user) return; const o = tallyOf(), t = o[kind] = Object.assign({ w: 0, d: 0, l: 0 }, o[kind]); t[r]++; ls('ssd-tally', JSON.stringify(o)); }
+/* 얼굴 초상: 스프라이트에서 얼굴 부분만 잘라 정사각형에 담는다 */
+function faceOf(c, sk) { const x = sk && skinList(c).find(s => s.id === sk), f = (x && x.f) || SKIN_FACE[c] || [16, 10];
+  return `<span class="lb-face c-${c}" aria-hidden="true"><i class="px a-${c}${skc(c, sk)}" style="--fx:${f[0]};--fy:${f[1]}"></i></span>`; }
+/* 11×11 점 그림 아이콘 */
+const LB_IC = {
+  prof: ['....###....', '...#####...', '...#####...', '...#####...', '....###....', '...........', '..#######..', '.#########.', '.#########.', '.#########.', '.#########.'],
+  codex: ['...........', '.###...###.', '#...#.#...#', '#.###.###.#', '#...#.#...#', '#.###.###.#', '#...#.#...#', '#.###.###.#', '#####.#####', '....###....', '...........'],
+  coll: ['...........', '..##...##..', '.####.####.', '###########', '###########', '.#.#####.#.', '...#####...', '...#####...', '...#####...', '...#####...', '...........'],
+  shop: ['...#...#...', '....###....', '...#####...', '..##...##..', '.##.###.##.', '.##.##..##.', '.##..##.##.', '.##.###.##.', '..##...##..', '...#####...', '...........'],
+  rules: ['...........', '.#########.', '#.........#', '.#.#####.#.', '.#.......#.', '.#.#####.#.', '.#.......#.', '.#.####..#.', '#.........#', '.#########.', '...........'],
+  gear: ['.....#.....', '..#.###.#..', '..#######..', '.###...###.', '..##...##..', '####...####', '..##...##..', '.###...###.', '..#######..', '..#.###.#..', '.....#.....'],
+  rec: ['...........', '.#########.', '##.#####.##', '#..#####..#', '##.#####.##', '...#####...', '....###....', '.....#.....', '....###....', '...#####...', '...........'],
+};
+const lbIc = k => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${LB_IC[k].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
+const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['직업 도감', 'Classes', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'] };
+let repOpen = false, collTab = 'all';
+
+function lobbyHTML(logo) {
+  const rep = repCls(), sv = typeof stLoad === 'function' ? stLoad() : null, on = netReady && db, m = medals();
+  const clr = Object.keys(stageRec()).filter(k => CLS[k]).length, t = tallyOf().pvp || { w: 0, d: 0, l: 0 };
+  const foe = MENU_DUEL.find(k => k !== rep) || 'samurai';
+  const dock = [['data-a="mtab" data-m="acct"', 'prof', '프로필', 'Profile'], ['data-a="mtab" data-m="codex"', 'codex', '도감', 'Classes'], ['data-a="mtab" data-m="coll"', 'coll', '컬렉션', 'Collection'],
+    ['data-a="mtab" data-m="shop"', 'shop', '상점', 'Shop'], ['data-a="ov" data-o="rules"', 'rules', '규칙', 'Rules'], ['data-a="ov" data-o="settings"', 'gear', '설정', 'Settings']];
+  return `<header class="lb-top">
+      <button type="button" class="lb-prof" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span class="lb-pn"><b data-notr>${esc(AUTH.nick)}</b><span>${CLS[rep].n} · ${mE('대표 캐릭터', 'Main')}</span></span></button>
+      ${logo}
+      <div class="lb-cur"><button type="button" class="lb-coin" data-a="mtab" data-m="shop" aria-label="${mE('메달, 스킨 상점 열기', 'Medals, open shop')}">${MDL(m)}<i class="lb-plus" aria-hidden="true">+</i></button>
+        <button type="button" class="lb-ib" data-a="ov" data-o="settings" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></div>
+    </header>
+    <section class="lb-modes" aria-label="${mE('게임 모드', 'Game modes')}">
+      ${sv && CLS[sv.cls] ? `<button type="button" class="lb-cont c-${sv.cls}" data-a="stage" style="--i:0">${faceOf(sv.cls, sv.skin || '')}<span><small>${mE('모험 이어하기', 'Continue adventure')}</small><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b></span><em>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp}</em></button>` : ''}
+      <button type="button" class="lb-tile sg" data-a="mtab" data-m="single" style="--i:1">
+        <span class="lb-art" aria-hidden="true"><i class="lb-acts">${['fight', 'elite', 'boss'].map(k => `<i>${typeof pxi === 'function' ? pxi(k) : ''}</i>`).join('')}</i><i class="px lb-spr a-${rep}${skc(rep, skinOf(rep))}"></i></span>
+        <span class="lb-tx"><small>${mE('모험 · 연습 · 튜토리얼', 'Adventure · Practice · Tutorial')}</small><b>${mE('싱글 플레이', 'Single Player')}</b><span class="lb-chip">${mE('모험 돌파', 'Cleared')} ${clr}/${CLASS_IDS.length}</span></span></button>
+      <button type="button" class="lb-tile mu" data-a="mtab" data-m="multi" style="--i:2">
+        <span class="lb-art" aria-hidden="true"><i class="px lb-spr a-${rep}${skc(rep, skinOf(rep))}"></i><b>VS</b><i class="px lb-spr flip a-${foe}"></i></span>
+        <span class="lb-tx"><small>${mE('랜덤 매칭 · 친구와 대전', 'Random match · Friends')}</small><b>${mE('멀티 플레이', 'Multiplayer')}</b><span class="lb-chip"><i class="lb-dot${on ? ' ok' : ''}"></i>${on ? mE('온라인', 'Online') : mE('연결 중', 'Connecting')} · ${t.w}${mE('승', 'W')} ${t.l}${mE('패', 'L')}</span></span></button>
+      <button type="button" class="lb-quick" data-a="mmquick" style="--i:3" ${on ? '' : 'disabled'}><b>${mE('빠른 대전', 'Quick Match')}</b><span>${mE('랜덤 매칭 · 승리 메달', 'Random 1v1 · win')} ${MDL(30)}</span></button>
+    </section>
+    <nav class="lb-dock" aria-label="${mE('메뉴', 'Menu')}">${dock.map(([a, ic, ko, en], n) => `<button type="button" class="lb-dk" ${a} style="--i:${n}">${lbIc(ic)}<span>${mE(ko, en)}</span></button>`).join('')}</nav>`;
+}
+
+function hubHTML(kind, off, ta) {
+  const [ko, en] = HUB[kind], fam = ['acct', 'codex', 'coll', 'shop'].includes(kind);
+  const body = kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : multiBody(off);
+  return `<div class="hub hub-${kind}${ta ? ' pop' : ''}">
+    <header class="hub-bar"><button type="button" class="hub-back" data-a="mback"><i aria-hidden="true"></i><span>${mE('로비', 'Lobby')}</span></button>
+      <h2>${mE(ko, en)}</h2>
+      ${fam ? `<nav class="hub-tabs" aria-label="${mE('메뉴', 'Menu')}">${Object.entries(HUB).filter(([k]) => ['acct', 'codex', 'coll', 'shop'].includes(k)).map(([k, [a, b, ic]]) => `<button type="button" class="hub-tab${k === kind ? ' on' : ''}" data-a="mtab" data-m="${k}" aria-pressed="${k === kind}">${lbIc(ic)}<span>${mE(a, b)}</span></button>`).join('')}</nav>` : ''}
+      <button type="button" class="lb-coin" data-a="mtab" data-m="shop" aria-label="${mE('메달', 'Medals')}">${MDL(medals())}<i class="lb-plus" aria-hidden="true">+</i></button></header>
+    <div class="hub-body" data-keep="hub-${kind}">${body}</div></div>`;
+}
+
+function profBody() {
+  const rep = repCls(), sk = skinOf(rep), skx = sk && skinList(rep).find(x => x.id === sk), rec = stageRec(), rec3 = typeof stageRec3 === 'function' ? stageRec3() : {}, ty = tallyOf();
+  const clr = Object.keys(rec).filter(k => CLS[k]).length, own = ownedSkins().length, tot = skinTotal();
+  const wr = t => { const n = t.w + t.d + t.l; return n ? Math.round(t.w / n * 100) + '%' : '-'; }, pv = Object.assign({ w: 0, d: 0, l: 0 }, ty.pvp), bt = Object.assign({ w: 0, d: 0, l: 0 }, ty.bot);
+  const st = AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('저장됨', 'saved') : '') : mE('서버에 잠시 연결하지 못했습니다. 다시 연결되면 저장합니다', 'Offline; will sync later');
+  const tile = (lab, val, sub, cls = '') => `<div class="pf-st${cls}"><span class="cap">${lab}</span><b>${val}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+  return `<div class="pf">
+    <section class="pf-card c-${rep}">
+      <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
+      <h3 data-notr>${esc(AUTH.nick)}</h3>
+      <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
+      <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
+      ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
+    </section>
+    <div class="pf-side">
+      <div class="pf-stats">
+        ${tile(mE('메달', 'Medals'), MDL(medals()), `<button type="button" class="lnk" data-a="mtab" data-m="shop">${mE('상점 가기', 'Shop')}</button>`, ' gold')}
+        ${tile(mE('스킨 수집', 'Skins'), `${own}<i>/${tot}</i>`, `<span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span>`)}
+        ${tile(mE('모험 돌파', 'Adventure clears'), `${clr}<i>/${CLASS_IDS.length}</i>`, `<span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span>`)}
+        ${tile(mE('대전 전적', 'PvP record'), `${pv.w}${mE('승', 'W')} ${pv.d}${mE('무', 'D')} ${pv.l}${mE('패', 'L')}`, `${mE('승률', 'Win rate')} ${wr(pv)}`)}
+        ${tile(mE('봇 연습', 'Bot practice'), `${bt.w}${mE('승', 'W')} ${bt.l}${mE('패', 'L')}`, `${mE('승률', 'Win rate')} ${wr(bt)}`)}
+      </div>
+      <section class="pf-rec"><div class="pf-h"><h4>${lbIc('rec')}${mE('모험 기록', 'Adventure records')}</h4><span class="cap">${mE('숫자는 다섯 판에 걸린 가장 적은 턴 수 · 별은 최고 점수', 'Fewest turns over five fights · best score')}</span></div>
+        <div class="pf-recs">${CLASS_IDS.map(k => `<span class="pf-r${rec[k] ? ' ok' : ''} c-${k}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}<b>${CLS[k].n}</b><span>${rec[k] ? rec[k] + mE('턴', 't') : '-'}${rec3[k] ? ` · ★${rec3[k]}` : ''}</span></span>`).join('')}</div></section>
+      <div class="pf-acc"><span class="cap">${st}</span><button type="button" class="btn ghost" data-a="ov" data-o="settings">${mE('설정', 'Settings')}</button><button type="button" class="btn ghost" data-a="logout">${mE('로그아웃', 'Log out')}</button></div>
+    </div></div>`;
+}
+
+function codexBody() {
+  const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
+  const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
+    return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(SKIN_PRICE)}</span></button>`; }).join('')}</div>`;
+  return `<div class="cx2"><div class="cx2-list" role="group" aria-label="${mE('직업 고르기', 'Pick a class')}" data-keep="cxl">${CLASS_IDS.map(k => `<button type="button" class="cx2-f c-${k}${k === v ? ' on' : ''}" data-a="cxv" data-k="${k}" aria-pressed="${k === v}">${faceOf(k, skinOf(k))}<span>${CLS[k].n}</span></button>`).join('')}</div>
+    <div class="cx2-main">${detailHTML(v, strip)}</div></div>`;
+}
+
+function collBody() {
+  const own = ownedSkins(), tot = skinTotal(), f = collTab;
+  const rows = CLASS_IDS.filter(c => f === 'all' || (f === 'own') === skinList(c).some(x => own.includes(c + ':' + x.id)));
+  const card = c => { const cur = skinOf(c), list = [{ id: '', n: '기본', en: 'Default' }, ...skinList(c)];
+    return `<div class="cl-it c-${c}"><div class="cl-fig"><i class="px a-${c}${skc(c, cur)}" aria-hidden="true"></i></div><b>${CLS[c].n}</b>
+      <div class="cl-sks">${list.map(x => { const ok = skinOwned(c, x.id);
+        return `<button type="button" class="cl-s${x.id === cur ? ' on' : ''}${ok ? '' : ' lock'}" data-a="${ok ? 'collwear' : 'shopgo'}" data-c="${c}" data-id="${x.id}" aria-pressed="${x.id === cur}" title="${esc(mE(x.n, x.en))}${ok ? '' : ' · ' + mE('상점에서 구매', 'buy in shop')}">${faceOf(c, x.id)}${ok ? '' : `<em>${MDL(SKIN_PRICE)}</em>`}</button>`; }).join('')}</div></div>`; };
+  return `<div class="cl-head"><div class="cl-prog"><span class="cap">${mE('수집', 'Collected')}</span><b>${own.length} / ${tot}</b><span class="pf-bar"><i style="width:${tot ? own.length / tot * 100 : 0}%"></i></span></div>
+      <div class="sh-tabs">${[['all', '전체', 'All'], ['own', '보유', 'Owned'], ['new', '미보유', 'Not owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-a="colltab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
+    <p class="cap">${mE('얼굴을 눌러 스킨을 바꿉니다. 자물쇠가 걸린 스킨은 상점에서 살 수 있습니다.', 'Tap a face to equip. Locked skins are in the shop.')}</p>
+    <div class="cl-grid">${rows.map(card).join('') || `<p class="cap">${mE('여기에 보일 직업이 없습니다', 'Nothing here')}</p>`}</div>`;
+}
+
+/* 상점 내용: 로비의 큰 판과 대전 중 오버레이가 함께 쓴다 */
+function shopBody() {
+  const own = ownedSkins(), m = medals(), f = shopTab;
+  const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
+  const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
+    return `<div class="sh-it c-${c}${owned ? ' own' : ''}"><div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+      <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
+      ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < SKIN_PRICE ? 'disabled' : ''}>${MDL(SKIN_PRICE)}</button>`}</div>`; };
+  return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p>
+      <div class="sh-tabs">${[['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
+    <p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
+    <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`;
+}
+
+function multiBody(off) {
+  const on = netReady && db, st = on ? ['ok', mE('온라인 연결됨', 'Online')] : off ? ['off', mE('이 화면에서는 온라인 대전을 쓸 수 없습니다', 'Online play unavailable here')] : ['wait', mE('연결하는 중', 'Connecting')];
+  const rep = repCls(), foe = MENU_DUEL.find(k => k !== rep) || 'samurai', t = Object.assign({ w: 0, d: 0, l: 0 }, tallyOf().pvp);
+  return `<div class="mu2">
+    <section class="mu2-rand" style="--i:0" aria-labelledby="mu2-h">
+      <div class="mu2-art" aria-hidden="true"><span class="mu2-me">${faceOf(rep, skinOf(rep))}<b data-notr>${esc(AUTH.nick)}</b></span><b class="mu2-vs">VS</b><span class="mu2-op"><span class="lb-face q"><i>?</i></span><b>${mE('누군가', 'Anyone')}</b></span></div>
+      <div class="mu2-tx"><p class="cap">${mE('추천', 'Recommended')} · <span class="mu-net ${st[0]}"><i></i>${st[1]}</span></p><h3 id="mu2-h">${mE('랜덤 매칭', 'Random Match')}</h3>
+        <p>${mE('기다리는 사람 중 한 명과 바로 단판 대결을 합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Get paired with someone waiting for a single game. Both players confirm the result.')}</p>
+        <p class="mu2-rw"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span><span class="mu2-rec">${mE('내 전적', 'Record')} ${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</span></p>
+        ${MM.on ? mmHTML() : `<button type="button" class="mbtn red mu-rand" data-mm="go" ${on ? '' : 'disabled'}><b>${mE('매칭 시작', 'Find a match')}</b><span>${mE('취소는 언제든 할 수 있습니다', 'Cancel anytime')}</span></button>`}</div>
+    </section>
+    <div class="mu-grid">
+      <section class="mu-host" style="--i:1" aria-labelledby="mu-h1">
+        <div class="mu-art" aria-hidden="true"><i class="px a-${rep}${skc(rep, skinOf(rep))}"></i><b>VS</b><i class="px a-${foe} flip"></i></div>
+        <p class="cap">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3 id="mu-h1">${mE('방 만들기', 'Create room')}</h3>
+        <p class="mu-d">${mE('방을 열면 4글자 코드와 초대 링크가 생깁니다. 친구가 들어오면 대기실에서 대전 방식을 고르고 시작하세요.', 'You get a 4-letter code and invite link. Pick the format in the lobby once your friend joins.')}</p>
+        <ul class="mu-modes">${Object.entries(MODES).filter(([m]) => m !== 'stage').map(([m, [n]]) => `<li>${n}</li>`).join('')}</ul>
+        <button type="button" class="mbtn red mu-go" data-a="create" ${on ? '' : 'disabled'}><b>${mE('방 만들기', 'Create room')}</b><span>${mE('코드를 받아 친구에게 보내기', 'Send the code to a friend')}</span></button>
+      </section>
+      <section class="mu-join" style="--i:2" aria-labelledby="mu-h2">
+        <p class="cap">${mE('초대받았다면', 'Got invited?')}</p><h3 id="mu-h2">${mE('코드로 입장', 'Join with code')}</h3>
+        <p class="mu-d">${mE('친구가 알려 준 4글자 코드를 넣으세요. 초대 링크로 들어오면 코드가 미리 채워집니다.', 'Enter the 4-letter code. Invite links fill it in for you.')}</p>
+        <label class="mu-code" for="code"><span class="sr">${mE('방 코드', 'Room code')}</span><input id="code" class="code-in" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(prefill)}" placeholder="····" aria-describedby="mu-ch">
+          <span class="mu-slots" aria-hidden="true">${[0, 1, 2, 3].map(n => `<i>${esc((prefill || '')[n] || '')}</i>`).join('')}</span></label>
+        <p class="cap" id="mu-ch">${mE('영문과 숫자 4글자 · Enter로 입장', '4 letters or digits · Enter to join')}</p>
+        <button type="button" class="btn mu-in" data-a="join" ${on ? '' : 'disabled'}>${mE('입장', 'Join')}</button>
+      </section>
+    </div></div>`;
+}
+/* 로비 버튼들 */
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"]'); if (!b || doc) return;
+  e.stopPropagation(); const a = b.dataset.a; SND.unlock();
+  if (a === 'reppick') repOpen = !repOpen;
+  else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
+  else if (a === 'cxv') cxView = b.dataset.k;
+  else if (a === 'collwear') { if (skinOf(b.dataset.c) === b.dataset.id) return; setSkin(b.dataset.c, b.dataset.id); SND.play('relicGood'); return render(); }
+  else if (a === 'shopgo') { shopTab = 'new'; menuTab = 'shop'; tabAnim = true; }
+  else if (a === 'colltab') collTab = b.dataset.t;
+  else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); render(); return mmStart(); }
+  SND.play('tap'); render(); }, true);
+/* ===== PC 전용 로비: 위 내비게이션 바 + 모드 고르기와 게임 시작 + 소식 패널 =====
+   1920×1080을 기준 화면으로 그리고 창 크기에 맞춰 통째로 확대·축소한다. 하위 메뉴는 위 바 아래 전체 페이지로 연다 */
+const PC_MQ = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 1000px) and (min-height: 600px)');
+const isPC = () => PC_MQ.matches;
+PC_MQ.addEventListener('change', () => { if (!doc) render(); });
+function pcZoom() { const z = Math.max(0.5, Math.min(2, innerWidth / 1920, innerHeight / 1080)), r = document.documentElement.style;
+  r.setProperty('--pcz', z.toFixed(4)); r.setProperty('--pcw', (innerWidth / z).toFixed(1) + 'px'); r.setProperty('--pch', (innerHeight / z).toFixed(1) + 'px'); }
+pcZoom(); addEventListener('resize', pcZoom);
+let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
+const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
+  coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['직업 도감', 'Classes', '30개 직업의 패시브, 능력, 전용 카드', 'Passives, abilities and cards of every class'],
+  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'] };
+
+function pcHTML(scene, logo, off, ta, anim) {
+  const kind = PC_PAGES[menuTab] ? menuTab : null; if (!kind) menuTab = null;
+  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '직업 도감', 'Classes'], ['shop', '상점', 'Shop']];
+  const top = `<header class="pc-top">
+      ${logo}
+      <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
+      <div class="pc-tr">
+        <button type="button" class="pc-cur" data-a="mtab" data-m="shop" aria-label="${mE('메달, 상점 열기', 'Medals, open shop')}">${MDL(medals())}<i aria-hidden="true">+</i></button>
+        <span class="pc-ics">
+          <button type="button" class="pc-ic" data-a="ov" data-o="rules" title="${mE('규칙', 'Rules')}" aria-label="${mE('규칙', 'Rules')}">${lbIc('rules')}</button>
+          <button type="button" class="pc-ic${SND.on ? '' : ' off'}" data-a="snd" title="${mE('효과음', 'Sound')}" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button>
+          <button type="button" class="pc-ic${SND.bgm ? '' : ' off'}" data-a="bgm" title="${mE('배경음', 'Music')}" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button>
+          <button type="button" class="pc-ic tx" data-a="lang" data-notr aria-label="Language">${mE('EN', '한')}</button>
+          <button type="button" class="pc-ic" data-a="ov" data-o="settings" title="${mE('설정', 'Settings')}" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></span>
+        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${CLS[rep].n}</small></span></button>
+      </div></header>`;
+  const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
+      <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
+  const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
+        ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
+      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
+  return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
+}
+
+/* PC 싱글·멀티: 큰 세로 카드 세 장(모드 고르기 화면) */
+function pcSingleBody() {
+  const sv = typeof stLoad === 'function' ? stLoad() : null, hasRun = sv && CLS[sv.cls], rep = repCls(), rec = typeof stageRec3 === 'function' ? stageRec3() : {};
+  const top = Object.entries(rec).filter(([k]) => CLS[k]).sort((a, b) => b[1] - a[1]).slice(0, 3), foe = MENU_DUEL.find(k => k !== rep) || 'samurai';
+  const ic = k => (typeof pxi === 'function' ? pxi(k) : '');
+  return `<div class="pmcs">
+    <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art"><ol class="pmc-acts">${[['forest', '1막', 'Act 1', 'fight'], ['snow', '2막', 'Act 2', 'elite'], ['castle', '3막', 'Act 3', 'boss']].map(([th, a, b, k]) => `<li class="th-${th}"><i>${ic(k)}</i><b>${mE(a, b)}</b></li>`).join('')}</ol>
+        <i class="px pmc-hero a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('메인 모드', 'Main mode')}</p><h3>${mE('모험 모드', 'Adventure')}</h3>
+        <p>${mE('직업 하나로 세 막을 돌파합니다. 갈림길 지도에서 길을 고르고, 이길 때마다 금화와 카드, 정예와 보스는 유물. 지면 처음부터.', 'Take one class through three acts. Pick your path, win gold and cards; elites and bosses drop relics. Lose and start over.')}</p>
+        ${hasRun ? `<div class="pmc-run">${faceOf(sv.cls, sv.skin || '')}<span><small>${mE('진행 중', 'In progress')}</small><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><em>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</em></span></div>` : ''}
+        <p class="pmc-rw">${mE('보상', 'Reward')} <b>${mE('클리어율 × 200 · 완주 +100', 'Clear rate × 200 · +100 full clear')}</b></p>
+        ${top.length ? `<p class="pmc-best">${mE('최고 점수', 'Best')} ${top.map(([k, v]) => `<span>${faceOf(k, skinOf(k))}${CLS[k].n} <b>${v}</b></span>`).join('')}</p>` : ''}</div>
+      <div class="pmc-go">${hasRun ? `<button type="button" class="pcb red big" data-a="stage">${mE('이어하기', 'Continue')}</button><button type="button" class="pcb ghost" data-a="stnew">${mE('새로 시작', 'New run')}</button>` : `<button type="button" class="pcb red big" data-a="stage">${mE('모험 시작', 'Start Adventure')}</button>`}</div></section>
+    <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><span class="pmc-bot"><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i><em>BOT</em></span></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('혼자 연습', 'Solo')}</p><h3>${mE('연습 대전', 'Practice')}</h3><p>${mE('봇과 한 판. 직업과 대전 방식을 자유롭게 고릅니다.', 'One match against a bot. Any class, any format.')}</p>
+        <div class="pc-lv" role="group" aria-label="${mE('봇 난이도', 'Bot difficulty')}"><span>${mE('난이도', 'Difficulty')}</span>${Object.entries(BOTS).map(([k, [nm]]) => `<button type="button" class="${botLv === k ? 'on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${nm}</button>`).join('')}</div>
+        <p class="pmc-rw">${mE('보상', 'Reward')} <b>${mE('승리 5 · 8 · 12 / 패배 2', 'Win 5 · 8 · 12 / Loss 2')}</b></p></div>
+      <div class="pmc-go"><button type="button" class="pcb red big" data-a="local">${mE('연습 시작', 'Start Practice')}</button></div></section>
+    <section class="pmc" style="--i:2"><div class="pmc-art tut-art"><span class="pmc-pad">${ALL.map(n => `<i${n === 4 ? ' class="me"' : n === 1 ? ' class="hit"' : ''}></i>`).join('')}</span></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('처음이라면', 'New here?')}</p><h3>${mE('튜토리얼', 'Tutorial')}</h3><p>${mE('다섯 턴 동안 결투의 기본을 배웁니다.', 'Learn the basics in five turns.')}</p>
+        <ol class="pmc-steps">${[['이동과 마나', 'Moving and mana'], ['상대 위치 예측', 'Reading the opponent'], ['예고 공격', 'Delayed attacks'], ['피하기', 'Dodging']].map(([a, b]) => `<li>${mE(a, b)}</li>`).join('')}</ol></div>
+      <div class="pmc-go"><button type="button" class="pcb gold big" data-a="tut">${mE('튜토리얼 시작', 'Start Tutorial')}</button></div></section>
+  </div><p class="pmc-note">${mE('너무 빨리 끝난 판과 하루 한도를 넘긴 판은 메달을 받지 않습니다.', 'Very short games and games past the daily cap pay no medals.')}</p>`;
+}
+function pcMultiBody(off) {
+  const on = netReady && db, rep = repCls(), foe = MENU_DUEL.find(k => k !== rep) || 'samurai', t = Object.assign({ w: 0, d: 0, l: 0 }, tallyOf().pvp);
+  const st = on ? ['ok', mE('온라인 연결됨', 'Online')] : off ? ['off', mE('온라인 대전을 쓸 수 없습니다', 'Online unavailable')] : ['wait', mE('연결하는 중', 'Connecting')];
+  return `<div class="pmcs">
+    <section class="pmc wide red" style="--i:0"><div class="pmc-art rand-art"><span class="pmc-f">${faceOf(rep, skinOf(rep))}<b data-notr>${esc(AUTH.nick)}</b></span><b class="pmc-vs">VS</b><span class="pmc-f"><span class="lb-face q"><i>?</i></span><b>${mE('누군가', 'Anyone')}</b></span></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('추천', 'Recommended')} <span class="mu-net ${st[0]}"><i></i>${st[1]}</span></p><h3>${mE('랜덤 매칭', 'Random Match')}</h3>
+        <p>${mE('기다리는 사람 중 한 명과 바로 단판 대결을 합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Get paired with someone waiting for a single game. Both players confirm the result.')}</p>
+        <p class="pmc-chips"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span></p>
+        <p class="pmc-rw">${mE('내 전적', 'My record')} <b>${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</b></p></div>
+      <div class="pmc-go">${MM.on ? mmHTML() : `<button type="button" class="pcb gold big" data-mm="go" ${on ? '' : 'disabled'}>${mE('매칭 시작', 'Find Match')}</button>`}</div></section>
+    <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i></div>
+      <div class="pmc-tx"><p class="pmc-k">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3>${mE('방 만들기', 'Create Room')}</h3>
+        <p>${mE('방을 열면 4글자 코드와 초대 링크가 생깁니다. 친구가 들어오면 대기실에서 대전 방식을 고르세요.', 'Get a 4-letter code and invite link, then pick the format in the lobby.')}</p>
+        <p class="pmc-chips">${Object.entries(MODES).filter(([m]) => m !== 'stage').map(([m, [n]]) => `<span>${n}</span>`).join('')}</p></div>
+      <div class="pmc-go"><button type="button" class="pcb red big" data-a="create" ${on ? '' : 'disabled'}>${mE('방 만들기', 'Create Room')}</button></div></section>
+    <section class="pmc light" style="--i:2"><div class="pmc-tx"><p class="pmc-k">${mE('초대받았다면', 'Got invited?')}</p><h3>${mE('코드로 입장', 'Join with Code')}</h3>
+        <p>${mE('친구가 알려 준 4글자 코드를 넣으세요. 초대 링크로 들어오면 미리 채워집니다.', 'Enter the 4-letter code. Invite links fill it in.')}</p>
+        <label class="mu-code" for="code"><span class="sr">${mE('방 코드', 'Room code')}</span><input id="code" class="code-in" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(prefill)}" placeholder="····" aria-describedby="mu-ch">
+          <span class="mu-slots" aria-hidden="true">${[0, 1, 2, 3].map(n => `<i>${esc((prefill || '')[n] || '')}</i>`).join('')}</span></label>
+        <p class="pmc-rw" id="mu-ch">${mE('영문과 숫자 4글자 · Enter로 입장', '4 letters or digits · Enter to join')}</p></div>
+      <div class="pmc-go"><button type="button" class="pcb dark big" data-a="join" ${on ? '' : 'disabled'}>${mE('입장', 'Join')}</button></div></section>
+  </div>`;
+}
+function pcHomeHTML(on) {
+  const sv = typeof stLoad === 'function' ? stLoad() : null, hasRun = sv && CLS[sv.cls], ty = tallyOf(), pv = Object.assign({ w: 0, d: 0, l: 0 }, ty.pvp);
+  const clr = Object.keys(stageRec()).filter(k => CLS[k]).length, own = ownedSkins().length, tot = skinTotal(), n = pv.w + pv.d + pv.l;
+  const modes = [
+    ['adv', 'boss', '모험 모드', 'Adventure', hasRun ? mE(`이어하기 · ${CLS[sv.cls].n} ${(sv.act || 0) + 1}막`, `Continue · ${CLS[sv.cls].n} Act ${(sv.act || 0) + 1}`) : mE('직업 하나로 세 막을 돌파', 'Three acts with one class'), mE('최대', 'Up to') + ' ' + MDL(300)],
+    ['bot', 'fight', '연습 대전', 'Practice', mE(`봇과 한 판 · ${BOTS[botLv][0]}`, `One game vs bot · ${BOTS[botLv][0]}`), MDL('5~12')],
+    ['rand', 'elite', '랜덤 매칭', 'Random Match', mE('아무나와 바로 단판 대결', 'Quick 1v1 with anyone'), MDL(30)],
+    ['room', 'treasure', '친구 대전', 'Friendly Duel', mE('방을 만들거나 코드로 입장', 'Create a room or join by code'), ''],
+  ];
+  const go = { adv: 'data-a="stage"', bot: 'data-a="local"', rand: `data-a="mmquick"${on ? '' : ' disabled'}`, room: 'data-a="mtab" data-m="multi"' }[pcMode];
+  const goTx = { adv: hasRun ? ['이어하기', 'Continue'] : ['모험 시작', 'Start Adventure'], bot: ['연습 시작', 'Start Practice'], rand: ['매칭 시작', 'Find Match'], room: ['친구 대전', 'Friendly Duel'] }[pcMode];
+  return `<aside class="pc-news" aria-label="${mE('소식', 'News')}">
+      ${hasRun ? `<button type="button" class="pc-card pc-cont c-${sv.cls}" data-a="stage" style="--i:0"><span class="pc-ch">${mE('진행 중인 모험', 'Run in progress')}</span><span class="pc-cb">${faceOf(sv.cls, sv.skin || '')}<span><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><small>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</small></span><em>${mE('이어하기', 'Continue')} ▶</em></span></button>` : ''}
+      <section class="pc-card" style="--i:1"><span class="pc-ch">${mE('내 기록', 'My records')}<button type="button" class="pc-more" data-a="mtab" data-m="acct">${mE('프로필', 'Profile')} ▶</button></span>
+        <dl class="pc-stats"><div><dt>${mE('대전 전적', 'PvP')}</dt><dd>${pv.w}${mE('승', 'W')} ${pv.d}${mE('무', 'D')} ${pv.l}${mE('패', 'L')}<small>${n ? Math.round(pv.w / n * 100) + '%' : '-'}</small></dd></div>
+          <div><dt>${mE('모험 돌파', 'Adventure')}</dt><dd>${clr}<small>/ ${CLASS_IDS.length}</small></dd><span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span></div>
+          <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
+      <section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3) % RULES.length])}</p></section>
+    </aside>
+    <section class="pc-play" aria-label="${mE('게임 모드', 'Game mode')}">
+      <h3 class="pc-ph3">${mE('게임 모드', 'Game Mode')}</h3>
+      <div class="pc-modes" role="radiogroup">${modes.map(([k, ic, a, b, d, rw], i) => `<button type="button" class="pc-mode${pcMode === k ? ' on' : ''}" data-a="pmode" data-k="${k}" role="radio" aria-checked="${pcMode === k}" style="--i:${i}">
+          <i class="pc-mi">${typeof pxi === 'function' ? pxi(ic) : ''}</i><span><b>${mE(a, b)}</b><small>${d}</small></span>${rw ? `<em>${rw}</em>` : ''}</button>`).join('')}</div>
+      ${pcMode === 'bot' ? `<div class="pc-lv" role="group" aria-label="${mE('봇 난이도', 'Bot difficulty')}"><span>${mE('난이도', 'Difficulty')}</span>${Object.entries(BOTS).map(([k, [nm]]) => `<button type="button" class="${botLv === k ? 'on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${nm}</button>`).join('')}</div>` : ''}
+      ${pcMode === 'adv' && hasRun ? `<button type="button" class="pc-sub" data-a="stnew">${mE('새 모험 시작', 'Start a new run')}</button>` : ''}
+      <button type="button" class="pc-go" ${go}><b>${mE(goTx[0], goTx[1])}</b><span>${mE('게임 시작', 'PLAY')}</span></button>
+    </section>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="pmode"]'); if (!b || doc) return; e.stopPropagation();
+  if (pcMode === b.dataset.k) return; pcMode = b.dataset.k; ls('ssd-pmode', pcMode); SND.play('tap'); render(); }, true);
+document.addEventListener('dblclick', e => { const b = e.target.closest && e.target.closest('.pc-mode'); if (!b || doc) return; const g = app.querySelector('.pc-go'); if (g && !g.disabled) g.click(); });
+/* Esc: 하위 페이지에서 홈으로 */
+document.addEventListener('keydown', e => { if (e.key !== 'Escape' || doc || !infoEl.hidden || !menuTab || menuSt !== 'main' || !AUTH.user) return; if (MM.on) mmStop(true); menuTab = null; tabAnim = true; SND.play('tap'); render(); }, true);
 /* 타이틀 빠른 버튼: 언어 전환. 메뉴 목록은 위아래 화살표로 고른다. 첫 화면은 아무 키나 */
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="lang"]'); if (b && !doc) setLang(mE('en', 'ko')); });
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="tbgm"]'); if (!b || doc) return;
@@ -6386,7 +6978,7 @@ document.addEventListener('keydown', e => {
   if (doc || !infoEl.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
   if (menuSt === 'splash') { if (!['Enter', ' ', 'Shift', 'Tab', 'Escape'].includes(e.key) && e.key.length <= 12) menuStart(); return; }
   if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-  const its = [...document.querySelectorAll('.menu.t2 .m-main .mi')]; if (!its.length || (e.target.matches && e.target.matches('input'))) return;
+  const its = [...document.querySelectorAll('.menu.t2 .lb-modes > button:not(:disabled), .menu.t2 .lb-dk')]; if (!its.length || (e.target.matches && e.target.matches('input'))) return;
   const i = its.indexOf(document.activeElement); e.preventDefault();
   its[i < 0 ? 0 : (i + (e.key === 'ArrowDown' ? 1 : -1) + its.length) % its.length].focus(); SND.play('tap');
 });
@@ -6411,16 +7003,7 @@ function ovHTML() {
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">모험 기록 초기화</button></div></div>
       <p class="cap">설정은 이 브라우저에 저장됩니다.${doc ? ' 언어는 첫 화면에서 바꿀 수 있습니다.' : ''}</p>${close}</section></div>`; }
-  if (ovKind === 'shop') { const own = ownedSkins(), m = medals(), f = shopTab;
-    const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
-    const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-      return `<div class="sh-it c-${c}${owned ? ' own' : ''}"><div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
-        <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
-        ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < SKIN_PRICE ? 'disabled' : ''}>${MDL(SKIN_PRICE)}</button>`}</div>`; };
-    return `<div class="info-in"><section class="detail ov-box shop-box"><div class="sh-head"><h1>${mE('스킨 상점', 'Skin Shop')}</h1><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p></div>
-      <p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
-      <div class="sh-tabs">${[['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div>
-      <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>${close}</section></div>`; }
+  if (ovKind === 'shop') return `<div class="info-in"><section class="detail ov-box shop-box"><h1>${mE('스킨 상점', 'Skin Shop')}</h1>${shopBody()}${close}</section></div>`;
   if (ovKind === 'records') { const rec = stageRec(), n = Object.keys(rec).length;
     return `<div class="info-in"><section class="detail ov-box"><h1>기록</h1><p>모험 모드를 돌파한 직업 <b class="k k-d">${n}</b> / ${CLASS_IDS.length}. 숫자는 다섯 판에 걸린 가장 적은 턴 수입니다.</p>
       <div class="recs">${CLASS_IDS.map(k => `<span class="rec${rec[k] ? ' ok' : ''} c-${k}"><i class="px a-${k}" aria-hidden="true"></i><b>${CLS[k].n}</b><span>${rec[k] ? rec[k] + '턴' : '-'}</span></span>`).join('')}</div>${close}</section></div>`; }
@@ -6598,8 +7181,9 @@ function renderNow() {
   else if (doc.phase === 'shop' && run) h = shopHTML();
   else if (doc.phase === 'select' || doc.phase === 'ban' || !G) h = selectHTML();
   else h = playHTML();
-  const hs = handSnap();
+  const hs = handSnap(), keep = {}; app.querySelectorAll('[data-keep]').forEach(el => { keep[el.dataset.keep] = el.scrollTop; });
   app.innerHTML = h;
+  app.querySelectorAll('[data-keep]').forEach(el => { if (keep[el.dataset.keep]) el.scrollTop = keep[el.dataset.keep]; });
   handFlip(hs);
   SND.music(doc && G && seat && doc.phase === 'play' ? (G.P.b && G.P.b.boss ? 'boss' : (ARENAS[G.arena] ? G.arena : 'castle') + (G.turn >= COLLAPSE_FROM - 1 ? ':late' : '')) : !doc && menuSt === 'main' ? 'menu' : doc && doc.phase !== 'over' && doc.phase !== 'play' ? 'lobby' : 'off');
   if (doc && G && doc.phase !== 'select' && doc.phase !== 'ban') { if (dealN) { dealAt = performance.now(); dealCnt = dealN; for (let i = 0; i < dealN; i++) { setTimeout(() => SND.play('deal'), 140 + i * DEAL_STEP); setTimeout(() => SND.play('snap'), 140 + i * DEAL_STEP + DEAL_LAND); } if (typeof dealFx === 'function') dealFx(dealN, dealOpp); }
@@ -6743,7 +7327,7 @@ async function authPush(now) {
   if (!AUTH.user) return; if (!now) { clearTimeout(AUTH.saving); AUTH.saving = setTimeout(() => authPush(true), 2500); return; }
   try { await authFresh(); const d = localData();
     await sb('/rest/v1/progress', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: { id: AUTH.user, data: d, updated_at: new Date().toISOString() } });
-    const av = d['ssd-last']; if (av && CLS[av]) await sb(`/rest/v1/profiles?id=eq.${AUTH.user}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: { avatar_cls: av, avatar_skin: skinOf(av) || null } });
+    const av = d['ssd-rep'] || d['ssd-last']; if (av && CLS[av]) await sb(`/rest/v1/profiles?id=eq.${AUTH.user}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: { avatar_cls: av, avatar_skin: skinOf(av) || null } });
     AUTH.saved = Date.now(); AUTH.net = true;
   } catch (e) { AUTH.net = !e.net; }
 }
@@ -6811,12 +7395,6 @@ function loginHTML() {
     <p class="ac-or"><span>${mE('처음 오셨나요?', 'First time?')}</span></p>
     <button type="button" class="btn ghost big ac-new" data-a="signup" ${dis}>${mE('이 아이디로 새 계정 만들기', 'Create account with this ID')}</button>
   </form>`;
-}
-function acctHTML() {
-  const st = AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('저장됨', 'saved') : '') : mE('서버에 연결하지 못해 이 기기에 먼저 저장합니다', 'Offline; will sync later');
-  return `<div class="m-sub ac-me"><p class="cap">${mE('계정', 'Account')}</p><h2 data-notr>${esc(AUTH.nick)}</h2>
-    <dl><dt>${mE('메달', 'Medals')}</dt><dd>${MDL(medals())}</dd><dt>${mE('보유 스킨', 'Skins owned')}</dt><dd>${ownedSkins().length}</dd></dl><p class="cap">${st}</p>
-    <div class="ac-row"><button type="button" class="btn ghost" data-a="logout">${mE('로그아웃', 'Log out')}</button><button type="button" class="btn ghost mb-back" data-a="mback">${mE('뒤로', 'Back')}</button></div></div>`;
 }
 document.addEventListener('input', e => { const t = e.target; if (t.id === 'lg-id') AUTH.form.id = t.value; else if (t.id === 'lg-pin') { const v = t.value.replace(/\D/g, '').slice(0, 4); if (v !== t.value) t.value = v; AUTH.form.pin = v; } });
 document.addEventListener('submit', e => { if (e.target.matches && e.target.matches('[data-lg]')) { e.preventDefault(); authGo(false); } });
@@ -6894,7 +7472,7 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
       root.querySelector('.wel-t').innerHTML = `${MDL('+300')} <span>${mE('메달 300개를 받았습니다. 스킨 하나를 바로 살 수 있어요!', '300 medals! Enough for a skin right away.')}</span>`;
       root.querySelector('.wel-go').innerHTML = `<button type="button" class="btn red big" data-wel="shop">${mE('스킨 상점 가기', 'Go to Skin Shop')}</button><button type="button" class="btn ghost big" data-wel="close">${mE('나중에', 'Later')}</button>`; render(); })
     .catch(err => { AUTH.gift = false; if (/claimed/.test(err.message)) ov.innerHTML = ''; else { b.disabled = false; toast(mE('선물을 받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim the gift')); } }); }
-  else { ov.innerHTML = ''; if (k === 'shop') { shopTab = 'new'; openOv('shop'); } render(); } }, true);
+  else { ov.innerHTML = ''; if (k === 'shop') { shopTab = 'new'; if (doc) openOv('shop'); else { menuTab = 'shop'; tabAnim = true; } } render(); } }, true);
 
 (async function boot() {
   const h = (location.hash || '').slice(1).toUpperCase(); if (/^[A-Z0-9]{4}$/.test(h)) prefill = h;
