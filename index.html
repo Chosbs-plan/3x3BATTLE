@@ -3270,6 +3270,19 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 @keyframes inkDot { 0% { opacity: 0; scale: .2; filter: blur(2px) brightness(0); } 60% { opacity: 1; scale: 1.25; filter: brightness(0); } 100% { scale: 1; } }
 @keyframes inkBoss { 50% { filter: drop-shadow(0 0 0 #d8475a) drop-shadow(0 0 10px #d8475a); } }
 @keyframes inkDrop { 0% { translate: 0 -30px; opacity: 0; } 70% { translate: 0 4px; opacity: 1; } }
+
+/* 로그인 */
+.login2 { display: grid; gap: 10px; box-sizing: border-box; width: min(380px, calc(100vw - 32px)); max-width: 100%; padding: 20px 22px; background: var(--paper); border: 3px solid var(--sil); box-shadow: 5px 5px 0 rgba(0, 0, 0, .35); }
+.login2 h2 { margin: 0; font-size: 26px; } .login2 .cap { margin: 0; }
+.login2 label { display: grid; gap: 4px; } .login2 label span { font-size: 13px; color: var(--ash); }
+.login2 input { box-sizing: border-box; width: 100%; min-width: 0; font: inherit; font-size: 20px; padding: 8px 10px; border: 2px solid var(--sil); background: #fff; color: var(--sil); }
+.login2 input:focus { outline: 3px solid var(--red); outline-offset: 1px; }
+.login2 #lg-pin { letter-spacing: .5em; }
+.lg-err { min-height: 1.3em; margin: 0; color: var(--red); font-size: 14px; }
+.lg-go { display: flex; gap: 8px; flex-wrap: wrap; } .lg-go .btn { flex: 1 1 8em; min-width: 0; }
+.lg-off { font-size: 13px; }
+.qk.acct { display: inline-flex; align-items: center; gap: 6px; max-width: 12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qk-me { width: 10px; height: 12px; background: radial-gradient(circle at 50% 28%, currentColor 0 26%, transparent 27%), radial-gradient(ellipse at 50% 100%, currentColor 0 48%, transparent 49%); }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -6220,10 +6233,12 @@ function gateHTML() {
   const touch = matchMedia('(hover: none)').matches;
   const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span><span class="m-cr cap" data-notr>© 2026 CHOSBS. All rights reserved.</span>
       ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
-      <span class="m-qk"><button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
+      <span class="m-qk">${AUTH.user || AUTH.guest ? `<button type="button" class="qk acct" data-a="mtab" data-m="acct" data-notr aria-label="${mE('계정', 'Account')}"><i class="qk-me" aria-hidden="true"></i>${esc(AUTH.nick)}</button>` : ''}<button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
   let body;
-  if (menuTab === 'single') body = singleHTML(ta);
+  if (!AUTH.user && !AUTH.guest) body = loginHTML();
+  else if (menuTab === 'acct') body = acctHTML();
+  else if (menuTab === 'single') body = singleHTML(ta);
   else if (menuTab === 'multi') { const on = netReady && db, st = on ? ['ok', '온라인 연결됨'] : off ? ['off', '이 화면에서는 온라인 대전을 쓸 수 없습니다'] : ['wait', '연결하는 중'];
     const last = ls('ssd-last'), k1 = CLS[last] ? last : MENU_DUEL[0], k2 = MENU_DUEL[1] !== k1 ? MENU_DUEL[1] : 'samurai';
     body = `<div class="m-sub multi2${ta ? ' pop' : ''}"><div class="mu-head"><h2>멀티 플레이</h2><span class="mu-net ${st[0]}"><i></i>${st[1]}</span></div>
@@ -6550,6 +6565,122 @@ app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 
 app.addEventListener('input', e => { if (e.target.id !== 'code') return; const t = e.target, v = t.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); if (t.value !== v) t.value = v; prefill = v;
   const sl = t.parentNode.querySelectorAll('.mu-slots i'); sl.forEach((x, n) => { x.textContent = v[n] || ''; x.classList.toggle('on', n === v.length); x.classList.toggle('f', !!v[n]); }); });
 
+/* ===== 계정: 아이디(=닉네임) + 숫자 4자리. Supabase 인증과 저장소를 fetch로 직접 부른다 ===== */
+const SB_URL = 'https://qkeysdwrdvttgrolmery.supabase.co', SB_KEY = 'sb_publishable_gjKVxVjdDDpIi7T__HvW8w_Z5lzJ2Pn';
+const AUTH = { ready: false, user: null, nick: '', tok: null, busy: false, err: '', guest: false, net: true, form: { id: '', pin: '' }, saving: 0, saved: 0 };
+/* 기기마다 다른 설정(3D 품질, 진동, 음량 등)과 접속용 값은 계정에 올리지 않는다 */
+const SYNC_SKIP = ['ssd-id', 'ssd-net', 'ssd-auth', 'ssd-tmpick', 'ssd-3d', 'ssd-3dq', 'ssd-fx', 'ssd-motion', 'ssd-vib', 'ssd-vol'];
+const syncKey = k => typeof k === 'string' && k.indexOf('ssd-') === 0 && !SYNC_SKIP.includes(k);
+const nickOk = n => /^[가-힣a-zA-Z0-9_]{2,12}$/.test(n);
+/* 닉네임 → 로그인용 메일 주소. 어느 기기에서나 같은 값이 나오도록 순수 JS 해시를 쓴다 */
+function nickMail(n) {
+  const t = n.trim().toLowerCase(); let out = '';
+  for (const seed of [0x9e3779b1, 0x85ebca77, 0xc2b2ae3d]) { let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    out += (h1 >>> 0).toString(16).padStart(8, '0') + (h2 >>> 0).toString(16).padStart(8, '0'); }
+  return 'n' + out + '@player.3x3battle.com';
+}
+const pinPass = p => 'ssd-' + p + '-3x3';   /* 저장소가 비밀번호를 6자 이상 요구해서 정해진 글자를 붙인다 */
+async function sb(path, opt) {
+  opt = opt || {}; const h = Object.assign({ apikey: SB_KEY, 'Content-Type': 'application/json' }, opt.headers || {});
+  if (AUTH.tok && !opt.anon) h.Authorization = 'Bearer ' + AUTH.tok.access_token;
+  let r; try { r = await fetch(SB_URL + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined }); }
+  catch (e) { const er = new Error('net'); er.net = true; throw er; }
+  const t = await r.text(); let j = null; try { j = t ? JSON.parse(t) : null; } catch (e) { /* 본문 없음 */ }
+  if (!r.ok) { const er = new Error((j && (j.msg || j.message || j.error_description || j.error_code || j.error)) || String(r.status)); er.status = r.status; er.code = j && (j.error_code || j.code); throw er; }
+  return j;
+}
+function authKeep(ses) {
+  AUTH.tok = { access_token: ses.access_token, refresh_token: ses.refresh_token, exp: Date.now() + (ses.expires_in || 3600) * 1000 };
+  AUTH.user = ses.user ? ses.user.id : AUTH.user;
+  try { localStorage.setItem('ssd-auth', JSON.stringify({ rt: ses.refresh_token, uid: AUTH.user, nick: AUTH.nick })); } catch (e) { /* 저장소 없음 */ }
+}
+async function authFresh() {   /* 접속 토큰이 1분 안에 끝나면 새로 받는다 */
+  if (AUTH.tok && AUTH.tok.exp - Date.now() > 60000) return;
+  if (!AUTH.tok) throw new Error('no session');
+  authKeep(await sb('/auth/v1/token?grant_type=refresh_token', { method: 'POST', anon: true, body: { refresh_token: AUTH.tok.refresh_token } }));
+}
+function localData() { const o = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (syncKey(k)) o[k] = localStorage.getItem(k); } } catch (e) { /* 저장소 없음 */ } return o; }
+function applyData(o) { AUTH.applying = true; try { for (const k of Object.keys(localData())) if (!(k in o)) localStorage.removeItem(k); for (const k in o) if (syncKey(k) && typeof o[k] === 'string') localStorage.setItem(k, o[k]); } catch (e) { /* 저장소 없음 */ } AUTH.applying = false; }
+/* 로그인한 뒤 계정 진행을 가져온다. 계정에 아무것도 없으면 이 기기 기록을 올린다 */
+async function authPull(fresh) {
+  const [pr] = await sb(`/rest/v1/profiles?id=eq.${AUTH.user}&select=nickname,avatar_cls,avatar_skin,created_at`) || [];
+  if (pr) AUTH.nick = pr.nickname; else if (AUTH.nick) await sb('/rest/v1/profiles', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: { id: AUTH.user, nickname: AUTH.nick } });
+  const [pg] = await sb(`/rest/v1/progress?id=eq.${AUTH.user}&select=data`) || [];
+  if (pg && pg.data && Object.keys(pg.data).length && !fresh) applyData(pg.data);
+  else await authPush(true);
+  authKeep({ access_token: AUTH.tok.access_token, refresh_token: AUTH.tok.refresh_token, expires_in: (AUTH.tok.exp - Date.now()) / 1000 });
+}
+async function authPush(now) {
+  if (!AUTH.user || AUTH.guest) return; if (!now) { clearTimeout(AUTH.saving); AUTH.saving = setTimeout(() => authPush(true), 2500); return; }
+  try { await authFresh(); const d = localData();
+    await sb('/rest/v1/progress', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: { id: AUTH.user, data: d, updated_at: new Date().toISOString() } });
+    const av = d['ssd-last']; if (av && CLS[av]) await sb(`/rest/v1/profiles?id=eq.${AUTH.user}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: { avatar_cls: av, avatar_skin: skinOf(av) || null } });
+    AUTH.saved = Date.now(); AUTH.net = true;
+  } catch (e) { AUTH.net = !e.net; }
+}
+/* 이 기기 저장소에 게임 기록이 써질 때마다 계정에도 (조금 모아서) 올린다 */
+(function () { try { const S = Storage.prototype, set = S.setItem, del = S.removeItem;
+  S.setItem = function (k, v) { set.call(this, k, v); if (this === window.localStorage && !AUTH.applying && syncKey(k)) authPush(); };
+  S.removeItem = function (k) { del.call(this, k); if (this === window.localStorage && !AUTH.applying && syncKey(k)) authPush(); }; } catch (e) { /* 저장소 없음 */ } })();
+async function authBoot() {
+  let sv = null; try { sv = JSON.parse(localStorage.getItem('ssd-auth') || 'null'); } catch (e) { /* 저장소 없음 */ }
+  if (sv && sv.rt) {
+    AUTH.nick = sv.nick || ''; AUTH.user = sv.uid || null;
+    try { AUTH.tok = { refresh_token: sv.rt, exp: 0 }; await authFresh(); await authPull(false); }
+    catch (e) { if (e.net) { AUTH.net = false; AUTH.guest = false; } else { AUTH.user = null; AUTH.tok = null; try { localStorage.removeItem('ssd-auth'); } catch (x) { /* 무시 */ } } }
+  }
+  AUTH.ready = true; if (!doc) render();
+}
+const AUTH_ERR = { invalid_credentials: ['아이디 또는 비밀번호가 맞지 않습니다', 'Wrong ID or PIN'], user_already_exists: ['이미 쓰는 아이디입니다. 로그인을 누르세요', 'That ID is taken. Try logging in'], over_request_rate_limit: ['시도가 너무 많습니다. 잠시 뒤 다시 하세요', 'Too many tries. Wait a moment'] };
+async function authGo(make) {
+  if (AUTH.busy) return; const id = AUTH.form.id.trim(), pin = AUTH.form.pin;
+  if (!nickOk(id)) { AUTH.err = mE('아이디는 한글·영문·숫자·_ 2~12자', 'ID: 2–12 letters, digits or _'); return render(); }
+  if (!/^\d{4}$/.test(pin)) { AUTH.err = mE('비밀번호는 숫자 4자리', 'PIN must be 4 digits'); return render(); }
+  AUTH.busy = true; AUTH.err = ''; render();
+  try {
+    const email = nickMail(id), password = pinPass(pin);
+    if (make) {
+      const r = await sb('/auth/v1/signup', { method: 'POST', anon: true, body: { email, password, data: { nickname: id } } });
+      if (!r || !r.access_token) throw Object.assign(new Error('confirm'), { code: 'confirm' });
+      AUTH.nick = id; authKeep(r);
+      await sb('/rest/v1/profiles', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: { id: AUTH.user, nickname: id } });
+      await authPull(true);
+    } else {
+      authKeep(await sb('/auth/v1/token?grant_type=password', { method: 'POST', anon: true, body: { email, password } }));
+      AUTH.nick = id; await authPull(false);
+    }
+    AUTH.form = { id: '', pin: '' }; AUTH.net = true; SND.play('relicGood');
+  } catch (e) {
+    AUTH.user = null; AUTH.tok = null; AUTH.nick = ''; try { localStorage.removeItem('ssd-auth'); } catch (x) { /* 무시 */ }
+    const k = e.code === 'user_already_exists' || /already registered/i.test(e.message) ? 'user_already_exists' : e.code === 'invalid_credentials' || /invalid login/i.test(e.message) ? 'invalid_credentials' : e.status === 429 ? 'over_request_rate_limit' : '';
+    AUTH.err = k ? mE(AUTH_ERR[k][0], AUTH_ERR[k][1]) : e.net ? mE('서버에 연결하지 못했습니다. 인터넷을 확인하세요', 'Could not reach the server') : e.code === 'confirm' ? mE('가입 설정을 확인하세요(메일 인증이 켜져 있음)', 'Email confirmation is on') : mE('들어가지 못했습니다: ', 'Failed: ') + e.message;
+    AUTH.net = !e.net;
+  }
+  AUTH.busy = false; render();
+}
+function authOut() { try { localStorage.removeItem('ssd-auth'); } catch (e) { /* 무시 */ } if (AUTH.tok) sb('/auth/v1/logout', { method: 'POST' }).catch(() => {}); Object.assign(AUTH, { user: null, nick: '', tok: null, guest: false, err: '' }); menuTab = null; render(); }
+function loginHTML() {
+  if (!AUTH.ready) return `<div class="m-sub login2"><p class="cap">${mE('계정을 확인하는 중', 'Checking account')}…</p></div>`;
+  return `<form class="m-sub login2" data-lg onsubmit="return false">
+    <h2>${mE('들어가기', 'Sign in')}</h2><p class="cap">${mE('아이디는 그대로 닉네임으로 쓰입니다', 'Your ID is your nickname')}</p>
+    <label><span>${mE('아이디', 'ID')}</span><input id="lg-id" name="username" maxlength="12" autocomplete="username" spellcheck="false" value="${esc(AUTH.form.id)}" placeholder="${mE('한글·영문·숫자 2~12자', '2–12 characters')}"></label>
+    <label><span>${mE('비밀번호', 'PIN')}</span><input id="lg-pin" name="password" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="current-password" value="${esc(AUTH.form.pin)}" placeholder="${mE('숫자 4자리', '4 digits')}"></label>
+    <p class="lg-err" aria-live="polite">${esc(AUTH.err)}</p>
+    <div class="lg-go"><button type="submit" class="btn red big" data-a="login" ${AUTH.busy ? 'disabled' : ''}>${AUTH.busy ? mE('확인 중', 'Checking') + '…' : mE('로그인', 'Log in')}</button><button type="button" class="btn ghost big" data-a="signup" ${AUTH.busy ? 'disabled' : ''}>${mE('새 계정 만들기', 'Create account')}</button></div>
+    ${!AUTH.net ? `<button type="button" class="btn ghost lg-off" data-a="guest">${mE('서버 없이 이 기기에서만 하기', 'Play offline on this device')}</button>` : ''}
+  </form>`;
+}
+function acctHTML() {
+  return `<div class="m-sub login2 acct"><h2>${esc(AUTH.nick)}</h2><p class="cap">${AUTH.guest ? mE('오프라인 플레이 중. 기록은 이 기기에만 남습니다', 'Offline. Progress stays on this device') : AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('방금 저장', 'saved') : '') : mE('서버에 연결하지 못해 이 기기에 먼저 저장합니다', 'Offline; will sync later')}</p>
+    <div class="lg-go"><button type="button" class="btn ghost big" data-a="logout">${AUTH.guest ? mE('로그인 화면으로', 'Back to sign in') : mE('로그아웃', 'Log out')}</button><button type="button" class="btn ghost mb-back" data-a="mback">${mE('뒤로', 'Back')}</button></div></div>`;
+}
+document.addEventListener('input', e => { const t = e.target; if (t.id === 'lg-id') AUTH.form.id = t.value; else if (t.id === 'lg-pin') { const v = t.value.replace(/\D/g, '').slice(0, 4); if (v !== t.value) t.value = v; AUTH.form.pin = v; } });
+document.addEventListener('submit', e => { if (e.target.matches && e.target.matches('[data-lg]')) { e.preventDefault(); authGo(false); } });
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="login"],[data-a="signup"],[data-a="guest"],[data-a="logout"]'); if (!b || doc) return; e.preventDefault(); e.stopPropagation();
+  const a = b.dataset.a; if (a === 'login') authGo(false); else if (a === 'signup') authGo(true); else if (a === 'guest') { AUTH.guest = true; AUTH.nick = mE('손님', 'Guest'); render(); } else authOut(); }, true);
+
 (async function boot() {
   const h = (location.hash || '').slice(1).toUpperCase(); if (/^[A-Z0-9]{4}$/.test(h)) prefill = h;
   render();
@@ -6562,6 +6693,7 @@ app.addEventListener('input', e => { if (e.target.id !== 'code') return; const t
   } catch (e) { db = null; }
   /* Claude 밖에서 열렸으면 PeerJS로 직접 연결한다 */
   if (!db && window.Peer && typeof PeerDB === 'function') { me = sessId(); db = PeerDB(() => me, netNote); }
+  authBoot();
   me = me || localId(); netReady = true;
   if (!doc) render();
   if (p2p()) {
