@@ -9,6 +9,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "cowboy": {
+   "n": "카우보이",
+   "en": "Cowboy"
   }
  },
  "mechanic": {
@@ -39,6 +43,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "caster": {
+   "n": "기상캐스터",
+   "en": "Weather Caster"
   }
  },
  "dullahan": {
@@ -197,6 +205,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "graffiti": {
+   "n": "그래피티",
+   "en": "Graffiti"
   }
  },
  "tamer": {
