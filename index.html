@@ -3275,6 +3275,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .ac-wrap { position: absolute; inset: 0 0 64px; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 16px; overflow-y: auto; }
 .ac-wrap .logo { margin: 0; }
 .ac-card { box-sizing: border-box; width: min(420px, 100%); display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; background: var(--paper); border: 4px solid var(--sil); box-shadow: 6px 6px 0 rgba(42, 31, 36, .45); }
+.ac-card a.btn { text-decoration: none; text-align: center; justify-content: center; }
 .ac-top { display: flex; align-items: center; gap: 14px; padding-bottom: 12px; border-bottom: 2px dashed var(--line); }
 .ac-top h2 { margin: 0; font-size: 24px; line-height: 1.2; } .ac-top p { margin: 4px 0 0; font-size: 13px; color: var(--ash); }
 .ac-key { flex: none; width: 40px; height: 40px; background: var(--red); box-shadow: inset -4px -4px 0 rgba(0, 0, 0, .2), 3px 3px 0 var(--sil);
@@ -3287,7 +3288,6 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .ac-err { min-height: 1.3em; margin: -2px 0 0; color: var(--red); font-size: 14px; line-height: 1.35; }
 .ac-card .btn.big { width: 100%; margin: 0; }
 .ac-or { display: flex; align-items: center; gap: 10px; margin: 2px 0 0; font-size: 12px; color: var(--ash); } .ac-or::before, .ac-or::after { content: ''; flex: 1; border-top: 2px dashed var(--line); }
-.ac-off { align-self: center; margin-top: 2px; padding: 4px 8px; border: 0; background: none; font: inherit; font-size: 13px; color: var(--ash); text-decoration: underline; cursor: pointer; }
 .ac-wait { margin: 0; text-align: center; color: var(--ash); }
 .ac-me h2 { margin: 2px 0 8px; font-size: 26px; } .ac-me dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 8px; } .ac-me dt { color: var(--ash); } .ac-me dd { margin: 0; font-weight: 700; }
 .ac-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
@@ -3905,7 +3905,7 @@ const ownedSkins = () => (typeof AUTH !== 'undefined' && AUTH.owned ? AUTH.owned
 const skinOwned = (c, id) => !id || ownedSkins().includes(c + ':' + id);
 const MDL = n => `<span class="mdl-n"><i class="mdl" aria-hidden="true"></i>${n}</span>`;
 async function buySkin(c, id) {
-  if (!AUTH.user || AUTH.guest) return 'login'; if (skinOwned(c, id)) return 'own'; if (medals() < SKIN_PRICE) return 'poor';
+  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (medals() < SKIN_PRICE) return 'poor';
   try { AUTH.wallet = await rpc('buy_skin', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
   catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
 }
@@ -5390,7 +5390,7 @@ function onDoc() {
     if (!doc.ready[seat] && onDoc.mmR !== code + seat) { onDoc.mmR = code + seat; W({ ready: { [seat]: true } }); }
     else if (seat === 'a' && doc.seats.b && doc.ready.a && doc.ready.b && onDoc.mmS !== code) { onDoc.mmS = code; W({ phase: 'select', mode: 'single', pick: { a: null, b: null }, ban: { a: null, b: null }, score: { a: 0, b: 0 }, gid: doc.gid + 1 }); }
   }
-  if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user && !AUTH.guest) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
+  if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
   if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
   let job = null;
   if (doc.game && doc.game !== gameStr) {
@@ -5438,7 +5438,7 @@ function matchReward(g) {
   if (stageOn() || !seat || !g || !g.winner) return; const key = (code || '') + ':' + doc.gid + ':' + g.turn + ':' + g.winner; if (lastRw && lastRw.key === key) return;
   const w = g.winner, win = w === seat, draw = w === 'draw', vsBot = local, why = vsBot ? mE('봇 연습', 'Bot practice') : win ? mE('대전 승리', 'PvP win') : draw ? mE('대전 무승부', 'PvP draw') : mE('대전 참가', 'PvP played');
   const rw = lastRw = { key, n: null, why }, pl = AUTH.play && AUTH.play.key === (code || '') + ':' + doc.gid ? AUTH.play : null;
-  if (!AUTH.user || AUTH.guest || !pl) { rw.n = 0; rw.why = AUTH.user && !AUTH.guest ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
+  if (!AUTH.user || !pl) { rw.n = 0; rw.why = AUTH.user ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
   const before = medals(), done = n => { rw.n = n; if (lastRw === rw) render(); };
   const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose' }));
   const wait = () => (pl.sid ? Promise.resolve() : new Promise(r => setTimeout(r, 1500)));
@@ -5460,7 +5460,7 @@ function drive() {
   if (local) {
     if (doc.phase === 'ban' && doc.ban.a && !doc.ban.b) W({ ban: { b: pick(CLASS_IDS.filter(x => x !== doc.ban.a)) } });
     if (doc.phase === 'select' && doc.pick.a && !doc.pick.b) {
-      if (stageOn()) { if (!run.cls) { run.cls = doc.pick.a; run.skin = (doc.skin && doc.skin.a) || ''; run.foes = rollFoes(run.cls); run.hp = run.maxHp = hpBase(run.cls); stInit(); stFateQ = true; if (AUTH.user && !AUTH.guest) rpc('start_play', { p_kind: 'run' }).then(v => { if (run) { run.sid = v; stSave(); } }).catch(() => {}); stFateOn = true; } W({ phase: 'map' }); }
+      if (stageOn()) { if (!run.cls) { run.cls = doc.pick.a; run.skin = (doc.skin && doc.skin.a) || ''; run.foes = rollFoes(run.cls); run.hp = run.maxHp = hpBase(run.cls); stInit(); stFateQ = true; if (AUTH.user) rpc('start_play', { p_kind: 'run' }).then(v => { if (run) { run.sid = v; stSave(); } }).catch(() => {}); stFateOn = true; } W({ phase: 'map' }); }
       else W({ pick: { b: pick(CLASS_IDS.filter(x => !bansOf().includes(x))) } });
     }
     if (doc.phase === 'play' && doc.lock.a === t && doc.lock.b !== t && !botT) botT = setTimeout(() => { botT = 0; if (local && doc && doc.phase === 'play' && curTag === t && doc.lock.a === t && doc.lock.b !== t) W({ lock: { b: t }, plan: { b: JSON.stringify(Object.assign({ tag: t }, (tutOn() ? tutBot(G) : botPlan(G, 'b', stageOn() ? stLv() : botLv)))) } }); }, 900);
@@ -6239,7 +6239,7 @@ function playHTML() {
     const vrow = (k, a, b) => `<span class="vk" role="rowheader">${k}</span><b role="cell">${a}</b><b role="cell">${b}</b>`;
     const stats = S ? `<div class="vst" role="table" aria-label="${L('결투 기록', 'Duel stats')}"><span class="vh" role="columnheader"></span><span class="vh" role="columnheader">나 · ${CLS[p.cls].n}</span><span class="vh" role="columnheader">상대 · ${CLS[G.P[o].cls].n}</span>
       ${vrow('준 피해', S[o].lost, S[seat].lost)}${vrow('즉발 공격 적중', `${S[seat].hit}/${S[seat].atk} (${rate(seat)})`, `${S[o].hit}/${S[o].atk} (${rate(o)})`)}${vrow('가장 큰 한 방', S[seat].best, S[o].best)}${vrow('남은 체력', Math.max(0, p.hp), Math.max(0, G.P[o].hp))}</div>` : '';
-    verdict = `<div class="panel verdict v-${w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose'}"><div class="v-top">${w === 'draw' ? '' : `<i class="px spa a-${G.P[w].cls}-act${skOf(w)}${w === seat ? '' : ' flip'}" aria-hidden="true"></i>`}<div><h2>${txt}</h2><p>${G.turn - 1}턴 만에 끝났습니다.</p></div></div>${w !== 'draw' && typeof WINL === 'object' && WINL[G.P[w].cls] ? `<p class="vline c-${G.P[w].cls}"><q>${WINL[G.P[w].cls]}</q><span>${CLS[G.P[w].cls].n}</span></p>` : ''}${lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? `<p class="v-rw">${lastRw.n == null ? `<span>${mE('메달 계산 중', 'Counting medals')}…</span>` : lastRw.n ? MDL('+' + lastRw.n) : ''}<span>${lastRw.why}${lastRw.n === 0 && AUTH.user && !AUTH.guest ? ' · ' + (local ? mE('너무 짧은 판이나 하루 한도는 받지 않습니다', 'No medals for very short games or past the daily cap') : mE('상대의 결과 확인을 기다립니다', 'Waiting for the opponent to confirm')) : ''}</span></p>` : ''}${stats}
+    verdict = `<div class="panel verdict v-${w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose'}"><div class="v-top">${w === 'draw' ? '' : `<i class="px spa a-${G.P[w].cls}-act${skOf(w)}${w === seat ? '' : ' flip'}" aria-hidden="true"></i>`}<div><h2>${txt}</h2><p>${G.turn - 1}턴 만에 끝났습니다.</p></div></div>${w !== 'draw' && typeof WINL === 'object' && WINL[G.P[w].cls] ? `<p class="vline c-${G.P[w].cls}"><q>${WINL[G.P[w].cls]}</q><span>${CLS[G.P[w].cls].n}</span></p>` : ''}${lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? `<p class="v-rw">${lastRw.n == null ? `<span>${mE('메달 계산 중', 'Counting medals')}…</span>` : lastRw.n ? MDL('+' + lastRw.n) : ''}<span>${lastRw.why}${lastRw.n === 0 && AUTH.user ? ' · ' + (local ? mE('너무 짧은 판이나 하루 한도는 받지 않습니다', 'No medals for very short games or past the daily cap') : mE('상대의 결과 확인을 기다립니다', 'Waiting for the opponent to confirm')) : ''}</span></p>` : ''}${stats}
       ${modeOf() === 'bo3' ? `<p class="vscore">${matchDone() ? (scoreOf()[seat] >= 2 ? '매치 승리' : '매치 패배') : '3판 2선승'} · <b>${scoreOf()[seat]} : ${scoreOf()[o]}</b></p>` : ''}
       ${stageOn() ? stOverHTML(w === seat)
       : tutOn() ? `<p class="vscore">튜토리얼을 마쳤습니다. 연습 모드에서 다른 직업도 써 보세요.</p><button type="button" class="btn red" data-a="leave">메뉴로 돌아가기</button>`
@@ -6339,16 +6339,16 @@ function gateHTML() {
   const touch = matchMedia('(hover: none)').matches;
   const foot = `<footer class="m-foot"><span class="m-ver cap">${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)}</span><span class="m-cr cap" data-notr>© 2026 CHOSBS. All rights reserved.</span>
       ${menuSt === 'splash' ? '' : `<p class="m-tip"><b>TIP</b><span>${RULES[MENU_TIP % RULES.length]}</span></p>`}
-      <span class="m-qk">${AUTH.user || AUTH.guest ? `<button type="button" class="qk acct" data-a="mtab" data-m="acct" data-notr aria-label="${mE('계정', 'Account')}"><i class="qk-me" aria-hidden="true"></i>${esc(AUTH.nick)}<span class="qk-m">${MDL(medals())}</span></button>` : ''}<button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
+      <span class="m-qk">${AUTH.user ? `<button type="button" class="qk acct" data-a="mtab" data-m="acct" data-notr aria-label="${mE('계정', 'Account')}"><i class="qk-me" aria-hidden="true"></i>${esc(AUTH.nick)}<span class="qk-m">${MDL(medals())}</span></button>` : ''}<button type="button" class="qk tb" data-a="tbgm" data-notr aria-label="${mE('타이틀 음악 바꾸기', 'Change title music')}"><i class="qk-ic bgm"></i>${mE(TITLE_BGM[titleBgm][0], TITLE_BGM[titleBgm][1])}</button><button type="button" class="qk" data-a="lang" data-notr aria-label="Language">${mE('English', '한국어')}</button><button type="button" class="qk${SND.on ? '' : ' off'}" data-a="snd" aria-pressed="${SND.on}" aria-label="${mE('효과음', 'Sound')}"><i class="qk-ic snd"></i></button><button type="button" class="qk${SND.bgm ? '' : ' off'}" data-a="bgm" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button></span></footer>`;
   if (menuSt === 'splash') return `<div class="menu t2 splash" data-a="splash" role="button" tabindex="0" aria-label="${mE('눌러서 시작', 'Press to start')}">${scene}<div class="m-ui">${logo}<p class="press">${touch ? mE('화면을 눌러 시작', 'Tap to start') : mE('아무 키나 눌러 시작', 'Press any key')}</p></div>${foot}</div>`;
   let body;
-  if (!AUTH.user && !AUTH.guest) return `<div class="menu t2 ac-mode">${scene}<div class="ac-wrap">${logo}${loginHTML()}</div>${foot}</div>`;
+  if (!AUTH.user) return `<div class="menu t2 ac-mode">${scene}<div class="ac-wrap">${logo}${loginHTML()}</div>${foot}</div>`;
   if (menuTab === 'acct') body = acctHTML();
   else if (menuTab === 'single') body = singleHTML(ta);
   else if (menuTab === 'multi') { const on = netReady && db, st = on ? ['ok', '온라인 연결됨'] : off ? ['off', '이 화면에서는 온라인 대전을 쓸 수 없습니다'] : ['wait', '연결하는 중'];
     const last = ls('ssd-last'), k1 = CLS[last] ? last : MENU_DUEL[0], k2 = MENU_DUEL[1] !== k1 ? MENU_DUEL[1] : 'samurai';
     body = `<div class="m-sub multi2${ta ? ' pop' : ''}"><div class="mu-head"><h2>멀티 플레이</h2><span class="mu-net ${st[0]}"><i></i>${st[1]}</span></div>
-      ${MM.on ? mmHTML() : `<button type="button" class="mbtn red mu-rand" data-mm="go" ${on ? '' : 'disabled'}><b>${mE('랜덤 매칭', 'Random match')}</b><span>${AUTH.user && !AUTH.guest ? mE('아무나와 바로 단판 대결 · 승리 메달 30', 'Quick 1v1 with anyone · 30 medals per win') : mE('로그인한 계정만 쓸 수 있습니다', 'Requires an account')}</span></button>`}
+      ${MM.on ? mmHTML() : `<button type="button" class="mbtn red mu-rand" data-mm="go" ${on ? '' : 'disabled'}><b>${mE('랜덤 매칭', 'Random match')}</b><span>${AUTH.user ? mE('아무나와 바로 단판 대결 · 승리 메달 30', 'Quick 1v1 with anyone · 30 medals per win') : mE('로그인한 계정만 쓸 수 있습니다', 'Requires an account')}</span></button>`}
       <div class="mu-grid">
         <section class="mu-host" style="--i:0" aria-labelledby="mu-h1">
           <div class="mu-art" aria-hidden="true"><i class="px a-${k1}"></i><b>VS</b><i class="px a-${k2} flip"></i></div>
@@ -6685,7 +6685,7 @@ app.addEventListener('input', e => { if (e.target.id !== 'code') return; const t
 
 /* ===== 계정: 아이디(=닉네임) + 숫자 4자리. Supabase 인증과 저장소를 fetch로 직접 부른다 ===== */
 const SB_URL = 'https://qkeysdwrdvttgrolmery.supabase.co', SB_KEY = 'sb_publishable_gjKVxVjdDDpIi7T__HvW8w_Z5lzJ2Pn';
-const AUTH = { wallet: null, owned: [], play: null, ready: false, user: null, nick: '', tok: null, busy: false, err: '', guest: false, net: true, form: { id: '', pin: '' }, saving: 0, saved: 0 };
+const AUTH = { wallet: null, owned: [], play: null, ready: false, user: null, nick: '', tok: null, busy: false, err: '', net: true, site: 'ok', home: '', down: false, form: { id: '', pin: '' }, saving: 0, saved: 0 };
 /* 기기마다 다른 설정(3D 품질, 진동, 음량 등)과 접속용 값은 계정에 올리지 않는다 */
 const SYNC_SKIP = ['ssd-medal', 'ssd-owned', 'ssd-id', 'ssd-net', 'ssd-auth', 'ssd-tmpick', 'ssd-3d', 'ssd-3dq', 'ssd-fx', 'ssd-motion', 'ssd-vib', 'ssd-vol'];
 const syncKey = k => typeof k === 'string' && k.indexOf('ssd-') === 0 && !SYNC_SKIP.includes(k);
@@ -6711,7 +6711,7 @@ async function sb(path, opt) {
 }
 async function rpc(fn, args) { await authFresh(); return sb('/rest/v1/rpc/' + fn, { method: 'POST', body: args || {} }); }
 async function walletPull() {
-  if (!AUTH.user || AUTH.guest || !AUTH.tok) return; await authFresh();
+  if (!AUTH.user || !AUTH.tok) return; await authFresh();
   const [w] = await sb('/rest/v1/wallet?select=medals') || []; AUTH.wallet = w ? w.medals : 0;
   AUTH.owned = (await sb('/rest/v1/owned_skins?select=cls,skin') || []).map(r => r.cls + ':' + r.skin);
   try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
@@ -6740,7 +6740,7 @@ async function authPull(fresh) {
   authKeep({ access_token: AUTH.tok.access_token, refresh_token: AUTH.tok.refresh_token, expires_in: (AUTH.tok.exp - Date.now()) / 1000 });
 }
 async function authPush(now) {
-  if (!AUTH.user || AUTH.guest) return; if (!now) { clearTimeout(AUTH.saving); AUTH.saving = setTimeout(() => authPush(true), 2500); return; }
+  if (!AUTH.user) return; if (!now) { clearTimeout(AUTH.saving); AUTH.saving = setTimeout(() => authPush(true), 2500); return; }
   try { await authFresh(); const d = localData();
     await sb('/rest/v1/progress', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: { id: AUTH.user, data: d, updated_at: new Date().toISOString() } });
     const av = d['ssd-last']; if (av && CLS[av]) await sb(`/rest/v1/profiles?id=eq.${AUTH.user}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: { avatar_cls: av, avatar_skin: skinOf(av) || null } });
@@ -6751,13 +6751,22 @@ async function authPush(now) {
 (function () { try { const S = Storage.prototype, set = S.setItem, del = S.removeItem;
   S.setItem = function (k, v) { set.call(this, k, v); if (this === window.localStorage && !AUTH.applying && syncKey(k)) authPush(); };
   S.removeItem = function (k) { del.call(this, k); if (this === window.localStorage && !AUTH.applying && syncKey(k)) authPush(); }; } catch (e) { /* 저장소 없음 */ } })();
+/* 이 주소에서 열어도 되는지 서버(site_origins 표)에 묻는다. 표가 비었거나 함수가 아직 없으면 어디서나 열린다 */
+async function siteCheck() {
+  try { const r = await sb('/rest/v1/rpc/site_check', { method: 'POST', anon: true, body: {} }); AUTH.site = r && r.ok === false ? 'blocked' : 'ok'; AUTH.home = (r && r.home) || ''; }
+  catch (e) { if (e.net) throw e; AUTH.site = /site_blocked/.test(e.message) ? 'blocked' : 'ok'; }
+}
 async function authBoot() {
+  AUTH.ready = false; AUTH.down = false; if (!doc) render();
   let sv = null; try { sv = JSON.parse(localStorage.getItem('ssd-auth') || 'null'); } catch (e) { /* 저장소 없음 */ }
-  if (sv && sv.rt) {
-    AUTH.nick = sv.nick || ''; AUTH.user = sv.uid || null;
-    try { AUTH.tok = { refresh_token: sv.rt, exp: 0 }; await authFresh(); await authPull(false); }
-    catch (e) { if (e.net) { AUTH.net = false; AUTH.guest = false; } else { AUTH.user = null; AUTH.tok = null; try { localStorage.removeItem('ssd-auth'); } catch (x) { /* 무시 */ } } }
-  }
+  try {
+    await siteCheck();
+    if (AUTH.site === 'ok' && sv && sv.rt) {
+      AUTH.nick = sv.nick || ''; AUTH.user = sv.uid || null;
+      try { AUTH.tok = { refresh_token: sv.rt, exp: 0 }; await authFresh(); await authPull(false); }
+      catch (e) { AUTH.user = null; AUTH.tok = null; if (e.net) throw e; try { localStorage.removeItem('ssd-auth'); } catch (x) { /* 무시 */ } }
+    }
+  } catch (e) { AUTH.down = true; }   /* 서버 없이는 들어갈 수 없다. 저장된 로그인은 남겨 두고 다시 연결을 기다린다 */
   AUTH.ready = true; if (!doc) render();
 }
 const AUTH_ERR = { invalid_credentials: ['아이디 또는 비밀번호가 맞지 않습니다', 'Wrong ID or PIN'], user_already_exists: ['이미 쓰는 아이디입니다. 로그인을 누르세요', 'That ID is taken. Try logging in'], over_request_rate_limit: ['시도가 너무 많습니다. 잠시 뒤 다시 하세요', 'Too many tries. Wait a moment'] };
@@ -6787,9 +6796,11 @@ async function authGo(make) {
   }
   AUTH.busy = false; render();
 }
-function authOut() { try { localStorage.removeItem('ssd-auth'); } catch (e) { /* 무시 */ } if (AUTH.tok) sb('/auth/v1/logout', { method: 'POST' }).catch(() => {}); Object.assign(AUTH, { user: null, nick: '', tok: null, guest: false, err: '' }); menuTab = null; render(); }
+function authOut() { try { localStorage.removeItem('ssd-auth'); } catch (e) { /* 무시 */ } if (AUTH.tok) sb('/auth/v1/logout', { method: 'POST' }).catch(() => {}); Object.assign(AUTH, { user: null, nick: '', tok: null, wallet: null, owned: [], err: '' }); menuTab = null; render(); }
 function loginHTML() {
   if (!AUTH.ready) return `<div class="ac-card"><p class="ac-wait">${mE('계정을 확인하는 중', 'Checking account')}…</p></div>`;
+  if (AUTH.site === 'blocked') return `<div class="ac-card"><div class="ac-top"><i class="ac-key" aria-hidden="true"></i><div><h2>${mE('공식 사이트에서만 열립니다', 'Official site only')}</h2><p>${mE('이 주소에서는 삼삼결투를 할 수 없습니다', 'This copy cannot be played here')}</p></div></div>${/^https:\/\//.test(AUTH.home) ? `<a class="btn red big ac-main" href="${esc(AUTH.home)}">${mE('공식 사이트로 가기', 'Go to the official site')}</a>` : ''}</div>`;
+  if (AUTH.down) return `<div class="ac-card"><div class="ac-top"><i class="ac-key" aria-hidden="true"></i><div><h2>${mE('서버에 연결할 수 없습니다', 'Cannot reach the server')}</h2><p>${mE('삼삼결투는 인터넷에 연결되어 있어야 할 수 있습니다', 'An internet connection is required')}</p></div></div><button type="button" class="btn red big ac-main" data-a="retry">${mE('다시 연결', 'Retry')}</button></div>`;
   const dis = AUTH.busy ? 'disabled' : '';
   return `<form class="ac-card" data-lg onsubmit="return false" novalidate>
     <div class="ac-top"><i class="ac-key" aria-hidden="true"></i><div><h2>${mE('결투장 입장', 'Enter the arena')}</h2><p>${mE('아이디는 그대로 닉네임이 됩니다', 'Your ID is your nickname')}</p></div></div>
@@ -6799,19 +6810,18 @@ function loginHTML() {
     <button type="submit" class="btn red big ac-main" data-a="login" ${dis}>${AUTH.busy ? mE('확인 중', 'Checking') + '…' : mE('로그인', 'Log in')}</button>
     <p class="ac-or"><span>${mE('처음 오셨나요?', 'First time?')}</span></p>
     <button type="button" class="btn ghost big ac-new" data-a="signup" ${dis}>${mE('이 아이디로 새 계정 만들기', 'Create account with this ID')}</button>
-    ${!AUTH.net ? `<button type="button" class="ac-off" data-a="guest">${mE('서버 없이 이 기기에서만 하기', 'Play offline on this device')}</button>` : ''}
   </form>`;
 }
 function acctHTML() {
-  const st = AUTH.guest ? mE('오프라인 플레이 중. 기록은 이 기기에만 남습니다', 'Offline. Progress stays on this device') : AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('저장됨', 'saved') : '') : mE('서버에 연결하지 못해 이 기기에 먼저 저장합니다', 'Offline; will sync later');
+  const st = AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('저장됨', 'saved') : '') : mE('서버에 연결하지 못해 이 기기에 먼저 저장합니다', 'Offline; will sync later');
   return `<div class="m-sub ac-me"><p class="cap">${mE('계정', 'Account')}</p><h2 data-notr>${esc(AUTH.nick)}</h2>
     <dl><dt>${mE('메달', 'Medals')}</dt><dd>${MDL(medals())}</dd><dt>${mE('보유 스킨', 'Skins owned')}</dt><dd>${ownedSkins().length}</dd></dl><p class="cap">${st}</p>
-    <div class="ac-row"><button type="button" class="btn ghost" data-a="logout">${AUTH.guest ? mE('로그인 화면으로', 'Back to sign in') : mE('로그아웃', 'Log out')}</button><button type="button" class="btn ghost mb-back" data-a="mback">${mE('뒤로', 'Back')}</button></div></div>`;
+    <div class="ac-row"><button type="button" class="btn ghost" data-a="logout">${mE('로그아웃', 'Log out')}</button><button type="button" class="btn ghost mb-back" data-a="mback">${mE('뒤로', 'Back')}</button></div></div>`;
 }
 document.addEventListener('input', e => { const t = e.target; if (t.id === 'lg-id') AUTH.form.id = t.value; else if (t.id === 'lg-pin') { const v = t.value.replace(/\D/g, '').slice(0, 4); if (v !== t.value) t.value = v; AUTH.form.pin = v; } });
 document.addEventListener('submit', e => { if (e.target.matches && e.target.matches('[data-lg]')) { e.preventDefault(); authGo(false); } });
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="login"],[data-a="signup"],[data-a="guest"],[data-a="logout"]'); if (!b || doc) return; e.preventDefault(); e.stopPropagation();
-  const a = b.dataset.a; if (a === 'login') authGo(false); else if (a === 'signup') authGo(true); else if (a === 'guest') { AUTH.guest = true; AUTH.nick = mE('손님', 'Guest'); render(); } else authOut(); }, true);
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="login"],[data-a="signup"],[data-a="retry"],[data-a="logout"]'); if (!b || doc) return; e.preventDefault(); e.stopPropagation();
+  const a = b.dataset.a; if (a === 'login') authGo(false); else if (a === 'signup') authGo(true); else if (a === 'retry') authBoot(); else authOut(); }, true);
 
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-shop]'); if (!b) return; e.stopPropagation();
   const k = b.dataset.shop, c = b.dataset.c, id = b.dataset.id;
@@ -6823,14 +6833,14 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   render(); }, true);
 /* 관리자 메달: 메인 화면 로고의 3×3 무늬 가운데 칸을 3초 안에 5번 누르면 지급 창. 서버가 관리자 계정인지 확인하고, 아니면 아무 일도 없다 */
 (function () { let n = 0, t0 = 0;
-  document.addEventListener('click', e => { if (doc || !AUTH.user || AUTH.guest) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
+  document.addEventListener('click', e => { if (doc || !AUTH.user) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
     const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
     const v = parseInt(window.prompt('', '1000') || '', 10); if (!(v > 0)) return;
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
 /* ===== 랜덤 매칭: 서버 줄(mm_queue)에서 짝을 찾고, 먼저 기다린 쪽이 방을 연다 ===== */
 const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0 };
 async function mmStart() {
-  if (!AUTH.user || AUTH.guest) return toast(mE('로그인해야 랜덤 매칭을 쓸 수 있습니다', 'Log in to use random match'));
+  if (!AUTH.user) return toast(mE('로그인해야 랜덤 매칭을 쓸 수 있습니다', 'Log in to use random match'));
   if (!netReady || !db) return toast(mE('온라인 연결을 기다리는 중입니다', 'Waiting for the network'));
   Object.assign(MM, { on: true, st: 'wait', t0: Date.now(), opp: '', n: 0 }); SND.play('pop'); render();
   try { await mmGot(await rpc('mm_join')); } catch (e) { mmStop(true); return toast(e.net ? mE('서버에 연결하지 못했습니다', 'Could not reach the server') : mE('매칭을 시작하지 못했습니다', 'Could not start matching')); }
@@ -6898,10 +6908,11 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   } catch (e) { db = null; }
   /* Claude 밖에서 열렸으면 PeerJS로 직접 연결한다 */
   if (!db && window.Peer && typeof PeerDB === 'function') { me = sessId(); db = PeerDB(() => me, netNote); }
-  authBoot();
+  const boot = authBoot();
   me = me || localId(); netReady = true;
   if (!doc) render();
-  if (p2p()) {
+  await boot;
+  if (p2p() && AUTH.user) {
     const sv = db.saved();
     if (sv && (!prefill || prefill === sv.code)) {
       if (sv.role === 'host' && sv.doc && sv.doc.seats && sv.doc.seats.a === me) {
@@ -10600,7 +10611,7 @@ document.addEventListener('click', e => {
 function stMedal(won) {
   if (!run || run.medalReq) return; const total = run.map ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18, done = (run.path || []).length;
   run.rate = Math.min(1, done / total); run.medal = null; run.medalReq = true;
-  if (!AUTH.user || AUTH.guest || !run.sid) { run.medal = 0; return; }
+  if (!AUTH.user || !run.sid) { run.medal = 0; return; }
   const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
 }
 function stSumHTML() {
