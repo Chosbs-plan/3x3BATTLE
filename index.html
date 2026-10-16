@@ -2828,7 +2828,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 }
 @keyframes pcDrop { from { translate: 0 -100%; } }
 /* PC 버튼: 모서리를 깎은 입체 버튼 */
-.pcb { --bg: #3b2b29; --hi: rgba(255, 255, 255, .16); --lo: rgba(0, 0, 0, .3); position: relative; display: grid; place-items: center; min-height: 52px; padding: 0 22px; font: inherit; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #fff; cursor: pointer; border: 0;
+.pcb { --bg: #3b2b29; --hi: rgba(255, 255, 255, .16); --lo: rgba(0, 0, 0, .3); position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap; min-height: 52px; padding: 0 22px; font: inherit; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #fff; cursor: pointer; border: 0;
   background: var(--bg); box-shadow: inset 0 0 0 3px #1d1413, inset 0 5px 0 3px var(--hi), inset 0 -6px 0 3px var(--lo);
   clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); transition: filter .1s, translate .1s; }
 .pcb.big { min-height: 76px; font-size: 26px; letter-spacing: 3px; text-shadow: 2px 2px 0 rgba(0, 0, 0, .35); }
@@ -2884,6 +2884,116 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pmc.light .mu-slots { max-width: 360px; } .pmc.light .mu-slots i { aspect-ratio: 1; }
 .pmc-note { margin: 0; font-size: 13px; color: var(--ash); }
 @media (prefers-reduced-motion: no-preference) { .pc-page.pop .pmc { animation: sgIn .35s steps(5) calc(var(--i) * 80ms) backwards; } }
+/* ===== PC 프로필 · 컬렉션 · 도감 · 상점 ===== */
+.pg-acct .pc-pb, .pg-coll .pc-pb, .pg-codex .pc-pb, .pg-shop .pc-pb { background: linear-gradient(#f6f3f2, #fff 40%); }
+.pc-dark { color: #f1e9e6; background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, inset 0 0 0 4px rgba(255, 255, 255, .07); }
+.pp-hero, .pcl-view, .pcx-list, .psh-side { color: #f1e9e6; background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, inset 0 0 0 4px rgba(255, 255, 255, .07);
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
+.pp-glow { position: absolute; left: 50%; bottom: 0; width: 80%; height: 70%; translate: -50% 0; background: radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--ac) 60%, transparent), transparent 70%); }
+.pp-bar { display: block; height: 6px; background: rgba(0, 0, 0, .12); } .pp-bar i { display: block; height: 100%; background: var(--red); }
+.pc-seg { display: flex; } .pc-seg button { height: 40px; padding: 0 18px; font: inherit; font-weight: 700; color: var(--sil); cursor: pointer; background: #fff; border: 2px solid var(--sil); margin-left: -2px; }
+.pc-seg button:first-child { margin-left: 0; } .pc-seg button.on { color: #fff; background: var(--sil); box-shadow: inset 0 -4px 0 var(--red); } .pc-seg button:hover:not(.on) { background: var(--wash); }
+/* 프로필 */
+.pg-acct .pc-pb { display: flex; }
+.pp { flex: 1 1 auto; display: grid; grid-template-columns: 440px minmax(0, 1fr); gap: 24px; min-height: 0; }
+.pp-hero { display: flex; flex-direction: column; gap: 14px; padding: 20px 22px 22px; min-height: 0; overflow: auto; }
+.pp-stage { position: relative; flex: none; height: 320px; display: flex; justify-content: center; align-items: flex-end; background: radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, rgba(0, 0, 0, .2); box-shadow: inset 0 0 0 2px #1d1413; }
+.pp-stage .pf-spr { width: 270px; height: 270px; } .pp-stage .pf-sh { bottom: 8px; background: rgba(0, 0, 0, .35); }
+.pp-id h3 { margin: 0; font-size: 40px; line-height: 1.1; color: #fff; text-shadow: 3px 3px 0 #1d1413; word-break: break-all; } .pp-id p { margin: 4px 0 0; font-size: 15px; color: #bfaea9; } .pp-id b { color: var(--ac); filter: brightness(1.4); }
+.pp-pick { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: rgba(0, 0, 0, .25); }
+.pp-pick .pf-pk { border-color: #5a4644; background: #3d2d2b; } .pp-pick .pf-pk .lb-face { --s: 50px; --z: 3.1; } .pp-pick .pf-pk.on { border-color: var(--red); }
+.pp-role { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; } .pp-role span { padding: 2px 10px; font-size: 13px; color: #fff; background: color-mix(in srgb, var(--ac) 55%, #2a1e1d); }
+.pp-cls { display: grid; gap: 6px; padding: 12px 14px; font-size: 14px; color: #d9cbc7; background: rgba(0, 0, 0, .22); } .pp-cls b { color: #fff; } .pp-cls em { font-style: normal; color: #ffd75e; }
+.pp-act { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.pp-acc { margin-top: auto; display: grid; gap: 8px; padding-top: 14px; font-size: 13px; color: #bfaea9; border-top: 1px solid rgba(255, 255, 255, .12); } .pp-accb { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pp-main { display: flex; flex-direction: column; gap: 20px; min-height: 0; }
+.pp-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.pp-st { position: relative; display: grid; align-content: start; gap: 6px; padding: 16px 18px 18px; background: #fff; box-shadow: inset 0 0 0 3px var(--sil), 6px 6px 0 var(--line);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); }
+.pp-st.gold { background: linear-gradient(#fff7dc, #fff); }
+.pp-ic { position: absolute; right: 14px; top: 14px; width: 30px; height: 30px; color: var(--line); } .pp-ic .pxi { width: 100%; height: 100%; } .pp-ic .mdl { width: 30px; height: 30px; }
+.pp-l { font-size: 14px; color: var(--ash); } .pp-st > b { font-size: 32px; line-height: 1.15; white-space: nowrap; color: var(--sil); } .pp-st > b i { font-style: normal; font-size: 16px; color: var(--ash); margin: 0 4px 0 1px; }
+.pp-st small { font-size: 13px; color: var(--ash); } .pp-st .pp-bar { margin-top: 4px; }
+.pp-rec { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding: 18px 20px; background: #fff; box-shadow: inset 0 0 0 3px var(--sil); }
+.pp-rec header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; } .pp-rec h4 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 22px; } .pp-rec h4 .pxi { width: 22px; height: 22px; color: var(--amber-d); }
+.pp-rec header span { font-size: 13px; color: var(--ash); }
+.pp-grid { flex: 1 1 auto; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; align-content: start; }
+.pp-r { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; align-items: center; padding: 6px 10px 6px 6px; background: var(--wash); color: var(--ash); }
+.pp-r .lb-face { --s: 44px; --z: 2.8; grid-row: span 2; filter: grayscale(1) opacity(.6); box-shadow: none; } .pp-r > b { font-size: 14px; } .pp-r > span:not(.lb-face) { font-size: 12px; }
+.pp-r.ok { color: var(--sil); background: #fff; box-shadow: inset 0 0 0 2px var(--ac), 3px 3px 0 color-mix(in srgb, var(--ac) 35%, transparent); } .pp-r.ok .lb-face { filter: none; } .pp-r.ok > span:not(.lb-face) { color: var(--red-d); font-weight: 700; }
+.pp-r em { position: absolute; right: 8px; top: 6px; font-style: normal; font-size: 12px; font-weight: 700; color: var(--amber-d); }
+/* 컬렉션 */
+.pg-coll .pc-pb { display: flex; }
+.pcl { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 24px; min-height: 0; }
+.pcl-left { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+.pcl-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.pcl-prog { display: grid; grid-template-columns: auto auto; align-items: baseline; justify-content: start; column-gap: 12px; min-width: 300px; } .pcl-prog > span:first-child { font-size: 14px; color: var(--ash); }
+.pcl-prog b { font-size: 30px; } .pcl-prog b i { font-style: normal; font-size: 16px; color: var(--ash); } .pcl-prog .pp-bar { grid-column: 1 / -1; height: 8px; margin-top: 6px; }
+.pcl-grid { flex: 1 1 auto; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; align-content: start; padding: 4px; }
+.pcl-c { position: relative; display: grid; justify-items: center; gap: 6px; padding: 12px 8px 10px; font: inherit; color: var(--sil); cursor: pointer; background: #fff; border: 0; box-shadow: inset 0 0 0 2px var(--line); transition: translate .1s; }
+.pcl-c .lb-face { --s: 72px; --z: 4.5; } .pcl-c > b { font-size: 15px; } .pcl-c small { font-size: 12px; color: var(--ash); }
+.pcl-c:hover, .pcl-c:focus-visible { outline: none; translate: 0 -3px; box-shadow: inset 0 0 0 2px var(--sil); }
+.pcl-c.on { background: linear-gradient(color-mix(in srgb, var(--ac) 22%, #fff), #fff); box-shadow: inset 0 0 0 3px var(--ac), 4px 4px 0 var(--sil); }
+.pcl-pips { display: flex; gap: 4px; } .pcl-pips i { width: 10px; height: 10px; background: var(--line); } .pcl-pips i.got { background: var(--amber); box-shadow: inset 0 0 0 1px var(--amber-d); }
+.pcl-view { display: flex; flex-direction: column; gap: 14px; padding: 20px 22px 22px; min-height: 0; overflow: auto; }
+.pcl-stage { position: relative; flex: none; height: 330px; display: flex; justify-content: center; align-items: flex-end; background: radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, rgba(0, 0, 0, .2); box-shadow: inset 0 0 0 2px #1d1413; }
+.pcl-stage .pf-sh { bottom: 8px; background: rgba(0, 0, 0, .35); }
+.pcl-spr, .pcl-act { position: absolute; left: 50%; bottom: 8px; translate: -50% 0; width: 280px; height: 280px; } .pcl-act { opacity: 0; }
+.pcl-stage:hover .pcl-spr { opacity: 0; } .pcl-stage:hover .pcl-act { opacity: 1; animation: spAnim .5s steps(1) infinite; }
+.pcl-badge { position: absolute; left: 12px; top: 12px; padding: 3px 12px; font-size: 13px; font-weight: 700; } .pcl-badge.on { color: #fff; background: var(--red); } .pcl-badge.own { color: var(--sil); background: #7fe08a; } .pcl-badge.lock { color: #fff3c4; background: #1d1413; box-shadow: inset 0 0 0 2px #5a4644; }
+.pcl-info h3 { margin: 0; font-size: 40px; line-height: 1.1; color: #fff; text-shadow: 3px 3px 0 #1d1413; } .pcl-info .pmc-k { margin: 0 0 4px; font-size: 13px; font-weight: 700; color: #ffd75e; } .pcl-sn { margin: 4px 0 0; font-size: 16px; color: #d9cbc7; }
+.pcl-sks { display: flex; gap: 10px; flex-wrap: wrap; }
+.pcl-s { display: grid; justify-items: center; gap: 4px; padding: 6px; font: inherit; font-size: 12px; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .06); border: 0; box-shadow: inset 0 0 0 2px #5a4644; }
+.pcl-s .lb-face { --s: 64px; --z: 4; } .pcl-s.lock .lb-face { filter: grayscale(1) brightness(.7); } .pcl-s.worn::after { content: '✓'; position: absolute; } .pcl-s { position: relative; }
+.pcl-s.worn::after { right: 4px; top: 2px; font-size: 13px; font-weight: 700; color: #7fe08a; }
+.pcl-s:hover { box-shadow: inset 0 0 0 2px #bfaea9; } .pcl-s.on { color: #fff; background: rgba(216, 71, 90, .25); box-shadow: inset 0 0 0 3px var(--red); }
+.pcl-go { margin-top: auto; display: grid; gap: 6px; } .pcl-need { margin: 0; font-size: 13px; text-align: center; color: #ffb3bd; }
+/* 도감 */
+.pg-codex .pc-pb { display: flex; overflow: hidden; }
+.pcx { flex: 1 1 auto; display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; min-height: 0; }
+.pcx-list { display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 16px; min-height: 0; }
+.pcx-h { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; } .pcx-h b { color: #fff; }
+.pcx-grid { flex: 1 1 auto; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; align-content: start; padding: 2px; }
+.pcx-f { display: grid; justify-items: center; gap: 4px; padding: 6px 2px; font: inherit; font-size: 12px; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .05); border: 0; box-shadow: inset 0 0 0 2px #3d2d2b; }
+.pcx-f .lb-face { --s: 58px; --z: 3.6; } .pcx-f span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcx-f:hover, .pcx-f:focus-visible { outline: none; color: #fff; box-shadow: inset 0 0 0 2px #8f7f7b; } .pcx-f.on { color: #fff; background: rgba(216, 71, 90, .25); box-shadow: inset 0 0 0 3px var(--red); }
+.pcx-main { min-height: 0; overflow: auto; }
+.pcx-main > .detail { margin: 0; max-width: none; width: auto; padding: 0; background: #fff; border: 0; box-shadow: inset 0 0 0 3px var(--sil); }
+.pcx-main .d-head { margin: 0; padding: 22px 26px; color: #f1e9e6; background: linear-gradient(110deg, color-mix(in srgb, var(--ac) 45%, #2a1e1d), #2a1e1d 60%); border-bottom: 3px solid #1d1413; }
+.pcx-main .d-head h1 { color: #fff; text-shadow: 3px 3px 0 #1d1413; font-size: 46px; } .pcx-main .d-tag { color: #ffd75e; } .pcx-main .d-meta, .pcx-main .d-stats { color: #d9cbc7; }
+.pcx-main .d-head .pips i:not(.f) { background: rgba(255, 255, 255, .14); box-shadow: none; }
+.pcx-main .d-por { background: rgba(0, 0, 0, .25); box-shadow: inset 0 0 0 2px #1d1413; }
+.pcx-main .detail > :not(.d-head) { margin-left: 26px; margin-right: 26px; } .pcx-main .d-tabs { margin-top: 18px; } .pcx-main .cx2-sk { margin-bottom: 22px; }
+/* 상점 */
+.pg-shop .pc-pb { display: flex; }
+.psh { flex: 1 1 auto; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; min-height: 0; }
+.psh-side { display: flex; flex-direction: column; gap: 18px; padding: 20px 18px; min-height: 0; overflow: auto; }
+.psh-wal { display: grid; gap: 4px; padding: 16px; background: rgba(0, 0, 0, .25); box-shadow: inset 0 0 0 2px #5a4644; } .psh-wal > span { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; }
+.psh-wal b { font-size: 36px; color: #fff3c4; } .psh-wal .mdl { width: 30px; height: 30px; } .psh-wal small { font-size: 13px; color: #bfaea9; }
+.psh-cat { display: grid; gap: 6px; }
+.psh-cat button { display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 16px; font: inherit; font-size: 18px; font-weight: 700; color: #d9cbc7; cursor: pointer; background: rgba(255, 255, 255, .05); border: 0; border-left: 5px solid transparent; }
+.psh-cat button:hover { color: #fff; background: rgba(255, 255, 255, .1); } .psh-cat button.on { color: #fff; background: linear-gradient(90deg, rgba(216, 71, 90, .45), rgba(216, 71, 90, .1)); border-left-color: var(--red); }
+.psh-cat em { font-style: normal; font-size: 14px; padding: 1px 8px; background: rgba(0, 0, 0, .3); }
+.psh-earn { margin-top: auto; } .psh-earn p { margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; }
+.psh-earn ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; } .psh-earn li { display: flex; justify-content: space-between; padding: 6px 10px; font-size: 13px; background: rgba(255, 255, 255, .05); } .psh-earn b { color: #fff3c4; }
+.psh-main { min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 20px; padding: 2px; }
+.psh-ft { flex: none; display: grid; grid-template-columns: 300px minmax(0, 1fr); color: #fff; background: linear-gradient(110deg, color-mix(in srgb, var(--ac) 70%, #2a1e1d), #2a1e1d 75%); box-shadow: inset 0 0 0 3px #1d1413;
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
+.psh-ftf { display: flex; justify-content: center; align-items: flex-end; height: 240px; background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255, 215, 94, .35), transparent 70%); }
+.psh-ftf .px { width: 220px; height: 220px; animation: spAnim .5s steps(1) infinite; }
+.psh-ftt { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 10px; padding: 24px 30px; } .psh-ftt .pmc-k { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; }
+.psh-ftt h3 { margin: 0; font-size: 40px; text-shadow: 3px 3px 0 #1d1413; } .psh-ftt p:not(.pmc-k) { margin: 0; font-size: 16px; color: #f1e9e6; } .psh-ftt .pcb { min-width: 260px; margin-top: 6px; }
+.ps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+.ps-it { display: grid; gap: 10px; padding: 10px 10px 12px; background: #fff; box-shadow: inset 0 0 0 2px var(--sil), 5px 5px 0 var(--line); transition: translate .1s; }
+.ps-it:hover { translate: 0 -3px; box-shadow: inset 0 0 0 3px var(--ac), 5px 5px 0 var(--sil); }
+.ps-fig { position: relative; height: 150px; display: flex; justify-content: center; align-items: flex-end; background: linear-gradient(color-mix(in srgb, var(--ac) 30%, #fff), #fff); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ac) 45%, #fff); }
+.ps-s, .ps-a { position: absolute; left: 50%; bottom: 4px; translate: -50% 0; width: 140px; height: 140px; } .ps-a { opacity: 0; }
+.ps-it:hover .ps-s { opacity: 0; } .ps-it:hover .ps-a { opacity: 1; animation: spAnim .5s steps(1) infinite; }
+.ps-tag { position: absolute; left: 6px; top: 6px; padding: 1px 8px; font-size: 12px; font-weight: 700; color: #fff; background: var(--sil); }
+.ps-tx { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; } .ps-tx b { font-size: 17px; } .ps-tx span { font-size: 13px; color: var(--ash); }
+.ps-it .pcb { min-height: 46px; } .ps-it .pcb.ghost { color: var(--sil); box-shadow: inset 0 0 0 2px var(--sil); } .ps-it .pcb .mdl { width: 18px; height: 18px; }
+.ps-it.own .ps-fig { filter: saturate(.85); }
+.pcb .mdl-n { gap: 6px; }
 /* ===== 직업 선택 v2: 조명 무대 + 정보판 + 아래 명단 ===== */
 #app > .gate.pick2 { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; align-content: stretch; }
 .pk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: minmax(0, 1fr); gap: 18px; min-height: 0; }
@@ -6841,7 +6951,7 @@ function multiBody(off) {
     </div></div>`;
 }
 /* 로비 버튼들 */
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"]'); if (!b || doc) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
   e.stopPropagation(); const a = b.dataset.a; SND.unlock();
   if (a === 'reppick') repOpen = !repOpen;
   else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
@@ -6849,6 +6959,8 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   else if (a === 'collwear') { if (skinOf(b.dataset.c) === b.dataset.id) return; setSkin(b.dataset.c, b.dataset.id); SND.play('relicGood'); return render(); }
   else if (a === 'shopgo') { shopTab = 'new'; menuTab = 'shop'; tabAnim = true; }
   else if (a === 'colltab') collTab = b.dataset.t;
+  else if (a === 'pcsel') { collSel = b.dataset.k; collPrev = null; }
+  else if (a === 'pcprev') { collSel = b.dataset.c; collPrev = b.dataset.id; }
   else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); render(); return mmStart(); }
   SND.play('tap'); render(); }, true);
 /* ===== PC 전용 로비: 위 내비게이션 바 + 모드 고르기와 게임 시작 + 소식 패널 =====
@@ -6884,7 +6996,7 @@ function pcHTML(scene, logo, off, ta, anim) {
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
   const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
         ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
-      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
+      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
   return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
 }
 
@@ -6935,6 +7047,95 @@ function pcMultiBody(off) {
         <p class="pmc-rw" id="mu-ch">${mE('영문과 숫자 4글자 · Enter로 입장', '4 letters or digits · Enter to join')}</p></div>
       <div class="pmc-go"><button type="button" class="pcb dark big" data-a="join" ${on ? '' : 'disabled'}>${mE('입장', 'Join')}</button></div></section>
   </div>`;
+}
+/* ===== PC 프로필 · 컬렉션 · 도감 · 상점 ===== */
+let collSel = null, collPrev = null;
+const pxs = k => (typeof pxi === 'function' ? pxi(k) : '');
+const skinName = (c, id) => { const x = id && skinList(c).find(s => s.id === id); return x ? mE(x.n, x.en) : mE('기본', 'Default'); };
+function pcProfBody() {
+  const rep = repCls(), sk = skinOf(rep), rec = stageRec(), rec3 = typeof stageRec3 === 'function' ? stageRec3() : {}, ty = tallyOf();
+  const clr = Object.keys(rec).filter(k => CLS[k]).length, own = ownedSkins().length, tot = skinTotal();
+  const pv = Object.assign({ w: 0, d: 0, l: 0 }, ty.pvp), bt = Object.assign({ w: 0, d: 0, l: 0 }, ty.bot), wr = t => { const n = t.w + t.d + t.l; return n ? Math.round(t.w / n * 100) : null; };
+  const st = AUTH.net ? mE('기록은 계정에 저장됩니다', 'Progress is saved to your account') + (AUTH.saved ? ' · ' + mE('저장됨', 'saved') : '') : mE('잠시 연결이 끊겼습니다. 다시 연결되면 저장합니다', 'Offline; will sync later');
+  const tile = (ic, lab, val, sub, bar, cls = '') => `<div class="pp-st${cls}"><i class="pp-ic">${ic}</i><span class="pp-l">${lab}</span><b>${val}</b>${sub ? `<small>${sub}</small>` : ''}${bar != null ? `<span class="pp-bar"><i style="width:${bar}%"></i></span>` : ''}</div>`;
+  const pvr = wr(pv), btr = wr(bt);
+  return `<div class="pp">
+    <aside class="pp-hero c-${rep}">
+      <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3><p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
+      ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
+      ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
+      <div class="pp-act"><button type="button" class="pcb ${repOpen ? 'ghost' : 'red'}" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 변경', 'Change main character')}</button>
+        <button type="button" class="pcb ghost" data-a="mtab" data-m="coll">${mE('스킨 착용', 'Equip skins')}</button></div>
+      <div class="pp-acc"><span>${st}</span><span class="pp-accb"><button type="button" class="pcb ghost" data-a="ov" data-o="settings">${mE('설정', 'Settings')}</button><button type="button" class="pcb ghost" data-a="logout">${mE('로그아웃', 'Log out')}</button></span></div>
+    </aside>
+    <div class="pp-main">
+      <div class="pp-stats">
+        ${tile('<i class="mdl"></i>', mE('보유 메달', 'Medals'), medals(), `<button type="button" class="lnk" data-a="mtab" data-m="shop">${mE('상점 가기', 'Go to shop')} ▶</button>`, null, ' gold')}
+        ${tile(lbIc('rec'), mE('대전 전적', 'PvP record'), `${pv.w}<i>${mE('승', 'W')}</i> ${pv.d}<i>${mE('무', 'D')}</i> ${pv.l}<i>${mE('패', 'L')}</i>`, `${mE('승률', 'Win rate')} ${pvr == null ? '-' : pvr + '%'}`, pvr)}
+        ${tile(pxs('fight'), mE('봇 연습', 'Bot practice'), `${bt.w}<i>${mE('승', 'W')}</i> ${bt.l}<i>${mE('패', 'L')}</i>`, `${mE('승률', 'Win rate')} ${btr == null ? '-' : btr + '%'}`, btr)}
+        ${tile(pxs('boss'), mE('모험 돌파', 'Adventure clears'), `${clr}<i>/ ${CLASS_IDS.length}</i>`, '', clr / CLASS_IDS.length * 100)}
+        ${tile(lbIc('coll'), mE('스킨 수집', 'Skins'), `${own}<i>/ ${tot}</i>`, '', tot ? own / tot * 100 : 0)}
+      </div>
+      <section class="pp-rec"><header><h4>${lbIc('rec')}${mE('모험 기록', 'Adventure records')}</h4><span>${mE('턴: 다섯 판에 걸린 가장 적은 턴 수 · ★ 최고 점수', 'Turns: fewest over five fights · ★ best score')}</span></header>
+        <div class="pp-grid">${CLASS_IDS.map(k => `<div class="pp-r${rec[k] ? ' ok' : ''} c-${k}">${faceOf(k, skinOf(k))}<b>${CLS[k].n}</b><span>${rec[k] ? `${rec[k]}${mE('턴', 't')}` : mE('미돌파', 'Not cleared')}</span>${rec3[k] ? `<em>★${rec3[k]}</em>` : ''}</div>`).join('')}</div></section>
+    </div></div>`;
+}
+
+function pcCollBody() {
+  const own = ownedSkins(), tot = skinTotal(), f = collTab;
+  const ownsAny = c => skinList(c).some(x => own.includes(c + ':' + x.id));
+  const list = CLASS_IDS.filter(c => f === 'all' || (f === 'own') === ownsAny(c));
+  const c = CLS[collSel] ? collSel : repCls(), cur = skinOf(c), opts = [{ id: '', n: '기본', en: 'Default' }, ...skinList(c)];
+  const pv = opts.some(x => x.id === collPrev) && collSel === c ? collPrev : cur, ok = skinOwned(c, pv), on = pv === cur;
+  return `<div class="pcl">
+    <div class="pcl-left">
+      <div class="pcl-top"><div class="pcl-prog"><span>${mE('수집', 'Collected')}</span><b>${own.length}<i> / ${tot}</i></b><span class="pp-bar"><i style="width:${tot ? own.length / tot * 100 : 0}%"></i></span></div>
+        <div class="pc-seg">${[['all', '전체', 'All'], ['own', '보유', 'Owned'], ['new', '미보유', 'Not owned']].map(([k, a, b]) => `<button type="button" class="${f === k ? 'on' : ''}" data-a="colltab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
+      <div class="pcl-grid" data-keep="pcl">${list.map(k => { const n = skinList(k).filter(x => own.includes(k + ':' + x.id)).length;
+        return `<button type="button" class="pcl-c c-${k}${k === c ? ' on' : ''}" data-a="pcsel" data-k="${k}" aria-pressed="${k === c}">${faceOf(k, skinOf(k))}<b>${CLS[k].n}</b><span class="pcl-pips">${skinList(k).map(x => `<i class="${own.includes(k + ':' + x.id) ? 'got' : ''}"></i>`).join('')}</span><small>${n}/${skinList(k).length}</small></button>`; }).join('') || `<p class="pmc-note">${mE('여기에 보일 직업이 없습니다', 'Nothing here')}</p>`}</div>
+    </div>
+    <section class="pcl-view c-${c}">
+      <div class="pcl-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pcl-spr a-${c}${skc(c, pv)}" aria-hidden="true"></i><i class="px pcl-act a-${c}-act${skc(c, pv)}" aria-hidden="true"></i>
+        <span class="pcl-badge ${on ? 'on' : ok ? 'own' : 'lock'}">${on ? mE('착용 중', 'Equipped') : ok ? mE('보유', 'Owned') : mE('미보유', 'Locked')}</span></div>
+      <div class="pcl-info"><p class="pmc-k">${CLS[c].tag || ''}</p><h3>${CLS[c].n}</h3><p class="pcl-sn">${skinName(c, pv)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pcl-sks" role="group" aria-label="${mE('스킨 미리 보기', 'Preview skins')}">${opts.map(x => { const got = skinOwned(c, x.id);
+        return `<button type="button" class="pcl-s${x.id === pv ? ' on' : ''}${got ? '' : ' lock'}${x.id === cur ? ' worn' : ''}" data-a="pcprev" data-c="${c}" data-id="${x.id}" aria-pressed="${x.id === pv}">${faceOf(c, x.id)}<span>${esc(mE(x.n, x.en))}</span></button>`; }).join('')}</div>
+      <div class="pcl-go">${on ? `<button type="button" class="pcb dark big" disabled>${mE('착용 중', 'Equipped')}</button>` : ok ? `<button type="button" class="pcb red big" data-a="collwear" data-c="${c}" data-id="${pv}">${mE('착용하기', 'Equip')}</button>`
+        : `<button type="button" class="pcb gold big" data-shop="buy" data-c="${c}" data-id="${pv}" ${medals() < SKIN_PRICE ? 'disabled' : ''}>${MDL(SKIN_PRICE)} ${mE('구매', 'Buy')}</button>${medals() < SKIN_PRICE ? `<p class="pcl-need">${mE(`메달이 ${SKIN_PRICE - medals()}개 모자랍니다`, `${SKIN_PRICE - medals()} more medals needed`)}</p>` : ''}`}</div>
+    </section></div>`;
+}
+
+function pcCodexBody() {
+  const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
+  const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
+    return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(SKIN_PRICE)}</span></button>`; }).join('')}</div>`;
+  return `<div class="pcx"><aside class="pcx-list"><p class="pcx-h">${mE('직업', 'Classes')} <b>${CLASS_IDS.length}</b></p><div class="pcx-grid" data-keep="pcx">${CLASS_IDS.map(k => `<button type="button" class="pcx-f c-${k}${k === v ? ' on' : ''}" data-a="cxv" data-k="${k}" aria-pressed="${k === v}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}<span>${CLS[k].n}</span></button>`).join('')}</div></aside>
+    <div class="pcx-main" data-keep="pcxm">${detailHTML(v, strip)}</div></div>`;
+}
+
+function pcShopBody() {
+  const own = ownedSkins(), m = medals(), f = shopTab;
+  const all = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) })));
+  const items = all.filter(it => f === 'all' || (f === 'own') === it.owned), left = all.filter(it => !it.owned);
+  const ft = left.length ? left[Math.floor(Date.now() / 864e5) % left.length] : null;
+  const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
+    return `<div class="ps-it c-${c}${owned ? ' own' : ''}"><div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
+      <div class="ps-tx"><b>${CLS[c].n}</b><span>${esc(mE(x.n, x.en))}</span></div>
+      ${owned ? `<button type="button" class="pcb ${on ? 'dark' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 해제', 'Unequip') : mE('착용', 'Equip')}</button>` : `<button type="button" class="pcb gold" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < SKIN_PRICE ? 'disabled' : ''}>${MDL(SKIN_PRICE)}</button>`}</div>`; };
+  return `<div class="psh">
+    <aside class="psh-side">
+      <div class="psh-wal"><span>${mE('내 지갑', 'Wallet')}</span><b>${MDL(m)}</b><small>${mE(`스킨 ${Math.floor(m / SKIN_PRICE)}개를 살 수 있습니다`, `Enough for ${Math.floor(m / SKIN_PRICE)} skin(s)`)}</small></div>
+      <nav class="psh-cat">${[['all', '전체', 'All', all.length], ['new', '미보유', 'Not owned', left.length], ['own', '보유', 'Owned', all.length - left.length]].map(([k, a, b, n]) => `<button type="button" class="${f === k ? 'on' : ''}" data-shop="tab" data-t="${k}"><span>${mE(a, b)}</span><em>${n}</em></button>`).join('')}</nav>
+      <div class="psh-earn"><p>${mE('메달 모으는 법', 'How to earn')}</p><ul><li><span>${mE('모험', 'Adventure')}</span><b>~300</b></li><li><span>${mE('대전 승리', 'PvP win')}</span><b>30</b></li><li><span>${mE('대전 무승부·패배', 'PvP draw · loss')}</span><b>15 · 10</b></li><li><span>${mE('봇 연습 승리', 'Bot win')}</span><b>5~12</b></li></ul></div>
+    </aside>
+    <div class="psh-main">
+      ${ft && f !== 'own' ? `<section class="psh-ft c-${ft.c}"><div class="psh-ftf"><i class="px a-${ft.c}-act${skc(ft.c, ft.x.id)}" aria-hidden="true"></i></div>
+        <div class="psh-ftt"><p class="pmc-k">${mE('오늘의 추천', "Today's pick")}</p><h3>${CLS[ft.c].n} · ${esc(mE(ft.x.n, ft.x.en))}</h3><p>${CLS[ft.c].tag || ''}</p>
+          <button type="button" class="pcb gold big" data-shop="buy" data-c="${ft.c}" data-id="${ft.x.id}" ${m < SKIN_PRICE ? 'disabled' : ''}>${MDL(SKIN_PRICE)} ${mE('구매', 'Buy')}</button></div></section>` : ''}
+      <div class="ps-grid">${items.map(card).join('') || `<p class="pmc-note">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>
+    </div></div>`;
 }
 function pcHomeHTML(on) {
   const sv = typeof stLoad === 'function' ? stLoad() : null, hasRun = sv && CLS[sv.cls], ty = tallyOf(), pv = Object.assign({ w: 0, d: 0, l: 0 }, ty.pvp);
