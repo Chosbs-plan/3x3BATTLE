@@ -44,7 +44,11 @@
  "dullahan": {
   "color": {
    "n": "컬러",
-   "en": "Color"
+   "en": "Color",
+   "f": [
+    19,
+    28
+   ]
   }
  },
  "statue": {
@@ -80,7 +84,11 @@
  "blacksmith": {
   "color": {
    "n": "컬러",
-   "en": "Color"
+   "en": "Color",
+   "f": [
+    23,
+    22
+   ]
   }
  },
  "bard": {
@@ -151,6 +159,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "female": {
+   "n": "격투가(♀)",
+   "en": "Brawler (F)"
   }
  },
  "mower": {

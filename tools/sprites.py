@@ -12,6 +12,7 @@
   sprites/skins/<직업>/<스킨>.png    스킨
   sprites/skins/<직업>/<스킨>_ko.png (선택)
   sprites/skins.json                 스킨 이름 {"직업": {"스킨": {"n": "한국어", "en": "English"}}}
+                                     초상화 얼굴 자리를 직접 정하려면 "f": [x, y] (칸 안의 픽셀 좌표)
 
 사용법
   python3 tools/sprites.py export   index.html의 지금 그림을 sprites/base 시트로 꺼낸다
@@ -167,7 +168,7 @@ def build():
                 sf = read_sheet(os.path.join(d, f)); kp = os.path.join(d, sk + '_ko.png')
                 out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk))
                 nm = (names.get(c) or {}).get(sk) or {}
-                ent = {'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': face_of(sf['idle1'])}
+                ent = {'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': nm.get('f') or face_of(sf['idle1'])}
                 if size_of(sf) != (32, 32): ent['sz'] = list(size_of(sf))
                 table.setdefault(c, []).append(ent)
     # 예전 자리에 흩어져 있던 직업 그림 규칙은 지우고 한 덩어리로 넣는다
