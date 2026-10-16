@@ -47,14 +47,22 @@ def unpng(b64):
 
 
 def ko_from(im):
-    """서 있는 그림을 시계 방향으로 눕혀 바닥에 붙인다"""
-    src = im.copy()
-    for x in range(32): src.putpixel((x, 29), (0, 0, 0, 0))
-    r = src.rotate(-90, expand=False); bb = r.getbbox(); out = Image.new('RGBA', (32, 32), (0, 0, 0, 0))
+    """서 있는 그림을 시계 방향으로 눕혀 원래 발 높이에 붙인다. 반투명 바닥 그림자가 있었으면 다시 깐다"""
+    src = im.copy(); shadow = False
+    for y in range(32):
+        for x in range(32):
+            if 0 < src.getpixel((x, y))[3] < 255: src.putpixel((x, y), (0, 0, 0, 0)); shadow = True
+    bb0 = src.getbbox(); floor = bb0[3] if bb0 else 29
+    out = Image.new('RGBA', (32, 32), (0, 0, 0, 0))
+    if bb0 and (bb0[2] - bb0[0]) >= (bb0[3] - bb0[1]):   # 옆으로 넓은 몸(슬라임, 기계)은 눕히지 않고 납작하게 찌그러뜨린다
+        cut = src.crop(bb0); w, h = cut.size; cut = cut.resize((w, max(4, h // 2)), Image.NEAREST); out.alpha_composite(cut, (bb0[0], floor - cut.size[1])); bb = None
+    else:
+        r = src.rotate(-90, expand=False); bb = r.getbbox()
     if bb:
-        cut = r.crop(bb); w, h = cut.size; out.alpha_composite(cut, (max(0, (32 - w) // 2), max(0, 28 - h)))
-    for x in range(6, 27):
-        if out.getpixel((x, 29))[3] == 0: out.putpixel((x, 29), SH)
+        cut = r.crop(bb); w, h = cut.size; out.alpha_composite(cut, (max(0, (32 - w) // 2), max(0, floor - h)))
+    if shadow:
+        for x in range(6, 27):
+            if out.getpixel((x, 29))[3] == 0: out.putpixel((x, 29), SH)
     return out
 
 
