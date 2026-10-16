@@ -14,6 +14,7 @@
   sprites/skins.json                 스킨 이름 {"직업": {"스킨": {"n": "한국어", "en": "English"}}}
                                      초상화 얼굴 자리를 직접 정하려면 "f": [x, y] (화면 기준 좌표: 고해상도면 실제 픽셀 ÷ px)
                                      고해상도로 그린 스킨은 "px": 2 — 64×64 칸을 32×32 캐릭터와 같은 크기로 보여 준다
+                                     특수 스킨의 키컬러는 "ac": ["#주색", "#어두운색"] — 그 스킨이 보이는 곳에서 직업 색을 덮는다
                                      기본 300이 아닌 가격은 "price": 800 — build가 supabase/skin_prices.sql도 다시 만든다(서버에서 Run)
 
 사용법
@@ -137,6 +138,14 @@ def export():
     print(f'{len(ids)}개 직업 시트를 sprites/base 에 꺼냈습니다')
 
 
+def key_css(c, sk, ac):
+    """특수 스킨 키컬러: 직업 색(.c-직업)이 붙은 상자 안에 그 스킨 그림이 있으면 색을 바꾼다.
+    스킨을 고르는 작은 단추(다른 스킨과 나란히 놓인 것) 안의 그림은 세지 않는다"""
+    a, d = (ac + [ac[0]])[:2]; pick = ':is(.pcl-s,.cx2-s,.cl-s,.pk-sk,.pf-pk,.sh-it,.ps-it,.pk-roster) *'
+    on = f'.c-{c}:has(.px.sk-{c}-{sk}:not({pick}))'   # 안쪽에 같은 직업 색 상자가 또 있으면 그것도 덮는다
+    return f'{on},{on} .c-{c},.c-{c}.sk-{c}-{sk},.ks-{c}-{sk},.ks-{c}-{sk} .c-{c}{{--ac:{a};--ac-d:{d}}}'
+
+
 def css_for(c, fr, ko, sk=None, d=1):
     s = f'.sk-{c}-{sk}' if sk else ''
     u = lambda k: f'url(data:image/png;base64,{png(fr[k])})'
@@ -174,11 +183,13 @@ def build():
                 nm = (names.get(c) or {}).get(sk) or {}; pd = int(nm.get('px', 1))
                 if pd < 1 or size_of(sf)[0] % pd or size_of(sf)[1] % pd: raise SystemExit(f'{c}/{f}: 칸 크기 {size_of(sf)}가 px {pd}로 나누어떨어지지 않습니다')
                 out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk, pd))
+                if nm.get('ac'): out.append(key_css(c, sk, nm['ac']))
                 fx = nm.get('f') or face_of(sf['idle1'].resize(size_of(sf, pd), Image.NEAREST) if pd != 1 else sf['idle1'])
                 ent = {'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': fx}
                 if size_of(sf, pd) != (32, 32): ent['sz'] = list(size_of(sf, pd))
                 if pd != 1: ent['px'] = pd
                 if int(nm.get('price', 300)) != 300: ent['pr'] = int(nm['price'])
+                if nm.get('ac'): ent['ac'] = nm['ac']
                 table.setdefault(c, []).append(ent)
     # 예전 자리에 흩어져 있던 직업 그림 규칙은 지우고 한 덩어리로 넣는다
     rule = re.compile(r'^\.a-(' + '|'.join(ids) + r')(-act|-w|-s|-hit|-ko)?\{[^\n]*\}\n', re.M)

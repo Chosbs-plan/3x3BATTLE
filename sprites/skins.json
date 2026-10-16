@@ -84,7 +84,11 @@
    "n": "하트 퀸",
    "en": "Queen of Hearts",
    "px": 2,
-   "price": 800
+   "price": 800,
+   "ac": [
+    "#e8244a",
+    "#9c1435"
+   ]
   }
  },
  "blacksmith": {
