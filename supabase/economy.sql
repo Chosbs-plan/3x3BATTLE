@@ -117,14 +117,17 @@ begin
   return _pay(auth.uid(), 'pvp', least(me, greatest(0, 600 - _today(auth.uid(), 'pvp'))));
 end $$;
 
--- 스킨 구매: 300메달. 잔액 확인과 차감이 한 번에 일어난다
+-- 스킨 구매: 가격표(skin_prices, skin_prices.sql이 채운다)에 있으면 그 값, 없으면 300. 잔액 확인과 차감이 한 번에 일어난다
+create table if not exists public.skin_prices (cls text not null, skin text not null, price int not null check (price > 0), primary key (cls, skin));
+alter table public.skin_prices enable row level security;
 create or replace function public.buy_skin(p_cls text, p_skin text) returns int
 language plpgsql security definer set search_path = public as $$
-declare bal int;
+declare bal int; pr int;
 begin
   if auth.uid() is null then raise exception 'login'; end if;
   if exists (select 1 from owned_skins where id = auth.uid() and cls = p_cls and skin = p_skin) then raise exception 'owned'; end if;
-  update wallet set medals = medals - 300 where id = auth.uid() and medals >= 300 returning medals into bal;
+  select coalesce((select price from skin_prices where cls = p_cls and skin = p_skin), 300) into pr;
+  update wallet set medals = medals - pr where id = auth.uid() and medals >= pr returning medals into bal;
   if not found then raise exception 'poor'; end if;
   insert into owned_skins (id, cls, skin) values (auth.uid(), p_cls, p_skin);
   return bal;

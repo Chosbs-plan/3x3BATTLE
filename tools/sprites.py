@@ -12,7 +12,9 @@
   sprites/skins/<직업>/<스킨>.png    스킨
   sprites/skins/<직업>/<스킨>_ko.png (선택)
   sprites/skins.json                 스킨 이름 {"직업": {"스킨": {"n": "한국어", "en": "English"}}}
-                                     초상화 얼굴 자리를 직접 정하려면 "f": [x, y] (칸 안의 픽셀 좌표)
+                                     초상화 얼굴 자리를 직접 정하려면 "f": [x, y] (화면 기준 좌표: 고해상도면 실제 픽셀 ÷ px)
+                                     고해상도로 그린 스킨은 "px": 2 — 64×64 칸을 32×32 캐릭터와 같은 크기로 보여 준다
+                                     기본 300이 아닌 가격은 "price": 800 — build가 supabase/skin_prices.sql도 다시 만든다(서버에서 Run)
 
 사용법
   python3 tools/sprites.py export   index.html의 지금 그림을 sprites/base 시트로 꺼낸다
@@ -94,14 +96,14 @@ def read_sheet(path):
     return {f: im.crop((i * w, 0, i * w + w, H)) for i, f in enumerate(FRAMES)}
 
 
-def size_of(fr): return fr['idle1'].size
+def size_of(fr, d=1): w, h = fr['idle1'].size; return (w // d, h // d)
 
 
-def big_css(sels, fr):
+def big_css(sels, fr, d=1):
     """32보다 큰 칸: 요소 상자는 32 기준 그대로 두고, ::before 층에 같은 그림을 키워 그린다.
     발끝 줄(대기1의 마지막 칠한 줄)이 32 칸의 30번째 줄에 오고, 가로는 가운데를 맞춘다.
     배경 그림을 상속하므로 대기·특수 그림을 바꾸는 애니메이션도 그대로 따라온다"""
-    w, h = size_of(fr); bb = fr['idle1'].getbbox(); fb = bb[3] if bb else h - 2
+    w, h = size_of(fr, d); bb = fr['idle1'].getbbox(); fb = bb[3] / d if bb else h - 2
     sx, sy = w / 32, h / 32; L, T = (1 - sx) / 2 * 100, (30 - fb) / 32 * 100
     g = lambda suf: ','.join(x + suf for x in sels)
     return '\n'.join([f':where({g("")}){{position:relative}}', f'{g("")}{{background-size:0 0!important;--spw:{w};--sph:{h}}}',
@@ -135,11 +137,14 @@ def export():
     print(f'{len(ids)}개 직업 시트를 sprites/base 에 꺼냈습니다')
 
 
-def css_for(c, fr, ko, sk=None):
+def css_for(c, fr, ko, sk=None, d=1):
     s = f'.sk-{c}-{sk}' if sk else ''
     u = lambda k: f'url(data:image/png;base64,{png(fr[k])})'
     if ko.size != size_of(fr): raise SystemExit(f'{c} {sk or ""}: 쓰러짐 그림은 시트 칸과 같은 크기 {size_of(fr)}여야 합니다')
-    extra = [big_css([f'.a-{c}{x}{s}' for x in ['', '-w', '-s', '-hit', '-act', '-ko']], fr)] if size_of(fr) != (32, 32) else []
+    sels = [f'.a-{c}{x}{s}' for x in ['', '-w', '-s', '-hit', '-act', '-ko']]
+    bb = fr['idle1'].getbbox(); off = abs((bb[3] if bb else 30 * d) / d - 30) >= 1   # 고해상도는 발끝이 1칸 이상 어긋나면 맞춘다
+    extra = [big_css(sels, fr, d)] if size_of(fr, d) != (32, 32) or (d != 1 and off) else []
+    if d != 1: extra.append(f'{",".join(sels)}{{--spd:{d}}}')   # 3D와 공유 그림이 실제 픽셀을 d로 나눠 그린다
     return '\n'.join(extra + [
         f'.a-{c}{s}{{background-image:{u("idle1")};--b:{u("idle2")}}}',
         f'.a-{c}-w{s}{{background-image:{u("atk1")}}}',
@@ -166,10 +171,14 @@ def build():
                 sk = f[:-4]
                 if not re.fullmatch(r'[a-z0-9]+', sk): raise SystemExit(f'{c}/{f}: 스킨 파일 이름은 영문 소문자와 숫자만')
                 sf = read_sheet(os.path.join(d, f)); kp = os.path.join(d, sk + '_ko.png')
-                out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk))
-                nm = (names.get(c) or {}).get(sk) or {}
-                ent = {'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': nm.get('f') or face_of(sf['idle1'])}
-                if size_of(sf) != (32, 32): ent['sz'] = list(size_of(sf))
+                nm = (names.get(c) or {}).get(sk) or {}; pd = int(nm.get('px', 1))
+                if pd < 1 or size_of(sf)[0] % pd or size_of(sf)[1] % pd: raise SystemExit(f'{c}/{f}: 칸 크기 {size_of(sf)}가 px {pd}로 나누어떨어지지 않습니다')
+                out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk, pd))
+                fx = nm.get('f') or face_of(sf['idle1'].resize(size_of(sf, pd), Image.NEAREST) if pd != 1 else sf['idle1'])
+                ent = {'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': fx}
+                if size_of(sf, pd) != (32, 32): ent['sz'] = list(size_of(sf, pd))
+                if pd != 1: ent['px'] = pd
+                if int(nm.get('price', 300)) != 300: ent['pr'] = int(nm['price'])
                 table.setdefault(c, []).append(ent)
     # 예전 자리에 흩어져 있던 직업 그림 규칙은 지우고 한 덩어리로 넣는다
     rule = re.compile(r'^\.a-(' + '|'.join(ids) + r')(-act|-w|-s|-hit|-ko)?\{[^\n]*\}\n', re.M)
@@ -187,7 +196,43 @@ def build():
     if B_JS in src: src = re.sub(re.escape(B_JS) + r'.*?' + re.escape(E_JS), lambda m: js, src, count=1, flags=re.S)
     else: raise SystemExit('index.html에 스킨 표 자리(SKINS:BEGIN)가 없습니다')
     open(HTML, 'w', encoding='utf-8').write(src)
+    write_prices(table)
     print(f'{len(ids)}개 직업, 스킨 {sum(len(v) for v in table.values())}개를 넣었습니다')
+
+
+def write_prices(table):
+    """서버 가격표. 스킨 표에 가격이 있는 것만 적고, 나머지는 서버가 300으로 본다"""
+    rows = [(c, e['id'], e['pr']) for c, v in sorted(table.items()) for e in v if e.get('pr')]
+    vals = ',\n  '.join(f"('{c}', '{k}', {p})" for c, k, p in rows)
+    sql = f"""-- tools/sprites.py build가 sprites/skins.json의 "price"로 만든다. 직접 고치지 말 것.
+-- 스킨 가격이 바뀌면 이 파일을 Supabase SQL Editor에서 다시 Run. 여러 번 실행해도 된다. (economy.sql 다음에)
+create table if not exists public.skin_prices (cls text not null, skin text not null, price int not null check (price > 0), primary key (cls, skin));
+alter table public.skin_prices enable row level security;
+drop policy if exists "prices read" on public.skin_prices;
+create policy "prices read" on public.skin_prices for select using (true);
+
+begin;
+delete from public.skin_prices;
+{('insert into public.skin_prices (cls, skin, price) values' + chr(10) + '  ' + vals + ';') if rows else '-- 기본 가격(300)이 아닌 스킨이 없다'}
+commit;
+
+-- 스킨 구매: 가격표에 있으면 그 값, 없으면 300. 잔액 확인과 차감이 한 번에 일어난다
+create or replace function public.buy_skin(p_cls text, p_skin text) returns int
+language plpgsql security definer set search_path = public as $$
+declare bal int; pr int;
+begin
+  if auth.uid() is null then raise exception 'login'; end if;
+  if exists (select 1 from owned_skins where id = auth.uid() and cls = p_cls and skin = p_skin) then raise exception 'owned'; end if;
+  select coalesce((select price from skin_prices where cls = p_cls and skin = p_skin), 300) into pr;
+  update wallet set medals = medals - pr where id = auth.uid() and medals >= pr returning medals into bal;
+  if not found then raise exception 'poor'; end if;
+  insert into owned_skins (id, cls, skin) values (auth.uid(), p_cls, p_skin);
+  return bal;
+end $$;
+revoke all on function public.buy_skin(text, text) from public, anon;
+grant execute on function public.buy_skin(text, text) to authenticated;
+"""
+    open(os.path.join(ROOT, 'supabase', 'skin_prices.sql'), 'w', encoding='utf-8').write(sql)
 
 
 def sheet():

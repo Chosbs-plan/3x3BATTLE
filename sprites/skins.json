@@ -79,6 +79,12 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "queen": {
+   "n": "하트 퀸",
+   "en": "Queen of Hearts",
+   "px": 2,
+   "price": 800
   }
  },
  "blacksmith": {
