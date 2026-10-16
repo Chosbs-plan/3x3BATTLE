@@ -14,6 +14,7 @@
   sprites/skins.json                 스킨 이름 {"직업": {"스킨": {"n": "한국어", "en": "English"}}}
                                      초상화 얼굴 자리를 직접 정하려면 "f": [x, y] (화면 기준 좌표: 고해상도면 실제 픽셀 ÷ px)
                                      고해상도로 그린 스킨은 "px": 2 — 64×64 칸을 32×32 캐릭터와 같은 크기로 보여 준다
+                                     인게임 그림 배율은 "sc": 1.2 (고해상도 스킨은 기본 1.2, 나머지는 1). 발끝은 그대로, 초상화 자리는 바뀌지 않는다
                                      특수 스킨의 키컬러는 "ac": ["#주색", "#어두운색"] — 그 스킨이 보이는 곳에서 직업 색을 덮는다
                                      기본 300이 아닌 가격은 "price": 800 — build가 supabase/skin_prices.sql도 다시 만든다(서버에서 Run)
 
@@ -100,12 +101,12 @@ def read_sheet(path):
 def size_of(fr, d=1): w, h = fr['idle1'].size; return (w // d, h // d)
 
 
-def big_css(sels, fr, d=1):
+def big_css(sels, fr, d=1, sc=1):
     """32보다 큰 칸: 요소 상자는 32 기준 그대로 두고, ::before 층에 같은 그림을 키워 그린다.
     발끝 줄(대기1의 마지막 칠한 줄)이 32 칸의 30번째 줄에 오고, 가로는 가운데를 맞춘다.
     배경 그림을 상속하므로 대기·특수 그림을 바꾸는 애니메이션도 그대로 따라온다"""
     w, h = size_of(fr, d); bb = fr['idle1'].getbbox(); fb = bb[3] / d if bb else h - 2
-    sx, sy = w / 32, h / 32; L, T = (1 - sx) / 2 * 100, (30 - fb) / 32 * 100
+    sx, sy = w / 32 * sc, h / 32 * sc; L, T = (1 - sx) / 2 * 100, (30 - fb * sc) / 32 * 100
     g = lambda suf: ','.join(x + suf for x in sels)
     return '\n'.join([f':where({g("")}){{position:relative}}', f'{g("")}{{background-size:0 0!important;--spw:{w};--sph:{h}}}',
         f'{g("::before")}{{content:"";position:absolute;left:{L:.4g}%;top:{T:.4g}%;width:{sx * 100:.4g}%;height:{sy * 100:.4g}%;background-image:inherit;background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none}}'])
@@ -146,14 +147,14 @@ def key_css(c, sk, ac):
     return f'{on},{on} .c-{c},.c-{c}.sk-{c}-{sk},.ks-{c}-{sk},.ks-{c}-{sk} .c-{c}{{--ac:{a};--ac-d:{d}}}'
 
 
-def css_for(c, fr, ko, sk=None, d=1):
+def css_for(c, fr, ko, sk=None, d=1, sc=1):
     s = f'.sk-{c}-{sk}' if sk else ''
     u = lambda k: f'url(data:image/png;base64,{png(fr[k])})'
     if ko.size != size_of(fr): raise SystemExit(f'{c} {sk or ""}: 쓰러짐 그림은 시트 칸과 같은 크기 {size_of(fr)}여야 합니다')
     sels = [f'.a-{c}{x}{s}' for x in ['', '-w', '-s', '-hit', '-act', '-ko']]
     bb = fr['idle1'].getbbox(); off = abs((bb[3] if bb else 30 * d) / d - 30) >= 1   # 고해상도는 발끝이 1칸 이상 어긋나면 맞춘다
-    extra = [big_css(sels, fr, d)] if size_of(fr, d) != (32, 32) or (d != 1 and off) else []
-    if d != 1: extra.append(f'{",".join(sels)}{{--spd:{d}}}')   # 3D와 공유 그림이 실제 픽셀을 d로 나눠 그린다
+    extra = [big_css(sels, fr, d, sc)] if size_of(fr, d) != (32, 32) or (d != 1 and off) or sc != 1 else []
+    if d != 1 or sc != 1: extra.append(f'{",".join(sels)}{{--spd:{d / sc:.4g}}}')   # 3D와 공유 그림이 실제 픽셀을 d로 나눠(배율만큼 키워) 그린다
     return '\n'.join(extra + [
         f'.a-{c}{s}{{background-image:{u("idle1")};--b:{u("idle2")}}}',
         f'.a-{c}-w{s}{{background-image:{u("atk1")}}}',
@@ -182,7 +183,8 @@ def build():
                 sf = read_sheet(os.path.join(d, f)); kp = os.path.join(d, sk + '_ko.png')
                 nm = (names.get(c) or {}).get(sk) or {}; pd = int(nm.get('px', 1))
                 if pd < 1 or size_of(sf)[0] % pd or size_of(sf)[1] % pd: raise SystemExit(f'{c}/{f}: 칸 크기 {size_of(sf)}가 px {pd}로 나누어떨어지지 않습니다')
-                out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk, pd))
+                sc = float(nm.get('sc', 1.2 if pd > 1 else 1))
+                out.append(css_for(c, sf, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(sf['idle1']), sk, pd, sc))
                 if nm.get('ac'): out.append(key_css(c, sk, nm['ac']))
                 fx = nm.get('f') or face_of(sf['idle1'].resize(size_of(sf, pd), Image.NEAREST) if pd != 1 else sf['idle1'])
                 ent = {'id': sk, 'n': nm.get('n', sk), 'en': nm.get('en', nm.get('n', sk)), 'f': fx}
