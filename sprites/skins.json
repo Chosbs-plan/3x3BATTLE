@@ -25,12 +25,28 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "granny": {
+   "n": "정원사 할머니",
+   "en": "Grandma Gardener",
+   "f": [
+    23,
+    23
+   ]
   }
  },
  "slime": {
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "pudding": {
+   "n": "푸딩",
+   "en": "Pudding",
+   "f": [
+    27,
+    37
+   ]
   }
  },
  "archaeologist": {
