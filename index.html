@@ -3867,15 +3867,15 @@ const skinList = c => SKINS[c] || [];
 function skinOf(c) { let v = ''; try { v = (JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {})[c] || ''; } catch (e) { /* 저장소 없음 */ } return skinList(c).some(x => x.id === v) && skinOwned(c, v) ? v : ''; }
 /* 계정 머니: 메달. 모험 클리어율과 대전 승패로 받고, 상점에서 스킨을 산다 */
 const SKIN_PRICE = 300;
-function medals() { try { return Math.max(0, parseInt(localStorage.getItem('ssd-medal') || '0', 10) || 0); } catch (e) { return 0; } }
-function ownedSkins() { try { const a = JSON.parse(localStorage.getItem('ssd-owned') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+/* 메달과 보유 스킨은 서버(Supabase)만 바꾼다. 여기서는 받아 온 값을 보여 주기만 한다 */
+const medals = () => (typeof AUTH !== 'undefined' && AUTH.wallet != null ? AUTH.wallet : 0);
+const ownedSkins = () => (typeof AUTH !== 'undefined' && AUTH.owned ? AUTH.owned : []);
 const skinOwned = (c, id) => !id || ownedSkins().includes(c + ':' + id);
 const MDL = n => `<span class="mdl-n"><i class="mdl" aria-hidden="true"></i>${n}</span>`;
-function medalAdd(n) { if (!n) return; try { localStorage.setItem('ssd-medal', String(medals() + n)); } catch (e) { /* 저장소 없음 */ } }
-function buySkin(c, id) {
-  if (skinOwned(c, id)) return 'own'; if (medals() < SKIN_PRICE) return 'poor';
-  try { localStorage.setItem('ssd-owned', JSON.stringify([...ownedSkins(), c + ':' + id])); localStorage.setItem('ssd-medal', String(medals() - SKIN_PRICE)); } catch (e) { return 'err'; }
-  return 'ok';
+async function buySkin(c, id) {
+  if (!AUTH.user || AUTH.guest) return 'login'; if (skinOwned(c, id)) return 'own'; if (medals() < SKIN_PRICE) return 'poor';
+  try { AUTH.wallet = await rpc('buy_skin', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
+  catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
 }
 function setSkin(c, id) { try { const o = JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {}; o[c] = id; localStorage.setItem('ssd-skins', JSON.stringify(o)); } catch (e) { /* 저장소 없음 */ } }
 /* 닉네임: 각 자리가 결투 문서에 적어 둔다. 봇은 '봇', 모험의 내 자리는 계정 닉네임 */
@@ -5354,7 +5354,8 @@ function leave() { run = null; busy = false; if (!local && p2p()) db.close(); if
 function onDoc() {
   if (!doc) return render();
   seat = doc.seats.a === me ? 'a' : doc.seats.b === me ? 'b' : null;
-  if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick } }); }
+  if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user && !AUTH.guest) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
+  if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
   let job = null;
   if (doc.game && doc.game !== gameStr) {
     const old = G;
@@ -5399,9 +5400,16 @@ async function startReplay(job) {
 let lastRw = null;
 function matchReward(g) {
   if (stageOn() || !seat || !g || !g.winner) return; const key = (code || '') + ':' + doc.gid + ':' + g.turn + ':' + g.winner; if (lastRw && lastRw.key === key) return;
-  const w = g.winner, win = w === seat, draw = w === 'draw', vsBot = local;
-  const n = vsBot ? (win ? ({ easy: 5, normal: 8, hard: 12 }[botLv] || 8) : draw ? 3 : 2) : win ? 30 : draw ? 15 : 10;
-  lastRw = { key, n, why: vsBot ? mE('봇 연습', 'Bot practice') : win ? mE('대전 승리', 'PvP win') : draw ? mE('대전 무승부', 'PvP draw') : mE('대전 참가', 'PvP played') }; medalAdd(n);
+  const w = g.winner, win = w === seat, draw = w === 'draw', vsBot = local, why = vsBot ? mE('봇 연습', 'Bot practice') : win ? mE('대전 승리', 'PvP win') : draw ? mE('대전 무승부', 'PvP draw') : mE('대전 참가', 'PvP played');
+  const rw = lastRw = { key, n: null, why }, pl = AUTH.play && AUTH.play.key === (code || '') + ':' + doc.gid ? AUTH.play : null;
+  if (!AUTH.user || AUTH.guest || !pl) { rw.n = 0; rw.why = AUTH.user && !AUTH.guest ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
+  const before = medals(), done = n => { rw.n = n; if (lastRw === rw) render(); };
+  const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose' }));
+  const wait = () => (pl.sid ? Promise.resolve() : new Promise(r => setTimeout(r, 1500)));
+  wait().then(go).then(n => { done(n || 0); return walletPull(); }).then(() => {
+    /* 대전은 상대 보고가 와야 지급된다. 잠시 뒤 지갑을 다시 보고 늘었으면 표시 */
+    if (!vsBot && !rw.n) [4000, 12000].forEach(t => setTimeout(() => walletPull().then(() => { if (medals() > before && !rw.n) done(medals() - before); }).catch(() => {}), t)); else render();
+  }).catch(() => done(0));
 }
 function refreshStat(k) {
   const el = app.querySelector('.side.' + (k === seat ? 'me' : 'op') + ' .stat'); if (!el) return;
@@ -5416,7 +5424,7 @@ function drive() {
   if (local) {
     if (doc.phase === 'ban' && doc.ban.a && !doc.ban.b) W({ ban: { b: pick(CLASS_IDS.filter(x => x !== doc.ban.a)) } });
     if (doc.phase === 'select' && doc.pick.a && !doc.pick.b) {
-      if (stageOn()) { if (!run.cls) { run.cls = doc.pick.a; run.skin = (doc.skin && doc.skin.a) || ''; run.foes = rollFoes(run.cls); run.hp = run.maxHp = hpBase(run.cls); stInit(); stFateQ = true; stFateOn = true; } W({ phase: 'map' }); }
+      if (stageOn()) { if (!run.cls) { run.cls = doc.pick.a; run.skin = (doc.skin && doc.skin.a) || ''; run.foes = rollFoes(run.cls); run.hp = run.maxHp = hpBase(run.cls); stInit(); stFateQ = true; if (AUTH.user && !AUTH.guest) rpc('start_play', { p_kind: 'run' }).then(v => { if (run) { run.sid = v; stSave(); } }).catch(() => {}); stFateOn = true; } W({ phase: 'map' }); }
       else W({ pick: { b: pick(CLASS_IDS.filter(x => !bansOf().includes(x))) } });
     }
     if (doc.phase === 'play' && doc.lock.a === t && doc.lock.b !== t && !botT) botT = setTimeout(() => { botT = 0; if (local && doc && doc.phase === 'play' && curTag === t && doc.lock.a === t && doc.lock.b !== t) W({ lock: { b: t }, plan: { b: JSON.stringify(Object.assign({ tag: t }, (tutOn() ? tutBot(G) : botPlan(G, 'b', stageOn() ? stLv() : botLv)))) } }); }, 900);
@@ -6195,7 +6203,7 @@ function playHTML() {
     const vrow = (k, a, b) => `<span class="vk" role="rowheader">${k}</span><b role="cell">${a}</b><b role="cell">${b}</b>`;
     const stats = S ? `<div class="vst" role="table" aria-label="${L('결투 기록', 'Duel stats')}"><span class="vh" role="columnheader"></span><span class="vh" role="columnheader">나 · ${CLS[p.cls].n}</span><span class="vh" role="columnheader">상대 · ${CLS[G.P[o].cls].n}</span>
       ${vrow('준 피해', S[o].lost, S[seat].lost)}${vrow('즉발 공격 적중', `${S[seat].hit}/${S[seat].atk} (${rate(seat)})`, `${S[o].hit}/${S[o].atk} (${rate(o)})`)}${vrow('가장 큰 한 방', S[seat].best, S[o].best)}${vrow('남은 체력', Math.max(0, p.hp), Math.max(0, G.P[o].hp))}</div>` : '';
-    verdict = `<div class="panel verdict v-${w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose'}"><div class="v-top">${w === 'draw' ? '' : `<i class="px spa a-${G.P[w].cls}-act${skOf(w)}${w === seat ? '' : ' flip'}" aria-hidden="true"></i>`}<div><h2>${txt}</h2><p>${G.turn - 1}턴 만에 끝났습니다.</p></div></div>${w !== 'draw' && typeof WINL === 'object' && WINL[G.P[w].cls] ? `<p class="vline c-${G.P[w].cls}"><q>${WINL[G.P[w].cls]}</q><span>${CLS[G.P[w].cls].n}</span></p>` : ''}${lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? `<p class="v-rw">${MDL('+' + lastRw.n)}<span>${lastRw.why}</span></p>` : ''}${stats}
+    verdict = `<div class="panel verdict v-${w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose'}"><div class="v-top">${w === 'draw' ? '' : `<i class="px spa a-${G.P[w].cls}-act${skOf(w)}${w === seat ? '' : ' flip'}" aria-hidden="true"></i>`}<div><h2>${txt}</h2><p>${G.turn - 1}턴 만에 끝났습니다.</p></div></div>${w !== 'draw' && typeof WINL === 'object' && WINL[G.P[w].cls] ? `<p class="vline c-${G.P[w].cls}"><q>${WINL[G.P[w].cls]}</q><span>${CLS[G.P[w].cls].n}</span></p>` : ''}${lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? `<p class="v-rw">${lastRw.n == null ? `<span>${mE('메달 계산 중', 'Counting medals')}…</span>` : lastRw.n ? MDL('+' + lastRw.n) : ''}<span>${lastRw.why}${lastRw.n === 0 && AUTH.user && !AUTH.guest ? ' · ' + (local ? mE('너무 짧은 판이나 하루 한도는 받지 않습니다', 'No medals for very short games or past the daily cap') : mE('상대의 결과 확인을 기다립니다', 'Waiting for the opponent to confirm')) : ''}</span></p>` : ''}${stats}
       ${modeOf() === 'bo3' ? `<p class="vscore">${matchDone() ? (scoreOf()[seat] >= 2 ? '매치 승리' : '매치 패배') : '3판 2선승'} · <b>${scoreOf()[seat]} : ${scoreOf()[o]}</b></p>` : ''}
       ${stageOn() ? stOverHTML(w === seat)
       : tutOn() ? `<p class="vscore">튜토리얼을 마쳤습니다. 연습 모드에서 다른 직업도 써 보세요.</p><button type="button" class="btn red" data-a="leave">메뉴로 돌아가기</button>`
@@ -6640,9 +6648,9 @@ app.addEventListener('input', e => { if (e.target.id !== 'code') return; const t
 
 /* ===== 계정: 아이디(=닉네임) + 숫자 4자리. Supabase 인증과 저장소를 fetch로 직접 부른다 ===== */
 const SB_URL = 'https://qkeysdwrdvttgrolmery.supabase.co', SB_KEY = 'sb_publishable_gjKVxVjdDDpIi7T__HvW8w_Z5lzJ2Pn';
-const AUTH = { ready: false, user: null, nick: '', tok: null, busy: false, err: '', guest: false, net: true, form: { id: '', pin: '' }, saving: 0, saved: 0 };
+const AUTH = { wallet: null, owned: [], play: null, ready: false, user: null, nick: '', tok: null, busy: false, err: '', guest: false, net: true, form: { id: '', pin: '' }, saving: 0, saved: 0 };
 /* 기기마다 다른 설정(3D 품질, 진동, 음량 등)과 접속용 값은 계정에 올리지 않는다 */
-const SYNC_SKIP = ['ssd-id', 'ssd-net', 'ssd-auth', 'ssd-tmpick', 'ssd-3d', 'ssd-3dq', 'ssd-fx', 'ssd-motion', 'ssd-vib', 'ssd-vol'];
+const SYNC_SKIP = ['ssd-medal', 'ssd-owned', 'ssd-id', 'ssd-net', 'ssd-auth', 'ssd-tmpick', 'ssd-3d', 'ssd-3dq', 'ssd-fx', 'ssd-motion', 'ssd-vib', 'ssd-vol'];
 const syncKey = k => typeof k === 'string' && k.indexOf('ssd-') === 0 && !SYNC_SKIP.includes(k);
 const nickOk = n => /^[가-힣a-zA-Z0-9_]{2,12}$/.test(n);
 /* 닉네임 → 로그인용 메일 주소. 어느 기기에서나 같은 값이 나오도록 순수 JS 해시를 쓴다 */
@@ -6664,6 +6672,12 @@ async function sb(path, opt) {
   if (!r.ok) { const er = new Error((j && (j.msg || j.message || j.error_description || j.error_code || j.error)) || String(r.status)); er.status = r.status; er.code = j && (j.error_code || j.code); throw er; }
   return j;
 }
+async function rpc(fn, args) { await authFresh(); return sb('/rest/v1/rpc/' + fn, { method: 'POST', body: args || {} }); }
+async function walletPull() {
+  if (!AUTH.user || AUTH.guest || !AUTH.tok) return; await authFresh();
+  const [w] = await sb('/rest/v1/wallet?select=medals') || []; AUTH.wallet = w ? w.medals : 0;
+  AUTH.owned = (await sb('/rest/v1/owned_skins?select=cls,skin') || []).map(r => r.cls + ':' + r.skin);
+}
 function authKeep(ses) {
   AUTH.tok = { access_token: ses.access_token, refresh_token: ses.refresh_token, exp: Date.now() + (ses.expires_in || 3600) * 1000 };
   AUTH.user = ses.user ? ses.user.id : AUTH.user;
@@ -6683,6 +6697,7 @@ async function authPull(fresh) {
   const [pg] = await sb(`/rest/v1/progress?id=eq.${AUTH.user}&select=data`) || [];
   if (pg && pg.data && Object.keys(pg.data).length && !fresh) applyData(pg.data);
   else await authPush(true);
+  await walletPull().catch(() => {});
   authKeep({ access_token: AUTH.tok.access_token, refresh_token: AUTH.tok.refresh_token, expires_in: (AUTH.tok.exp - Date.now()) / 1000 });
 }
 async function authPush(now) {
@@ -6763,9 +6778,16 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   const k = b.dataset.shop, c = b.dataset.c, id = b.dataset.id;
   if (k === 'tab') shopTab = b.dataset.t;
   else if (k === 'wear') { setSkin(c, id); SND.play('tap'); }
-  else if (k === 'buy') { const r = buySkin(c, id); if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, `Bought and equipped`)); } else if (r === 'poor') toast(mE('메달이 모자랍니다', 'Not enough medals')); }
+  else if (k === 'buy') { if (b.disabled) return; b.disabled = true; buySkin(c, id).then(r => { if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, 'Bought and equipped')); } else toast({ poor: mE('메달이 모자랍니다', 'Not enough medals'), own: mE('이미 가진 스킨입니다', 'Already owned'), login: mE('로그인해야 살 수 있습니다', 'Log in to buy'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('사지 못했습니다', 'Purchase failed'));
+    if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; } render(); }); return; }
   if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; }
   render(); }, true);
+/* 관리자 메달: 메인 화면 로고의 3×3 무늬 가운데 칸을 3초 안에 5번 누르면 지급 창. 서버가 관리자 계정인지 확인하고, 아니면 아무 일도 없다 */
+(function () { let n = 0, t0 = 0;
+  document.addEventListener('click', e => { if (doc || !AUTH.user || AUTH.guest) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
+    const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
+    const v = parseInt(window.prompt('', '1000') || '', 10); if (!(v > 0)) return;
+    rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
 (async function boot() {
   const h = (location.hash || '').slice(1).toUpperCase(); if (/^[A-Z0-9]{4}$/.test(h)) prefill = h;
   render();
@@ -10478,8 +10500,10 @@ document.addEventListener('click', e => {
 });
 /* 모험 보상: 지나온 칸 비율(클리어율)만큼, 끝까지 깨면 보너스. 한 모험에 한 번 */
 function stMedal(won) {
-  if (!run || run.medal != null) return; const total = run.map ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18, done = (run.path || []).length;
-  run.rate = Math.min(1, done / total); run.medal = Math.round(run.rate * 200) + (won ? 100 : 0); medalAdd(run.medal);
+  if (!run || run.medalReq) return; const total = run.map ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18, done = (run.path || []).length;
+  run.rate = Math.min(1, done / total); run.medal = null; run.medalReq = true;
+  if (!AUTH.user || AUTH.guest || !run.sid) { run.medal = 0; return; }
+  const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
 }
 function stSumHTML() {
   const won = !!run.cleared, ln = won ? null : stCurNode(), rec = stageRec3(), c = CLS[run.cls], log = run.log || [];
@@ -10500,7 +10524,7 @@ function stSumHTML() {
     <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
       <div><p class="cap">${L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
-    ${run.medal != null ? `<p class="v-rw ss-rw">${MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
+    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
     <div class="ss-body">
       <section class="ss-route"><h3>${L('지나온 길', 'Your route')}</h3><ol class="sr-acts">${route}</ol></section>
       <section class="ss-side">
