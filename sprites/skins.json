@@ -9,6 +9,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "cowboy": {
+   "n": "카우보이",
+   "en": "Cowboy"
   }
  },
  "mechanic": {
@@ -21,12 +25,28 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "granny": {
+   "n": "정원사 할머니",
+   "en": "Grandma Gardener",
+   "f": [
+    23,
+    23
+   ]
   }
  },
  "slime": {
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "pudding": {
+   "n": "푸딩",
+   "en": "Pudding",
+   "f": [
+    27,
+    37
+   ]
   }
  },
  "archaeologist": {
@@ -39,6 +59,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "caster": {
+   "n": "기상캐스터",
+   "en": "Weather Caster"
   }
  },
  "dullahan": {
@@ -145,6 +169,16 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "wolf": {
+   "n": "서리 궁수",
+   "en": "Frost Archer",
+   "px": 2,
+   "price": 800,
+   "ac": [
+    "#5f9db4",
+    "#3d6f82"
+   ]
   }
  },
  "grave": {
@@ -197,6 +231,10 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "graffiti": {
+   "n": "그래피티",
+   "en": "Graffiti"
   }
  },
  "tamer": {
