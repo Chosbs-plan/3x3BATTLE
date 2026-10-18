@@ -135,6 +135,19 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "chess": {
+   "n": "체스기사",
+   "en": "Chess Knight",
+   "f": [
+    24,
+    22
+   ],
+   "price": 800,
+   "ac": [
+    "#6d74e0",
+    "#464ca8"
+   ]
   }
  },
  "chicken": {
@@ -241,6 +254,14 @@
   "color": {
    "n": "컬러",
    "en": "Color"
+  },
+  "drone": {
+   "n": "드론 조종사",
+   "en": "Drone Pilot",
+   "f": [
+    24,
+    21
+   ]
   }
  }
 }
