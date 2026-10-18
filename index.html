@@ -3078,6 +3078,26 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pcl-go { margin-top: auto; display: grid; gap: 6px; } .pcl-need { margin: 0; font-size: 13px; text-align: center; color: #ffb3bd; }
 /* 도감 */
 .pg-codex .pc-pb { display: flex; overflow: hidden; }
+/* 도감 탭과 유물 도감 */
+.cxw { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; } .cxw > .cx2, .cxw > .pcx { flex: 1 1 auto; min-height: 0; }
+.cx-tabs { display: flex; gap: 8px; } .cx-tb { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font: inherit; color: var(--sil); cursor: pointer; background: #fff; border: 3px solid var(--sil); box-shadow: 3px 3px 0 var(--line); }
+.cx-tb .pxi { width: 18px; height: 18px; fill: currentColor; } .cx-tb b { font-size: 16px; } .cx-tb em { font-style: normal; font-size: 12px; color: var(--ash); }
+.cx-tb.on { color: #fff; background: var(--sil); box-shadow: 3px 3px 0 var(--red); } .cx-tb.on em { color: #ffd75e; }
+.rlx { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 16px; min-height: 0; }
+.rl-list { min-height: 0; overflow: auto; padding: 2px 4px 8px 2px; } .rl-gh { margin: 4px 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--ash); } .rl-gh b { color: var(--sil); }
+.rl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.rl-t { position: relative; display: grid; justify-items: center; gap: 4px; padding: 8px 6px; font: inherit; color: var(--sil); cursor: pointer; background: #fff; border: 3px solid var(--line); box-shadow: 3px 3px 0 rgba(42, 31, 36, .15); }
+.rl-t canvas { width: 72px; height: 72px; image-rendering: pixelated; } .rl-t span { font-size: 13px; font-weight: 700; text-align: center; line-height: 1.25; }
+.rl-t.on { border-color: var(--sil); box-shadow: 3px 3px 0 var(--red); } .rl-t:hover, .rl-t:focus-visible { outline: none; border-color: var(--sil); }
+.rl-t.unk { background: #ece6e4; } .rl-t.unk span { color: var(--ash); letter-spacing: 2px; }
+.rl-cd { position: absolute; right: 5px; top: 5px; width: 9px; height: 12px; background: var(--amber); box-shadow: 0 0 0 2px var(--sil); }
+.rl-main { display: grid; align-content: start; gap: 12px; padding: 16px; background: #fff; border: 3px solid var(--sil); box-shadow: 5px 5px 0 var(--line); min-height: 0; overflow: auto; }
+.rl-stage { position: relative; display: grid; place-items: center; height: 230px; background: radial-gradient(ellipse 55% 45% at 50% 60%, #fff6dc, transparent 70%), linear-gradient(#3a2a26, #2a1e1d); }
+.rl-stage canvas { position: relative; width: 210px; height: 210px; image-rendering: pixelated; } .rl-sh { position: absolute; left: 50%; bottom: 26px; width: 150px; height: 18px; translate: -50% 0; background: rgba(0, 0, 0, .35); border-radius: 50%; }
+.rl-main.unk .rl-stage { background: radial-gradient(ellipse 55% 45% at 50% 60%, #fff, transparent 70%), linear-gradient(#ece6e4, #d9cfcc); } .rl-main { align-self: start; }
+.rl-tx { display: grid; gap: 6px; } .rl-k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--red-d); } .rl-tx h3 { margin: 0; font-size: 26px; }
+.rl-main.unk h3 { letter-spacing: 4px; color: var(--ash); } .rl-ds { margin: 0; font-size: 15px; line-height: 1.6; } .rl-n { margin: 0; font-size: 13px; color: var(--ash); } .rl-n b { color: var(--sil); }
+@media (max-width: 760px) { .rlx { grid-template-columns: 1fr; } .rl-main { order: -1; } .rl-stage { height: 170px; } .rl-stage canvas { width: 150px; height: 150px; } .rl-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); } .rl-t canvas { width: 60px; height: 60px; } .cx-tb { padding: 7px 12px; } }
 .pcx { flex: 1 1 auto; display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; min-height: 0; }
 .pcx-list { display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 16px; min-height: 0; }
 .pcx-h { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; } .pcx-h b { color: #fff; }
@@ -7033,7 +7053,7 @@ const LB_IC = {
   rec: ['...........', '.#########.', '##.#####.##', '#..#####..#', '##.#####.##', '...#####...', '....###....', '.....#.....', '....###....', '...#####...', '...........'],
 };
 const lbIc = k => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${LB_IC[k].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
-const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['직업 도감', 'Classes', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'] };
+const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['도감', 'Codex', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'] };
 let repOpen = false, collTab = 'all';
 
 function lobbyHTML(logo) {
@@ -7101,12 +7121,32 @@ function profBody() {
     </div></div>`;
 }
 
+/* ===== 도감: 직업 / 유물 탭. 유물은 모험에서 한 번이라도 얻으면 기록된다(ssd-relics, 계정에도 저장) ===== */
+let cxTab = 'cls', rlView = null;
+const RL_ALL = () => [...Object.keys(RL), ...RL_CARDS];
+const rlBook = () => { const o = parse(ls('ssd-relics')) || {}, sv = typeof stLoad === 'function' ? stLoad() : null;   /* 지금 진행 중인 모험에서 가진 것도 친다 */
+  if (sv) [...(sv.rl || []), ...(sv.cards || [])].forEach(id => { if (RL_ALL().includes(id) && !o[id]) o[id] = 1; }); return o; };
+function rlSeen(id) { if (!RL_ALL().includes(id)) return; const o = parse(ls('ssd-relics')) || {}; o[id] = (o[id] || 0) + 1; ls('ssd-relics', JSON.stringify(o)); }
+function cxWrap(body) { const bk = rlBook(), n = RL_ALL().filter(id => bk[id]).length;
+  return `<div class="cxw"><nav class="cx-tabs" aria-label="${mE('도감', 'Codex')}"><button type="button" class="cx-tb${cxTab === 'cls' ? ' on' : ''}" data-a="cxtab" data-t="cls" aria-pressed="${cxTab === 'cls'}">${lbIc('codex')}<b>${mE('직업', 'Classes')}</b><em>${CLASS_IDS.length}</em></button>
+    <button type="button" class="cx-tb${cxTab === 'rl' ? ' on' : ''}" data-a="cxtab" data-t="rl" aria-pressed="${cxTab === 'rl'}">${lbIc('rec')}<b>${mE('모험 유물', 'Relics')}</b><em>${n}/${RL_ALL().length}</em></button></nav>${body}</div>`; }
+function relicBody() {
+  const bk = rlBook(), all = RL_ALL(), v = all.includes(rlView) ? rlView : (all.find(id => bk[id]) || all[0]), got = !!bk[v], m = RL_MODEL(v);
+  const tile = id => { const ok = !!bk[id]; return `<button type="button" class="rl-t${ok ? '' : ' unk'}${id === v ? ' on' : ''}" data-a="rlv" data-k="${id}" aria-pressed="${id === v}" title="${ok ? esc(rlName(id)) : '???'}">
+      <canvas class="im" width="96" height="96" data-m="${RL_MODEL(id)}"${ok ? '' : ' data-sil="1"'} aria-hidden="true"></canvas><span>${ok ? rlName(id) : '???'}</span>${RL[id] ? '' : '<i class="rl-cd" aria-hidden="true"></i>'}</button>`; };
+  const grp = (ko, en, ids) => `<p class="rl-gh">${mE(ko, en)} <b>${ids.filter(id => bk[id]).length}/${ids.length}</b></p><div class="rl-grid">${ids.map(tile).join('')}</div>`;
+  return `<div class="rlx"><div class="rl-list" data-keep="rll">${grp('유물', 'Relics', Object.keys(RL))}${grp('유물 카드', 'Relic cards', RL_CARDS)}</div>
+    <section class="rl-main${got ? '' : ' unk'}" aria-live="polite"><div class="rl-stage"><i class="rl-sh" aria-hidden="true"></i><canvas class="im" width="96" height="96" data-m="${m}"${got ? '' : ' data-sil="1"'} aria-hidden="true"></canvas></div>
+      <div class="rl-tx"><p class="rl-k">${got ? rlType(v) : mE('미발견 유물', 'Undiscovered')}</p><h3>${got ? rlName(v) : '???'}</h3>
+        ${got ? `<p class="rl-ds">${rlDesc(v)}</p><p class="rl-n">${mE('모험에서 얻은 횟수', 'Times found')} <b>${bk[v]}</b></p>` : `<p class="rl-ds">${mE('모험의 정예·보스 보상, 상점, 보물에서 얻으면 이름과 효과가 기록됩니다.', 'Find it in Adventure (elite and boss rewards, shops, treasure) to record its name and effect.')}</p>`}</div></section></div>`;
+}
 function codexBody() {
+  if (cxTab === 'rl') return cxWrap(relicBody());
   const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
   const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
     return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(skinPrice(v, x.id))}</span></button>`; }).join('')}</div>`;
-  return `<div class="cx2"><div class="cx2-list" role="group" aria-label="${mE('직업 고르기', 'Pick a class')}" data-keep="cxl">${CLASS_IDS.map(k => `<button type="button" class="cx2-f c-${k}${k === v ? ' on' : ''}" data-a="cxv" data-k="${k}" aria-pressed="${k === v}">${faceOf(k, skinOf(k))}<span>${CLS[k].n}</span></button>`).join('')}</div>
-    <div class="cx2-main">${detailHTML(v, strip)}</div></div>`;
+  return cxWrap(`<div class="cx2"><div class="cx2-list" role="group" aria-label="${mE('직업 고르기', 'Pick a class')}" data-keep="cxl">${CLASS_IDS.map(k => `<button type="button" class="cx2-f c-${k}${k === v ? ' on' : ''}" data-a="cxv" data-k="${k}" aria-pressed="${k === v}">${faceOf(k, skinOf(k))}<span>${CLS[k].n}</span></button>`).join('')}</div>
+    <div class="cx2-main">${detailHTML(v, strip)}</div></div>`);
 }
 
 function collBody() {
@@ -7166,11 +7206,13 @@ function multiBody(off) {
     </div></div>`;
 }
 /* 로비 버튼들 */
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
   e.stopPropagation(); const a = b.dataset.a; SND.unlock();
   if (a === 'reppick') repOpen = !repOpen;
   else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
   else if (a === 'cxv') cxView = b.dataset.k;
+  else if (a === 'cxtab') { if (cxTab === b.dataset.t) return; cxTab = b.dataset.t; }
+  else if (a === 'rlv') { rlView = b.dataset.k; setTimeout(() => { const m = app.querySelector('.rl-main'); if (m && matchMedia('(max-width: 760px)').matches) m.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 0); }
   else if (a === 'collwear') { if (skinOf(b.dataset.c) === b.dataset.id) return; setSkin(b.dataset.c, b.dataset.id); SND.play('relicGood'); return render(); }
   else if (a === 'shopgo') { shopTab = 'new'; menuTab = 'shop'; tabAnim = true; }
   else if (a === 'colltab') collTab = b.dataset.t;
@@ -7188,12 +7230,12 @@ function pcZoom() { const z = Math.max(0.5, Math.min(2, innerWidth / 1920, inner
 pcZoom(); addEventListener('resize', pcZoom);
 let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
 const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
-  coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['직업 도감', 'Classes', '30개 직업의 패시브, 능력, 전용 카드', 'Passives, abilities and cards of every class'],
+  coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['도감', 'Codex', '직업의 패시브·능력·전용 카드와 모험에서 찾은 유물', 'Classes, abilities and cards, plus relics found in Adventure'],
   shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'] };
 
 function pcHTML(scene, logo, off, ta, anim) {
   const kind = PC_PAGES[menuTab] ? menuTab : null; if (!kind) menuTab = null;
-  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '직업 도감', 'Classes'], ['shop', '상점', 'Shop']];
+  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '도감', 'Codex'], ['shop', '상점', 'Shop']];
   const top = `<header class="pc-top">
       ${logo}
       <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
@@ -7323,11 +7365,12 @@ function pcCollBody() {
 }
 
 function pcCodexBody() {
+  if (cxTab === 'rl') return cxWrap(relicBody());
   const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
   const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
     return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(skinPrice(v, x.id))}</span></button>`; }).join('')}</div>`;
-  return `<div class="pcx"><aside class="pcx-list"><p class="pcx-h">${mE('직업', 'Classes')} <b>${CLASS_IDS.length}</b></p><div class="pcx-grid" data-keep="pcx">${CLASS_IDS.map(k => `<button type="button" class="pcx-f c-${k}${k === v ? ' on' : ''}" data-a="cxv" data-k="${k}" aria-pressed="${k === v}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}<span>${CLS[k].n}</span></button>`).join('')}</div></aside>
-    <div class="pcx-main" data-keep="pcxm">${detailHTML(v, strip)}</div></div>`;
+  return cxWrap(`<div class="pcx"><aside class="pcx-list"><p class="pcx-h">${mE('직업', 'Classes')} <b>${CLASS_IDS.length}</b></p><div class="pcx-grid" data-keep="pcx">${CLASS_IDS.map(k => `<button type="button" class="pcx-f c-${k}${k === v ? ' on' : ''}" data-a="cxv" data-k="${k}" aria-pressed="${k === v}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}<span>${CLS[k].n}</span></button>`).join('')}</div></aside>
+    <div class="pcx-main" data-keep="pcxm">${detailHTML(v, strip)}</div></div>`);
 }
 
 function pcShopBody() {
@@ -11534,7 +11577,7 @@ const rlDesc = id => (RL[id] ? D2(RL[id][1], RL[id][3]) : id === 'turret' ? D2('
   : `${L('유물 카드', 'Relic card')} · ${L('마나', 'Mana')} ${CARDS[id].c}<br>${hl(CARDS[id].d)}<br>${L('덱에 섞이고, 판마다 한 번 쓸 수 있습니다.', 'Shuffled into your deck. Usable once per duel.')}`);
 const rlOwned = id => (RL[id] ? run.rl.includes(id) : (run.cards || []).includes(id));
 const rlPool = () => [...Object.keys(RL), ...RL_CARDS].filter(id => !rlOwned(id));
-function rlGive(id) { if (RL[id]) { run.rl.push(id); if (id === 'heart') { run.maxHp += 1; run.hp += 1; } } else if (id === 'turret') run.cards.push('turret', 'turret'); else run.cards.push(id); }
+function rlGive(id) { rlSeen(id); if (RL[id]) { run.rl.push(id); if (id === 'heart') { run.maxHp += 1; run.hp += 1; } } else if (id === 'turret') run.cards.push('turret', 'turret'); else run.cards.push(id); }
 const ABUP = ['능력 강화', '능력을 쓴 턴에는 마나 1을 돌려받는다', 'Ability Boost', 'Get 1 mana back on any turn you use your ability'];
 const PRICE3 = { card: 4, relic: 7, heal: 3, pass: 6, cut: 5 };
 const price3 = k => Math.max(1, PRICE3[k] - (run.rl.includes('seal') ? 1 : 0));
@@ -11648,7 +11691,7 @@ function takePerk(p) {
 const ownN = id => stDeck().filter(x => x === id).length;
 const ownTag = id => { const k = ownN(id); return `<em class="mc-own${k ? '' : ' nw'}">${k ? L(`덱에 ${k}장`, `${k} in deck`) : L('새 카드', 'New')}</em>`; };
 const withOwn = (html, id) => html.replace('<span class="mc-art">', `<span class="mc-art">${ownTag(id)}`).replace('class="mcard', `data-id="${id}" class="mcard`);
-const RL_MODEL = id => (id === 'spring' ? 'mana' : id === 'turret' ? '' : id);
+const RL_MODEL = id => (id === 'spring' ? 'mana' : id);
 const rlType = id => (RL[id] ? L('유물 · 남은 도전 내내', 'Relic · rest of the run') : L('유물 카드 · 판마다 한 번', 'Relic card · once per duel'));
 const rlShort = id => (RL[id] ? D2(RL[id][1], RL[id][3]) : id === 'turret' ? rlDesc(id) : `${L('마나', 'Mana')} ${CARDS[id].c}. ${hl(CARDS[id].d)}`);
 function rewardHTML() {
@@ -13076,6 +13119,8 @@ function stOverHTML(won) {
     else if (kind === 'bandage') { const r = add(cylG(0.3, 0.3, 0.4, 10), 0xf6f3f2, 0, 0.4); r.rotation.x = PI / 2; add(new T.BoxGeometry(0.1, 0.3, 0.06), 0xd8475a, 0, 0.4, 0.22); add(new T.BoxGeometry(0.3, 0.1, 0.06), 0xd8475a, 0, 0.4, 0.22); }
     else if (kind === 'ration') { add(new T.BoxGeometry(0.6, 0.34, 0.42), 0x9a6a3c, 0, 0.2); add(new T.BoxGeometry(0.64, 0.08, 0.46), 0x7a5028, 0, 0.4); add(new T.IcosahedronGeometry(0.16, 0), 0xd8475a, -0.1, 0.56, 0); add(new T.IcosahedronGeometry(0.14, 0), 0x5b9a4a, 0.14, 0.54, 0.05); }
     else if (kind === 'first') { const bl = add(new T.ConeGeometry(0.1, 0.7, 4), 0xc9c6c6, 0.12, 0.72, 0); bl.rotation.z = -0.5; const hd = add(cylG(0.05, 0.05, 0.3, 6), 0x7a5028, -0.16, 0.26, 0); hd.rotation.z = -0.5; add(new T.BoxGeometry(0.3, 0.06, 0.1), 0xe3a33b, -0.06, 0.42, 0).rotation.z = -0.5; }
+    else if (kind === 'turret') { add(cylG(0.4, 0.46, 0.16, 8), 0x5a6274, 0, 0.08); add(cylG(0.26, 0.32, 0.3, 8), 0x7c8698, 0, 0.3); const hd = add(new T.BoxGeometry(0.46, 0.3, 0.42), 0xe3a33b, 0, 0.6); hd.rotation.y = 0.2;
+      const br = add(cylG(0.06, 0.06, 0.6, 6), 0x3b4252, 0.38, 0.64, 0.08); br.rotation.z = PI / 2; add(cylG(0.08, 0.08, 0.08, 6), 0xd8475a, 0.68, 0.64, 0.08, { emissive: 0x5a1010 }).rotation.z = PI / 2; add(new T.BoxGeometry(0.18, 0.08, 0.3), 0x4f7fd0, -0.06, 0.8, 0, { emissive: 0x1c3c78 }); }
     else { add(new T.BoxGeometry(0.5, 0.5, 0.5), 0xc79a5b, 0, 0.3); }
     g.visible = false; itemScene.add(g); return (ITEMS[kind] = g);
   }
@@ -13089,6 +13134,9 @@ function stOverHTML(won) {
       g.rotation.y = still ? 0.4 : /amulet|sun|heart|spear/.test(cv.dataset.m) ? Math.sin(now / 900 + i) * 0.6 : now / 1400 + i * 0.9;
       renderer.setRenderTarget(rt); renderer.clear(); renderer.render(itemScene, camI); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
       const c = cv.getContext('2d'); c.imageSmoothingEnabled = false; c.drawImage(canvas, 0, 0, 96, 96);
+      if (cv.dataset.sil) { const im = c.getImageData(0, 0, 96, 96), d = im.data;   /* 도감의 못 얻은 유물: 배경을 지우고 모양만 어둡게 */
+        for (let k = 0; k < d.length; k += 4) { if (Math.abs(d[k] - 46) + Math.abs(d[k + 1] - 30) + Math.abs(d[k + 2] - 20) < 30) d[k + 3] = 0; else { d[k] = 58; d[k + 1] = 46; d[k + 2] = 50; d[k + 3] = 200; } }
+        c.putImageData(im, 0, 0); }
     });
   }
 
@@ -13339,7 +13387,7 @@ function stOverHTML(won) {
   new MutationObserver(attach).observe(appEl, { childList: true });
   function frame(now) { requestAnimationFrame(frame); tick(now, false); }
   function tick(now, force) {
-    if (!active && !document.hidden) { const ims = appEl.querySelectorAll('.stall canvas.im, .mystic canvas.im'); if (ims.length) frameShop(now, ims); return; }
+    if (!active && !document.hidden) { const ims = appEl.querySelectorAll('.stall canvas.im, .mystic canvas.im, .rlx canvas.im'); if (ims.length) frameShop(now, ims); return; }
     if (!active || document.hidden || (!force && now - last < 30)) return;
     const gap = now - last; let dt = Math.min(0.1, gap / 1000); last = now;
     { const sl = window.A3SLOMO; if (sl && now < sl.until) dt *= sl.k; }   /* 예측 적중·간발 회피: 잠깐 느리게 */
