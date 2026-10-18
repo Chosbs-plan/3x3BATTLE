@@ -9,7 +9,8 @@ begin;
 delete from public.skin_prices;
 insert into public.skin_prices (cls, skin, price) values
   ('gambler', 'queen', 800),
-  ('hunter', 'wolf', 800);
+  ('hunter', 'wolf', 800),
+  ('onmyoji', 'chess', 800);
 commit;
 
 -- 스킨 구매: 가격표에 있으면 그 값, 없으면 300. 잔액 확인과 차감이 한 번에 일어난다
