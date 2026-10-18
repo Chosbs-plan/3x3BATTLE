@@ -2882,6 +2882,26 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pc-stats dt { font-size: 14px; color: #d9cbc7; } .pc-stats dd { margin: 0; font-size: 22px; font-weight: 700; color: #fff; } .pc-stats dd small { margin-left: 6px; font-size: 13px; font-weight: 400; color: #bfaea9; }
 .pc-stats .pf-bar { grid-column: 1 / -1; margin: 0; height: 6px; background: rgba(255, 255, 255, .12); box-shadow: none; }
 .pc-tipc p { margin: 0; font-size: 15px; line-height: 1.65; color: #f1e9e6; }
+/* 일일 퀘스트 */
+.qs { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.qs-it { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border: 3px solid var(--sil); box-shadow: 3px 3px 0 rgba(42, 31, 36, .18); }
+.qs-it.ok { background: #fff8e0; border-color: var(--amber-d); } .qs-it.got { opacity: .6; }
+.qs-st { display: grid; justify-items: center; min-width: 30px; font-size: 13px; line-height: 1; color: var(--amber-d); writing-mode: vertical-lr; text-orientation: upright; letter-spacing: -2px; } .qs-st i { font-style: normal; color: var(--line); }
+.qs-tx { display: grid; gap: 2px; min-width: 0; } .qs-tx b { font-size: 16px; line-height: 1.3; } .qs-tx small { font-size: 11px; color: var(--ash); }
+.qs-pg { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; margin-top: 3px; } .qs-pg .pf-bar { margin: 0; } .qs-it.ok .pf-bar i { background: var(--amber-d); } .qs-pg em { font-style: normal; font-size: 12px; font-weight: 700; }
+.qs-r { display: grid; justify-items: end; gap: 6px; } .qs-r .mdl-n { font-weight: 700; }
+.qs-claim { min-height: 0; padding: 5px 14px; font-size: 14px; color: var(--sil); background: var(--amber); border: 2px solid #1d1413; box-shadow: 0 3px 0 #1d1413; }
+.qs-got { font-size: 12px; font-weight: 700; color: var(--ash); }
+.qs-roll { min-width: 32px; height: 30px; padding: 0 6px; font: inherit; font-size: 17px; font-weight: 700; color: var(--sil); cursor: pointer; background: #fff; border: 2px solid var(--line); }
+.qs-roll:hover, .qs-roll:focus-visible { outline: none; border-color: var(--sil); } .qs-roll.arm { font-size: 12px; color: #fff; background: var(--red); border-color: var(--red-d); }
+.qs-meta { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; font-weight: 400; letter-spacing: 0; } .qs-meta b { font-weight: 700; }
+.qs-dot { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; font-style: normal; font-size: 13px; font-weight: 700; color: #fff; background: var(--red); border: 2px solid #1d1413; }
+.qs-page { display: grid; gap: 12px; max-width: 720px; margin: 0 auto; } .qs-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; }
+.qs-top h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 22px; } .qs-top .pxi { width: 22px; height: 22px; fill: currentColor; } .qs-page > .cap { margin: 0; line-height: 1.6; }
+.lb-qst { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 9px 14px; font: inherit; text-align: left; color: var(--sil); cursor: pointer; background: #fff; border: 3px solid #1d1413; box-shadow: 0 5px 0 #1d1413; transition: translate .12s; }
+.lb-qst .pxi { width: 26px; height: 26px; fill: var(--red); } .lb-qst b { display: block; font-size: 17px; } .lb-qst small { font-size: 12px; color: var(--ash); } .lb-qst .qs-go { font-style: normal; color: var(--ash); }
+.lb-qst:hover, .lb-qst:focus-visible { outline: none; translate: 0 -3px; }
+.pc-qc .pc-ch { flex-wrap: wrap; gap: 4px 10px; } .pc-qc .qs-meta { color: #d9cbc7; margin-left: auto; } .pc-qc .qs-it { padding: 8px 10px; color: var(--sil); } .pc-qc .qs-tx b { font-size: 14px; }
 .pc-play { position: absolute; right: 34px; bottom: 30px; width: 520px; display: grid; gap: 8px; padding: 18px; filter: drop-shadow(0 8px 0 rgba(29, 20, 19, .3)); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
 .pc-ph3 { margin: 0 0 4px; font-size: 13px; letter-spacing: 3px; color: #ffd75e; }
 .pc-modes { display: grid; gap: 6px; }
@@ -4440,6 +4460,77 @@ async function buySkin(c, id) {
   try { AUTH.wallet = await rpc('buy_skin', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
   catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
 }
+/* ===== 일일 퀘스트: 하루 세 개(★1·★2·★3), 다시 뽑기 하루 2번. 퀘스트·진행·보상은 서버가 정한다(economy.sql) =====
+   여기서는 받아 온 것을 보여 주고, 판이 끝날 때 판 기록(QS)을 finish_* 요청에 실어 보낸다 */
+const QDEF = {
+  play: ['결투 {n}판 하기', 'Play {n} duels', 'all'], win: ['결투에서 {n}번 승리', 'Win {n} duels', 'all'],
+  pvp: ['대전 {n}판 하기', 'Play {n} PvP matches', 'pvp'], pvpwin: ['대전에서 {n}번 승리', 'Win {n} PvP matches', 'pvp'],
+  botlv: ['봇 연습 \'{p}\' 이상에서 {n}번 승리', 'Win {n} bot games on {p}+', 'bot'],
+  dmg: ['결투에서 피해 {n} 주기', 'Deal {n} damage', 'all'], ab: ['직업 능력 {n}번 쓰기', 'Use your class ability {n} times', 'all'],
+  atk: ['공격 카드 {n}장 쓰기', 'Play {n} attack cards', 'all'], sp: ['특수 카드 {n}장 쓰기', 'Play {n} special cards', 'all'], mv: ['이동 카드 {n}장 쓰기', 'Play {n} move cards', 'all'],
+  fast: ['{p}턴 안에 승리', 'Win within {p} turns', 'all'], tough: ['받은 피해 {p} 이하로 승리', 'Win taking {p} damage or less', 'all'],
+  cls: ['서로 다른 직업 {n}개로 결투하기', 'Duel with {n} different classes', 'all'],
+  runnode: ['모험에서 {n}칸 나아가기', 'Advance {n} nodes in Adventure', 'run'], runelite: ['모험에서 정예·보스 {n}번 쓰러뜨리기', 'Defeat {n} elites or bosses in Adventure', 'run'],
+  runclear: ['모험 완주하기', 'Clear an Adventure run', 'run'],
+};
+const QWHERE = { all: ['봇 연습 · 대전 · 모험 결투', 'Bot · PvP · Adventure'], pvp: ['랜덤 매칭 · 친구 대전', 'Random · Friendly'], bot: ['연습 대전', 'Practice'], run: ['모험 모드', 'Adventure'] };
+let QUEST = null, qBusy = false, qPulling = null, qArm = -1;
+function questPull() {
+  if (typeof AUTH === 'undefined' || !AUTH.user) return Promise.resolve(); if (qPulling) return qPulling;
+  qPulling = rpc('quest_get').then(v => { QUEST = v && Array.isArray(v.quests) ? v : null; }).catch(() => {}).then(() => { qPulling = null; if (!doc) render(); });
+  return qPulling;
+}
+const qText = q => { const d = QDEF[q.qid] || ['?', '?'], p = q.qid === 'botlv' ? (BOTS[['easy', 'normal', 'hard'][q.param]] || BOTS.normal)[0] : q.param;
+  return mE(d[0], d[1]).replace('{n}', q.target).replace('{p}', p); };
+const qReady = () => (QUEST ? QUEST.quests.filter(q => !q.claimed && q.prog >= q.target).length : 0);
+const qDone = () => (QUEST ? QUEST.quests.filter(q => q.claimed).length : 0);
+function qLeft() { const ms = QUEST ? Date.parse(QUEST.reset) - Date.now() : 0; if (QUEST && ms <= 0) { setTimeout(questPull, 50); return mE('곧', 'soon'); }
+  const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60; return h ? mE(`${h}시간 ${m}분`, `${h}h ${m}m`) : mE(`${m}분`, `${m}m`); }
+/* 퀘스트 목록: 로비 퀘스트 판(모바일)과 PC 홈 카드가 함께 쓴다 */
+function questList() {
+  if (!QUEST) return `<p class="cap qs-empty">${AUTH.user ? mE('퀘스트를 불러오는 중…', 'Loading quests…') : mE('로그인하면 일일 퀘스트를 받습니다', 'Log in for daily quests')}</p>`;
+  const rr = QUEST.rerolls || 0;
+  return `<ol class="qs">${QUEST.quests.map(q => { const ok = q.prog >= q.target, w = QWHERE[(QDEF[q.qid] || [])[2]] || QWHERE.all;
+    const act = q.claimed ? `<span class="qs-got">${mE('받음', 'Claimed')}</span>`
+      : ok ? `<button type="button" class="btn qs-claim" data-a="qclaim" data-s="${q.slot}">${mE('받기', 'Claim')}</button>`
+      : rr > 0 ? `<button type="button" class="qs-roll${qArm === q.slot ? ' arm' : ''}" data-a="qroll" data-s="${q.slot}" title="${mE('다시 뽑기', 'Reroll')}" aria-label="${mE('다시 뽑기', 'Reroll')}${qArm === q.slot ? ' · ' + mE('진행이 사라집니다. 한 번 더 누르세요', 'progress resets; tap again') : ''}">${qArm === q.slot ? mE('바꾸기?', 'Sure?') : '↻'}</button>` : '';
+    return `<li class="qs-it t${q.tier}${ok ? ' ok' : ''}${q.claimed ? ' got' : ''}"><span class="qs-st" aria-label="${mE('난이도', 'Tier')} ${q.tier}">${'★'.repeat(q.tier)}<i>${'★'.repeat(3 - q.tier)}</i></span>
+      <span class="qs-tx"><b>${qText(q)}</b><small>${mE(w[0], w[1])}</small><span class="qs-pg"><span class="pf-bar"><i style="width:${Math.min(100, q.prog / q.target * 100)}%"></i></span><em>${Math.min(q.prog, q.target)}/${q.target}</em></span></span>
+      <span class="qs-r">${MDL(q.reward)}${act}</span></li>`; }).join('')}</ol>`;
+}
+const qHead = () => (QUEST ? `<span class="qs-meta"><span>${mE('다시 뽑기', 'Rerolls')} <b>${QUEST.rerolls || 0}/2</b></span><span>${mE('초기화까지', 'Resets in')} <b>${qLeft()}</b></span></span>` : '');
+function questBody() {
+  return `<div class="qs-page"><div class="qs-top"><h3>${lbIc('quest')}${mE('오늘의 퀘스트', 'Today\'s Quests')}</h3>${qHead()}</div>${questList()}
+    <p class="cap">${mE('매일 자정(한국 시간)에 새 퀘스트 세 개가 나옵니다. ↻ 로 같은 단계의 다른 퀘스트로 바꿀 수 있습니다(하루 2번, 진행은 처음부터). 진행은 판이 끝날 때 서버가 셉니다.', 'Three new quests every midnight (KST). ↻ swaps one for another of the same tier (twice a day, progress resets). Progress is counted by the server when a game ends.')}</p></div>`;
+}
+async function questAct(a, slot, b) {
+  if (qBusy || !QUEST) return; const q = QUEST.quests.find(x => x.slot === slot); if (!q) return;
+  if (a === 'qroll' && q.prog > 0 && qArm !== slot) { qArm = slot; SND.play('tap'); return render(); }
+  qArm = -1; qBusy = true; if (b) b.disabled = true;
+  try {
+    if (a === 'qclaim') { AUTH.wallet = await rpc('quest_claim', { p_slot: slot }); q.claimed = true; SND.play('relicGood'); setTimeout(() => SND.play('coin'), 300); toast(mE(`퀘스트 보상 메달 ${q.reward}개`, `Quest reward: ${q.reward} medals`)); }
+    else { const v = await rpc('quest_reroll', { p_slot: slot }); if (v && Array.isArray(v.quests)) QUEST = v; SND.play('flip'); }
+  } catch (e) { toast(/no_reroll/.test(e.message) ? mE('오늘 다시 뽑기를 다 썼습니다', 'No rerolls left today') : /not_ready/.test(e.message) ? mE('아직 다 채우지 못했습니다', 'Not finished yet') : mE('잠시 후 다시 해 주세요', 'Please try again')); await questPull(); }
+  qBusy = false; render();
+}
+/* 판 기록: 내 자리 기준으로 턴마다 더한다. 모험은 결투가 끝날 때마다 run.qs에 모았다가 모험이 끝날 때 보낸다 */
+let QS = null;
+function qsTrack(o, n) {
+  if (!n || !seat || !n.P || !n.P[seat]) return;
+  if (!QS || QS.gid !== (doc && doc.gid) || n.turn === 1) QS = { gid: doc && doc.gid, turns: 0, dmg: 0, taken: 0, ab: 0, atk: 0, sp: 0, mv: 0, cls: n.P[seat].cls };
+  if (!o || !n.rp || n.turn !== o.turn + 1 || !o.P || !o.P[seat]) return;
+  const k = seat, e = opp(seat), q = n.rp.P[k] || {}, t = q.actId && CARDS[q.actId] ? CARDS[q.actId].t : '';
+  QS.turns++; QS.dmg += Math.max(0, o.P[e].hp - n.P[e].hp); QS.taken += Math.max(0, o.P[k].hp - n.P[k].hp);
+  if (q.ab) QS.ab++; if (q.mvId) QS.mv++; if (t === 'atk') QS.atk++; else if (t === 'sp') QS.sp++; else if (t === 'move') QS.mv++;
+}
+const qsOut = () => (QS ? { turns: QS.turns, dmg: QS.dmg, taken: QS.taken, ab: QS.ab, atk: QS.atk, sp: QS.sp, mv: QS.mv, cls: QS.cls } : null);
+function qsStage(g) {
+  if (!stageOn() || !run || !QS || !g || !g.winner || run.qsg === doc.gid) return; run.qsg = doc.gid;
+  const r = run.qs = run.qs || { fights: 0, wins: 0, elite: 0, turns: 0, dmg: 0, ab: 0, atk: 0, sp: 0, mv: 0 }, n = stCurNode();
+  r.fights++; ['turns', 'dmg', 'ab', 'atk', 'sp', 'mv'].forEach(k => { r[k] += QS[k]; });
+  if (g.winner === seat) { r.wins++; if (n && (n.t === 'elite' || n.t === 'boss')) r.elite++; r.ft = Math.min(r.ft || 999, QS.turns); r.lt = Math.min(r.lt == null ? 99 : r.lt, QS.taken); }
+  stSave();
+}
 function setSkin(c, id) { try { const o = JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {}; o[c] = id; localStorage.setItem('ssd-skins', JSON.stringify(o)); } catch (e) { /* 저장소 없음 */ } }
 /* 닉네임: 각 자리가 결투 문서에 적어 둔다. 봇은 '봇', 모험의 내 자리는 계정 닉네임 */
 function nickOf(k) { const n = doc && doc.nick && doc.nick[k]; if (n) return n; if (k === seat && typeof AUTH !== 'undefined' && AUTH.nick) return AUTH.nick; return doc && doc.seats && doc.seats[k] === 'bot' ? mE('봇', 'Bot') : ''; }
@@ -5929,6 +6020,7 @@ function onDoc() {
     gameStr = doc.game; G = parse(gameStr);
     if (G && G.turn === 1) { dealN = HAND; dealOpp = HAND; if (seat && !G.winner) showIntro(); }
     else if (G && old && G.rp && G.turn === old.turn + 1 && seat && !noMotion && !replaying) job = { old, lockedPlan: locked };
+    qsTrack(old, G);
   }
   const t = doc.gid + ':' + doc.turn;
   if (doc.phase === 'play' && t !== curTag) {
@@ -5957,7 +6049,7 @@ async function startReplay(job) {
   const drawn = k => { const q = neu.rp.P[k]; return Math.max(0, neu.P[k].hand.length - (job.old.P[k].hand.length - (q.mvId ? 1 : 0) - (q.actId ? 1 : 0) - (q.regroup || 0))); };
   dealN = drawn(seat); dealOpp = drawn(opp(seat));
   replaying = false; rpLocked = null; deadline = Date.now() + TURN_MS;
-  if (doc && doc.phase === 'over') matchReward(neu);
+  if (doc && doc.phase === 'over') { qsStage(neu); matchReward(neu); }
   render();
   if (doc && doc.phase === 'over') SND.play(neu.winner === seat ? 'win' : neu.winner === 'draw' ? 'turn' : 'lose'); else { SND.play('turn'); turnBanner(); }
   if (doc && doc.phase === 'play' && neu.P[seat].hp === 1 && job.old.P[seat].hp > 1) crisis();
@@ -5971,8 +6063,8 @@ function matchReward(g) {
   if (!(typeof tutOn === 'function' && tutOn())) tally(vsBot ? 'bot' : 'pvp', win ? 'w' : draw ? 'd' : 'l');
   const rw = lastRw = { key, n: null, why }, pl = AUTH.play && AUTH.play.key === (code || '') + ':' + doc.gid ? AUTH.play : null;
   if (!AUTH.user || !pl) { rw.n = 0; rw.why = AUTH.user ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
-  const before = medals(), done = n => { rw.n = n; if (lastRw === rw) render(); };
-  const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose' }));
+  const before = medals(), st = qsOut(), done = n => { rw.n = n; if (lastRw === rw) render(); };
+  const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv, p_stats: st }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose', p_stats: st }));
   const wait = () => (pl.sid ? Promise.resolve() : new Promise(r => setTimeout(r, 1500)));
   wait().then(go).then(n => { done(n || 0); return walletPull(); }).then(() => {
     /* 대전은 상대 보고가 와야 지급된다. 잠시 뒤 지갑을 다시 보고 늘었으면 표시 */
@@ -6906,10 +6998,11 @@ const LB_IC = {
   shop: ['...#...#...', '....###....', '...#####...', '..##...##..', '.##.###.##.', '.##.##..##.', '.##..##.##.', '.##.###.##.', '..##...##..', '...#####...', '...........'],
   rules: ['...........', '.#########.', '#.........#', '.#.#####.#.', '.#.......#.', '.#.#####.#.', '.#.......#.', '.#.####..#.', '#.........#', '.#########.', '...........'],
   gear: ['.....#.....', '..#.###.#..', '..#######..', '.###...###.', '..##...##..', '####...####', '..##...##..', '.###...###.', '..#######..', '..#.###.#..', '.....#.....'],
+  quest: ['..#######..', '.#.......#.', '.#.#####.#.', '.#.......#.', '.#.####..#.', '.#.......#.', '.#.###.#.#.', '.#....###..', '.#.....#...', '.#######...', '...........'],
   rec: ['...........', '.#########.', '##.#####.##', '#..#####..#', '##.#####.##', '...#####...', '....###....', '.....#.....', '....###....', '...#####...', '...........'],
 };
 const lbIc = k => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${LB_IC[k].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
-const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['직업 도감', 'Classes', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'] };
+const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['직업 도감', 'Classes', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'] };
 let repOpen = false, collTab = 'all';
 
 function lobbyHTML(logo) {
@@ -6933,13 +7026,14 @@ function lobbyHTML(logo) {
         <span class="lb-art" aria-hidden="true"><i class="px lb-spr a-${rep}${skc(rep, skinOf(rep))}"></i><b>VS</b><i class="px lb-spr flip a-${foe}"></i></span>
         <span class="lb-tx"><small>${mE('랜덤 매칭 · 친구와 대전', 'Random match · Friends')}</small><b>${mE('멀티 플레이', 'Multiplayer')}</b><span class="lb-chip"><i class="lb-dot${on ? ' ok' : ''}"></i>${on ? mE('온라인', 'Online') : mE('연결 중', 'Connecting')} · ${t.w}${mE('승', 'W')} ${t.l}${mE('패', 'L')}</span></span></button>
       <button type="button" class="lb-quick" data-a="mmquick" style="--i:3" ${on ? '' : 'disabled'}><b>${mE('빠른 대전', 'Quick Match')}</b><span>${mE('랜덤 매칭 · 승리 메달', 'Random 1v1 · win')} ${MDL(30)}</span></button>
+      ${QUEST ? `<button type="button" class="lb-qst" data-a="mtab" data-m="quest" style="--i:4">${lbIc('quest')}<span><b>${mE('일일 퀘스트', 'Daily Quests')}</b><small>${qDone()}/3 ${mE('완료', 'done')} · ${mE('초기화까지', 'resets in')} ${qLeft()}</small></span>${qReady() ? `<em class="qs-dot">${qReady()}</em>` : `<i class="qs-go" aria-hidden="true">▶</i>`}</button>` : ''}
     </section>
     <nav class="lb-dock" aria-label="${mE('메뉴', 'Menu')}">${dock.map(([a, ic, ko, en], n) => `<button type="button" class="lb-dk" ${a} style="--i:${n}">${lbIc(ic)}<span>${mE(ko, en)}</span></button>`).join('')}</nav>`;
 }
 
 function hubHTML(kind, off, ta) {
   const [ko, en] = HUB[kind], fam = ['acct', 'codex', 'coll', 'shop'].includes(kind);
-  const body = kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : multiBody(off);
+  const body = kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : kind === 'quest' ? questBody() : multiBody(off);
   return `<div class="hub hub-${kind}${ta ? ' pop' : ''}">
     <header class="hub-bar"><button type="button" class="hub-back" data-a="mback"><i aria-hidden="true"></i><span>${mE('로비', 'Lobby')}</span></button>
       <h2>${mE(ko, en)}</h2>
@@ -7244,7 +7338,8 @@ function pcHomeHTML(on) {
         <dl class="pc-stats"><div><dt>${mE('대전 전적', 'PvP')}</dt><dd>${pv.w}${mE('승', 'W')} ${pv.d}${mE('무', 'D')} ${pv.l}${mE('패', 'L')}<small>${n ? Math.round(pv.w / n * 100) + '%' : '-'}</small></dd></div>
           <div><dt>${mE('모험 돌파', 'Adventure')}</dt><dd>${clr}<small>/ ${CLASS_IDS.length}</small></dd><span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span></div>
           <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
-      <section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3) % RULES.length])}</p></section>
+      ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>`
+        : `<section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3) % RULES.length])}</p></section>`}
     </aside>
     <section class="pc-play" aria-label="${mE('게임 모드', 'Game mode')}">
       <h3 class="pc-ph3">${mE('게임 모드', 'Game Mode')}</h3>
@@ -7509,6 +7604,7 @@ app.addEventListener('click', e => {
   if (a === 'snd') { SND.toggle(); SND.play('tap'); return render(); }
   if (a === 'bgm') { SND.toggleBgm(); SND.play('tap'); return render(); }
   if (a === 'splash') return menuStart();
+  if (a === 'qclaim' || a === 'qroll') return questAct(a, +b.dataset.s, b);
   if (a === 'mtab') { menuTab = b.dataset.m; tabAnim = true; SND.play('pop'); return render(); }
   if (a === 'mback') { menuTab = null; tabAnim = true; SND.play('tap'); return render(); }
   if (a === 'ov') { SND.play('tap'); return openOv(b.dataset.o); }
@@ -7591,6 +7687,7 @@ async function walletPull() {
   AUTH.owned = (await sb('/rest/v1/owned_skins?select=cls,skin') || []).map(r => r.cls + ':' + r.skin);
   try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
   if (AUTH.gift) setTimeout(welcomeShow, 600);
+  questPull();
 }
 function authKeep(ses) {
   AUTH.tok = { access_token: ses.access_token, refresh_token: ses.refresh_token, exp: Date.now() + (ses.expires_in || 3600) * 1000 };
@@ -11721,7 +11818,7 @@ function stMedal(won) {
   if (!run || run.medalReq) return; const total = run.map ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18, done = (run.path || []).length;
   run.rate = Math.min(1, done / total); run.medal = null; run.medalReq = true;
   if (!AUTH.user || !run.sid) { run.medal = 0; return; }
-  const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
+  const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won, p_stats: Object.assign({ cls: r.cls }, r.qs || {}) }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
 }
 function stSumHTML() {
   const won = !!run.cleared, ln = won ? null : stCurNode(), rec = stageRec3(), c = CLS[run.cls], log = run.log || [];
