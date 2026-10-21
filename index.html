@@ -3235,7 +3235,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .bs-ln { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 4px 0; font-size: 14px; line-height: 1.55; } .bs-ln dt { font-weight: 700; color: #4b3f8f; } .bs-ln dd { margin: 0; }
 .bs-nwk { color: #4b3f8f; }
 .bs-deck { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .bs-deck li { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 4px 8px; background: var(--wash); font-size: 13px; }
-.bs-deck li span { color: var(--ash); font-size: 12px; } .bs-deck li em { font-style: normal; font-weight: 700; } .bs-deck li.nw { background: #ece9fb; box-shadow: inset 3px 0 0 #4b3f8f; }
+.bs-deck li > span { color: var(--ash); font-size: 12px; } .bs-deck li > span i { font-style: normal; } .bs-deck li em { font-style: normal; font-weight: 700; } .bs-deck li.nw { background: #ece9fb; box-shadow: inset 3px 0 0 #4b3f8f; }
 .bs-play { justify-self: start; margin-top: 6px; }
 @media (max-width: 760px) { .rlx { grid-template-columns: 1fr; } .rl-main { order: -1; } .rl-stage { height: 170px; } .rl-stage canvas { width: 150px; height: 150px; } .rl-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); } .rl-t canvas { width: 60px; height: 60px; } .cx-tb { padding: 7px 12px; } }
 .pcx { flex: 1 1 auto; display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; min-height: 0; }
@@ -7337,7 +7337,7 @@ function bossBody() {
   const tile = i => `<button type="button" class="rl-t bs-t${met(i) ? '' : ' unk'}${i === a ? ' on' : ''}" data-a="bsv" data-k="${i}" aria-pressed="${i === a}"><span class="bs-im"><i class="px a-admin${met(i) ? '' : ' sil'}" aria-hidden="true"></i></span>
       <span>${met(i) ? `${mE('관리자', 'Admin')} ${adminVer(i)}` : '???'}</span><em class="bs-st${bk['a' + i] ? ' ok' : ''}">${bk['a' + i] ? mE('처치', 'Defeated') : met(i) ? mE('만남', 'Met') : mE('미발견', 'Unknown')}</em></button>`;
   const cnt = {}; adminDeck(a).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; });
-  const deck = Object.keys(cnt).sort((x, y) => (ADMIN_NEW[a].includes(y) - ADMIN_NEW[a].includes(x)) || CARDS[x].c - CARDS[y].c).map(id => `<li class="${ADMIN_NEW[a].includes(id) ? 'nw' : ''}" title="${esc(CARDS[id].d)}"><b>${CARDS[id].n}</b><span>${mE('마나', 'Mana')} ${CARDS[id].c} · ${hl(CARDS[id].d)}</span><em>×${cnt[id]}</em></li>`).join('');
+  const deck = Object.keys(cnt).sort((x, y) => (ADMIN_NEW[a].includes(y) - ADMIN_NEW[a].includes(x)) || CARDS[x].c - CARDS[y].c).map(id => `<li class="${ADMIN_NEW[a].includes(id) ? 'nw' : ''}" title="${esc(CARDS[id].d)}"><b>${CARDS[id].n}</b><span><i>${mE('마나', 'Mana')} ${CARDS[id].c} · </i><span>${hl(CARDS[id].d)}</span></span><em>×${cnt[id]}</em></li>`).join('');
   const lines = [[mE('등장', 'Intro'), L(...ADMIN_LINE[a]), m], [mE('분노', 'Rage'), L(...ADMIN_TALK.rage[a]), !!r], [mE('패배', 'Defeat'), L(...ADMIN_TALK.ko[a]), !!r]];
   return `<div class="rlx bsx"><div class="rl-list"><p class="rl-gh">${mE('모험의 보스', 'Adventure boss')} <b>${[0, 1, 2].filter(i => bk['a' + i]).length}/3</b></p><div class="rl-grid">${[0, 1, 2].map(tile).join('')}</div>
       <p class="cap">${mE('관리자는 모험의 1·2·3막 끝에서 기다립니다. 등장 연출을 끝까지 보면 이름과 등장 대사가, 쓰러뜨리면 나머지 기록이 열립니다.', 'The Admin waits at the end of every Adventure act. Watch its intro to record its name and line; defeat it to unlock the rest.')}</p></div>
