@@ -3253,6 +3253,25 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .ach-bar { display: block; height: 6px; background: #d9cfcc; margin-top: 3px; } .ach-bar i { display: block; height: 100%; background: var(--amber); }
 .ach-ti { display: grid; justify-items: end; gap: 4px; } .ach-ti em { font-style: normal; font-size: 12px; font-weight: 700; color: #b97f22; white-space: nowrap; } .ach-c:not(.ok) .ach-ti em { color: var(--ash); }
 .ach-ti .btn.sm { padding: 3px 10px; font-size: 12px; min-height: 28px; } .ach-lk { font-size: 11px; }
+/* 업적 등급: 브론즈·실버·골드·전설 */
+.t-b { --tc: #b0703c; --tc2: #7d4a22; } .t-s { --tc: #8c98a8; --tc2: #5c6676; } .t-g { --tc: #d9a21b; --tc2: #9c7210; } .t-l { --tc: #8a4fd8; --tc2: #5a2d9c; }
+.ach-c { position: relative; border-left: 6px solid var(--tc) !important; }
+.ach-tr { position: absolute; top: -9px; left: 8px; padding: 0 6px; font-style: normal; font-size: 10px; font-weight: 700; line-height: 16px; color: #fff; background: var(--tc); box-shadow: 1px 1px 0 var(--tc2); }
+.ach-c:not(.ok) .ach-tr { opacity: .65; }
+.ach-rw { font-size: 12px; font-weight: 700; color: var(--ash); } .ach-rw.got { color: var(--green-d, #3c8a4a); }
+.ach-claim { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 8px 12px; background: #fff7e8; border: 3px solid #e3a33b; } .ach-claim p { margin: 0; font-size: 14px; } .ach-claim b { color: var(--red-d); }
+.ach-note { margin: 0; }
+.ach-pools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.ach-pl { display: grid; gap: 6px; align-content: start; padding: 10px 12px; background: #fff; border: 3px solid var(--tc); box-shadow: 3px 3px 0 var(--tc2); }
+.ach-pl.done { background: color-mix(in srgb, var(--tc) 12%, #fff); }
+.ach-pn { font-size: 16px; color: var(--tc2); } .ach-pc { font-size: 12px; color: var(--ash); justify-self: end; margin-top: -24px; }
+.ach-pl ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 12px; } .ach-pl ul em { font-style: normal; }
+.ach-pl .pf-bar i { background: var(--tc); } .ach-pl .btn.sm { padding: 3px 10px; font-size: 12px; min-height: 28px; }
+.ttl.t-b { color: #a0602c; } .ttl.t-s { color: #6e7a8c; } .ttl.t-g { color: #c08a0c; text-shadow: 0 0 6px rgba(240, 190, 60, .5); }
+.ttl.t-l { background: linear-gradient(90deg, #8a4fd8, #d45ad0, #5f8ae0, #8a4fd8); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (prefers-reduced-motion: no-preference) { .ttl.t-l { animation: ttlShine 3s linear infinite; } }
+@keyframes ttlShine { to { background-position: 300% 0; } }
+@media (max-width: 900px) { .ach-pools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 440px) { .hub-tab .pxi { display: none; } .hub-tab span { white-space: nowrap; } }
 @media (max-width: 600px) { .ach-top { grid-template-columns: 1fr; } .ach-list { grid-template-columns: 1fr; } .ach-tabs .cx-tb em { display: none; } }
 /* 보스 도감 */
@@ -7343,7 +7362,7 @@ function profBody() {
   return `<div class="pf">
     <section class="pf-card c-${rep}">
       <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}
+      <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}
       <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
       <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
       ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
@@ -7450,11 +7469,40 @@ const ACH = [
   { id: 'relics', c: 'col', n: ['고고학 박사', 'Curator'], d: ['유물 도감을 모두 채운다', 'Complete the Relic codex'], t: ['고고학 박사', 'Curator'], g: () => RL_ALL().length, v: () => { const b = rlBook(); return RL_ALL().filter(id => b[id]).length; } },
   { id: 'bosses', c: 'col', n: ['관리자의 관리자', 'Admin of Admins'], d: ['보스 도감을 모두 채운다', 'Complete the Boss codex'], t: ['관리자의 관리자', 'Root User'], g: 3, v: () => [0, 1, 2].filter(a => bossBook()['a' + a]).length },
 ];
+/* 업적 등급과 등급별 보상풀: 업적마다 메달, 등급 색 칭호. 한 등급을 모두 받으면 완성 보너스 메달과 전용 칭호.
+   메달은 서버(supabase/achievements.sql)가 업적마다 한 번만 준다 */
+const ACH_TIER = { b: 'run1 win1 perf quick heavy noab hard1 pvp1 emo week1 adm1 comeback', s: 'run5 win50 long bo3 ban pvp10 hard10 cls10 adm2 rungold runrl skin5', g: 'runc10 win200 perf10 pvp50 adm3 admfast runhp1 run300 week10 bosses', l: 'runc30 cls30 admflaw relics' };
+const ACH_POOL = {
+  b: { n: ['브론즈', 'Bronze'], m: 20, bonus: 100, t: ['브론즈 컬렉터', 'Bronze Collector'] },
+  s: { n: ['실버', 'Silver'], m: 50, bonus: 250, t: ['실버 컬렉터', 'Silver Collector'] },
+  g: { n: ['골드', 'Gold'], m: 120, bonus: 500, t: ['골드 컬렉터', 'Gold Collector'] },
+  l: { n: ['전설', 'Legend'], m: 300, bonus: 1000, t: ['살아 있는 전설', 'Living Legend'] },
+};
+const achTier = id => { if (/^tier:/.test(id)) return id.slice(5); for (const t in ACH_TIER) if (ACH_TIER[t].split(' ').includes(id)) return t; return 'b'; };
+const tierIds = t => ACH_TIER[t].split(' ');
+const tierDone = t => { const g = achGot(); return tierIds(t).every(id => g[id]); };
+let ACHR = { ids: null, t: 0, busy: false, err: '', claiming: false };
+function achrPull(force) {
+  if (!AUTH.user || ACHR.busy || (!force && Date.now() - ACHR.t < 120000)) return; ACHR.busy = true;
+  rpc('ach_claimed').then(r => { ACHR = Object.assign(ACHR, { ids: Array.isArray(r) ? r : [], t: Date.now(), busy: false, err: '' }); render(); })
+    .catch(e => { ACHR = Object.assign(ACHR, { t: Date.now(), busy: false, err: /ach_claimed|404|PGRST|function/.test(String(e && e.message)) ? 'nosql' : 'net' }); render(); });
+}
+function achClaim(ids) {
+  if (!AUTH.user || ACHR.claiming || !ids.length) return; ACHR.claiming = true; render();
+  rpc('ach_claim', { p_ids: ids }).then(r => {
+    ACHR.claiming = false; if (r && r.wallet != null) AUTH.wallet = r.wallet; if (r && Array.isArray(r.claimed)) ACHR.ids = r.claimed;
+    const got = (r && r.medals) || 0, bn = (r && r.bonus) || 0;
+    if (got + bn > 0) { toast(bn ? L(`메달 +${got + bn} (등급 완성 보너스 ${bn} 포함)`, `+${got + bn} medals (incl. ${bn} tier bonus)`) : L(`메달 +${got} 받았습니다`, `Received ${got} medals`)); for (let k = 0; k < Math.min(8, Math.ceil((got + bn) / 40)); k++) setTimeout(() => SND.play('coin'), k * 90); }
+    render();
+  }).catch(() => { ACHR.claiming = false; toast(L('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); render(); });
+}
 const achGot = () => parse(ls('ssd-ach')) || {};
 const achC = () => Object.assign({ wins: 0, perf: 0, pvpw: 0, hardw: 0, runs: 0, emo: 0, cw: [] }, parse(ls('ssd-achc')) || {});
 const achGoal = a => (typeof a.g === 'function' ? a.g() : a.g || 1);
-const achTitle = id => { const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
-const myTitle = () => { const id = ls('ssd-title'); return id && achGot()[id] ? achTitle(id) : ''; };
+const achTitle = id => { if (/^tier:/.test(id)) { const P = ACH_POOL[id.slice(5)]; return P ? L(...P.t) : ''; } const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
+const titleOk = id => !!id && (/^tier:/.test(id) ? ACH_POOL[id.slice(5)] && tierDone(id.slice(5)) : !!achGot()[id]);
+const myTitle = () => { const id = ls('ssd-title'); return titleOk(id) ? achTitle(id) : ''; };
+const myTitleTier = () => { const id = ls('ssd-title'); return titleOk(id) ? achTier(id) : ''; };
 let achQ = [], achT = 0;
 function achGive(id) {
   const o = achGot(); if (o[id] || !ACH.some(a => a.id === id)) return false;
@@ -7465,7 +7513,7 @@ function achScan(c) { c = c || achC(); ACH.forEach(a => { if (a.v) { try { if (a
 function achShowNext() {
   const id = achQ.shift(); if (!id) { achT = 0; return; } const a = ACH.find(x => x.id === id);
   document.querySelectorAll('.achx').forEach(e => e.remove());
-  document.body.insertAdjacentHTML('beforeend', `<div class="achx" role="status"><i class="achx-ic" aria-hidden="true">${lbIc('rec')}</i><span><small>${L('업적 달성', 'Achievement unlocked')}</small><b>${L(...a.n)}</b><em>${L('칭호', 'Title')} 「${L(...a.t)}」</em></span></div>`);
+  document.body.insertAdjacentHTML('beforeend', `<div class="achx" role="status"><i class="achx-ic" aria-hidden="true">${lbIc('rec')}</i><span><small>${L('업적 달성', 'Achievement unlocked')}</small><b>${L(...a.n)}</b><em>${L('칭호', 'Title')} 「${L(...a.t)}」 · ${L(...ACH_POOL[achTier(id)].n)} ${MDL(ACH_POOL[achTier(id)].m)}</em></span></div>`);
   SND.play('relicGood'); achT = setTimeout(() => { document.querySelectorAll('.achx').forEach(e => e.classList.add('out')); setTimeout(achShowNext, 350); }, 3000);
 }
 /* 결투가 끝날 때(튜토리얼 제외). 모험의 결투, 봇 연습, 대전 모두 */
@@ -7499,17 +7547,29 @@ function achEmote() { const c = achC(); c.emo++; ls('ssd-achc', JSON.stringify(c
 let achTab = 'all';
 function achBody() {
   achScan();   /* 수집 업적은 화면을 열 때도 확인한다 */
-  const got = achGot(), c = achC(), n = ACH.filter(a => got[a.id]).length, tid = ls('ssd-title'), cur = tid && got[tid] ? tid : '';
+  achrPull(); const got = achGot(), c = achC(), n = ACH.filter(a => got[a.id]).length, tid = ls('ssd-title'), cur = titleOk(tid) ? tid : '', cl = ACHR.ids, canClaim = AUTH.user && cl && !ACHR.err;
+  const ready = canClaim ? ACH.filter(a => got[a.id] && !cl.includes(a.id)).map(a => a.id) : [];
   const card = a => { const ok = !!got[a.id], g = achGoal(a); let v = 0; try { v = a.v ? Math.min(g, a.v(c)) : ok ? 1 : 0; } catch (e) { v = 0; }
-    return `<div class="ach-c${ok ? ' ok' : ''}${cur === a.id ? ' on' : ''}"><i class="ach-ic" aria-hidden="true">${lbIc('rec')}</i><div class="ach-tx"><b>${L(...a.n)}</b><span>${L(...a.d)}</span>
+    const t = achTier(a.id), P = ACH_POOL[t], rw = !ok ? `<span class="ach-rw">${MDL(P.m)}</span>` : canClaim && !cl.includes(a.id) ? `<button type="button" class="btn red sm" data-a="achget" data-k="${a.id}"${ACHR.claiming ? ' disabled' : ''}>${MDL(P.m)} ${L('받기', 'Claim')}</button>` : canClaim ? `<span class="ach-rw got">${MDL(P.m)} ✓</span>` : `<span class="ach-rw">${MDL(P.m)}</span>`;
+    return `<div class="ach-c t-${t}${ok ? ' ok' : ''}${cur === a.id ? ' on' : ''}"><em class="ach-tr">${L(...P.n)}</em><i class="ach-ic" aria-hidden="true">${lbIc('rec')}</i><div class="ach-tx"><b>${L(...a.n)}</b><span>${L(...a.d)}</span>
       ${!ok && g > 1 ? `<span class="ach-bar" role="img" aria-label="${v}/${g}"><i style="width:${v / g * 100}%"></i></span><small>${v} / ${g}</small>` : ''}</div>
-      <div class="ach-ti"><em>「${L(...a.t)}」</em>${ok ? (cur === a.id ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${a.id}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="ach-lk">${L('잠김', 'Locked')}</span>`}</div></div>`; };
+      <div class="ach-ti"><em>「${L(...a.t)}」</em>${rw}${ok ? (cur === a.id ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${a.id}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="ach-lk">${L('잠김', 'Locked')}</span>`}</div></div>`; };
   const list = ACH.filter(a => achTab === 'all' || a.c === achTab);
   return `<div class="ach"><div class="ach-top"><div class="ach-sum"><span class="cap">${L('달성', 'Unlocked')}</span><b>${n}<i>/ ${ACH.length}</i></b><span class="pf-bar"><i style="width:${n / ACH.length * 100}%"></i></span></div>
       <div class="ach-now"><span class="cap">${L('지금 단 칭호', 'Current title')}</span><b>${cur ? `「${achTitle(cur)}」` : L('없음', 'None')}</b><small>${L('칭호는 프로필, 메뉴, 결투 시작 화면에 이름과 함께 보이고 대전 상대에게도 보입니다.', 'Your title shows with your name on your profile, the menu and the duel intro, and to PvP opponents.')}</small></div></div>
+    ${achPools(got, cl, cur)}
+    ${!AUTH.user ? `<p class="cap ach-note">${L('로그인하면 업적 보상 메달을 받을 수 있습니다.', 'Log in to claim achievement medals.')}</p>` : ACHR.err === 'nosql' ? `<p class="cap ach-note">${L('업적 보상 서버가 아직 준비되지 않았습니다(관리자: supabase/achievements.sql 실행).', 'Achievement rewards are not set up yet (run supabase/achievements.sql).')}</p>` : ready.length ? `<div class="ach-claim"><p>${L(`받지 않은 업적 보상 <b>${ready.length}</b>개`, `<b>${ready.length}</b> rewards to claim`)} · ${MDL(ready.reduce((s, id) => s + ACH_POOL[achTier(id)].m, 0))}</p><button type="button" class="btn red sm" data-a="achget" data-k="${ready.join(',')}"${ACHR.claiming ? ' disabled' : ''}>${L('모두 받기', 'Claim all')}</button></div>` : ''}
     <nav class="cx-tabs ach-tabs">${[['all', '전체', 'All'], ...ACH_CAT].map(([k, a, b]) => `<button type="button" class="cx-tb${achTab === k ? ' on' : ''}" data-a="achtab" data-t="${k}" aria-pressed="${achTab === k}"><b>${L(a, b)}</b><em>${ACH.filter(x => (k === 'all' || x.c === k) && got[x.id]).length}/${ACH.filter(x => k === 'all' || x.c === k).length}</em></button>`).join('')}</nav>
     <div class="ach-list" data-keep="achl">${list.map(card).join('')}</div></div>`;
 }
+/* 등급별 보상풀: 등급마다 업적 메달, 완성 보너스, 전용 칭호 */
+function achPools(got, cl, cur) {
+  return `<div class="ach-pools">${Object.keys(ACH_POOL).map(t => { const P = ACH_POOL[t], ids = tierIds(t), n = ids.filter(id => got[id]).length, done = n === ids.length, tid = 'tier:' + t, bonusGot = cl && cl.includes(tid);
+    return `<div class="ach-pl t-${t}${done ? ' done' : ''}"><b class="ach-pn">${L(...P.n)}</b><span class="ach-pc">${n} / ${ids.length}</span>
+      <ul><li>${L('업적마다', 'Each')} ${MDL(P.m)}</li><li>${L('칭호 색', 'Title color')} <em class="ttl t-${t}">「${L('칭호', 'Title')}」</em></li><li>${L('모두 달성', 'Complete')} ${MDL(P.bonus)}${bonusGot ? ' ✓' : ''}</li><li>${L('전용 칭호', 'Title')} 「${L(...P.t)}」</li></ul>
+      ${done ? (cur === tid ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${tid}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="pf-bar"><i style="width:${n / ids.length * 100}%"></i></span>`}</div>`; }).join('')}</div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="achget"]'); if (!b || b.disabled) return; e.stopPropagation(); SND.unlock(); SND.play('tap'); achClaim(b.dataset.k.split(',').filter(Boolean)); });
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="achtitle"],[data-a="achtab"]'); if (!b) return; e.stopPropagation(); SND.unlock();
   if (b.dataset.a === 'achtab') achTab = b.dataset.t; else { ls('ssd-title', b.dataset.k || ''); SND.play(b.dataset.k ? 'relicGood' : 'tap'); } render(); });
 /* ===== 주간 도전 모험 =====
@@ -7835,7 +7895,7 @@ function pcProfBody() {
   return `<div class="pp">
     <aside class="pp-hero c-${rep}">
       <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
       <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
       ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
       ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
