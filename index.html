@@ -3055,6 +3055,25 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pg-single .pc-pb, .pg-multi .pc-pb { display: flex; flex-direction: column; gap: 12px; background: linear-gradient(#f6f3f2, #fff 40%); }
 .pmcs { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1.6fr 1fr; gap: 22px; }
 /* 방 만들기와 코드로 입장을 한 줄에 위아래로 */
+/* 랜덤 매칭 칸: 대전 방식마다 한 열 */
+.pmc.pmr { grid-template-rows: auto minmax(0, 1fr); }
+.pmr .pmc-tx { padding-bottom: 6px; overflow: visible; }
+.pmr-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 8px 24px 24px; min-height: 0; }
+.pmr-c { display: grid; grid-template-rows: minmax(120px, 1fr) auto auto auto; gap: 6px; justify-items: center; text-align: center; padding: 12px 12px 14px; background: rgba(29, 20, 19, .28); border: 2px solid rgba(29, 20, 19, .6); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); min-height: 0; }
+.pmr-c:hover { background: rgba(29, 20, 19, .4); } .pmr-c > b { font-size: 24px; color: #fff; text-shadow: 2px 2px 0 #1d1413; } .pmr-c > small { font-size: 13px; color: #ffe8ec; }
+.pmr-c .pcb { width: 100%; margin-top: 4px; }
+.pmr-art { position: relative; align-self: stretch; justify-self: stretch; display: flex; align-items: center; justify-content: center; gap: 4px; background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .07) 0 18px, transparent 18px 36px), rgba(0, 0, 0, .18); overflow: hidden; container-type: size; }
+.pmr-s { width: min(44cqw, 72cqh); height: min(44cqw, 72cqh); flex: none; }
+.pmr-one { font-size: min(24cqw, 40cqh); line-height: 1; color: #ffd75e; text-shadow: 3px 3px 0 #1d1413; rotate: -6deg; }
+.pmr-bo { display: grid; justify-items: center; gap: 8px; } .pmr-bo { gap: min(4cqh, 14px); } .pmr-cr .pxi { width: min(34cqw, 30cqh); height: min(34cqw, 30cqh); fill: #ffd75e; filter: drop-shadow(2px 2px 0 #1d1413); }
+.pmr-pips { display: flex; gap: 8px; } .pmr-pips i { display: grid; place-items: center; width: min(22cqw, 20cqh); height: min(22cqw, 20cqh); font-style: normal; font-size: min(11cqw, 10cqh); font-weight: 700; color: #bfaea9; background: rgba(0, 0, 0, .3); border: 2px solid #1d1413; }
+.pmr-pips i.w { color: #1d1413; background: #ffd75e; box-shadow: 2px 2px 0 #1d1413; }
+.pmr-bo em { font-style: normal; font-size: min(8cqw, 16px); font-weight: 700; letter-spacing: 2px; color: #fff; }
+.pmr-bn { position: relative; display: grid; place-items: center; width: min(31cqw, 60cqh); height: min(36cqw, 70cqh); flex: none; } .pmr-bn .px { width: 100%; aspect-ratio: 1; height: auto; }
+.pmr-bn.ban .px { filter: grayscale(1) brightness(.7); }
+.pmr-bn.ban::before, .pmr-bn.ban::after { content: ""; position: absolute; left: 4px; right: 4px; top: 50%; height: min(3cqw, 9px); background: #ff4d63; box-shadow: 2px 2px 0 #1d1413; rotate: 45deg; z-index: 1; } .pmr-bn.ban::after { rotate: -45deg; }
+.pmr-bn em { position: absolute; bottom: -4px; z-index: 2; padding: 0 8px; font-style: normal; font-size: min(7cqw, 16px); font-weight: 700; color: #fff; background: #ff4d63; box-shadow: 2px 2px 0 #1d1413; }
+@media (prefers-reduced-motion: no-preference) { .pc-page.pop .pmr-c { animation: sgIn .35s steps(5) calc(.2s + var(--i) * 80ms) backwards; } }
 .pmc-col { display: grid; grid-template-rows: 1fr 1fr; gap: 16px; min-height: 0; }
 .pmc-col .pmc { min-height: 0; grid-template-rows: minmax(0, 1fr) auto; }
 .pmc-col .pmc .pmc-art { display: none; }
@@ -7882,16 +7901,23 @@ function pcSingleBody() {
       <div class="pmc-go"><button type="button" class="pcb gold big" data-a="tut">${mE('튜토리얼 시작', 'Start Tutorial')}</button></div></section>
   </div><p class="pmc-note">${mE('너무 빨리 끝난 판과 하루 한도를 넘긴 판은 메달을 받지 않습니다.', 'Very short games and games past the daily cap pay no medals.')}</p>`;
 }
+/* PC 랜덤 매칭: 방식마다 그림. 단판은 한 판 맞대결, 3판 2선승은 세 판 중 두 판, 밴픽은 금지당한 직업 */
+function pmrArt(m, rep, foe) {
+  if (m === 'single') return `<i class="px a-${rep}${skc(rep, skinOf(rep))} pmr-s"></i><b class="pmr-one">1</b><i class="px a-${foe} flip pmr-s"></i>`;
+  if (m === 'bo3') return `<span class="pmr-bo"><i class="pmr-cr">${pxs('boss')}</i><span class="pmr-pips"><i class="w">1</i><i class="w">2</i><i>3</i></span><em>2 ${mE('승', 'WINS')}</em></span>`;
+  const c3 = MENU_CAST.filter(k => k !== rep && k !== foe).slice(0, 3);
+  return c3.map((k, i) => `<span class="pmr-bn${i === 1 ? ' ban' : ''}"><i class="px a-${k}${i === 2 ? ' flip' : ''}"></i>${i === 1 ? '<em>BAN</em>' : ''}</span>`).join('');
+}
 function pcMultiBody(off) {
   const on = netReady && db, rep = repCls(), foe = MENU_DUEL.find(k => k !== rep) || 'samurai', t = Object.assign({ w: 0, d: 0, l: 0 }, tallyOf().pvp);
   const st = on ? ['ok', mE('온라인 연결됨', 'Online')] : off ? ['off', mE('온라인 대전을 쓸 수 없습니다', 'Online unavailable')] : ['wait', mE('연결하는 중', 'Connecting')];
   return `<div class="pmcs">
-    <section class="pmc wide red" style="--i:0"><div class="pmc-art rand-art"><span class="pmc-f">${faceOf(rep, skinOf(rep))}<b data-notr>${esc(AUTH.nick)}</b></span><b class="pmc-vs">VS</b><span class="pmc-f"><span class="lb-face q"><i>?</i></span><b>${mE('누군가', 'Anyone')}</b></span></div>
+    <section class="pmc wide red pmr" style="--i:0">
       <div class="pmc-tx"><p class="pmc-k">${mE('추천', 'Recommended')} <span class="mu-net ${st[0]}"><i></i>${st[1]}</span></p><h3>${mE('랜덤 매칭', 'Random Match')}</h3>
         <p>${mE('대전 방식을 고르면 같은 방식을 기다리는 사람과 바로 대결합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Pick a format to face someone waiting for the same one. Both players confirm the result.')}</p>
-        <p class="pmc-chips"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span></p>
-        <p class="pmc-rw">${mE('내 전적', 'My record')} <b>${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</b></p></div>
-      <div class="pmc-go">${MM.on ? mmHTML() : mmBtns(on, 'pcb big')}</div></section>
+        <p class="pmc-chips"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span><span>${mE('내 전적', 'My record')} ${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</span></p></div>
+      ${MM.on ? `<div class="pmc-go">${mmHTML()}</div>` : `<div class="pmr-cols">${MM_MODES.map(([m, a, b, c, d], i) => `<div class="pmr-c m-${m}" style="--i:${i}"><div class="pmr-art" aria-hidden="true">${pmrArt(m, rep, foe)}</div>
+        <b>${mE(a, b)}</b><small>${mE(c, d)}</small><button type="button" class="pcb ${i ? 'dark' : 'gold'} big" data-mm="go" data-md="${m}" ${on ? '' : 'disabled'}>${mE('매칭 시작', 'Find Match')}</button></div>`).join('')}</div>`}</section>
     <div class="pmc-col">
     <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3>${mE('방 만들기', 'Create Room')}</h3>
