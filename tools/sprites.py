@@ -17,6 +17,7 @@
                                      인게임 그림 배율은 "sc": 1.2 (고해상도 스킨은 기본 1.2, 나머지는 1). 발끝은 그대로, 초상화 자리는 바뀌지 않는다
                                      특수 스킨의 키컬러는 "ac": ["#주색", "#어두운색"] — 그 스킨이 보이는 곳에서 직업 색을 덮는다
                                      기본 300이 아닌 가격은 "price": 800 — build가 supabase/skin_prices.sql도 다시 만든다(서버에서 Run)
+                                     기본 그림을 고해상도로 그렸으면 {"직업": {"_base": {"px": 2, "sc": 1.4}}} (보스처럼 크게 보일 때 sc를 키운다)
 
 사용법
   python3 tools/sprites.py export   index.html의 지금 그림을 sprites/base 시트로 꺼낸다
@@ -172,8 +173,10 @@ def build():
         p = os.path.join(BASE, c + '.png')
         if not os.path.exists(p): raise SystemExit(f'{p} 가 없습니다. 먼저 export 하세요')
         fr = read_sheet(p); kp = os.path.join(BASE, c + '_ko.png')
-        out.append(css_for(c, fr, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(fr['idle1']))); face[c] = face_of(fr['idle1'])
-        if size_of(fr) != (32, 32): bsz[c] = list(size_of(fr))
+        bc = (names.get(c) or {}).get('_base') or {}; bd = int(bc.get('px', 1)); bs = float(bc.get('sc', 1.2 if bd > 1 else 1))   # 기본 그림도 고해상도로 그릴 수 있다(보스 등)
+        out.append(css_for(c, fr, Image.open(kp).convert('RGBA') if os.path.exists(kp) else ko_from(fr['idle1']), None, bd, bs))
+        face[c] = bc.get('f') or face_of(fr['idle1'].resize(size_of(fr, bd), Image.NEAREST) if bd != 1 else fr['idle1'])
+        if size_of(fr, bd) != (32, 32): bsz[c] = list(size_of(fr, bd))
         d = os.path.join(SKINS, c)
         if os.path.isdir(d):
             for f in sorted(os.listdir(d)):
