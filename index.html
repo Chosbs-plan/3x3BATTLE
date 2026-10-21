@@ -1284,6 +1284,65 @@ canvas.fx { position: absolute; z-index: 7; left: 0; top: 0; width: calc(3 * var
 /* ===== 결투장 슬롯 인트로, KO와 승리 연출 ===== */
 .intro.intro2 { animation: introIn2 .2s steps(3) both; gap: 14px; }
 .intro.intro2.out { opacity: 0; transition: opacity .3s steps(4); }
+/* 관리자 보스 등장: 막마다 다른 시스템 화면 → 창 → 등장 대사 → 이름 띠. 누르면 다음 단계 */
+.adi { position: fixed; inset: 0; z-index: 31; overflow: hidden; background: rgba(26, 20, 32, .78); color: #1a1420; font-family: 'Galmuri11', var(--pix, inherit); cursor: pointer; user-select: none; }
+.adi.out { opacity: 0; transition: opacity .3s steps(4); }
+.adi .sc { position: absolute; inset: 0; display: none; }
+.adi[data-s="1"] .s1, .adi[data-s="2"] .s2, .adi[data-s="3"] .s3, .adi[data-s="4"] .s4 { display: block; animation: adiIn .18s steps(3) both; }
+@keyframes adiIn { from { opacity: 0; } }
+.adi .skip { position: absolute; right: 16px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 3; font: inherit; font-size: 13px; padding: 6px 12px; background: #fff; border: 2px solid #1a1420; color: #1a1420; cursor: pointer; }
+.adi .scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 3px, rgba(0, 0, 0, .22) 3px 4px); }
+.adi .crt { position: absolute; inset: 0; background: #0d0a12; }
+.adi .crt pre { position: absolute; left: max(16px, 8vw); right: 12px; top: max(40px, 14vh); font: inherit; font-size: clamp(12px, 2.2vw, 20px); line-height: 1.75; color: #8ff0a8; white-space: pre; overflow: hidden; }
+.adi .crt pre > span { display: block; animation: adiLn .01s steps(1) both; animation-delay: calc(var(--i) * var(--ld, 260ms)); }
+@keyframes adiLn { from { visibility: hidden; } }
+.adi .crt .w { color: #fff; } .adi .crt .y { color: #ffd75e; }
+.adi .crt .cur { display: inline-block; width: .6em; height: 1em; background: #fff; vertical-align: -2px; animation: adiBlink .5s steps(1) infinite; }
+@keyframes adiBlink { 50% { opacity: 0; } }
+.adi .blue { position: absolute; inset: 0; background: #2a3fd0; color: #fff; display: grid; place-content: center; text-align: center; gap: 22px; padding: 16px; }
+.adi .blue p { font-size: clamp(16px, 2.6vw, 26px); line-height: 1.8; } .adi .blue p small { display: block; font-size: .55em; color: #c9d2ff; }
+.adi .blue .bar { width: min(420px, 70vw); justify-self: center; }
+.adi .tint { position: absolute; inset: 0; }
+.adi-a2 .tint { background: rgba(70, 10, 24, .55); }
+.adi .win { position: absolute; background: #c9c6d6; border: 2px solid #1a1420; box-shadow: 5px 5px 0 rgba(0, 0, 0, .45); font-size: clamp(12px, 1.6vw, 15px); animation: adiPop .26s steps(4) both; animation-delay: var(--d, 0s); }
+@keyframes adiPop { 0% { transform: scale(.2); opacity: 0; } 70% { transform: scale(1.08); } }
+.adi .win .tt { background: #3b4fa8; color: #fff; padding: 3px 8px; font-size: .9em; display: flex; justify-content: space-between; gap: 12px; }
+.adi .win .tt i { width: 15px; height: 13px; background: #c9c6d6; border: 1px solid #1a1420; color: #d8475a; font-style: normal; font-size: 10px; line-height: 11px; text-align: center; }
+.adi .win.red .tt { background: #b5384a; }
+.adi .win .bd { padding: 10px 12px; line-height: 1.6; }
+.adi .win .bd span { display: block; animation: adiLn .01s steps(1) both; animation-delay: calc(var(--i) * 220ms + 200ms); }
+.adi .bar { height: 16px; border: 2px solid #1a1420; background: #fff; margin-top: 8px; position: relative; }
+.adi .bar b { position: absolute; left: 1px; top: 1px; bottom: 1px; width: 0; background: repeating-linear-gradient(90deg, #5b9a4a 0 8px, #3f7234 8px 10px); animation: adiFill var(--bt, 1.4s) steps(12) forwards; }
+@keyframes adiFill { to { width: calc(100% - 2px); } }
+.adi .btns { display: flex; gap: 14px; justify-content: center; margin-top: 10px; }
+.adi .btns span { border: 2px solid #1a1420; background: #e9e6f0; padding: 3px 20px; box-shadow: inset -2px -2px 0 #8a86a0; }
+.adi .btns span.pr { animation: adiPress .2s steps(1) both; animation-delay: .95s; }
+@keyframes adiPress { to { box-shadow: inset 2px 2px 0 #8a86a0; background: #d6d2e4; } }
+.adi .ptr { position: absolute; width: 20px; height: 30px; z-index: 2; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 15' shape-rendering='crispEdges'><path fill='%231a1420' d='M0 0h1v15H0zM1 1h1v1H1zM2 2h1v1H2zM3 3h1v1H3zM4 4h1v1H4zM5 5h1v1H5zM6 6h1v1H6zM7 7h1v1H7zM8 8h1v1H8zM5 9h5v1H5zM1 11h1v1H1zM2 10h1v1H2zM3 11h1v2H3zM6 11h1v2H6zM4 13h1v1H4zM7 13h1v1H7zM5 14h2v1H5z'/><path fill='white' d='M1 2h1v9H1zM2 3h1v7H2zM3 4h1v7H3zM4 5h1v8H4zM5 6h1v3H5zM5 10h1v4H5zM6 7h1v2H6zM7 8h1v1H7z'/></svg>") 0 0 / 100% 100%; animation: adiPtr .9s steps(9) both; }
+@keyframes adiPtr { from { translate: 40vw 30vh; } }
+.adi .glitch { position: absolute; left: 0; right: 0; height: 5px; background: #ff5aa0; mix-blend-mode: screen; opacity: .7; animation: adiGl .5s steps(2) infinite; }
+@keyframes adiGl { 50% { translate: 12px 0; opacity: .25; } }
+/* 등장: 관리자는 대기 동작으로 서 있고, 대사가 한 글자씩 찍힌다 */
+.adi .boss { position: absolute; right: max(4vw, 10px); bottom: 150px; width: clamp(150px, 26vw, 260px); height: clamp(150px, 26vw, 260px); }
+.adi .boss i, .adi .bn i { display: block; width: 100%; height: 100%; animation: breathe 1.3s steps(1) infinite; }
+.adi-a2 .s3 .tint { background: rgba(42, 63, 208, .5); animation: adiBsod .9s steps(1) 2; }
+@keyframes adiBsod { 20% { background: #2a3fd0; } 40% { background: rgba(42, 63, 208, .5); } }
+.adi .dlg { position: absolute; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: min(760px, calc(100% - 32px)); min-height: 108px; background: #fff; border: 3px solid #1a1420; box-shadow: 5px 5px 0 rgba(0, 0, 0, .4); padding: 22px 18px 14px; font-size: clamp(15px, 2vw, 19px); line-height: 1.65; white-space: pre-line; }
+.adi .dlg .nm { position: absolute; left: 12px; top: -16px; background: var(--nc, #4b3f8f); color: #fff; padding: 2px 12px; font-size: 14px; border: 2px solid #1a1420; }
+.adi .dlg .nm em { font-style: normal; color: #ffd75e; margin-left: 6px; }
+.adi .dlg .nx { position: absolute; right: 12px; bottom: 6px; font-size: 12px; color: #4b3f8f; animation: adiBlink .6s steps(1) infinite; }
+.adi .dlg .tc { display: inline-block; width: 9px; height: 1em; background: #1a1420; vertical-align: -2px; }
+/* 이름 띠 */
+.adi .bn { position: absolute; left: 0; right: 0; top: 50%; translate: 0 -50%; min-height: 140px; background: #1a1420; border-block: 5px solid var(--bc, #4b3f8f); color: #fff; display: grid; align-content: center; padding: 14px 16px 14px clamp(150px, 30vw, 300px); animation: adiBand .3s steps(5) both; }
+@keyframes adiBand { from { clip-path: inset(0 100% 0 0); } }
+.adi .bn > span:first-of-type { font-size: 14px; color: var(--sc, #a9b4ff); letter-spacing: 3px; }
+.adi .bn b { font-size: clamp(28px, 5vw, 46px); letter-spacing: 2px; line-height: 1.2; }
+.adi .bn > span:last-of-type { font-size: 13px; color: #c9c6d6; margin-top: 4px; }
+.adi .bn .bi { position: absolute; left: clamp(4px, 6vw, 80px); bottom: -6px; width: clamp(130px, 20vw, 200px); height: clamp(130px, 20vw, 200px); }
+.adi-a1 .bn { --bc: #4f7fd0; --sc: #a9cfee; } .adi-a2 .bn { --bc: #d8475a; --sc: #ff9aa8; }
+.adi-a2 .s4 { animation: adiIn .18s steps(3) both, adiShake .35s steps(4) .3s; }
+@keyframes adiShake { 25% { translate: -6px 3px; } 50% { translate: 5px -3px; } 75% { translate: -3px 2px; } }
+@media (prefers-reduced-motion: reduce) { .adi *, .adi .sc { animation: none !important; } .adi .bar b { width: calc(100% - 2px); } }
 @keyframes introIn2 { 0% { opacity: 0; } 100% { opacity: 1; } }
 .slot { display: grid; justify-items: center; gap: 4px; }
 .reel { display: grid; justify-items: center; gap: 2px; width: 220px; padding: 6px 0; border: 3px solid var(--sil); background: var(--paper); box-shadow: 4px 4px 0 var(--line); overflow: hidden; }
@@ -6122,7 +6181,7 @@ function onDoc() {
   if (doc.game && doc.game !== gameStr) {
     const old = G;
     gameStr = doc.game; G = parse(gameStr);
-    if (G && G.turn === 1) { dealN = seat && G.P[seat] ? G.P[seat].hand.length : HAND; dealOpp = seat && G.P[opp(seat)] ? G.P[opp(seat)].hand.length : HAND; if (seat && !G.winner) showIntro(); }
+    if (G && G.turn === 1) { dealN = seat && G.P[seat] ? G.P[seat].hand.length : HAND; dealOpp = seat && G.P[opp(seat)] ? G.P[opp(seat)].hand.length : HAND; if (seat && !G.winner && !(typeof adminIntro === 'function' && adminIntro(showIntro))) showIntro(); }
     else if (G && old && G.rp && G.turn === old.turn + 1 && seat && !noMotion && !replaying) job = { old, lockedPlan: locked };
     qsTrack(old, G);
   }
@@ -7706,6 +7765,7 @@ function renderNow() {
 let lastTick = 0;
 function tick() {
   if (typeof tutOn === 'function' && tutOn() && doc.phase === 'play') deadline = Date.now() + TURN_MS;   /* 튜토리얼에는 시간 제한이 없다 */
+  if (typeof adiOn !== 'undefined' && adiOn) deadline = Date.now() + TURN_MS;   /* 보스 등장 연출 동안 시간이 흐르지 않는다 */
   if (replaying || !doc || doc.phase !== 'play' || !seat || !G || curTag !== doc.gid + ':' + doc.turn) return;
   const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)), el = document.getElementById('timer');
   if (!locked && left <= 5 && left > 0 && left !== lastTick) { lastTick = left; SND.play('tick'); }
@@ -12296,6 +12356,58 @@ function showFate() {
   SND.play('scry');
   if (fast) tm.push(setTimeout(() => cs.forEach(flip), 600));
   else [1100, 1800, 2700].forEach((t, i) => tm.push(setTimeout(() => flip(cs[i]), t)));
+}
+/* 관리자 등장 연출: 보스 결투가 시작될 때 VS 화면 앞에 4단계. 시스템 화면 → 창 → 등장 대사 → 이름 띠.
+   누르면 다음 단계(대사가 찍히는 중이면 끝까지), 한 번 본 막은 빠르게. 대사의 *별표*는 굵게, {c}는 플레이어 직업 */
+const ADMIN_LINE = [
+  ['새 사용자 감지. 직업: {c}.\n이 판은 내 관리 구역이다. 권한 없는 접속은… *삭제한다.*', 'New user detected. Class: {c}.\nThis board is my managed zone. Unauthorized access will be… *deleted.*'],
+  ['1막의 패배는 로그에 남겨 두었다. 버그는 고쳤다.\n같은 수는 *두 번 통하지 않는다,* {c}.', 'Your Act 1 win is in my logs. The bug is fixed.\nThe same trick *won\'t work twice,* {c}.'],
+  ['여기가 마지막 서버다. 모든 판은 내가 짰다.\n이제 너를 *포맷하고,* 처음부터 다시 시작한다.', 'This is the last server. I built every board.\nNow I *format you* and start over from scratch.'],
+];
+var adiOn = false;   /* tick()이 먼저 볼 수 있게 var */
+function adminIntro(next) {
+  const ov = ovEl(); if (!ov || !stageOn() || !G || !seat || G.P[opp(seat)].cls !== 'admin' || G.turn !== 1) return false;
+  const a = Math.max(0, Math.min(2, run.act)), c = L(CLS[run.cls].n, TR(CLS[run.cls].n)), ver = adminVer(a);
+  let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; localStorage.setItem('ssd-adi', String(seen | (1 << a))); } catch (e) { /* 저장소 없음 */ }
+  const fast = !!(seen & (1 << a)), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600];
+  const win = (cls, x, y, w, title, body, d) => `<div class="win${cls}" style="left:${x};top:${y};width:${w};--d:${d || 0}s"><div class="tt">${title}<i>×</i></div><div class="bd">${body}</div></div>`;
+  const ln = (t, i) => `<span style="--i:${i}">${t}</span>`;
+  const s1 = [`<div class="crt" style="--ld:${fast ? 120 : 260}ms"><pre>${[
+      'SAMSAM BIOS v1.0', `${L('메모리 검사', 'Memory check')} ...... <span class="w">${L('9칸 OK', '9 tiles OK')}</span>`, `${L('결투장 장치', 'Arena device')} ...... <span class="w">${L('연결됨', 'connected')}</span>`,
+      `${L('새 사용자 감지', 'New user')} ... <span class="y">${esc(c)}</span>`, '', `${L('관리자.exe 불러오는 중', 'Loading admin.exe')} <i class="cur"></i>`].map((t, i) => `<span style="--i:${i}">${t || '&nbsp;'}</span>`).join('')}</pre><div class="scan"></div></div>`,
+    `<div class="blue"><p>${L('업데이트를 설치하는 중입니다 (2/3)', 'Installing updates (2/3)')}<small>${L('컴퓨터를 끄지 마세요. 결투장도 끄지 마세요.', "Don't turn off your computer. Or the arena.")}</small></p><div class="bar" style="--bt:${DUR[0] / 1000}s"><b></b></div><div class="scan" style="opacity:.4"></div></div>`,
+    `<div class="tint"></div>${[0, 1, 2].map(i => win(' red', `calc(8% + ${i * 9}%)`, `calc(14% + ${i * 13}%)`, 'min(360px, 70%)', L('경고', 'Warning'), L('권한 상승 요청이 감지되었습니다.', 'Privilege escalation request detected.'), i * (fast ? 0.12 : 0.35))).join('')}<i class="glitch" style="top:30%"></i><i class="glitch" style="top:72%;height:3px"></i>`][a];
+  const s2 = [`<div class="crt"><div class="scan"></div></div>${win('', 'calc(50% - min(190px, 45%))', '36%', 'min(380px, 90%)', 'admin.exe', `${L(`관리자 ${ver} 을(를) 실행하는 중...`, `Starting Admin ${ver}...`)}<div class="bar" style="--bt:${DUR[1] / 1000 * 0.8}s"><b></b></div>`)}<i class="ptr" style="left:calc(50% + min(150px, 35%));top:46%"></i>`,
+    `<div class="tint"></div>${win('', 'calc(50% - min(210px, 45%))', '22%', 'min(420px, 90%)', L(`패치 노트 · ${ver}`, `Patch notes · ${ver}`), [L('+ 삭제: 가로 한 줄 지우기', '+ Delete: wipe a row'), L('+ 로딩: 다음 턴 세로줄 폭격', '+ Loading: column strike next turn'), L('+ 렉: 상대 이동 멈추기', '+ Lag: freeze foe movement'), L('* 1막에서 진 버그 수정', '* Fixed the bug that lost Act 1'), L('* 자비 기능 제거', '* Removed mercy feature')].map(ln).join(''))}<i class="ptr" style="left:calc(50% + min(170px, 38%));top:52%"></i>`,
+    `<div class="tint"></div>${win('', 'calc(50% - min(220px, 45%))', '30%', 'min(440px, 90%)', `${L('관리자', 'Admin')} ${ver}`, `${L(`관리자 ${ver} 이(가) 이 결투장의 <b>모든 권한</b>을 요구합니다.`, `Admin ${ver} demands <b>full control</b> of this arena.`)}<div class="btns"><span>${L('허용', 'Allow')}</span><span class="pr">${L('허용', 'Allow')}</span></div>`)}<i class="ptr" style="left:calc(50% + 40px);top:calc(30% + 98px)"></i>`][a];
+  const toks = []; let bold = false; for (const ch of L(...ADMIN_LINE[a]).replace(/\{c\}/g, c)) { if (ch === '*') { bold = !bold; continue; } toks.push([ch, bold]); }
+  const say = n => { let h = '', b = false; toks.slice(0, n).forEach(([ch, bb]) => { if (bb !== b) { h += bb ? '<b>' : '</b>'; b = bb; } h += esc(ch); }); return h + (b ? '</b>' : ''); };
+  const nc = ['#4b3f8f', '#3b62a8', '#b5384a'][a];
+  ov.insertAdjacentHTML('beforeend', `<div class="adi adi-a${a}" data-s="1" role="dialog" aria-label="${L(`${a === 2 ? '최종 보스' : (a + 1) + '막 보스'} 관리자 ${ver} 등장`, `${a === 2 ? 'Final boss' : 'Act ' + (a + 1) + ' boss'} Admin ${ver} appears`)}">
+    <button type="button" class="skip">${L('건너뛰기', 'Skip')}</button>
+    <div class="sc s1">${s1}</div><div class="sc s2">${s2}</div>
+    <div class="sc s3"><div class="tint" style="background:rgba(26,20,32,.35)"></div><div class="boss"><i class="px a-admin flip" aria-hidden="true"></i></div>
+      <p class="dlg" style="--nc:${nc}"><span class="nm">${L('관리자', 'Admin')}<em>${ver}</em></span><span class="tx"></span><i class="tc" aria-hidden="true"></i><span class="nx" hidden>▼ ${L('누르기', 'Tap')}</span></p></div>
+    <div class="sc s4"><div class="bn"><div class="bi"><i class="px a-admin" aria-hidden="true"></i></div><span>${a === 2 ? L('최종 보스', 'Final boss') : L(`${a + 1}막 보스`, `Act ${a + 1} boss`)}</span><b>${L('관리자', 'Admin')} ${ver}</b>
+      <span>${a ? L('새로 설치', 'Newly installed') : L('설치됨', 'Installed')} · ${ADMIN_NEW[a].map(id => L(CARDS[id].n, TR(CARDS[id].n))).join(' · ')}</span></div></div></div>`);
+  const root = ov.lastElementChild, tx = root.querySelector('.tx'), tc = root.querySelector('.tc'), nx = root.querySelector('.nx');
+  let step = 1, timer = 0, typ = 0, n = 0, done = false; adiOn = true;
+  const SND1 = [['mboot', 'mload', 'merr'], ['mboot', 'mclick', 'mclick'], ['', '', ''], ['cutin', 'cutin', 'mbsod']];
+  const enter = s => { step = s; root.dataset.s = s; clearTimeout(timer); const snd = SND1[s - 1][a]; if (snd) SND.play(snd);
+    if (s === 1 && a === 2) [1, 2].forEach(k => setTimeout(() => { if (step === 1 && !done) SND.play('merr'); }, k * (fast ? 120 : 350)));
+    if (s === 2 && a === 2) setTimeout(() => { if (step === 2 && !done) SND.play('mclick'); }, 950);
+    if (s === 3) { const t0 = performance.now(), cps = fast ? 90 : 30; n = 0; tx.innerHTML = ''; if (noMotion) return endType();   /* 지난 시간으로 글자 수를 정해 화면이 바빠도 빠르기가 같다 */
+      typ = setInterval(() => { const m = Math.min(toks.length, Math.floor((performance.now() - t0) / 1000 * cps)); if (m === n) return; if (Math.floor(m / 3) > Math.floor(n / 3)) SND.play('tick'); n = m; tx.innerHTML = say(n); if (n >= toks.length) endType(); }, 33); return; }
+    timer = setTimeout(() => (s < 4 ? enter(s + 1) : close()), DUR[s - 1]); };
+  const endType = () => { clearInterval(typ); typ = 0; n = toks.length; tx.innerHTML = say(n); tc.hidden = true; nx.hidden = false; clearTimeout(timer); timer = setTimeout(() => enter(4), DUR[2]); };
+  const close = () => { if (done) return; done = true; adiOn = false; clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
+    root.classList.add('out'); setTimeout(() => { root.remove(); if (G && G.turn === 1) deadline = Date.now() + TURN_MS; next(); }, 300); };
+  const adv = () => { if (done) return; if (step === 3 && typ) return endType(); if (step < 4) enter(step + 1); else close(); };
+  const key = e => { if (e.key === 'Escape') { e.preventDefault(); close(); } else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); adv(); } };
+  document.addEventListener('keydown', key, true);
+  root.addEventListener('click', e => { e.stopPropagation(); if (e.target.closest('.skip')) close(); else adv(); });
+  enter(1);
+  return true;
 }
 function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.quit = 0; if (!stAvail().some(x => x[0] === r && x[1] === c)) return; run.sel = [r, c]; stDr.r = true; SND.play('tap'); render(); }
 function stOverHTML(won) {
