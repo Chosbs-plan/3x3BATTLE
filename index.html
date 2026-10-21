@@ -3162,6 +3162,8 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .cx-tabs { display: flex; gap: 8px; } .cx-tb { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font: inherit; color: var(--sil); cursor: pointer; background: #fff; border: 3px solid var(--sil); box-shadow: 3px 3px 0 var(--line); }
 .cx-tb .pxi { width: 18px; height: 18px; fill: currentColor; } .cx-tb b { font-size: 16px; } .cx-tb em { font-style: normal; font-size: 12px; color: var(--ash); }
 .cx-tb.on { color: #fff; background: var(--sil); box-shadow: 3px 3px 0 var(--red); } .cx-tb.on em { color: #ffd75e; }
+.cx-tb b { white-space: nowrap; }
+@media (max-width: 480px) { .cx-tabs { gap: 6px; } .cx-tb { flex: 1 1 0; justify-content: center; gap: 5px; padding: 7px 6px; min-width: 0; } .cx-tb b { font-size: 14px; } .cx-tb .pxi { display: none; } }
 .rlx { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 16px; min-height: 0; }
 .rl-list { min-height: 0; overflow: auto; padding: 2px 4px 8px 2px; } .rl-gh { margin: 4px 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--ash); } .rl-gh b { color: var(--sil); }
 .rl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin-bottom: 14px; }
@@ -3176,6 +3178,21 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .rl-main.unk .rl-stage { background: radial-gradient(ellipse 55% 45% at 50% 60%, #fff, transparent 70%), linear-gradient(#ece6e4, #d9cfcc); } .rl-main { align-self: start; }
 .rl-tx { display: grid; gap: 6px; } .rl-k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--red-d); } .rl-tx h3 { margin: 0; font-size: 26px; }
 .rl-main.unk h3 { letter-spacing: 4px; color: var(--ash); } .rl-ds { margin: 0; font-size: 15px; line-height: 1.6; } .rl-n { margin: 0; font-size: 13px; color: var(--ash); } .rl-n b { color: var(--sil); }
+/* 보스 도감 */
+.bsx { grid-template-columns: minmax(0, 1fr) minmax(320px, 500px); } .bsx .rl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 640px; } .bsx .rl-list > .cap { max-width: 640px; line-height: 1.6; }
+.bs-t { padding: 14px 8px 10px; } .bs-t .bs-im { width: clamp(72px, 12vw, 140px); height: clamp(72px, 12vw, 140px); } .bs-t > span:not(.bs-im) { font-size: 15px; }
+.bs-im { display: block; width: 72px; height: 72px; } .bs-im i, .bs-big i { display: block; width: 100%; height: 100%; animation: breathe 1.3s steps(1) infinite; }
+.px.sil { filter: brightness(0) opacity(.55); animation: none !important; }
+.bs-st { font-style: normal; font-size: 11px; color: var(--ash); } .bs-st.ok { color: var(--red-d); font-weight: 700; }
+.bs-stage { background: radial-gradient(ellipse 55% 45% at 50% 62%, #8f86d6, transparent 70%), linear-gradient(#1d1730, #120e1c); }
+.bs-stage.bs-a1 { background: radial-gradient(ellipse 55% 45% at 50% 62%, #6f86ff, transparent 70%), linear-gradient(#1a2366, #10153d); }
+.bs-stage.bs-a2 { background: radial-gradient(ellipse 55% 45% at 50% 62%, #ff7a8a, transparent 70%), linear-gradient(#3d0f1a, #1e0810); }
+.bs-big { position: relative; display: block; width: 190px; height: 190px; }
+.bs-ln { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 4px 0; font-size: 14px; line-height: 1.55; } .bs-ln dt { font-weight: 700; color: #4b3f8f; } .bs-ln dd { margin: 0; }
+.bs-nwk { color: #4b3f8f; }
+.bs-deck { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .bs-deck li { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 4px 8px; background: var(--wash); font-size: 13px; }
+.bs-deck li span { color: var(--ash); font-size: 12px; } .bs-deck li em { font-style: normal; font-weight: 700; } .bs-deck li.nw { background: #ece9fb; box-shadow: inset 3px 0 0 #4b3f8f; }
+.bs-play { justify-self: start; margin-top: 6px; }
 @media (max-width: 760px) { .rlx { grid-template-columns: 1fr; } .rl-main { order: -1; } .rl-stage { height: 170px; } .rl-stage canvas { width: 150px; height: 150px; } .rl-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); } .rl-t canvas { width: 60px; height: 60px; } .cx-tb { padding: 7px 12px; } }
 .pcx { flex: 1 1 auto; display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; min-height: 0; }
 .pcx-list { display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 16px; min-height: 0; }
@@ -7259,7 +7276,32 @@ const rlBook = () => { const o = parse(ls('ssd-relics')) || {}, sv = typeof stLo
 function rlSeen(id) { if (!RL_ALL().includes(id)) return; const o = parse(ls('ssd-relics')) || {}; o[id] = (o[id] || 0) + 1; ls('ssd-relics', JSON.stringify(o)); }
 function cxWrap(body) { const bk = rlBook(), n = RL_ALL().filter(id => bk[id]).length;
   return `<div class="cxw"><nav class="cx-tabs" aria-label="${mE('도감', 'Codex')}"><button type="button" class="cx-tb${cxTab === 'cls' ? ' on' : ''}" data-a="cxtab" data-t="cls" aria-pressed="${cxTab === 'cls'}">${lbIc('codex')}<b>${mE('직업', 'Classes')}</b><em>${CLASS_IDS.length}</em></button>
-    <button type="button" class="cx-tb${cxTab === 'rl' ? ' on' : ''}" data-a="cxtab" data-t="rl" aria-pressed="${cxTab === 'rl'}">${lbIc('rec')}<b>${mE('모험 유물', 'Relics')}</b><em>${n}/${RL_ALL().length}</em></button></nav>${body}</div>`; }
+    <button type="button" class="cx-tb${cxTab === 'rl' ? ' on' : ''}" data-a="cxtab" data-t="rl" aria-pressed="${cxTab === 'rl'}">${lbIc('rec')}<b>${mE('모험 유물', 'Relics')}</b><em>${n}/${RL_ALL().length}</em></button>
+    <button type="button" class="cx-tb${cxTab === 'bs' ? ' on' : ''}" data-a="cxtab" data-t="bs" aria-pressed="${cxTab === 'bs'}">${lbIc('rec')}<b>${mE('보스', 'Bosses')}</b><em>${[0, 1, 2].filter(a => bossBook()['a' + a]).length}/3</em></button></nav>${body}</div>`; }
+/* 보스 도감: 관리자 v1.0~v3.0. 만난 적이 있으면(등장 연출을 끝까지 봄) 이름과 등장 대사, 처치하면 전부 */
+const bossBook = () => parse(ls('ssd-boss')) || {};
+function bossRec(a, turns) { const o = bossBook(), r = o['a' + a] || { n: 0, t: 0 }; r.n += 1; r.t = r.t ? Math.min(r.t, turns) : turns; o['a' + a] = r; ls('ssd-boss', JSON.stringify(o)); }
+const adminDeck = a => { const d = [...COMMON, ...CLS.admin.deck, ...ADMIN_TIER[a].extra]; ADMIN_TIER[a].cut.forEach(id => { const i = d.indexOf(id); if (i >= 0) d.splice(i, 1); }); return d; };
+const adminLine = (t, c) => esc(t.replace(/\{c\}/g, c)).replace(/\*([^*]+)\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+let bsView = 0;
+function bossBody() {
+  const bk = bossBook(), seen = +(ls('ssd-adi') || 0), met = a => !!(seen & (1 << a)) || !!bk['a' + a], a = bsView, r = bk['a' + a], m = met(a), sp = BOSS_SPEC[a], c = mE('도전자', 'challenger');
+  const tile = i => `<button type="button" class="rl-t bs-t${met(i) ? '' : ' unk'}${i === a ? ' on' : ''}" data-a="bsv" data-k="${i}" aria-pressed="${i === a}"><span class="bs-im"><i class="px a-admin${met(i) ? '' : ' sil'}" aria-hidden="true"></i></span>
+      <span>${met(i) ? `${mE('관리자', 'Admin')} ${adminVer(i)}` : '???'}</span><em class="bs-st${bk['a' + i] ? ' ok' : ''}">${bk['a' + i] ? mE('처치', 'Defeated') : met(i) ? mE('만남', 'Met') : mE('미발견', 'Unknown')}</em></button>`;
+  const cnt = {}; adminDeck(a).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; });
+  const deck = Object.keys(cnt).sort((x, y) => (ADMIN_NEW[a].includes(y) - ADMIN_NEW[a].includes(x)) || CARDS[x].c - CARDS[y].c).map(id => `<li class="${ADMIN_NEW[a].includes(id) ? 'nw' : ''}" title="${esc(CARDS[id].d)}"><b>${CARDS[id].n}</b><span>${mE('마나', 'Mana')} ${CARDS[id].c} · ${hl(CARDS[id].d)}</span><em>×${cnt[id]}</em></li>`).join('');
+  const lines = [[mE('등장', 'Intro'), L(...ADMIN_LINE[a]), m], [mE('분노', 'Rage'), L(...ADMIN_TALK.rage[a]), !!r], [mE('패배', 'Defeat'), L(...ADMIN_TALK.ko[a]), !!r]];
+  return `<div class="rlx bsx"><div class="rl-list"><p class="rl-gh">${mE('모험의 보스', 'Adventure boss')} <b>${[0, 1, 2].filter(i => bk['a' + i]).length}/3</b></p><div class="rl-grid">${[0, 1, 2].map(tile).join('')}</div>
+      <p class="cap">${mE('관리자는 모험의 1·2·3막 끝에서 기다립니다. 등장 연출을 끝까지 보면 이름과 등장 대사가, 쓰러뜨리면 나머지 기록이 열립니다.', 'The Admin waits at the end of every Adventure act. Watch its intro to record its name and line; defeat it to unlock the rest.')}</p></div>
+    <section class="rl-main bs-main${m ? '' : ' unk'}" aria-live="polite"><div class="rl-stage bs-stage bs-a${a}"><i class="rl-sh" aria-hidden="true"></i><span class="bs-big"><i class="px a-admin${m ? '' : ' sil'}" aria-hidden="true"></i></span></div>
+      <div class="rl-tx"><p class="rl-k">${a === 2 ? mE('3막 · 최종 보스', 'Act 3 · Final boss') : mE(`${a + 1}막 보스`, `Act ${a + 1} boss`)}</p><h3>${m ? `${mE('관리자', 'Admin')} ${adminVer(a)}` : '???'}</h3>
+        ${m ? `<p class="rl-ds">${mE('체력', 'HP')} <b>${sp.hp}</b> · ${mE('봇', 'Bot')} <b>${TR(BOTS[sp.lv][0])}</b>${sp.mx ? ` · ${mE('최대 마나 +1', 'Max mana +1')}` : ''}<br>${sp.boss === 'final' ? mE('3턴마다 가로 한 줄에 피해 2를 예고한다.', 'Every 3rd turn it forecasts 2 damage on a row.') : mE('체력이 절반 이하가 되면 한 번 분노해 다음 턴 공격 피해 +1.', 'At half HP or less it rages once: next turn\'s attacks deal +1.')}</p>
+        <p class="rl-n">${r ? `${mE('처치', 'Defeated')} <b>${r.n}</b>${mE('회', 'x')} · ${mE('가장 빨리', 'Fastest')} <b>${r.t}</b>${mE('턴', ' turns')}` : mE('아직 쓰러뜨리지 못했습니다.', 'Not defeated yet.')}</p>
+        <dl class="bs-ln">${lines.map(([k, t, ok]) => `<dt>${k}</dt><dd>${ok ? `「${adminLine(t, c)}」` : '???'}</dd>`).join('')}</dl>
+        <p class="rl-gh">${mE('덱', 'Deck')} <b>${adminDeck(a).length}${mE('장', '')}</b> · <span class="bs-nwk">${a ? mE('이번 막에 새로 설치', 'New this act') : mE('기본 설치', 'Base install')}</span></p><ul class="bs-deck">${deck}</ul>
+        <button type="button" class="btn bs-play" data-a="bsplay" data-k="${a}">▶ ${mE('등장 연출 다시 보기', 'Replay intro')}</button>`
+        : `<p class="rl-ds">${mE('모험에서 이 막의 보스를 만나면 기록됩니다.', 'Meet this act\'s boss in Adventure to record it.')}</p>`}</div></section></div>`;
+}
 function relicBody() {
   const bk = rlBook(), all = RL_ALL(), v = all.includes(rlView) ? rlView : (all.find(id => bk[id]) || all[0]), got = !!bk[v], m = RL_MODEL(v);
   const tile = id => { const ok = !!bk[id]; return `<button type="button" class="rl-t${ok ? '' : ' unk'}${id === v ? ' on' : ''}" data-a="rlv" data-k="${id}" aria-pressed="${id === v}" title="${ok ? esc(rlName(id)) : '???'}">
@@ -7272,6 +7314,7 @@ function relicBody() {
 }
 function codexBody() {
   if (cxTab === 'rl') return cxWrap(relicBody());
+  if (cxTab === 'bs') return cxWrap(bossBody());
   const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
   const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
     return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(skinPrice(v, x.id))}</span></button>`; }).join('')}</div>`;
@@ -7336,12 +7379,14 @@ function multiBody(off) {
     </div></div>`;
 }
 /* 로비 버튼들 */
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="bsv"],[data-a="bsplay"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
   e.stopPropagation(); const a = b.dataset.a; SND.unlock();
   if (a === 'reppick') repOpen = !repOpen;
   else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
   else if (a === 'cxv') cxView = b.dataset.k;
   else if (a === 'cxtab') { if (cxTab === b.dataset.t) return; cxTab = b.dataset.t; }
+  else if (a === 'bsv') bsView = +b.dataset.k || 0;
+  else if (a === 'bsplay') { const ov = ovEl(); if (ov) adminShow(ov, +b.dataset.k || 0, repCls(), true, true, null); return; }
   else if (a === 'rlv') { rlView = b.dataset.k; setTimeout(() => { const m = app.querySelector('.rl-main'); if (m && matchMedia('(max-width: 760px)').matches) m.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 0); }
   else if (a === 'collwear') { if (skinOf(b.dataset.c) === b.dataset.id) return; setSkin(b.dataset.c, b.dataset.id); SND.play('relicGood'); return render(); }
   else if (a === 'shopgo') { shopTab = 'new'; menuTab = 'shop'; tabAnim = true; }
@@ -7496,6 +7541,7 @@ function pcCollBody() {
 
 function pcCodexBody() {
   if (cxTab === 'rl') return cxWrap(relicBody());
+  if (cxTab === 'bs') return cxWrap(bossBody());
   const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
   const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
     return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(skinPrice(v, x.id))}</span></button>`; }).join('')}</div>`;
@@ -11852,6 +11898,7 @@ const price3 = k => Math.max(1, PRICE3[k] - (run.rl.includes('seal') ? 1 : 0));
 const NODE_N = { fight: ['결투', 'Duel'], elite: ['정예', 'Elite'], boss: ['보스', 'Boss'], shop: ['상점', 'Shop'], rest: ['쉼터', 'Rest'], event: ['사건', 'Event'], treasure: ['보물', 'Treasure'] };
 const nodeN = t => L(NODE_N[t][0], NODE_N[t][1]);
 const LV3 = ['easy', 'normal', 'hard'];
+const BOSS_SPEC = [{ boss: 'mid', hp: 7, lv: 'normal', mx: 0 }, { boss: 'mid', hp: 8, lv: 'hard', mx: 1 }, { boss: 'final', hp: 9, lv: 'hard', mx: 1 }];   /* 막별 보스 수치 */
 /* 관리자 보스: 막마다 판이 오른다(v1.0 → v3.0). 이번 막에 새로 들인 시스템 카드를 보여 준다 */
 const adminVer = a => `v${a + 1}.0`;
 const adminNewHTML = a => `<p class="cap adm-new">${a ? L('이번 막에 새로 설치한 카드', 'Newly installed this act') : L('기본 설치 카드', 'Installed cards')} · ${ADMIN_NEW[a].map(id => `<b>${CARDS[id].n}</b>`).join(' · ')}</p>`;
@@ -11903,7 +11950,7 @@ const stCurNode = () => (run && run.map && run.cur ? stNode(run.cur.r, run.cur.c
 function stAvail() { if (!run.map || run.cleared) return []; const r = run.row + 1; return (run.row < 0 ? [0, 1, 2] : stNode(run.row, run.col).to).map(c => [r, c]); }
 function stSpec(n, a) {
   a = a == null ? run.act : a; const base = hpBase(n.foe);
-  if (n.t === 'boss') return [{ boss: 'mid', hp: 7, lv: 'normal', mx: 0 }, { boss: 'mid', hp: 8, lv: 'hard', mx: 1 }, { boss: 'final', hp: 9, lv: 'hard', mx: 1 }][a];
+  if (n.t === 'boss') return BOSS_SPEC[a];
   /* 앞쪽 막의 상대는 체력이 적다(1막 -2, 2막 -1). 대신 싸울 곳이 늘었다 */
   const cut = [2, 1, 0][a] || 0;
   if (n.t === 'elite') return { hp: Math.max(3, base - cut + 1 + (a === 2 ? 1 : 0)), lv: LV3[Math.min(2, a + 1)], mx: 1, m0: 3 };
@@ -11940,6 +11987,7 @@ function stageWin() {
   const gain0 = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? (has('gloves') ? 5 : 2) : 0) + (has('purse') ? 2 : 0), gain = gain0 * (has('ccoin') ? 2 : 1), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
   const glove = clean && has('gloves') && (run.gloveHp || 0) < 2; if (glove) { run.gloveHp = (run.gloveHp || 0) + 1; run.maxHp += 1; }
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
+  if (n.t === 'boss' && n.foe === 'admin') bossRec(run.act, G.turn - 1);
   run.hp = Math.min(run.maxHp, left + heal + (glove ? 1 : 0)); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
   if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
   const spoil = CLS[n.foe].boss ? null : shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
@@ -12399,9 +12447,13 @@ const ADMIN_LINE = [
 var adiOn = false;   /* tick()이 먼저 볼 수 있게 var */
 function adminIntro(next) {
   const ov = ovEl(); if (!ov || !stageOn() || !G || !seat || G.P[opp(seat)].cls !== 'admin' || G.turn !== 1) return false;
-  const a = Math.max(0, Math.min(2, run.act)), c = L(CLS[run.cls].n, TR(CLS[run.cls].n)), ver = adminVer(a);
   let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; } catch (e) { /* 저장소 없음 */ }
-  const fast = !!(seen & (1 << a)), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600];
+  const a = Math.max(0, Math.min(2, run.act));
+  return adminShow(ov, a, run.cls, !!(seen & (1 << a)), false, next);
+}
+/* 연출 본체. fast: 이미 본 막(빠르게, 넘기기 가능). free: 도감에서 다시 보기(보통 빠르기, 넘기기 가능) */
+function adminShow(ov, a, pc, fast, free, next) {
+  const c = L(CLS[pc].n, TR(CLS[pc].n)), ver = adminVer(a), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600]; fast = fast || free;
   const win = (cls, x, y, w, title, body, d) => `<div class="win${cls}" style="left:${x};top:${y};width:${w};--d:${d || 0}s"><div class="tt">${title}<i>×</i></div><div class="bd">${body}</div></div>`;
   const ln = (t, i) => `<span style="--i:${i}">${t}</span>`;
   const s1 = [`<div class="crt" style="--ld:${fast ? 120 : 260}ms"><pre>${[
@@ -12432,8 +12484,8 @@ function adminIntro(next) {
       typ = setInterval(() => { const m = Math.min(toks.length, Math.floor((performance.now() - t0) / 1000 * cps)); if (m === n) return; if (Math.floor(m / 3) > Math.floor(n / 3)) SND.play('tick'); n = m; tx.innerHTML = say(n); if (n >= toks.length) endType(); }, 33); return; }
     timer = setTimeout(() => (s < 4 ? enter(s + 1) : close()), DUR[s - 1]); };
   const endType = () => { clearInterval(typ); typ = 0; n = toks.length; tx.innerHTML = say(n); tc.hidden = true; if (nx) nx.hidden = false; clearTimeout(timer); timer = setTimeout(() => enter(4), DUR[2]); };
-  const close = () => { if (done) return; done = true; adiOn = false; try { localStorage.setItem('ssd-adi', String((+localStorage.getItem('ssd-adi') || 0) | (1 << a))); } catch (e) { /* 저장소 없음 */ }   /* 끝까지 본 막만 본 것으로 친다 */ clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
-    root.classList.add('out'); setTimeout(() => { root.remove(); if (G && G.turn === 1) deadline = Date.now() + TURN_MS; next(); }, 300); };
+  const close = () => { if (done) return; done = true; adiOn = false; if (!free) try { localStorage.setItem('ssd-adi', String((+localStorage.getItem('ssd-adi') || 0) | (1 << a))); } catch (e) { /* 저장소 없음 */ }   /* 끝까지 본 막만 본 것으로 친다 */ clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
+    root.classList.add('out'); setTimeout(() => { root.remove(); if (!free && G && G.turn === 1) deadline = Date.now() + TURN_MS; if (next) next(); }, 300); };
   const adv = () => { if (done || !fast) return; if (step === 3 && typ) return endType(); if (step < 4) enter(step + 1); else close(); };
   const key = e => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); if (!fast) return; if (e.key === 'Escape') close(); else adv(); } };
   document.addEventListener('keydown', key, true);
