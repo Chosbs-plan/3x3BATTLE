@@ -143,7 +143,7 @@ h2 { font-size: 24px; line-height: 1.1; }
 .c-astronomer .chips span { color: var(--sil); }
 .c-shaman { --ac: var(--teal); --ac-d: var(--teal-d); } .c-dullahan { --ac: var(--steel); --ac-d: var(--steel-d); }
 .c-slime { --ac: var(--vio); --ac-d: var(--vio-d); } .c-archaeologist { --ac: var(--sand); --ac-d: var(--sand-d); }
-.c-mechanic { --ac: var(--amber); --ac-d: var(--amber-d); } .c-druid { --ac: var(--green); --ac-d: var(--green-d); }
+.c-mechanic { --ac: var(--amber); --ac-d: var(--amber-d); } .c-admin { --ac: #4b3f8f; --ac-d: #2f2766; } .c-druid { --ac: var(--green); --ac-d: var(--green-d); }
 .face { font-size: 12px; background: var(--paper); border: 2px solid var(--line); padding: 0 0 6px; cursor: pointer; display: grid; gap: 4px; justify-items: stretch; text-align: center; font-weight: 700; color: var(--ash); min-width: 0; }
 .face > i { display: block; aspect-ratio: 1; width: 100%; border-bottom: 4px solid var(--ac); position: relative; }
 .face > i .spr { position: absolute; inset: 0; }
@@ -708,6 +708,16 @@ canvas.fx { position: absolute; z-index: 7; left: 0; top: 0; width: calc(3 * var
 :root{--img-crown:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAHCAYAAAA8sqwkAAAAUUlEQVR42mP4////fwY08HixNYYYTB3TkyU2KAoeL7b+/3WJPIbYkyU2DAwMDAxM2EzljnmI0zYmfE7B5jQmBlJBRUrSf1JoRhiDGNAxZx4jALPyOLjJEzkfAAAAAElFTkSuQmCC)}
 :root{--img-crack:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAnUlEQVR42u2U0Q2AIAxEC4N0GsIQfBqHcCKHME7DIvhFggmBgK3VpLdAr+/aA1A9UPAubeuSxE0E76ZNWAoTiPi/zUkItDZnvY/e5iN0qgR6zvfjNBT4YWb4COJMQiwKLaDZeF+NwFAYQESIMd6+hLyIavjKQbmURoaTHV0ZBfmBcr+abSEP3qVW37O+omjJiA3/pMQrV6X5q1TcugDBVmFsAKqFxQAAAABJRU5ErkJggg==);--img-pit:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABSklEQVR42sVXOw7CMAw1VY4Aa87HACMMHIABRhi4D4zslRg9R70CTIkS105DkzRPqhDx78W/wur9en6hEQZjQAEArDebZgQ6aIwogcf1MvounVEZ1ZOguIDbw5ENNEUwFtj3LWaAChExMEZEd+br+I9ky/kHAFi9X88vbcLH9eIcaK0Dh9IZB6tndc+3eyD/9H1YgtN+NzJMCRQDIjp/1r9PRElGseCphKxeTD/oAZqiGqAxOq4Ec6G1HpVv6oJFM8BNiU+Mu2BX4mb/EKMkVEoJcqbgr024dAOKiyi3GacWliUiLqJSkAInT0Fu81EkTYFPQhqrak1YugSLL6LsX0S1MzB7Ey5WgtqomoGUkeUyoGotnVlNyDE83+7uoTpUFvNhSxB9G1rl037nPnMaLEXexZQlo5L7gn0bLoVP37f/b6gGY2AwphmBH/Sh4Z3BQB4mAAAAAElFTkSuQmCC)}
 /* SPRITES:BEGIN (tools/sprites.py build가 만든다. 직접 고치지 말 것) */
+:where(.a-admin,.a-admin-w,.a-admin-s,.a-admin-hit,.a-admin-act,.a-admin-ko){position:relative}
+.a-admin,.a-admin-w,.a-admin-s,.a-admin-hit,.a-admin-act,.a-admin-ko{background-size:0 0!important;--spw:32;--sph:32}
+.a-admin::before,.a-admin-w::before,.a-admin-s::before,.a-admin-hit::before,.a-admin-act::before,.a-admin-ko::before{content:"";position:absolute;left:-20%;top:-44.06%;width:140%;height:140%;background-image:inherit;background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none}
+.a-admin,.a-admin-w,.a-admin-s,.a-admin-hit,.a-admin-act,.a-admin-ko{--spd:1.429}
+.a-admin{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEoklEQVR42u1ZX0hiWRj/3QhZJCJEHHFgkEuJO0jIIBLOEI6ESAxLDE0Py7AsPexDxN1hiXmIHmKRGHoIk5BlH2IYJBYTcZdhCIkSGUQuskQswyAREhJuiEgMssQyZx+aa/eq1z+t2jXv76Vzzvd5/nz3+33n+06ADBkyZMiQIUOGDBkyZMiQIUNGj4Hq1ELuVwECABarCS7Hfapev1P76u/UQm+DYeiHhxvudwp9nVwsfXQE/2CfoF9LLuM2xwAmmyELdzQAgHuUovdiQLPyrjcAx3GT2QQAiIQSiNSQy5DzADkPuJ0x4GB8VJTz5fJmQM58RODamjlKkpw7IReEyWZItb//Z94AYyOZj0lCLvKk3BiSiAEAYLd9X3dj0fhr6jpfNMDYyPvFAABgve+Phj2gvx1uFmBsAr0Zb5x6Mesmq95ZOJ2LovNHIisAVojJOI+HE0fQaWno3kzh9LswlpgIcXud1I3GgG23H7Y5L+7SNFD4raqOWTNOlkJqqFX60ti081tiG9hC0G/Ar765GjEigxFdstQ/zR7j1LkGADj8sFd3fy8LWdylaWwv+NsXBFeHtEC+iPU6NUsuny61i9kkYLySDZ4sV+if37saU6v0yOXTmHQ+wKp3FibjPFKZUN2vH/cxN38LHJzFKLNmXEABpdYCIFHqx3YLOMQy9qI7cNhdmJ/wVJ1rYMCKnxf/wqTzAVKboZrrznjj16JH07Xny0IW6yoltt1+UQoUFWoUFWootZYvh6/EXnQHlshP2IvuiK7FyTybS20L1k0bIO5jsL3wpCHdYjYpKnPYXUg61+Cwu+rOM+3cIO0yQFMUaMbNLoOgXlQ+imWM2gEggdguYJ69mbyk/yYWNc96JJOYSer9aUSXxO+uSPcagAuA1fgfDyvR/8GDZCLd8Hy5fBqB0C/dR4F6/BczwsjTq3bM9w9P8g7BNjlGy66X8vTXEx0rta2FQ7BDowi5Pwp+c2fs8jb5O/G2YvzxFAvaYIBlzAy7w4Kvh4JtqfRa5gG+pAEAQBsMnANX6MR2C4L+e+s3eLQyU6H3bIzvLQcIvAlgP2ztDgocp1JfWqoK2fjEkLDP/gCUjXE1x374OR5PsQCA/eganj3Zwra/T7oU4Je7pyfngmKIo4DVooLVasD080cwGeehVunhsLvw6RMrGHc/zQIAbHNeALgsvoBSAdZKCrTUpNH4a6pwdFw/nWY2ey8P4H99Npmvc4MIq88f88XeSIRupQdw/L8uuOqzqzLBcjduFcRK8K6iQDMB8AWTaLsROlIN8gPghi/RePlt3ELct9U71WDPvAfUgyc6JnhU5WKKTksjGJmnJO0Byotc1XGWTTXF/1XNZ0FZ3BUecHAWowDADJCiQo3JvnO8+zwIRP6smuTUNMC/NFY1x1jOcEmTvrsooLzIAV8pyjxC/BAsmwLLpkp9nZYGcscCo0JLS7cYMmvGybD5srQV4yk/T+C7Nf+fHnwdHe/ARweBCk+TnAfwN1kLuXxaNFbwdTgjjd53tPTQbTFAoxvkDl5Lv9w4jRpWEph2bpAlJkKkOt+tNZQkXoT4gawd87YrDvQ0/gN35AXep3ez4QAAAABJRU5ErkJggg==);--b:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEiklEQVR42u1ZXWgaWRg9E4osUoKIWLFQZEjc2SBBgohICVaKSChLCKnsQ1kWH/YhBDcsoQ8lD2GRsvhQrIj0qZQioWgILoRSRBqRRWSQJSzLUiQECW5xg4iEIkVKZx+yY2f8n9Yxo5kD4sy93/zc4/dzvisgQ4YMGTJkyJAhQ4YMGZcQxCge4v81xgCAxWqC2zlHCBkTG1dG8ZD93QQMMzOfNSY2pkb1oOLREaLTU21jg9jJkDGBSdBXLjGb17QAgBuE4vIlwS+xGzsC2ORmMpua58m9HJID2MmYhBwgNpjTCMNblHaNkFQIiK0E4/4o7GshXCdJoPbicirBgEoHVOt4LFBDyUpwEhDz2ZnSmzzDNKpMzGdnJFkGxUY24pM9YSxwwjQYX7nEdPqeeB3gsP/Qd5Hp7DPiS2v7hRPQmog8oSyx4fUzgZAXLteDrtclkw8BACZqHRq1AXodCf3zZbz9PgGKMsIfchGSJ8CsXWTqCg00akNzTK8j4aF28GFuAxaboef1s/o8vl5I8a4HgEq1iEJpb+jvK1oVqFSLzeN6OQ9Qn+amT7bb7M9ufBrTqA2oVItYci0gEPLCRK2LsnhRhNDhaYZQNirgfXQWnk0mVUM4tYGVLQrh1EbXe129asUvD/7CkmtBtLwkiADmNMJwP71CoK7QQKmztC2exev0K1iSP+N1+lXX57FzwadbhCQIiPuj+KdqBVTfDWRfL+e7zjkdbuRdj+B0uPveZ9UVFq1ECs4BgzYd50mse8KbxzbmHQCQQyYFmL0Xo0suRAqbvUHJCDPBBNyvlXGdJBHfjA79ZWb1efzmTgIgR0aA4CqQjfgQ37zTUwN0iv9sQokrfweRzxUFldLY3hPpeIAnlB0oG/eL/24kzK5wSmXkPWfmJXaTEu8FWuVvMG1rHltrf4JWzWPP/4Z3zTXbuSf9m9tvG7+1TIM0GmGxmeFwWvCNaleUvmBoSTCSNwIASKORdeA2m0yqxjv/3fotbj70tNndtXG95RCx5zEcJKzjUQWOC4X/j9Rtc4u3Vfxz+kegZYzVGweJe7i1TAMADtKPcPfODuLRKemGALfdfXtyxmtm2BCwWtSwWo1YvXez2fE5HW68e0fzxv0rZQCAfS0EAOe7vUBzx3eYITBUStPZZ0Tt6Lh/KfU9lYwOGNn2K/fXp/PVPhWErzx/qtbHnwCpQnQC2Pj/XNyvlfFYrRwPAjrtBg0TcX90/ENASALc8OVEJ2Ek3SA3AYYjucGlN7WDbGRnMqqAVCHJv8aCaRtvU5XNKXodid3kOiFpD1A2Kh3HabogKP4D2o+8tngsPODwNEMAgBlg6goNlqbO8PLjNJD8o6PI6UnABxIB7TG2S6xoMoxXCCgbFeArRYtHdF8ETRdA04XmuV5HApVjHqnQDX+naGjxZNYuMjPm89a2W5xydQLXrbl/enBt9JwFHx3G2jxNch7AfcleqFSLXXMF14YlaX7OOdRFi0LAoC/ILryXfSs5gxIrCay6wsyWL8lI9X6iboi0xnuv+RmzBxRlxP4L/1A9TIZA/Adrl/5Dcscz4wAAAABJRU5ErkJggg==)}
+.a-admin-w{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFJElEQVR42u1ZT2giVxj/TQiheFhCCDYkyxIk64qISBARtwSRVCT0JFlZiofgqSxBQik9FA85SAmhhyAS9hT2sITFBElLKOJKCKEVGYYSQghBRKRkixtEwrLkIGHfHuyYmfFPJnGejhs/kHFmvje87zff93u/7w3Qt771rW9961vf+tY35Y2cZIgcv/BKjIRXYiSxd0LkjCXn64ScrxMl5jhIEwDGaGekgQKA1WaCx2Ws3dvd3sHk1FTLscLgAeBd2Vb7z2hfMHed40AnM2J3ewfHh8fg2OO6e4VcTtYztsKv8a5sAw8Chp+3lRGDnS6LQi6HwCErupbhNpn/jy3HxoIOUZATOh3emr/Ht0ebwMWbL59TYkEHOTvlyNkpR4jfT0ilXP2pMQOa1ftdxwrf/kR4rZ5v7sgDgzTrXUps7Y51vIjUO7eZ+gO0672dsbZXGw1rHwCwEWn77XdXI/j9hJxkiBytwNd+0uCp1r8Ctd+VZbAdS68HYdwJY0KnU6T2u7YM8vaWKwHeZVm+vki6SoQIEgB49tsutn76ThmxRksCM0Y7o/RKINUDPDCqywBexiq9EhT/mBPXe0TlvUAz5XebsSaLqXb+fEULnV4Pq90Cp8sKQKvOEqBlTscC0en1AIB8Nov99CtG9RmglGrUP/SSasALBIAiwXccgNu0w9LgR0cm4fMmSSz+EtmzuGKZ21EAWgUqlyuUDL5r7bCQ2ITtsLvF2weAWPxl77e05CRDajJYcmyW/g7zj0T/0EtozKejq4DTsXBjEDy58Rr/yXQKPu8PCEfcTM8AIO3efJE0sxQIk9VIAG73L03HJZO/AgBMhkWMjkyiVC7UjrRAUPyBFu0MuRwaBV+3ADA+poPPsIkr4xKs9smW4x+Pc3gynaoFDqD2X2kCpEqC/OQB4LLIAYbrew/+rW+CPjy6vsYHPOeexmokAJNhkUrw1NphTaUk/o1ZRfcPUheIppbgDRkQTS01fMacexo2mx7br//CnHuaGi8N0kh/ERCS4Hnb20/gb/M5nu4nsDhbf5/lygCyAIC1jRA1sqa2IdIqeABwOT14eqSFy+lp6sNyZbBcGfPuKFF9BgjffrWGAU0LfzOWYXYCQAYHKcAS6I4uGaSR+pdFDhCc1/kH1lQjzNoC4Hq9vwJQRCg+Bk2lBOkyKNcej3P43ZMEoOsNANa5am/O9+iaSqKpb3pHAwfWwOFmLdBzJZDPVtn68PyAsWhnbiQsLlNonAHezgPQ9vLC63tewzdSgraLI7DDZsTDp6KxX9urO7vvM7vi7nB5CKtXOpGS3E4uMqrMgNvszBykLkTnz2JpbI3k6/yGJHt9/xXzmHdHCQ0QOrofMDM7LDp/jzJmMFzvOFtBHKfwhgy9wQFybWXHAZtNj3n/N7WOz+X04ONHtuF1IEF9Tl35NPZzcEM1q0DHALBZR2pvuarzGxvfCe7tJ1rK5J7OADUZdQD4JfBeANBIA9z7DFCKAHkt0JMAyCXAbhBhnwTVPLlSuUD9a5DiAGgqpYbXWTZ7q/pf1X4SAdETUvjw/KDaEQLkcmgUcwMf8OenB0Dyn1ptywbgSodVbR7LZzxnTKofgLpM+GpIkhHNg2DZLFg2K2qBUcqLQMWY8jtFirWXFu0MmbL4AKBp7y7UCcK0Fn70EPqMCwLOHcbqMk11GSCc5E3k1owrhD48SGajS9GgqQAgd4J84K38peDIBVYVNu+OklAwSdT6vC8WqK6ToJTsaDyXFg/ca/sMUE+QQ3K2QqgAAAAASUVORK5CYII=)}
+.a-admin-s{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFaUlEQVR42u1ZT0gjVxz+RkIoUkRCSEWlhMFNQxAJEkKqi0hwrcjSQ1ApJYfiqUgQWZYexIMsdlk8FBFZehIpspS4iIVlsTEsIWxDCMMiS1kkhBDElayEIYh4COLrIU6ccSbJJM5kYnc+GDJv3nuT9/ve7+8bQIcOHTp06NChQ4cOHTp06NCh4zMDpdUfLz0LEgBwuXsx5nVQ/PZ39zvw629h8NuCRRtNiq3boBUBr17uwNrTAwAgBZZ8OxAotce8Dsrj+pHw2/y5pMASpcho0VL9MqkU3BvrJSEyqZRkv0htjSaKu0iBJXxC7hSUXHi9RBi0tP+/32aLi/f7CeYDxd11eKib/kHOOz+m0+iiaZACS2oxC4PW9l9PvxS67S7q6IAhnDbIJaFFS/vnsMfksOdbxJ5vUbK/FhI4bbizfkEpHB0wsnyCQQvbl4r9Uu1bJzlXUaKSORi0tP1q7duA7xOaygfcjO1yY3+9JDSdPyAf4oT4/UTqVwtf0NBaYHjgp6pCRmIbFACQk+eCsZRlRvZaubncnKMDhnTRtGTarIoJBGcHCP8CgLnpJRIKPa04LxR6isLZMbF1+8jgSAqT/kvgUQyT/ksszIaIXOE/sm5IkdgQDXBahsi50QyzyVp61tlBY8r+AheOObg81orz73Uy+KY/LJgPADk2g+TRNlWN+IGZ1VK7y5QoZomsG+U0QLUokGMzpfvzLAPYr/vaDhdF40+/vn5mNlmRYzMYH+3H8uo0eu2B2oWnaez1LeBB9PsrIujGRIH9kyjVWshBcHW4BGOi4TzWwnPwLdixFp6TfM/4aD9eh97hyfy/mPL9jFqFL6H9B1TKDg1qmQC3k+XwJrKLf/pOMBjZRWBE3J9gWIyP9iO4/TsACHxAYGRFMPbC9qQo+NLV8/UiGQ/evwDyf4KyzJTNCVRNhM6zjGj3OXiHxzAY2YV3eAzAgeSYBMPCbLKis4MuEWE2WfGWsYC22eDyODHsdaHt8lB6AVfCa5IKF3e/vAb0YRF9wwAQRzQMOKcrv+/aB/hI55dtAAAmvo/gH0FsrgcEOy9XeM3KYef0St1zi0T4CJAEAMyzWbHdyxRe0zPBciHwr7FQWY/NJyF5VHR++VsIr3gU4DvA8ywj6IvttMLwYQVMPKPY/02txigA2Hr8ENxvLcKrpgHV7L8cCfd89ZEQnB0gW48flgiRqge67S5KKgwqlglyKS+HlYindO/Ov0eivQ/bS0Jv/5WnuHOf4q8Ez+OLRixf0IJM8mUoUPdaK9UCimnAc8YGAKBtNi4XFI2JhvOC9mQwhi1TWjTOCIugfZxNY2J0jdyGBKmqlHJ4KMVNIJ1MXt2ZRH1DI+2C9iewGEK7+CUjBWzjAL4FuzolOSGEoihKUQ2IxDYortw9PjyF2SQm4NnOANxuGyb899FrD8BsssI7PIazs4Tkc2BXkfOAm+rPCa94FIjENqh8Kl113C+z69AKxO8nmhyJuV2m0i4nGLZiBMmxGbwppckK7/7mJsWZgSZngo0E951A8iDkygxUJ4ALgVqB2/1yZ46qZIKVymDNiHB4qIYciKjlALlcQOn1NIQAuQ5QDUfYFAQ0M5qagBybKZ0E3RkCWgs56eOtRLIm+1+2XAqIUAuK1gL7J1EKAJwAOTeaMd5yiteXbUDoHa9MlknABY1lSxqLR5zPsDY/ASJN+MJ4QyPKC5FIJJFIJAUlMHJpAanooJUPj0rmAD3OKQAoW7vz8wS+WvM/evDHdPIETu0HRZrWdBrAX2Q151bOV/DHcCT1ObyKCq0KAXIXyAleafxNcuQS2xSYGF0jcr/kavG+/y1RmjvBm85Ojfeq5Qc+a/wHbsuz41bNkdQAAAAASUVORK5CYII=)}
+.a-admin-hit{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAE4UlEQVR42u1ZX0hiWRz+ToSEDIOIuNIug0i5bYhIiLjNEiLRRvQUbSyDD0uPIdLDsAzRgwxtRE9uhCz7ELFEDBbRDhHhSiuxK3KRRSJikAiJ2aERkYiIkGHOPtR17vVm6nZPc23uB6LnnnN/nN/n9/tzzwVUqFChQoUKFSoUCrqfpPfKoamZCJ2aidCt7f26HKM+HxMimu+agI3VdZjb2upTAaWUEEKoz0fJ0hJpaAIAIHtwAJvDdqNKAMDpsqHf20kIIYQnQfEKKN98+XwytUyuvutSCQvnmRDwfyReSSWjaY65GmVn1e18QgHg+VkBfa+2CFSoUKFChXKh2CxdrZ9QXB9Q64apz0cx4b9kv9NNWPcTd0YAiw1Xa5kV1wnWsuE/UnlgKFjVVi0tswoVKlQ0TB9A95MU0/PAhB8/vTwCXzK/NZ1KyuFd9QBMCLhu857uH0TneRfFIsxtbbA5bIi93AQAxBOLBABoLky/HvirND/5bIQpAU1yGosEuunG6jr20ntIcXsAgPHRKRqNTl9bMnlEo9Monr2h1i+G6OPeg9K8a3EBk4EobQgFOIw99FxjgN7UAv5A5NdHgxjpWMa7znE43eYb729vTeHLrhgMevG6fCGLzOs15bfCPArHFwAAP7TQpiNAx4e5h0fSBuj00YdrBr0Z+UIWA31dmJ0bha3Dz9R5WUMgndsh2mIeoo/JKVqzEzvBfGwcQ5MdmI+NV7T14IELzyf2MNDXxTw5N8kdAucaA7Qmp8R5HtvxLfxtz2E7vlXRFj8XWpgkDUOAEOfHqYpzXk8/Hu8a4fX0V7Uz3DfP/LWY7DngMolVTnh2BGH3AEASOzHAMfpxG6E7fTPkGA0prhNsUsIm2ltT+L0/2rgE8AnwuvhPrGvRvB9CKpmt2V6+kEVk7ZfGC4Fq8V+JhPYhQakMXwhmNrHKWBi3LjORQLcoU4fi7tJv18kuOJ0da1OvRPd85h4EALxNbohPgYIahFp0sFitcLod8Hid+Eq3CmIcU24nGE5ZAQAWq5UXsGTNTuxENP4uksCK/lCyTgOjQC1pRH6L4M91F2guXCJZbjJkC4HDTObql14y19OrE43fooAe6KRGeot4gRy+n7kcLi348W8B+Nxiubxw8gI0F6ZyknBrAuKJRcI/7r45OoVBLyVgZr0bLpcVw75vYOvww6A3w+vpx9kZd+31MWcQ3WNzYtUMLmNlSf6iJYvFeGKRnBwcVl33Y2ChbtuzOhMAYGXjCZMQYN4HuJz60r/MpQo3VpB8IQs7ghLn730jVI5y+fPx31AE8CXwtvhZrwWrCiB7J1h+mlMvpoaOAQDjgaTE+YYPgXoSYGjOLRqvPB1k1gwxJaDWBFjeRSbCASTCAaw8Hfz0kuDkmgmhuBu7V9WANQnNUCD4p8Ft/aUiWk0WAAllK0BbzF97neMydcX/rPG9iIiGeBxO53YIADgAeq4xYKDpFJvvHwLRfwSPyTUS8M6CWeMhgq/5nGFurBDQFvNAi6ZMEZWd4LgMOC5TGreaLED+UEQqTBblngc4jD20zTECAFiN+km1PkEoa+FLD+GaVoHDB+mIRGmKU4Bwk9WSW6VcIVzDk2Tv9DJxWlYCat0g7/hN68vJqZVYRWC4b57K+SZXbnv3lqiPngQrJT0Wdlnng08S/wHaNPwcj1NJ0QAAAABJRU5ErkJggg==)}
+.a-admin-act{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFV0lEQVR42u1ZX0gjRxj/RUIoUkRCSEPuOELwUhEJ4QjB5g4JwYYgx3FITor4UPJYRKQPRyl58CEU8aGIiBylyHGIDzkJtsgRcnKItCEsSxERkRAkHOnhhRBEjjyI3PQh3XU32U1Ws7vZmHwgZmZnZ2d+832/788AXelKVzpZdFpZSHQhRgDA7RlG0D+k2rr0WgFge3MLtoEB1b+r15I65rJZhPeprl2OuKdIx3FAqzhBr1UA1OKEHi2bQi6b7fJBx3KAWjyhb2cA5OAJTQNACqt13eE343/d7tghNuslpLBK8sc0yR/ThFyUKn+FVdIInFvhBQDgdXSd137rnOocNygk3x5s3A4AyPQ0IUdpQo7SklT5TnQJCM92ViCkRh7RMi/wli4CE/OSx/8bmcMdu73huDS9obtOfNAyAALHCcmBy9HTCIa2ojxifBaZliU+aAsT4G5ezDvcNI/QdCgcm/XWtefJ5VTT62+LXOD0z3EeEJYnb2Rbd1vkAt8tmGF3OOAeccHndwMwo6MAYOTV7+uIvYp1XjrsuDtBrPf6AABjT8bRbArcUi9AjtKEjQKr/ott3mS04ZF7Ch/en2N7cwuH+4egqcP20wCf9/uGUdpu6qWOmwp//WAHJqMNxVIOmXxcx0R6j0NPEflpUpteoNp9TS6ndHPhKFlcDiMQ+Fn0vWTyFwDA8OAMu2mT0Qa/LwgAiC4HbrTeepGh7CToMo+SSNwEk9HG9oUCU8T75QY21x34bfWHOsFLHvetdC2g8RdNraleZKiYFyiWcuzv8ikNDF4963tfmwOc37vqY06fO08mH29KW8UqR4oA0HtR5LctbgBptr23c4YDzOPdbgJ+XxAzY0s1c4wHHsDjcQAAKCqDzFr8xutJ0xs6AAgorQEu8ygpG0w8ICqbr5V3uwn87Szg4W4CM2O1zym6BCADAFhaiyhG1oq5wXqbBwC/L4iHB2aW4ISEokug6BJCgRXF7gr1Spx+xYaB3jrjnZiH0wcAaeztAK5wa4IsvRKqXz6lAU67Znx4SfYqEGPnqgJw5e8vAZwiEreg96KIsoHvBqXKfSuNP4JJAPZrvXfdKpBsAKzSFZa2Oxz/231CdGxqqxdeLIHGHNwjNtlV+aa3RLKYwEmmwtb7hT2dyzzakLDodE5YAyaaW0cum8Wwa1jdUJiJ75kYnuEDrgl4zg5A9TsRjx7z3v1q5DEA4GN6m6/S8wYsXl6ZgdVix2ZyRhFX2LQGMBuXIns7Z7z2s1gKr40nNeMMVQWPD6cnCAVWiBIgqFoQGR3r57U/ooRR9NcOHLtAHMeYiAy2hxuUKgtbXng8DoSmH7EZn98XxKdPlGA/kGjqe1I8Q0tKYs9n11T5jhTPoFpFyOM2sqdcifOFhckEmUSpWclls/C8XNOGCagt9bJA1TSAcYFaFVkBEIoBtC6qV4VvSoBMLNCWAEglQKWIUFMaoDXRtBcolnKIxV8IcorX+SPPHFIHv+qk9ikKQKUgWrtgisqAojKS51k0f8bzQg8LRDUI3KrzdfsUA2C/sFfJCAFSNpgw3nOON5/7gOQ/rG1LBuDSjkXzCebzDGfw3xUqk0vtU8UEei+KwBeGqhK5OADVGmK12IHiCQ9UWOw1qi+m6o36ZasHcGOAAdckAIjm7tw4gaua3FPijrFarmoC2f3KtXhZoNaYycd1jrsT5Dr9imgAs0gp5FZ9eSI0hgHJOeRnNUFMxFS9kQmoejvMLZeJbUispCZ2xyCm5lKeKcIBocAKGRx0CN7kNjpFoTHMfPUuSOsxvapegLX/ZHNACc0nZMtyiE5pVVfCzXZFRvkPSi195Zhpm58AAAAASUVORK5CYII=);--a2:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFXklEQVR42u1aX0hiaRT/3YgYehhCxJVmiJAdV2QQCRHXGUKkFRmWHqKNJXxYehaJfRiGyQdZbIieIiL2KZYlenBC2iEGsRgidluRyyIRQ0hERC0VIjEMPUj0zYNzb/evmt6r3rg/CL2f5/v4zvnO75zznRugQ4cOHTp06NChQ4cOHTraD+RjhlT73giotlb+YrGykoUBUHZPQzp0tPPJv40vAwBOi26cFt1Az8/lP+b0GlS+ZQYQuq+UOzPKMUZgsOEYV3QvLTGA8OTucpI/7K5AyTjQMgqQUIiQjxkip4Rw/FF8DpiIoF7DaS4GKKFcLehsBf8pu4faoAvASEw0LjfvNDqJRxaL5Fr3Nv8nIl6SiHhJ2hYkJ/s0IaUiIaUiSUS8pGqKvE8UsK/FRb8Ls4NmKFAPdhYjFel0bytBRsnzg994Y+bh95RS/NdEAPF5fyEWqxUujxM+vwt2q0mxfWuCAgzoTA6JPxPaToP14P/jTwDyAICtnT8U9dqOVnCarQIFn1Ly1scjxGjox3PX+FdDKJxtms3lajLMCTN5/ruBTRgN/SgUj5A/SVKaMEAi4uUpOja/Q01OxMns/AQCgdey89LpNwCAp7Ywq7TR0A+/LwgAiM8H2t8ATtMgueoywmjoZ8d6zRaM2VZwbZ+Ey9Nfcf6TXpp36swnAFU8QLUgyGwaAK7OaMB2+9vD45hI/lPf7RhXaTWVV80A3aUC/9nsApBhn7c3L7GLGD5speD3BREemhOt8SIwALfbCgDIZvPILyXb/zbIuD/XEGXlxfiwlcI/jgs820ohPCT+PUsX2dQ3txRVLVirlgYrKQ8Afl8Qz3ZNbICTQpYuIksXMRpYIGrts1ON0y9zGOiuIO9ADA4fAGSwvQk4J1pTZHWq4fpXZzTAeRbJT8y1TZXZkAFu8/01gDNEk2Z0lwoQpsFa8aSXxl/BNACLNgywSJejtMVq/cr7lPydfq0bXsyBRvVaQHMUOMyXo3XuYptymgarBiw6cyTtASMt6DwpVd8zNbxUJei+3EW2x4FkfJ839xvPjwCA88w6bzwT68LstYVXSa6mw+1ZCN3lerq9ecl7/imxg7eGQ5FcF0z86/DZIUYDC0QNIzS1HzA41MN7PkcRg+gRCw6VkMQ+RqI2bcSAWjGz5oXbbcVo6Dl74/P7gvj8OSs5DqRq6i800htsSVv8ZWRJuSCmldfjbpeBPeVynS8N5ibIXJRq8QBNtcTaDaobgEmBquXxGikg5ymKGkCqBlAbJBTSFgXqDYBMLVDvSct5SlMMUGsArCcQUsvL7UOBVkBIAdmY8Gah9YXQXVEoHiGR/F0ypvD+Z/B1mFB2DxWfSZCp4T5MvzsGAERfjVHxmQQBgGkA8ZlhEn01RqlqgHJDVLzhbDaPbDZf8zqzphu8vOhgDSE0wsZITDRnfXUNU8MRrK+u8cYA4F9bB77fv1HXA3IX2+UbIUCuuox40fEJ728eAun/WG7XbIBrC2ZNh4idMDGDPzewnxK5eoZeoSj7imgMAGALEfZ7MyjQXSoAD7oELXJ5Awg9pNdsAQqHPKPCbAHj0lxwXX1q7x2mnw6z40KqCOOEYtdLp2mQfOscAwDZuzu3TuC+OOG+9ODK9JpvewIHudvX4g/6HotO2eMaJ0JXz9ArVNoWFBmM6z2KegB3k9WCm/DliZQMYySH3c96AgDgQizPuDdFoypVFO0I3dVLhPGikgwXo7+GJdcUurkwJUpRhpmnSgwYDSwQm80q+SZXTulKMsx6e7m/5SfJ5HgA2MvtNbchspoOU0g3Ziip9RiOS2GDlqfT0cEBmk6BWjrDjaRZHQriC4S+jEkUSG+6AAAAAElFTkSuQmCC)}
+.a-admin-ko{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEvklEQVR42u1aX2gaSRz+ViQUH44QJBUrIUgQKaGEYwniBbEiSyiBE0mEC3KUPB0SSjlCKMGHPoQ+BAmelNxbKeXIgy2hF0oJEjyRIkVCkD7teSGEcoRERCRIONLj9h42a3bXXf/FNQudDwRnZmd3ft/85vf7dmYBAgICAgICAgICAgICAgICAgICgq8JlN4GlHzk5uR1c9EwqOGIJmM16nFW3JEE1gYtAIDl6gmAvGbPMuiRgDt2u+L/r8YDXi/N4JdomC9USZwiINBbGpwY9nAAUChlO+7vdT/kACBCFxFK5G48DXcdBMcmQiikshJC5JATJBjfCyJvhIBZ5jn3JrWoONjzAbOqp8hhdzgAFOt9lK4rlLJUPwgytuvyhVKWcjodQIofUCGVrQ/cZKFhUuhXrshI+nwG68g39bJ5aBTlypEqeUJ98pGb02q5dOQBqwmGUpp5k8r15qHRhrqLGsDul8HCBQAwXZRhstAi0o4U7nGiTyXovTWAB4azaw1AbLxAiBJxulSCmX8ucD5gxoPqJ9Vr8oP3rkWIrgmow++VGr13tfgnuyTHZKGBkz1YLT6EEuuUvgkAMDnpEJWK4oXSQIqcHHfgvMmdN2GzrXLxF1EKAFz0PAcAM7MBRJ+EqFblnhMgTlni6D8bnmrRkyflSSCH7G4VHv8gsru84f/efdy051p4CgX2gMvkXlIAMDo2JmlvVe65BwjpySRyea87djWz9BDWEgsqvXP1f4LhtKt50GOYFQDAZ+6CY37dxvjZf6AnxyHMNIB6uboQlLRrtgSaRWo5IWJSKumXknqx8YUXUk/w+AdxNvK0Xo6dlsBGZqmo6Bq5m8vbe0aAoAIFhVaudEbY+9QR3jv3kd1oft0nPEU6swOfdxoexCVtS7eHkZetcefGG44J8poiYbFpFwMEFdiuF6iDxYeVJOYM28BWY2s6swM69TPSzDoW/dK22GlJcY0v3R7mCdAyBiipQJ93uisCpp6FAGHHR+GeaWb98t5sg6GvZGtejpkW7T2JAcLLSa32LddtDDn9+A7Aw4b6RX/8cubZhrbYaQkJhTU/ElGPCZrrAGn+bwc59RS7EEczYa0UA/quAxqCY8v8L4U4C/wQLAMoAwD+OlaXwKnUMzDMCkaoAcpFz3M3qgPEQkgp3alBeMsTZ4Hfp6+i6vc76n2/wAZBBMnz/HV1ANWu0cK6F7+ny7PAY+/Hth46dxkAv/MftE1c8e8tfZ0MmYdGYbXYcXxyiGXjIZZLhraNvx/gT3q2VkvwRG61Jbj+3N/gtDge65oAq8WOcHkXMKLB+CQ7j3jCpdjvfuD55ZYYAJRU9YTPO41aLY/8XgVWi3anQx3vCR4UkvVyYP8tv28n29ISGy894xNL4AkAH5rqibXEArzuGKyvAgC2b35HyOnkZ+7eXV/Td4M7dnv9J6/7I7OOw2IRXh9dvxfLFiW/1QRD1Wp5jDsXAQDHP77VzAM6DoLybCDewRGC4FzsnXoMmNnE69943ttZ0w5bkAsFf1JUon0jQI2UsYmQpC7k3FSM9qoP1+jMv29KUH5GEHJefdzQyngCAgICAh2A0vPg+vHJnFHvM6T1J3MGvROg9SdzuvcA8smcxvgf3oPYzZ7YvisAAAAASUVORK5CYII=)}
 .a-alch{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABGElEQVR42mNgGOmAkVQNUW4u/9HFlu3aw0iuA1jI1Xjt7jOqhAATqRpgvtVSlmJgYGBguHD3GiNdHUBtwDSkEiEsASLHPywqyE2IjJRYjgy0lKXIcgQTKZbXpGzEmyuwZVGqpYGalI0MUZWmVM+ajJQGPaVRQfVcQGooEFUSuolNYnATI87ACcdDqJsGlu3aw7jrVR7RlpNaMg6dgijKzeU/xzsPnPLn3s8jq14gqyREdsi59/MoqpRYSLUcksrnDZ7KCFYXkFMKUjUR0rQoJrY0JMcRTNTwOSwayCkJaVIOkBIKTNSKf3JDgSgHYGuIXrh7jVFLWQqlRYTMp3mzHJ9DR1vFNKkLrLR0jIhVe+zalXMMo4BIAABO2n84pN9FPAAAAABJRU5ErkJggg==);--b:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABF0lEQVR42mNgGAUDDBhJ1RDl5vIfXWzZrj2M5DqAhVyN1+4+o0oIMJGqAeZbLWUpBgYGBoYLd68x0tUB1AZMQyoRwhIgcvzDooLchMhIieXIQEtZiixHMJFieU3KRry5AlsWpVoaqEnZyBBVaUr1rMlIadBTGhVUzwWkhgJRJaGb2CQGNzHiDJxwPIS6aWDZrj2Mu17lEW05qSXj0CmIotxc/nO888Apf+79PLLqBbJKQmSHnHs/j6JKiYVUyyGpfN7gqYxgdQE5pSBVEyFNi2JiS0NyHMFEDZ/DooGckpAm5QApocBErfgnNxSIcgC2huiFu9cYtZSlUFpEyHyaN8vxOXR41gVWWjpGxKo9du3KudFOJ7EAADH8fzYkt1b0AAAAAElFTkSuQmCC)}
 .a-alch-w{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABKUlEQVR42u1XIQ7CQBCcuyB4AaK27oIiwaBJwwNQ1dV4kj6C8IBKPLZBg2sqyLmzFQh4AgjShEBattu7NiSsvc3t3OzObAv841ciDOb3MJjfbd87oBQGAG0KJw+TfRYHAEGlvwSSGy06bUEVGADYpQfRCQNV7VC+1xqI4BZ/DeV7bBCSWjyO9pU52hTgSlRSkuJoj3A9rc3hKkXYlCGnFdKmpDgsfJVhMNoiGNEu25yWdmdglx5EelmRi3NMymoLnPrA8LqoPM9uCduiGzvhK5DslgBAq/0waFL8OeVJd+uYovv3BdXLEDq1Yqobcq3Yqgw5LMi21JdzwGWhdyP6CqDcbuVLc6NFbrRQvgflex8sOP8mrAPZ+xA6teKZGk+ouUd9zv7/ktR4APHPg+xA2VmAAAAAAElFTkSuQmCC)}
 .a-alch-s{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABSklEQVR42mNgGAWjYKQDRko0R7m5/Iexl+3aw0g3B8Asvnb3GVxMS1mKLIcwUsNyZKClLEWSI5jIsbwmZSNONdfuPkOJGpg+dDEYYCE1BGpSNjJEVZriVYPuCFyhRVIUEAp6YsCFu9cYKYoCSsG1VV//UxwF5Po4ys3l/6lNDynLBVFuLv/dxCYRVDfheAjW4GZgYGBYEHPtf8ISLcYBiQIGBgYGMz95yssBjnceOOXPvZ+H0/fYQoHkNLBs1x7GKDeG/wwMDAwwh5x7Pw9vSqdrSUisA66t+vpfK4ybkWq5QEtZCqMAwlckw3IE1bMhcsjAHIPNIQlLtBgXxFz7z0it4IeFAKnRwkRtn8OqZWIBTaKAlJxA94KIIgfAEhMsmC/cvcZ44e41Ri1lKRQxmjlgwENgWDqA6Piy0tIxIlbtsWtXzo32eIgFACEzmj08EQfaAAAAAElFTkSuQmCC)}
@@ -1274,6 +1284,65 @@ canvas.fx { position: absolute; z-index: 7; left: 0; top: 0; width: calc(3 * var
 /* ===== 결투장 슬롯 인트로, KO와 승리 연출 ===== */
 .intro.intro2 { animation: introIn2 .2s steps(3) both; gap: 14px; }
 .intro.intro2.out { opacity: 0; transition: opacity .3s steps(4); }
+/* 관리자 보스 등장: 막마다 다른 시스템 화면 → 창 → 등장 대사 → 이름 띠. 누르면 다음 단계 */
+.adi { position: fixed; inset: 0; z-index: 31; overflow: hidden; background: rgba(26, 20, 32, .78); color: #1a1420; font-family: 'Galmuri11', var(--pix, inherit); cursor: pointer; user-select: none; }
+.adi.out { opacity: 0; transition: opacity .3s steps(4); }
+.adi .sc { position: absolute; inset: 0; display: none; }
+.adi[data-s="1"] .s1, .adi[data-s="2"] .s2, .adi[data-s="3"] .s3, .adi[data-s="4"] .s4 { display: block; animation: adiIn .18s steps(3) both; }
+@keyframes adiIn { from { opacity: 0; } }
+.adi .skip { position: absolute; right: 16px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 3; font: inherit; font-size: 13px; padding: 6px 12px; background: #fff; border: 2px solid #1a1420; color: #1a1420; cursor: pointer; }
+.adi .scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 3px, rgba(0, 0, 0, .22) 3px 4px); }
+.adi .crt { position: absolute; inset: 0; background: #0d0a12; }
+.adi .crt pre { position: absolute; left: max(16px, 8vw); right: 12px; top: max(40px, 14vh); font: inherit; font-size: clamp(12px, 2.2vw, 20px); line-height: 1.75; color: #8ff0a8; white-space: pre; overflow: hidden; }
+.adi .crt pre > span { display: block; animation: adiLn .01s steps(1) both; animation-delay: calc(var(--i) * var(--ld, 260ms)); }
+@keyframes adiLn { from { visibility: hidden; } }
+.adi .crt .w { color: #fff; } .adi .crt .y { color: #ffd75e; }
+.adi .crt .cur { display: inline-block; width: .6em; height: 1em; background: #fff; vertical-align: -2px; animation: adiBlink .5s steps(1) infinite; }
+@keyframes adiBlink { 50% { opacity: 0; } }
+.adi .blue { position: absolute; inset: 0; background: #2a3fd0; color: #fff; display: grid; place-content: center; text-align: center; gap: 22px; padding: 16px; }
+.adi .blue p { font-size: clamp(16px, 2.6vw, 26px); line-height: 1.8; } .adi .blue p small { display: block; font-size: .55em; color: #c9d2ff; }
+.adi .blue .bar { width: min(420px, 70vw); justify-self: center; }
+.adi .tint { position: absolute; inset: 0; }
+.adi-a2 .tint { background: rgba(70, 10, 24, .55); }
+.adi .win { position: absolute; background: #c9c6d6; border: 2px solid #1a1420; box-shadow: 5px 5px 0 rgba(0, 0, 0, .45); font-size: clamp(12px, 1.6vw, 15px); animation: adiPop .26s steps(4) both; animation-delay: var(--d, 0s); }
+@keyframes adiPop { 0% { transform: scale(.2); opacity: 0; } 70% { transform: scale(1.08); } }
+.adi .win .tt { background: #3b4fa8; color: #fff; padding: 3px 8px; font-size: .9em; display: flex; justify-content: space-between; gap: 12px; }
+.adi .win .tt i { width: 15px; height: 13px; background: #c9c6d6; border: 1px solid #1a1420; color: #d8475a; font-style: normal; font-size: 10px; line-height: 11px; text-align: center; }
+.adi .win.red .tt { background: #b5384a; }
+.adi .win .bd { padding: 10px 12px; line-height: 1.6; }
+.adi .win .bd span { display: block; animation: adiLn .01s steps(1) both; animation-delay: calc(var(--i) * 220ms + 200ms); }
+.adi .bar { height: 16px; border: 2px solid #1a1420; background: #fff; margin-top: 8px; position: relative; }
+.adi .bar b { position: absolute; left: 1px; top: 1px; bottom: 1px; width: 0; background: repeating-linear-gradient(90deg, #5b9a4a 0 8px, #3f7234 8px 10px); animation: adiFill var(--bt, 1.4s) steps(12) forwards; }
+@keyframes adiFill { to { width: calc(100% - 2px); } }
+.adi .btns { display: flex; gap: 14px; justify-content: center; margin-top: 10px; }
+.adi .btns span { border: 2px solid #1a1420; background: #e9e6f0; padding: 3px 20px; box-shadow: inset -2px -2px 0 #8a86a0; }
+.adi .btns span.pr { animation: adiPress .2s steps(1) both; animation-delay: .95s; }
+@keyframes adiPress { to { box-shadow: inset 2px 2px 0 #8a86a0; background: #d6d2e4; } }
+.adi .ptr { position: absolute; width: 20px; height: 30px; z-index: 2; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 15' shape-rendering='crispEdges'><path fill='%231a1420' d='M0 0h1v15H0zM1 1h1v1H1zM2 2h1v1H2zM3 3h1v1H3zM4 4h1v1H4zM5 5h1v1H5zM6 6h1v1H6zM7 7h1v1H7zM8 8h1v1H8zM5 9h5v1H5zM1 11h1v1H1zM2 10h1v1H2zM3 11h1v2H3zM6 11h1v2H6zM4 13h1v1H4zM7 13h1v1H7zM5 14h2v1H5z'/><path fill='white' d='M1 2h1v9H1zM2 3h1v7H2zM3 4h1v7H3zM4 5h1v8H4zM5 6h1v3H5zM5 10h1v4H5zM6 7h1v2H6zM7 8h1v1H7z'/></svg>") 0 0 / 100% 100%; animation: adiPtr .9s steps(9) both; }
+@keyframes adiPtr { from { translate: 40vw 30vh; } }
+.adi .glitch { position: absolute; left: 0; right: 0; height: 5px; background: #ff5aa0; mix-blend-mode: screen; opacity: .7; animation: adiGl .5s steps(2) infinite; }
+@keyframes adiGl { 50% { translate: 12px 0; opacity: .25; } }
+/* 등장: 관리자는 대기 동작으로 서 있고, 대사가 한 글자씩 찍힌다 */
+.adi .boss { position: absolute; right: max(4vw, 10px); bottom: 150px; width: clamp(150px, 26vw, 260px); height: clamp(150px, 26vw, 260px); }
+.adi .boss i, .adi .bn i { display: block; width: 100%; height: 100%; animation: breathe 1.3s steps(1) infinite; }
+.adi-a2 .s3 .tint { background: rgba(42, 63, 208, .5); animation: adiBsod .9s steps(1) 2; }
+@keyframes adiBsod { 20% { background: #2a3fd0; } 40% { background: rgba(42, 63, 208, .5); } }
+.adi .dlg { position: absolute; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; width: min(760px, calc(100% - 32px)); min-height: 108px; background: #fff; border: 3px solid #1a1420; box-shadow: 5px 5px 0 rgba(0, 0, 0, .4); padding: 22px 18px 14px; font-size: clamp(15px, 2vw, 19px); line-height: 1.65; white-space: pre-line; }
+.adi .dlg .nm { position: absolute; left: 12px; top: -16px; background: var(--nc, #4b3f8f); color: #fff; padding: 2px 12px; font-size: 14px; border: 2px solid #1a1420; }
+.adi .dlg .nm em { font-style: normal; color: #ffd75e; margin-left: 6px; }
+.adi .dlg .nx { position: absolute; right: 12px; bottom: 6px; font-size: 12px; color: #4b3f8f; animation: adiBlink .6s steps(1) infinite; }
+.adi .dlg .tc { display: inline-block; width: 9px; height: 1em; background: #1a1420; vertical-align: -2px; }
+/* 이름 띠 */
+.adi .bn { position: absolute; left: 0; right: 0; top: 50%; translate: 0 -50%; min-height: 140px; background: #1a1420; border-block: 5px solid var(--bc, #4b3f8f); color: #fff; display: grid; align-content: center; padding: 14px 16px 14px clamp(150px, 30vw, 300px); animation: adiBand .3s steps(5) both; }
+@keyframes adiBand { from { clip-path: inset(0 100% 0 0); } }
+.adi .bn > span:first-of-type { font-size: 14px; color: var(--sc, #a9b4ff); letter-spacing: 3px; }
+.adi .bn b { font-size: clamp(28px, 5vw, 46px); letter-spacing: 2px; line-height: 1.2; }
+.adi .bn > span:last-of-type { font-size: 13px; color: #c9c6d6; margin-top: 4px; }
+.adi .bn .bi { position: absolute; left: clamp(4px, 6vw, 80px); bottom: -6px; width: clamp(130px, 20vw, 200px); height: clamp(130px, 20vw, 200px); }
+.adi-a1 .bn { --bc: #4f7fd0; --sc: #a9cfee; } .adi-a2 .bn { --bc: #d8475a; --sc: #ff9aa8; }
+.adi-a2 .s4 { animation: adiIn .18s steps(3) both, adiShake .35s steps(4) .3s; }
+@keyframes adiShake { 25% { translate: -6px 3px; } 50% { translate: 5px -3px; } 75% { translate: -3px 2px; } }
+@media (prefers-reduced-motion: reduce) { .adi *, .adi .sc { animation: none !important; } .adi .bar b { width: calc(100% - 2px); } }
 @keyframes introIn2 { 0% { opacity: 0; } 100% { opacity: 1; } }
 .slot { display: grid; justify-items: center; gap: 4px; }
 .reel { display: grid; justify-items: center; gap: 2px; width: 220px; padding: 6px 0; border: 3px solid var(--sil); background: var(--paper); box-shadow: 4px 4px 0 var(--line); overflow: hidden; }
@@ -1674,6 +1743,11 @@ body, body:has(.play) { padding: 0; }
 .ic-clock{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAOUlEQVR42mNkgIIoN5f/DEhg2a49jAy4JFHEkCXRFUa5ufxnYiAAmLAZjWwSC06HYXUQFjFGQt4EAE4kGyM/JwGcAAAAAElFTkSuQmCC)}
 .ic-pause{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHklEQVR42mNgIAZEubn8j3Jz+Y+Nz0RI82BQQBAAAFV+B5dIPV/pAAAAAElFTkSuQmCC)}
 .ic-bell{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAL0lEQVR42mNgQAJRbi7/o9xc/iOLMSFLYmMzMRAATOg60E0haAIjNt04ATZfEAQAb4wRBehJPM8AAAAASUVORK5CYII=)}
+.ic-cursor{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAO0lEQVR42mOIcnP5z4AHMDEwMDDgU8QEY+BSxITMwaaICV0AXRELMmfZrj2MWE2ASRDyEUOUm8t/dEUAu/8TYdITNCsAAAAASUVORK5CYII=)}
+.ic-win{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAN0lEQVR42mOMcnP5z4AHsDAwMDAs27WHEV0CppGRkAkM+BREubn8Z0IXQNfAgszB5haCJhB0JABIQRcoEm3WWwAAAABJRU5ErkJggg==)}
+.ic-load{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALklEQVR42mNgIAAYo9xc/uNVgU9BlJvLfxZsipbt2sMIYzMRcgMLug7SHUkIAAD0Vg22CZPUHAAAAABJRU5ErkJggg==)}
+.ic-wall{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALElEQVR42mOMcnP5zwAFy3btYUTmMzAwMDAxUAoYo9xc/mMzGiZGJSso8gUA1XYVszCoGdcAAAAASUVORK5CYII=)}
+.ic-screen{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAOklEQVR42mOMcnP5z4AP4FMQ5ebynwmbQhRNRJsAE8DQABPAZkWUm8t/RkK+YMTllmW79jAyMDAwAAC+0x5ynjRicgAAAABJRU5ErkJggg==)}
 .ic-rewind{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAN0lEQVR42mNkgIIoN5f/DEhg2a49jAy4JFHEsEkiK2LCJ8nAwMDABONgM2nZrj2MOCXxOpAkAAAxShkBB5rC5QAAAABJRU5ErkJggg==)}
 .ic-crack{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALklEQVR42mNgQAJRbi7/GdAAEwOxAJtuDBOi3Fz+41JI0CQUSayK0AVR+PiMBQBO9RLjI8Y/hAAAAABJRU5ErkJggg==)}
 /* ===== 1차 추가 직업의 색과 칸 표시 ===== */
@@ -3506,6 +3580,10 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
   box-shadow: inset 0 0 0 calc(3 * var(--u, 1px)) rgba(63, 122, 34, .7); }
 .cell.blk-grass::after { content: '잔디 더미'; position: absolute; inset: auto 0 2px 0; z-index: 6; text-align: center; font-size: 11px; color: #2f5a18; text-shadow: 0 1px 0 rgba(255, 255, 255, .7); }
 html[lang=en] .cell.blk-grass::after { content: 'Grass'; }
+/* 관리자의 팝업 창: 작은 오류 창이 칸을 덮는다 */
+.cell.blk-win::before { content: ''; position: absolute; left: 12%; right: 12%; top: 16%; bottom: 22%; z-index: 5; pointer-events: none; background: linear-gradient(#3b4fa8 0 22%, #c9c6d6 22%); box-shadow: inset 0 0 0 2px #1a1420, 3px 3px 0 rgba(26, 20, 32, .35); }
+.cell.blk-win::after { content: '오류'; position: absolute; inset: auto 0 2px 0; z-index: 6; text-align: center; font-size: 11px; color: #3b4fa8; text-shadow: 0 1px 0 rgba(255, 255, 255, .8); }
+html[lang=en] .cell.blk-win::after { content: 'Error'; }
 .cell.blk-pil::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(circle at 50% 55%, transparent 0 28%, rgba(120, 104, 100, .45) 30% 44%, transparent 46%),
   linear-gradient(35deg, transparent 47%, rgba(90, 70, 68, .55) 48% 50%, transparent 51%), linear-gradient(-50deg, transparent 47%, rgba(90, 70, 68, .45) 48% 50%, transparent 51%); box-shadow: inset 0 0 0 calc(3 * var(--u, 1px)) rgba(120, 104, 100, .6); }
 .cell.ice::after { content: '얼음'; position: absolute; inset: auto 0 2px 0; z-index: 6; text-align: center; font-size: 11px; color: #3f6f98; text-shadow: 0 1px 0 rgba(255, 255, 255, .8); }
@@ -4412,7 +4490,7 @@ const ESS_MAX = 3;
 function tmPool(id) {
   const c = CARDS[id]; if (!c || c.relic) return [];
   const own = CLS.alch.deck, out = new Set();
-  for (const k of Object.keys(CLS)) if (k !== 'alch') for (const x of CLS[k].deck) if (!own.includes(x) && x !== 'quake' && echoOk(x) && CARDS[x].c === c.c) out.add(x);
+  for (const k of CLASS_IDS) if (k !== 'alch') for (const x of CLS[k].deck) if (!own.includes(x) && x !== 'quake' && echoOk(x) && CARDS[x].c === c.c) out.add(x);
   return [...out].sort();
 }
 /* 변성 후보 3장: 판마다 정해지는 씨앗 + 턴 + 자리 + 손패 칸 + 카드로 정해진다. 다시 열거나 새로고침해도 같고, 방장도 같은 3장만 받아 준다 */
@@ -4480,9 +4558,35 @@ const ARENA_RULE = { castle: '특별한 규칙이 없습니다.', snow: '기본 
 const BLESS = { hp: ['체력', '체력 +1'], pow: ['강화', '다음 공격 피해 +1'], mana: ['마나', '마나 가득'] };
 const sandLine = (w, i) => !!w && (w.o === 'r' ? R(i) : C(i)) === w.i;
 const sandArrow = w => (w.o === 'r' ? (w.dir > 0 ? '→' : '←') : (w.dir > 0 ? '↓' : '↑'));
-const CLASS_IDS = Object.keys(CLS);
+/* 모험의 보스: 관리자. 고를 수 없는 직업(boss)이라 직업 목록에서 빠진다.
+   매 막의 끝에서 기다리고, 막이 오를수록 덱에 더 강하고 까다로운 시스템 카드가 들어온다(ADMIN_TIER) */
+Object.assign(CLS, {
+  admin: {
+    n: '관리자', max: 5, boss: true, deck: rpt({ click: 3, drag: 4, firewall: 1, popup: 2 }),
+    tag: '포인터로 끌어서 고르고, 지우고, 멈춘다',
+    pas: ['관리자 권한', '모험의 매 막 끝에서 기다린다. 막이 오를수록 덱에 더 강하고 까다로운 시스템 카드가 들어온다'],
+    act: ['새로 고침', '마나 1, 카드와 함께 사용. 턴이 끝날 때 남은 손패를 모두 버리고 4장을 새로 뽑는다'],
+    ab: { cost: 1, slot: false, label: '마나 1' },
+  },
+});
+Object.assign(CARDS, {
+  click:    { n: '클릭',       t: 'atk', c: 1, tg: 'cell', dmg: 1, d: '고른 칸 즉발, 피해 1' },
+  drag:     { n: '드래그',     t: 'atk', c: 2, tg: 'sq',   dmg: 1, d: '2×2 영역을 끌어서 고른다. 즉발, 피해 1' },
+  firewall: { n: '방화벽',     t: 'sp',  c: 2, d: '이번 턴 받는 피해 -2' },
+  popup:    { n: '팝업 창',    t: 'sp',  c: 1, tg: 'two', d: '상대 진영 2칸에 오류 창을 띄운다. 그 칸은 다음 턴 진입 불가' },
+  del:      { n: '삭제',       t: 'atk', c: 3, tg: 'row',  dmg: 2, d: '가로 한 줄을 골라 지운다. 즉발, 피해 2' },
+  loading:  { n: '로딩',       t: 'atk', c: 2, tg: 'col',  dmg: 2, delay: 1, d: '세로 한 줄에 진행 막대를 띄운다. 다음 턴 다 차면 피해 2' },
+  lag:      { n: '렉',         t: 'sp',  c: 2, d: '상대는 다음 턴 기본 이동을 할 수 없다' },
+  bsod:     { n: '블루스크린', t: 'atk', c: 5, tg: 'line', dmg: 3, delay: 2, d: '고른 한 줄만 안전. 2턴 뒤 나머지 6칸 피해 3' },
+  format:   { n: '포맷',       t: 'atk', c: 4, dmg: 1, d: '상대 진영 9칸 전체 즉발, 피해 1' },
+});
+/* 관리자 덱: 1막은 기본 덱, 2막과 3막은 더하고(extra) 뺀다(cut) */
+const ADMIN_TIER = [{ extra: [], cut: [] }, { extra: ['del', 'del', 'loading', 'loading', 'lag', 'lag'], cut: ['click'] },
+  { extra: ['del', 'del', 'loading', 'loading', 'lag', 'lag', 'bsod', 'bsod', 'format'], cut: ['click', 'click', 'popup'] }];
+const ADMIN_NEW = [['click', 'drag', 'firewall', 'popup'], ['del', 'loading', 'lag'], ['bsod', 'format']];   /* 막마다 새로 들어오는 카드(안내용) */
+const CLASS_IDS = Object.keys(CLS).filter(c => !CLS[c].boss);
 /* 스킨 표는 tools/sprites.py build가 sprites/skins 시트에서 만든다 */
-/* SKINS:BEGIN */ const SKINS = {"alch":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"archaeologist":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"astronomer":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"balloon":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"bard":[{"id":"color","n":"컬러","en":"Color","f":[16,8]}],"blacksmith":[{"id":"color","n":"컬러","en":"Color","f":[23,22],"sz":[48,48]}],"brawler":[{"id":"color","n":"컬러","en":"Color","f":[14,10]},{"id":"female","n":"격투가(♀)","en":"Brawler (F)","f":[16,7]}],"bunny":[{"id":"color","n":"컬러","en":"Color","f":[14,7]}],"chicken":[{"id":"color","n":"컬러","en":"Color","f":[16,13]}],"chrono":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"clown":[{"id":"color","n":"컬러","en":"Color","f":[13,8]}],"druid":[{"id":"color","n":"컬러","en":"Color","f":[15,8]},{"id":"granny","n":"정원사 할머니","en":"Grandma Gardener","f":[23,23],"sz":[48,48]}],"dullahan":[{"id":"color","n":"컬러","en":"Color","f":[19,28],"sz":[48,48]}],"gambler":[{"id":"color","n":"컬러","en":"Color","f":[15,10]},{"id":"queen","n":"하트 퀸","en":"Queen of Hearts","f":[13,12],"px":2,"pr":800,"ac":["#e8244a","#9c1435"]}],"grave":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"hunter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]},{"id":"wolf","n":"서리 궁수","en":"Frost Archer","f":[15,17],"px":2,"pr":800,"ac":["#5f9db4","#3d6f82"]}],"mage":[{"id":"color","n":"컬러","en":"Color","f":[16,7]}],"mechanic":[{"id":"color","n":"컬러","en":"Color","f":[14,9]}],"merfolk":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"mirror":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"mower":[{"id":"color","n":"컬러","en":"Color","f":[7,10]}],"onmyoji":[{"id":"chess","n":"체스기사","en":"Chess Knight","f":[24,22],"sz":[48,48],"pr":800,"ac":["#6d74e0","#464ca8"]},{"id":"color","n":"컬러","en":"Color","f":[14,8]}],"painter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]},{"id":"graffiti","n":"그래피티","en":"Graffiti","f":[22,25],"sz":[48,48]}],"samurai":[{"id":"color","n":"컬러","en":"Color","f":[14,9]},{"id":"cowboy","n":"카우보이","en":"Cowboy","f":[23,24],"sz":[48,48]}],"scarecrow":[{"id":"color","n":"컬러","en":"Color","f":[15,8]},{"id":"reaper","n":"사신","en":"Reaper","f":[23,26],"sz":[48,48]}],"shaman":[{"id":"caster","n":"기상캐스터","en":"Weather Caster","f":[22,25],"sz":[48,48]},{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"slime":[{"id":"color","n":"컬러","en":"Color","f":[15,17]},{"id":"pudding","n":"푸딩","en":"Pudding","f":[27,37],"sz":[48,48]}],"statue":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"tamer":[{"id":"color","n":"컬러","en":"Color","f":[16,9]},{"id":"drone","n":"드론 조종사","en":"Drone Pilot","f":[24,21],"sz":[48,48]}],"vampire":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}]}; const SKIN_FACE = {"alch":[14,8],"archaeologist":[18,12],"astronomer":[17,8],"balloon":[16,10],"bard":[17,8],"blacksmith":[19,11],"brawler":[15,8],"bunny":[16,6],"chicken":[18,9],"chrono":[19,7],"clown":[16,9],"druid":[17,8],"dullahan":[21,9],"gambler":[16,9],"grave":[17,9],"hunter":[14,7],"mage":[18,9],"mechanic":[17,9],"merfolk":[17,7],"mirror":[18,9],"mower":[10,10],"onmyoji":[16,6],"painter":[16,8],"samurai":[14,12],"scarecrow":[17,6],"shaman":[18,7],"slime":[16,17],"statue":[16,12],"tamer":[15,6],"vampire":[16,8]}; const BASE_SZ = {}; /* SKINS:END */
+/* SKINS:BEGIN */ const SKINS = {"alch":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"archaeologist":[{"id":"color","n":"컬러","en":"Color","f":[15,9]}],"astronomer":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"balloon":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"bard":[{"id":"color","n":"컬러","en":"Color","f":[16,8]}],"blacksmith":[{"id":"color","n":"컬러","en":"Color","f":[23,22],"sz":[48,48]}],"brawler":[{"id":"color","n":"컬러","en":"Color","f":[14,10]},{"id":"female","n":"격투가(♀)","en":"Brawler (F)","f":[16,7]}],"bunny":[{"id":"color","n":"컬러","en":"Color","f":[14,7]}],"chicken":[{"id":"color","n":"컬러","en":"Color","f":[16,13]}],"chrono":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"clown":[{"id":"color","n":"컬러","en":"Color","f":[13,8]}],"druid":[{"id":"color","n":"컬러","en":"Color","f":[15,8]},{"id":"granny","n":"정원사 할머니","en":"Grandma Gardener","f":[23,23],"sz":[48,48]}],"dullahan":[{"id":"color","n":"컬러","en":"Color","f":[19,28],"sz":[48,48]}],"gambler":[{"id":"color","n":"컬러","en":"Color","f":[15,10]},{"id":"queen","n":"하트 퀸","en":"Queen of Hearts","f":[13,12],"px":2,"pr":800,"ac":["#e8244a","#9c1435"]}],"grave":[{"id":"color","n":"컬러","en":"Color","f":[15,10]}],"hunter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]},{"id":"wolf","n":"서리 궁수","en":"Frost Archer","f":[15,17],"px":2,"pr":800,"ac":["#5f9db4","#3d6f82"]}],"mage":[{"id":"color","n":"컬러","en":"Color","f":[16,7]}],"mechanic":[{"id":"color","n":"컬러","en":"Color","f":[14,9]}],"merfolk":[{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"mirror":[{"id":"color","n":"컬러","en":"Color","f":[16,10]}],"mower":[{"id":"color","n":"컬러","en":"Color","f":[7,10]}],"onmyoji":[{"id":"chess","n":"체스기사","en":"Chess Knight","f":[24,22],"sz":[48,48],"pr":800,"ac":["#6d74e0","#464ca8"]},{"id":"color","n":"컬러","en":"Color","f":[14,8]}],"painter":[{"id":"color","n":"컬러","en":"Color","f":[15,9]},{"id":"graffiti","n":"그래피티","en":"Graffiti","f":[22,25],"sz":[48,48]}],"samurai":[{"id":"color","n":"컬러","en":"Color","f":[14,9]},{"id":"cowboy","n":"카우보이","en":"Cowboy","f":[23,24],"sz":[48,48]}],"scarecrow":[{"id":"color","n":"컬러","en":"Color","f":[15,8]},{"id":"reaper","n":"사신","en":"Reaper","f":[23,26],"sz":[48,48]}],"shaman":[{"id":"caster","n":"기상캐스터","en":"Weather Caster","f":[22,25],"sz":[48,48]},{"id":"color","n":"컬러","en":"Color","f":[15,8]}],"slime":[{"id":"color","n":"컬러","en":"Color","f":[15,17]},{"id":"pudding","n":"푸딩","en":"Pudding","f":[27,37],"sz":[48,48]}],"statue":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}],"tamer":[{"id":"color","n":"컬러","en":"Color","f":[16,9]},{"id":"drone","n":"드론 조종사","en":"Drone Pilot","f":[24,21],"sz":[48,48]}],"vampire":[{"id":"color","n":"컬러","en":"Color","f":[14,10]}]}; const SKIN_FACE = {"admin":[15,14],"alch":[14,8],"archaeologist":[18,12],"astronomer":[17,8],"balloon":[16,10],"bard":[17,8],"blacksmith":[19,11],"brawler":[15,8],"bunny":[16,6],"chicken":[18,9],"chrono":[19,7],"clown":[16,9],"druid":[17,8],"dullahan":[21,9],"gambler":[16,9],"grave":[17,9],"hunter":[14,7],"mage":[18,9],"mechanic":[17,9],"merfolk":[17,7],"mirror":[18,9],"mower":[10,10],"onmyoji":[16,6],"painter":[16,8],"samurai":[14,12],"scarecrow":[17,6],"shaman":[18,7],"slime":[16,17],"statue":[16,12],"tamer":[15,6],"vampire":[16,8]}; const BASE_SZ = {}; /* SKINS:END */
 /* 스킨: 직업마다 고른 모습. 고른 것은 이 기기에 저장하고, 결투에서는 doc.skin[자리]로 상대에게도 같은 모습이 보인다 */
 const skinList = c => SKINS[c] || [];
 function skinOf(c) { let v = ''; try { v = (JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {})[c] || ''; } catch (e) { /* 저장소 없음 */ } return skinList(c).some(x => x.id === v) && skinOwned(c, v) ? v : ''; }
@@ -4676,7 +4780,7 @@ const lvOf = (s, p, ab) => (p.cls === 'bard' ? beatLv(p) : p.cls === 'onmyoji' ?
 function cellsOf(id, tg, pos, prev, after, lv) {
   const two = f => uniq([...f(pos), ...(after ? f(prev) : [])]);
   switch (id) {
-    case 'fire': case 'spore': case 'topple': { const a = Math.min(R(tg), 1) * 3 + Math.min(C(tg), 1); return [a, a + 1, a + 3, a + 4]; }
+    case 'fire': case 'spore': case 'topple': case 'drag': { const a = Math.min(R(tg), 1) * 3 + Math.min(C(tg), 1); return [a, a + 1, a + 3, a + 4]; }
     case 'bolt': case 'rail': case 'spear': case 'storm': case 'discus': case 'helium': case 'skewer': case 'bspear': return colOf(tg);
     case 'shard': return uniq([pos, MIR(pos)]);
     case 'twin': return uniq([...colOf(tg), ...colOf(2 - tg)]);
@@ -4687,8 +4791,10 @@ function cellsOf(id, tg, pos, prev, after, lv) {
     case 'bats': return around(pos).filter(i => i !== pos);
     case 'feast': return ALL.slice();
     case 'arrow': return uniq([].concat(tg));
-    case 'pickaxe': case 'wisp': return [tg];
-    case 'drive': case 'ghand': return rowOf(tg);
+    case 'pickaxe': case 'wisp': case 'click': return [tg];
+    case 'drive': case 'ghand': case 'del': return rowOf(tg);
+    case 'loading': return colOf(tg);
+    case 'format': return ALL.slice();
     case 'dice': return rowOf(tg);
     case 'coin': return around(tg);
     case 'allin': return beside(tg);
@@ -4726,7 +4832,7 @@ function cellsOf(id, tg, pos, prev, after, lv) {
     case 'tornado': return around(tg);
     case 'sweep': return two(q => uniq([...rowOf(R(q)), ...colOf(C(q))]));
     case 'cleave': return two(q => colOf(C(q)));
-    case 'meteor': { const safe = tg.o === 'r' ? rowOf(tg.i) : colOf(tg.i); return ALL.filter(i => !safe.includes(i)); }
+    case 'meteor': case 'bsod': { const safe = tg.o === 'r' ? rowOf(tg.i) : colOf(tg.i); return ALL.filter(i => !safe.includes(i)); }
     case 'frost': return tg.slice();
     case 'hslash': case 'dash': case 'gaze': return two(q => rowOf(R(q)));
     case 'vslash': return two(q => colOf(C(q)));
@@ -4923,6 +5029,10 @@ function resolve(s, plans) {
     if (id === 'bubble') { x.shield += 1; x.bubble = true; ev.push([k, '물방울 방패를 둘렀다']); }
     if (x.dive) { rp.P[k].dive = true; ev.push([k, '바닥 밑으로 잠수했다']); }
     if (id === 'harden') { x.shield += 2; ev.push([k, '몸을 굳혔다']); }
+    if (id === 'firewall') { x.shield += 2; ev.push([k, '방화벽을 세웠다']); }
+    if (id === 'lag') { s.P[o].rooted = s.turn + 1; rp.R[o].lag = true; ev.push([k, '렉을 걸었다. 상대는 다음 턴 기본 이동 불가']); }
+    if (id === 'popup' && Array.isArray(pl.tg)) { const ts = uniq(pl.tg.filter(isCell)); nextBlk[o] = uniq([...nextBlk[o], ...ts]); ts.forEach(c => { nextBlkT[o][c] = 'win'; }); rp.P[k].popup = ts; ev.push([k, '오류 창을 띄웠다']); }
+    if (pl.ab && p.cls === 'admin') { x.regroup = true; rp.P[k].f5 = true; ev.push([k, '새로 고침. 턴이 끝나면 손패를 새로 받는다']); }
     if (id === 'block') { x.shield += 2; x.block = true; ev.push([k, '대검으로 막아섰다']); }
     if (id && CARDS[id].wx) { p.weather = { t: id, i: id === 'heatw' ? 0 : pl.tg, dir: 1, left: 3, ext: false }; rp.P[k].cast = id; ev.push([k, WX_NAME[id] + '을(를) 불렀다']); }
     if (id === 'reverse') { const w = p.weather; if (w) { w.dir = -w.dir; w.i = (w.i + 2 * w.dir + 6) % 3; w.left += 1; rp.P[k].rev = true; ev.push([k, '역풍으로 날씨의 방향을 뒤집었다']); } else ev.push([k, '역풍. 뒤집을 날씨가 없다']); }
@@ -5091,7 +5201,7 @@ function resolve(s, plans) {
     SRC = e.n || '예고 공격'; const hit = strike(e.t, e.cells, e.d);
     if (hit) X[e.t].exHit = true; else X[e.t].exMiss = true;
     if (e.id === 'comet') { const q = s.P[opp(e.t)]; const c0 = e.c0; q.stars = q.stars.filter(c => c !== c0); q.stars.push(c0); if (q.stars.length > 3) q.stars.shift(); }
-    ev.push([opp(e.t), e.n + (e.id === 'spore' ? ' 피어남. ' : ' 폭발. ') + (hit ? '명중' : '빗나감')]);
+    ev.push([opp(e.t), e.n + (e.id === 'spore' ? ' 피어남. ' : e.id === 'loading' ? ' 완료. ' : ' 폭발. ') + (hit ? '명중' : '빗나감')]);
     rp.ex.push({ t: e.t, cells: e.cells, id: e.id, hit, c0: e.c0 });
   }
   s.pend = s.pend.filter(e => e.at > s.turn);
@@ -5449,7 +5559,7 @@ function botRandom(s, k, o) {
         else if (o.id === 'release') pl.tg = pick(around(q));
         else if (o.id === 'staff' && p.hawk && Math.random() < 0.6) { const ln = ALL.filter(c => R(c) === R(p.hawk.c) || C(c) === C(p.hawk.c)), nr = ln.filter(c => mdist(c, q) <= 1); pl.tg = pick(nr.length ? nr : ln); } } }
     const actId = pl.act != null ? p.hand[pl.act] : null;
-    if (!A.slot && abReady(s, p, actId) && p.mana >= A.cost + (actId ? cardCost(p, actId) : 0) && Math.random() < (p.cls === 'samurai' ? 1 : p.cls === 'vampire' ? (p.hp >= 4 ? 0.12 : 0.03) : p.cls === 'hunter' ? 0.45 : p.cls === 'alch' ? ((p.ess || 0) >= 2 ? 0.35 : 0.12) : p.cls === 'painter' ? 0.4 : p.cls === 'tamer' ? 0.4 : 0.3)) pl.ab = true;
+    if (!A.slot && abReady(s, p, actId) && p.mana >= A.cost + (actId ? cardCost(p, actId) : 0) && Math.random() < (p.cls === 'samurai' ? 1 : p.cls === 'vampire' ? (p.hp >= 4 ? 0.12 : 0.03) : p.cls === 'hunter' ? 0.45 : p.cls === 'alch' ? ((p.ess || 0) >= 2 ? 0.35 : 0.12) : p.cls === 'painter' ? 0.4 : p.cls === 'tamer' ? 0.4 : p.cls === 'admin' ? (regroupWise(p) ? 0.6 : 0.04) : 0.3)) pl.ab = true;
     if (pl.ab && p.cls === 'tamer') {   /* 휘파람: 상대가 갈 법한 이웃 칸에 매를 미리 앉힌다 */
       const h = p.hawk, q = s.P[opp(k)].pos, ok = ALL.filter(i => i !== h.c && mdist(h.c, i) <= 2 && !s.blk[opp(k)].includes(i) && !s.col.includes(i)), nb = ok.filter(i => mdist(i, q) === 1);
       if (ok.length) pl.wt = pick(nb.length ? nb : ok); else pl.ab = false;
@@ -6071,7 +6181,7 @@ function onDoc() {
   if (doc.game && doc.game !== gameStr) {
     const old = G;
     gameStr = doc.game; G = parse(gameStr);
-    if (G && G.turn === 1) { dealN = seat && G.P[seat] ? G.P[seat].hand.length : HAND; dealOpp = seat && G.P[opp(seat)] ? G.P[opp(seat)].hand.length : HAND; if (seat && !G.winner) showIntro(); }
+    if (G && G.turn === 1) { dealN = seat && G.P[seat] ? G.P[seat].hand.length : HAND; dealOpp = seat && G.P[opp(seat)] ? G.P[opp(seat)].hand.length : HAND; if (seat && !G.winner && !(typeof adminIntro === 'function' && adminIntro(showIntro))) showIntro(); }
     else if (G && old && G.rp && G.turn === old.turn + 1 && seat && !noMotion && !replaying) job = { old, lockedPlan: locked };
     qsTrack(old, G);
   }
@@ -7655,6 +7765,7 @@ function renderNow() {
 let lastTick = 0;
 function tick() {
   if (typeof tutOn === 'function' && tutOn() && doc.phase === 'play') deadline = Date.now() + TURN_MS;   /* 튜토리얼에는 시간 제한이 없다 */
+  if (typeof adiOn !== 'undefined' && adiOn) deadline = Date.now() + TURN_MS;   /* 보스 등장 연출 동안 시간이 흐르지 않는다 */
   if (replaying || !doc || doc.phase !== 'play' || !seat || !G || curTag !== doc.gid + ':' + doc.turn) return;
   const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)), el = document.getElementById('timer');
   if (!locked && left <= 5 && left > 0 && left !== lastTick) { lastTick = left; SND.play('tick'); }
@@ -8818,7 +8929,7 @@ function nearFx(k, from) {
     g.style.setProperty('--x', C(from)); g.style.setProperty('--y', R(from)); b.appendChild(g); setTimeout(() => g.remove(), 760); }
   window.A3SLOMO = { until: performance.now() + 420, k: 0.3 };
 }
-const ULT = p => ['meteor', 'sun', 'rail', 'allin', 'taiji', 'wave'].includes(p.actId) || (p.actId === 'crow' && p.eggN >= 2) || p.both || p.ens === 3 || (p.actId === 'blackhole' && p.hole >= 0) || (p.actId === 'pop' && p.air >= 3) || (!!p.surge && p.surge.n >= 6);
+const ULT = p => ['meteor', 'sun', 'rail', 'allin', 'taiji', 'wave', 'bsod', 'format'].includes(p.actId) || (p.actId === 'crow' && p.eggN >= 2) || p.both || p.ens === 3 || (p.actId === 'blackhole' && p.hole >= 0) || (p.actId === 'pop' && p.air >= 3) || (!!p.surge && p.surge.n >= 6);
 /* 필살기 컷인: 직업 색 띠가 결투장을 가로지른다 */
 async function cutIn(k, cls, name) {
   if (SKIP) return; const a = app.querySelector('.arena'); if (!a) return;
@@ -8909,6 +9020,10 @@ async function runReplay(old, neu) {
     if (p.actId === 'heal') { fx(k, FX.healFx(p.from, true), 600); sp('spore', 1); }
     if (p.ab && cls(k) === 'druid') { floatText(k, p.from, '뒤쫓는 뿌리', 'f-sp'); sp('bark', 1); }
     if (p.actId === 'harden') { fx(k, FX.guard(p.from, K.vio), 2200); sp('harden'); }
+    if (p.actId === 'firewall') { fx(k, FX.admWall(p.from), 1400); fx(k, FX.guard(p.from, K.org), 2200); floatText(k, p.from, mE('방화벽', 'Firewall'), 'f-sp'); sp('mwall', 1); }
+    if (p.popup) { fx(o, FX.admPopup(p.popup), 1100); p.popup.forEach((c, n) => floatText(o, c, mE('오류!', 'Error!'), 'f-warn', n * 150)); sp('merr', 1); }
+    if (p.actId === 'lag') { fx(o, FX.admLag(rp.P[o].from), 1600); floatText(o, rp.P[o].from, mE('렉! 다음 턴 이동 불가', 'Lag! No move next turn'), 'f-big f-warn'); sp('mlag', 1); }
+    if (p.f5) { fx(k, FX.admF5(p.from), 900); floatText(k, p.from, mE('새로 고침', 'Refresh'), 'f-sp'); sp('mboot', 1); }
     if (p.actId === 'ward') { fx(k, cmx(k, 'cmWard', '') ? FX.cmWard(p.from, p.yy === 'yin') : FX.guard(p.from, K.ind), 2200); floatText(k, p.from, p.yy === 'yang' ? '결계 · 양' : '결계 · 음', 'f-big f-ind'); sp('gong'); }
     if (p.actId === 'brood') { fx(k, FX.guard(p.from, K.yolk), 2200); floatText(k, p.from, '알 품기', 'f-yolk'); sp('cluck'); }
     if (p.actId === 'bubble') { fx(k, FX.mfBubble(p.from), 2200); sp('guardUp'); }
@@ -9066,7 +9181,7 @@ async function runReplay(old, neu) {
   // 4. 예고 폭발
   if (rp.ex.length) {
     play(rp.ex.some(e => e.id === 'meteor') ? 'meteor' : rp.ex.some(e => e.id !== 'spore') ? 'boom' : 'spore');
-    for (const e of rp.ex) { if (e.id === 'echo') floatText(e.t, e.cells[0], '메아리', 'f-warn'); if (e.id === 'box') floatText(e.t, e.cells[Math.floor(e.cells.length / 2)], '깜짝 상자!', 'f-big f-warn'); if (e.id === 'bossrow') floatText(e.t, e.cells[1], '보스의 일격!', 'f-big f-warn'); if (e.id === 'spore') fx(e.t, FX.drBurst(e.cells), 900); if (e.id === 'box') fx(e.t, FX.clBoxPop(e.c0 != null ? e.c0 : e.cells[0]), 900); fx(e.t, e.id === 'fire' ? FX.mgFire(e.cells) : e.id === 'comet' ? FX.asComet(e.cells[0]) : e.id === 'cometR' ? FX.asCometR(e.cells) : e.id === 'meteor' ? FX.meteor(e.cells) : e.id === 'spore' ? FX.spore(e.cells, true) : e.id === 'discus' ? FX.discus(C(e.cells[0]), true) : e.id === 'boomer' ? FX.sickleFx(e.cells, e.c0, K.wood) : e.id === 'wisp' ? FX.wispFx(e.cells) : e.id === 'kaleido' ? FX.kaleidoFx(e.cells) : e.id === 'minute' || e.id === 'hour' ? FX.clockBoom(e.cells, e.id === 'hour') : e.id === 'echo' ? FX.echoFx(e.cells) : FX.boom(e.cells), e.id === 'meteor' || e.id === 'comet' || e.id === 'fire' ? 1000 : e.id === 'wisp' ? 900 : 700, e.id === 'box' ? 240 : 0); e.cells.forEach(i => { const c = bEl(e.t) && bEl(e.t).children[i]; if (c) { c.querySelectorAll('.pend, .cd').forEach(x => x.remove()); c.classList.remove('pd', 'pdnow'); } }); }
+    for (const e of rp.ex) { if (e.id === 'echo') floatText(e.t, e.cells[0], '메아리', 'f-warn'); if (e.id === 'box') floatText(e.t, e.cells[Math.floor(e.cells.length / 2)], '깜짝 상자!', 'f-big f-warn'); if (e.id === 'bossrow') floatText(e.t, e.cells[1], '보스의 일격!', 'f-big f-warn'); if (e.id === 'bsod') { floatText(e.t, e.cells[Math.floor(e.cells.length / 2)], mE('블루스크린!', 'Blue screen!'), 'f-big f-warn'); play('mbsod'); } if (e.id === 'loading') floatText(e.t, e.cells[1], mE('로딩 완료', 'Loaded'), 'f-warn'); if (e.id === 'spore') fx(e.t, FX.drBurst(e.cells), 900); if (e.id === 'box') fx(e.t, FX.clBoxPop(e.c0 != null ? e.c0 : e.cells[0]), 900); fx(e.t, e.id === 'fire' ? FX.mgFire(e.cells) : e.id === 'comet' ? FX.asComet(e.cells[0]) : e.id === 'cometR' ? FX.asCometR(e.cells) : e.id === 'meteor' ? FX.meteor(e.cells) : e.id === 'spore' ? FX.spore(e.cells, true) : e.id === 'discus' ? FX.discus(C(e.cells[0]), true) : e.id === 'boomer' ? FX.sickleFx(e.cells, e.c0, K.wood) : e.id === 'wisp' ? FX.wispFx(e.cells) : e.id === 'kaleido' ? FX.kaleidoFx(e.cells) : e.id === 'minute' || e.id === 'hour' ? FX.clockBoom(e.cells, e.id === 'hour') : e.id === 'echo' ? FX.echoFx(e.cells) : e.id === 'loading' ? FX.admLoad(e.cells, true) : e.id === 'bsod' ? FX.admBsod(e.cells, true) : FX.boom(e.cells), e.id === 'bsod' ? 1000 : e.id === 'meteor' || e.id === 'comet' || e.id === 'fire' ? 1000 : e.id === 'wisp' ? 900 : 700, e.id === 'box' ? 240 : 0); e.cells.forEach(i => { const c = bEl(e.t) && bEl(e.t).children[i]; if (c) { c.querySelectorAll('.pend, .cd').forEach(x => x.remove()); c.classList.remove('pd', 'pdnow'); } }); }
     await sleep(rp.ex.some(e => e.id === 'meteor') ? 750 : rp.ex.some(e => e.id === 'fire' || e.id === 'comet' || e.id === 'spore' || e.id === 'box') ? 560 : 400);
     for (const e of rp.ex) if (e.hit) pulse(bEl(e.t), 'shake', 400);
     await sleep(250);
@@ -9105,6 +9220,11 @@ async function runReplay(old, neu) {
     if (id === 'fire' || id === 'meteor') { FXD = 0; fx(k, FX.castRing(p.to, id), 800); FXD = WIND; }
     if (id === 'fire') { fx(o, FX.mgCircle(p.cells, 'fire', true), 1000); fx(o, FX.mgMotes(p.cells, 'fire'), 1000); }
     else if (id === 'meteor') { fx(o, FX.mgCircle(p.cells, 'meteor', false), 1200); fx(o, FX.mgSky(p.cells, 'meteor'), 1200); }
+    else if (id === 'click') fx(o, FX.admClick(p.cells), 900);
+    else if (id === 'drag' || id === 'del') { fx(o, FX.admDrag(p.cells, id === 'del'), 1050); if (id === 'del') later(() => pulse(bEl(o), 'shake1', 400), WIND + 650); }
+    else if (id === 'loading') fx(o, FX.admLoad(p.cells, false), 1100);
+    else if (id === 'bsod') { fx(o, FX.admBsod(p.cells, false), 1100); floatText(o, p.cells[0], mE('치명적 오류', 'Fatal error'), 'f-warn', 200); }
+    else if (id === 'format') { fx(o, FX.admFormat(), 1100); later(() => pulse(bEl(o), 'shake', 450), WIND + 700); }
     else if (id === 'bolt') fx(o, FX.bolt(p.tg), 650);
     else if (id === 'burst') fx(o, FX.burst(), 650);
     else if (id === 'hslash' || id === 'dash') fx(o, FX.slashH(rows, rev), 650);
@@ -9869,6 +9989,110 @@ Object.assign(TIP, {
 });
 Object.entries({ mirror: 'shard copycat flip', prism: 'twin kaleido', hand: 'tick minute hour', pause: 'halt', bell: 'bell' }).forEach(([ic, ids]) => ids.split(' ').forEach(id => { CARD_IC[id] = ic; }));
 Object.assign(ATK_SND, { shard: 'frost', twin: 'burst', kaleido: 'starS', tick: 'thrust', minute: 'mark', hour: 'mark', bell: 'gong' });
+/* ===== 모험 보스 관리자: 표기 자료, 소리, 이펙트 =====
+   이펙트는 옛날 도트 마우스 포인터가 화면을 끌고 다니며 고르고, 지우고, 창을 띄우는 모습 */
+Object.assign(META, { admin: [3, 4, 3, 4] });
+Object.assign(ROLE, { admin: ['모험 보스', '막마다 업데이트', '영역 선택'] });
+Object.assign(TAGS, { click: '상대 진영 · 칸 선택', drag: '상대 진영 · 2×2', firewall: '나 자신', popup: '상대 진영 · 2칸 막기', del: '상대 진영 · 줄 선택',
+  loading: '상대 진영 · 줄 선택', lag: '상대 · 이동 봉쇄', bsod: '상대 진영 · 한 줄만 안전', format: '상대 진영 · 전체' });
+Object.entries({ cursor: 'click drag del format', win: 'popup', load: 'loading lag', wall: 'firewall', screen: 'bsod' }).forEach(([ic, ids]) => ids.split(' ').forEach(id => { CARD_IC[id] = ic; }));
+Object.assign(ATK_SND, { click: 'mclick', drag: 'mdrag', del: 'mdel', loading: 'mload', bsod: 'mload', format: 'mformat' });
+Object.assign(K, { scr: '#2a3fd0', scrl: '#6f86ff', win: '#c9c6d6', wint: '#3b4fa8', inkd: '#1a1420' });
+{ const { T, N, arp } = SND.kit;
+  Object.assign(SND.kit.S, {
+    mclick: () => { T(1800, 0.02, { w: 'square', v: 0.1 }); T(1400, 0.02, { w: 'square', v: 0.08, at: 0.05 }); N(0.03, { f: 6000, ft: 'highpass', v: 0.08 }); },
+    mdrag: () => { T(1800, 0.02, { w: 'square', v: 0.1 }); N(0.3, { f: 900, to: 3000, ft: 'bandpass', v: 0.12, at: 0.03 }); T(1400, 0.02, { w: 'square', v: 0.08, at: 0.33 }); },
+    mdel: () => { T(1800, 0.02, { w: 'square', v: 0.1 }); arp([880, 660, 440, 220], 0.05, 0.08, { w: 'square', v: 0.07, at: 0.05 }); N(0.25, { f: 2400, to: 200, v: 0.18, at: 0.12 }); },
+    mload: () => arp([523, 659, 784, 1047], 0.06, 0.07, { w: 'square', v: 0.06 }),
+    merr: () => { T(880, 0.09, { w: 'square', v: 0.09 }); T(660, 0.16, { w: 'square', v: 0.09, at: 0.1 }); },
+    mlag: () => { T(220, 0.5, { to: 110, w: 'sawtooth', v: 0.08 }); N(0.4, { f: 400, ft: 'bandpass', v: 0.1 }); },
+    mwall: () => { arp([330, 392, 494], 0.05, 0.1, { w: 'square', v: 0.07 }); N(0.2, { f: 1200, v: 0.1, at: 0.1 }); },
+    mformat: () => { N(0.6, { f: 500, to: 5000, ft: 'bandpass', v: 0.2 }); arp([1047, 784, 523, 262], 0.08, 0.1, { w: 'square', v: 0.07, at: 0.1 }); },
+    mbsod: () => { T(60, 0.7, { w: 'sawtooth', v: 0.18 }); N(0.5, { f: 300, v: 0.25 }); T(1000, 0.05, { w: 'square', v: 0.06, at: 0.5 }); },
+    mboot: () => arp([392, 523, 659, 784, 1047], 0.07, 0.1, { w: 'square', v: 0.06 }),
+  }); }
+/* 포인터 그림(가로 10 × 세로 15). X 테두리, W 안쪽 */
+const ADM_PTR = ['X.........', 'XX........', 'XWX.......', 'XWWX......', 'XWWWX.....', 'XWWWWX....', 'XWWWWWX...', 'XWWWWWWX..', 'XWWWWWWWX.', 'XWWWWXXXXX', 'XWXWWX....', 'XX.XWWX...', 'X..XWWX...', '....XWWX..', '.....XX...'];
+const ADM_WAIT = ['XXXXXXXX', 'XWWWWWWX', '.XWWWWX.', '..XWWX..', '...XX...', '..XW.X..', '.XWWWWX.', 'XWWWWWWX', 'XXXXXXXX'];
+function admPtr(g, x, y, press) { x = Math.round(x) + (press ? 1 : 0); y = Math.round(y) + (press ? 1 : 0);
+  g.globalAlpha = 0.35; ADM_PTR.forEach((r, j) => { for (let i = 0; i < r.length; i++) if (r[i] !== '.') D(g, x + i + 2, y + j + 2, K.inkd); }); g.globalAlpha = 1;
+  ADM_PTR.forEach((r, j) => { for (let i = 0; i < r.length; i++) if (r[i] !== '.') D(g, x + i, y + j, r[i] === 'X' ? K.inkd : K.wht); }); }
+function admWait(g, x, y, f) { const sw = f % 4 < 2; ADM_WAIT.forEach((r, j) => { for (let i = 0; i < r.length; i++) if (r[i] !== '.') D(g, Math.round(x) + i, Math.round(y) + j, r[i] === 'X' ? K.inkd : (sw ? j > 4 : j < 4) ? K.amb : K.wht); }); }
+/* 포인터 길: 오른쪽 아래 구석에서 출발해 계단처럼 도트 단위로 움직인다 */
+const admEase = u => { u = Math.max(0, Math.min(1, u)); return 1 - Math.pow(1 - u, 3); };
+const admPath = (x0, y0, x1, y1, u) => { const e = admEase(u); return [Math.round(x0 + (x1 - x0) * e), Math.round(y0 + (y1 - y0) * e)]; };
+/* 바탕화면 선택 상자: 점선 테두리가 흐르고 안은 옅은 파랑 */
+function admBox(g, x0, y0, x1, y1, f, a) {
+  const L = Math.min(x0, x1), Tt = Math.min(y0, y1), W = Math.abs(x1 - x0), H = Math.abs(y1 - y0); if (W < 1 || H < 1) return;
+  g.globalAlpha = 0.28 * (a == null ? 1 : a); D(g, L, Tt, K.blue, W, H); g.globalAlpha = a == null ? 1 : a;
+  for (let i = 0; i <= W; i++) { const c = (i + f) % 4 < 2 ? K.inkd : K.wht; D(g, L + i, Tt, c); D(g, L + W - i, Tt + H, c); }
+  for (let j = 0; j <= H; j++) { const c = (j + f) % 4 < 2 ? K.inkd : K.wht; D(g, L + W, Tt + j, c); D(g, L, Tt + H - j, c); }
+  g.globalAlpha = 1; }
+/* 칸이 깨진 화면처럼 지직거리며 사라진다 */
+function admGlitch(g, i, u, col) {
+  const bx = C(i) * 32, by = R(i) * 32;
+  for (let j = 0; j < 14; j++) { if (rnd(i, j, 4) < u * 0.9) continue; const w = 3 + Math.floor(rnd(j, i) * 9), x = bx + 2 + rnd(i, j) * (28 - w), y = by + 2 + rnd(j, i, 2) * 27 + u * 6 * rnd(j, 5);
+    D(g, x, y, j % 3 === 0 ? K.wht : j % 3 === 1 ? (col || K.scrl) : K.inkd, w, 2); }
+}
+function admWin(g, cx, cy, s, f) {
+  const w = Math.round(26 * s), h = Math.round(20 * s); if (w < 4) return; const x = cx - (w >> 1), y = cy - (h >> 1);
+  D(g, x + 2, y + 2, K.inkd, w, h); D(g, x, y, K.win, w, h); D(g, x, y, K.wint, w, Math.max(2, Math.round(5 * s)));
+  if (s > 0.8) { D(g, x + w - 6, y + 1, K.win, 4, 3); D(g, x + w - 5, y + 2, K.red, 2, 1);
+    for (let k = 0; k < 5; k++) D(g, cx - 4 + k - (k > 2 ? (k - 2) * 2 : 0), y + 8 + k, K.amb, 1 + (k > 2 ? (k - 2) * 4 : k * 2), 1);
+    D(g, cx - 1, y + 9, K.inkd, 1, 2); D(g, cx - 1, y + 12, K.inkd); D(g, x + 3, y + h - 4, f % 4 < 2 ? K.wint : K.ash, 8, 2); }
+  D(g, x, y, K.inkd, w, 1); D(g, x, y + h - 1, K.inkd, w, 1); D(g, x, y, K.inkd, 1, h); D(g, x + w - 1, y, K.inkd, 1, h);
+}
+/* 픽셀 글자 ":(" */
+function admSad(g, cx, cy, c) { D(g, cx - 7, cy - 4, c, 2, 2); D(g, cx - 7, cy + 2, c, 2, 2); D(g, cx - 1, cy - 6, c, 2, 1); D(g, cx - 2, cy - 5, c, 2, 3); D(g, cx - 3, cy - 2, c, 2, 5); D(g, cx - 2, cy + 3, c, 2, 3); D(g, cx - 1, cy + 6, c, 2, 1); }
+Object.assign(FX, {
+  /* 클릭: 포인터가 날아와 딸깍, 칸이 반전되며 깨진다 */
+  admClick: cells => gnd(hi((g, t, f) => cells.forEach((i, n) => { const [cx, cy] = m3(i), u = (t - n * 0.08) / 0.92; if (u < 0) return;
+    if (u > 0.42 && u < 0.62) { g.globalAlpha = 1 - (u - 0.42) / 0.2; circ(g, cx, cy, 3 + (u - 0.42) * 70, K.wht, 2); g.globalAlpha = 1; }
+    if (u > 0.45 && u < 0.7) { g.globalAlpha = 0.75; D(g, C(i) * 32 + 2, R(i) * 32 + 2, f % 2 ? K.blue : K.inkd, 28, 28); g.globalAlpha = 1; }
+    if (u > 0.55) admGlitch(g, i, (u - 0.55) / 0.45);
+    if (u < 0.85) { const [x, y] = admPath(88, 90, cx - 1, cy - 1, u / 0.42); admPtr(g, x, y, u > 0.42 && u < 0.55); } }))),
+  /* 드래그·삭제: 포인터가 모서리를 잡고 선택 상자를 끌어 늘린 뒤 놓는다. del이면 칸이 지워진다 */
+  admDrag: (cells, del) => gnd(hi((g, t, f) => {
+    if (!cells.length) return; const xs = cells.map(C), ys = cells.map(R), x0 = Math.min(...xs) * 32 + 2, y0 = Math.min(...ys) * 32 + 2, x1 = (Math.max(...xs) + 1) * 32 - 3, y1 = (Math.max(...ys) + 1) * 32 - 3;
+    const go = Math.min(1, t / 0.25), pull = Math.max(0, Math.min(1, (t - 0.25) / 0.33)), e = admEase(pull), bx = x0 + (x1 - x0) * e, by = y0 + (y1 - y0) * e;
+    if (t > 0.25) admBox(g, x0, y0, bx, by, f, t > 0.62 ? Math.max(0, 1 - (t - 0.62) / 0.25) : 1);
+    if (t > 0.6) { const u = (t - 0.6) / 0.4; cells.forEach(i => { if (del) { g.globalAlpha = Math.max(0, 0.85 - u); D(g, C(i) * 32 + 2, R(i) * 32 + 2, K.inkd, 28, 28); g.globalAlpha = 1;
+      for (let j = 0; j < 10; j++) { const x = C(i) * 32 + 3 + rnd(i, j) * 25, y = R(i) * 32 + 3 + rnd(j, i) * 25 + u * 14 * (0.5 + rnd(j, 3)); if (rnd(i, j, 7) > u) D(g, x, y, j % 2 ? K.scrl : K.wht, 3, 3); } }
+      else admGlitch(g, i, u); }); }
+    if (t < 0.9) { const [px, py] = t < 0.25 ? admPath(88, 90, x0, y0, go) : [bx, by]; admPtr(g, px, py, t >= 0.22 && t < 0.6); }
+  })),
+  /* 로딩: 줄의 칸마다 진행 막대. 예고 때는 조금 차 있고, 터질 때 끝까지 찬 뒤 번쩍 */
+  admLoad: (cells, done) => gnd(hi((g, t, f) => cells.forEach((i, n) => { const bx = C(i) * 32 + 4, by = R(i) * 32 + 12, fill = done ? Math.min(1, 0.4 + t * 1.4) : Math.min(0.35, t * 0.8);
+    if (done && t > 0.5) { const u = (t - 0.5) / 0.5; g.globalAlpha = Math.max(0, 1 - u * 1.4); D(g, C(i) * 32 + 1, R(i) * 32 + 1, K.wht, 30, 30); g.globalAlpha = 1; admGlitch(g, i, u, K.grn); return; }
+    D(g, bx - 1, by - 1, K.inkd, 26, 8); D(g, bx, by, K.wht, 24, 6); const w = Math.round(22 * fill); for (let k = 0; k < w; k += 3) D(g, bx + 1 + k, by + 1, (k / 3 + f) % 2 ? K.grn : K.grnd, 2, 4);
+    if (!done && n === 0) admWait(g, bx + 18, by - 12, f); }))),
+  /* 팝업 창: 오류 창이 튀어나오며 칸을 막는다 */
+  admPopup: cells => gnd(hi((g, t, f) => cells.forEach((i, n) => { const [cx, cy] = m3(i), u = (t - n * 0.15) / 0.85; if (u < 0) return;
+    const s = u < 0.3 ? u / 0.3 * 1.15 : u < 0.45 ? 1.15 - (u - 0.3) / 0.15 * 0.15 : 1; admWin(g, cx, cy, s, f); if (u < 0.3 && n === cells.length - 1) admPtr(g, cx + 8, cy + 6, true); }))),
+  /* 렉: 상대 머리 위에 모래시계 포인터, 몸 둘레로 읽는 중 점이 돈다 */
+  admLag: cell => gnd(hi((g, t, f) => { const [cx, cy] = m3(cell); admWait(g, cx - 4, cy - 30 + Math.round(Math.sin(t * 9)), f);
+    for (let k = 0; k < 8; k++) { const a = k / 8 * 6.283 + f * 0.6, on = (k + f) % 8 < 3; D(g, cx + Math.cos(a) * 13 - 1, cy - 6 + Math.sin(a) * 13 - 1, on ? K.inkd : K.ash, 2, 2); }
+    if (t > 0.3) { g.globalAlpha = 0.25; for (let y = 0; y < 30; y += 3) D(g, C(cell) * 32 + 1, R(cell) * 32 + 1 + ((y + f) % 30), K.scrl, 30, 1); g.globalAlpha = 1; } })),
+  /* 방화벽: 내 칸 앞에 벽돌이 한 줄씩 쌓이고 위에 불꽃 */
+  admWall: cell => gnd(hi((g, t, f) => { const bx = C(cell) * 32 + 2, by = R(cell) * 32 + 28, rows = Math.min(4, Math.floor(t * 12)), out = t > 0.8 ? 1 - (t - 0.8) / 0.2 : 1;
+    g.globalAlpha = out; for (let r = 0; r < rows; r++) for (let c = 0; c < 4; c++) { const x = bx + c * 7 + (r % 2 ? -3 : 0); if (x < bx || x > bx + 24) continue; D(g, x, by - r * 4, K.inkd, 7, 4); D(g, x + 1, by - r * 4 + 1, r % 2 ? K.org : K.red, 5, 2); }
+    if (rows >= 4) for (let k = 0; k < 6; k++) { const x = bx + 2 + k * 5, h = 2 + ((k + f) % 3) * 2; D(g, x, by - 15 - h, K.yel, 2, h); D(g, x, by - 15 - h - 1, K.org, 2, 1); }
+    g.globalAlpha = 1; })),
+  /* 블루스크린: 예고 때는 칸이 파랗게 깜박이고, 터질 때 온통 파란 화면에 :( */
+  admBsod: (cells, done) => gnd(hi((g, t, f) => cells.forEach(i => { const bx = C(i) * 32 + 1, by = R(i) * 32 + 1;
+    if (!done) { if (f % 3 === 0) return; g.globalAlpha = 0.35 + 0.2 * Math.sin(t * 20); D(g, bx, by, K.scr, 30, 30); g.globalAlpha = 1; return; }
+    if (t < 0.7) { D(g, bx, by, K.scr, 30, 30); admSad(g, bx + 15, by + 14, K.wht); for (let k = 0; k < 3; k++) D(g, bx + 4, by + 22 + k * 2, K.scrl, 10 + ((k * 7 + i) % 12), 1); }
+    else admGlitch(g, i, (t - 0.7) / 0.3, K.scr); }))),
+  /* 포맷: 밝은 막대가 위에서 아래로 쓸고 지나가며 판을 지운다 */
+  admFormat: () => gnd(hi((g, t, f) => { const y = Math.round(t * 1.25 * 96);
+    g.globalAlpha = 0.55; D(g, 0, 0, K.inkd, 96, Math.min(96, y)); g.globalAlpha = 1;
+    for (let r = 0; r < Math.min(96, y); r += 4) if (rnd(r, f) > 0.6) D(g, rnd(f, r) * 80, r, K.grn, 4 + rnd(r, 2) * 12, 1);
+    if (y < 96) { D(g, 0, y - 2, K.wht, 96, 3); D(g, 0, y + 1, K.scrl, 96, 1); }
+    if (t < 0.75) admPtr(g, 84 - Math.round(t * 20), Math.min(80, y - 6), true); })),
+  /* 새로 고침: 내 몸 둘레로 둥근 화살표가 돈다 */
+  admF5: cell => gnd(hi((g, t, f) => { const [cx, cy] = m3(cell), a0 = t * 9; for (let k = 0; k < 18; k++) { const a = a0 + k / 18 * 5.2; D(g, cx + Math.cos(a) * 14 - 1, cy - 6 + Math.sin(a) * 14 - 1, k > 14 ? K.wht : K.grn, 2, 2); }
+    const a = a0 + 5.3, hx = cx + Math.cos(a) * 14, hy = cy - 6 + Math.sin(a) * 14; D(g, hx - 2, hy - 2, K.grnd, 4, 4); })),
+});
 /* 계획 화면에서 쓰는 되비추기 정보 */
 const echoId = () => (G && seat ? mirrorCopy(G, seat) : null);
 const echoCost = () => { const e = echoId(); return e && myP().stash !== e ? CARDS[e].c : 0; };
@@ -11466,6 +11690,7 @@ const EN_RICH = {"매 턴 상하좌우로 한 칸 움직이거나 제자리에 �
 /* ===== 언어: 화면에 나온 한국어 문구를 영어로 바꿔 보여 준다. 게임 규칙과 저장 값은 그대로 한국어 기준이다 ===== */
 let LANG = 'ko';
 try { const v = localStorage.getItem('ssd-lang'); LANG = v === 'en' || v === 'ko' ? v : ((navigator.language || 'ko').toLowerCase().indexOf('ko') === 0 ? 'ko' : 'en'); } catch (e) { /* 저장소 없음 */ }
+Object.assign(EN_DICT, {"관리자": "The Admin", "클릭": "Click", "드래그": "Drag", "방화벽": "Firewall", "팝업 창": "Pop-up", "삭제": "Delete", "로딩": "Loading", "렉": "Lag", "블루스크린": "Blue Screen", "포맷": "Format", "새로 고침": "Refresh", "관리자 권한": "Admin Rights", "포인터로 끌어서 고르고, 지우고, 멈춘다": "Drags, selects, deletes and freezes with its pointer", "모험의 매 막 끝에서 기다린다. 막이 오를수록 덱에 더 강하고 까다로운 시스템 카드가 들어온다": "Waits at the end of every Adventure act. Each act installs stronger, trickier system cards into its deck", "마나 1, 카드와 함께 사용. 턴이 끝날 때 남은 손패를 모두 버리고 4장을 새로 뽑는다": "1 mana, used with a card. At the end of the turn, discard your hand and draw 4 new cards", "고른 칸 즉발, 피해 1": "Instant on the chosen tile, 1 damage", "2×2 영역을 끌어서 고른다. 즉발, 피해 1": "Drag-select a 2×2 area. Instant, 1 damage", "이번 턴 받는 피해 -2": "Take 2 less damage this turn", "상대 진영 2칸에 오류 창을 띄운다. 그 칸은 다음 턴 진입 불가": "Open error windows on 2 enemy tiles. They can't be entered next turn", "가로 한 줄을 골라 지운다. 즉발, 피해 2": "Select a row and delete it. Instant, 2 damage", "세로 한 줄에 진행 막대를 띄운다. 다음 턴 다 차면 피해 2": "Put a progress bar on a column. Next turn it fills up for 2 damage", "상대는 다음 턴 기본 이동을 할 수 없다": "The foe can't make a basic move next turn", "상대 진영 9칸 전체 즉발, 피해 1": "Instant on all 9 enemy tiles, 1 damage", "모험 보스": "Adventure boss", "막마다 업데이트": "Updates every act", "영역 선택": "Area select", "상대 진영 · 2칸 막기": "Enemy side · Block 2 tiles", "상대 · 이동 봉쇄": "Foe · Movement lock", "상대 진영 · 한 줄만 안전": "Enemy side · One safe line", "방화벽을 세웠다": "Raised a firewall", "렉을 걸었다. 상대는 다음 턴 기본 이동 불가": "Caused lag. The foe can't make a basic move next turn", "오류 창을 띄웠다": "Opened error windows", "새로 고침. 턴이 끝나면 손패를 새로 받는다": "Refresh. A new hand at the end of the turn", "이번 막에 새로 설치한 카드": "Newly installed this act", "기본 설치 카드": "Installed cards"});
 const I18N = (() => {
   const HAN = /[가-힣ㄱ-ㅎ]/, D = EN_DICT, RICH = EN_RICH;
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), escH = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -11595,6 +11820,9 @@ const price3 = k => Math.max(1, PRICE3[k] - (run.rl.includes('seal') ? 1 : 0));
 const NODE_N = { fight: ['결투', 'Duel'], elite: ['정예', 'Elite'], boss: ['보스', 'Boss'], shop: ['상점', 'Shop'], rest: ['쉼터', 'Rest'], event: ['사건', 'Event'], treasure: ['보물', 'Treasure'] };
 const nodeN = t => L(NODE_N[t][0], NODE_N[t][1]);
 const LV3 = ['easy', 'normal', 'hard'];
+/* 관리자 보스: 막마다 판이 오른다(v1.0 → v3.0). 이번 막에 새로 들인 시스템 카드를 보여 준다 */
+const adminVer = a => `v${a + 1}.0`;
+const adminNewHTML = a => `<p class="cap adm-new">${a ? L('이번 막에 새로 설치한 카드', 'Newly installed this act') : L('기본 설치 카드', 'Installed cards')} · ${ADMIN_NEW[a].map(id => `<b>${CARDS[id].n}</b>`).join(' · ')}</p>`;
 /* 11×11 픽셀 아이콘 */
 const PXI = {
   fight: ['.........##', '........###', '.......###.', '......###..', '.#...###...', '.##.###....', '..####.....', '..###......', '.#####.....', '##..##.....', '#..........'],
@@ -11620,7 +11848,7 @@ function stageReset() { const ov = ovEl(); if (ov) ov.innerHTML = ''; stLost(); 
 /* 지도 만들기 */
 const EV_IDS = ['gamble', 'forge', 'grave', 'herb', 'cart', 'mirror', 'vamp', 'hunter'];
 function stInit() {
-  const cls = run.cls, b1 = pick(BOSS_MID.filter(x => x !== cls)), b2 = pick(BOSS_MID.filter(x => x !== cls && x !== b1)), b3 = pick(BOSS_FIN.filter(x => x !== cls));
+  const cls = run.cls, b1 = 'admin', b2 = 'admin', b3 = 'admin';   /* 보스는 세 막 모두 관리자. 막이 오를수록 덱이 강해진다(ADMIN_TIER) */
   const pool = shuffle(CLASS_IDS.filter(x => ![cls, b1, b2, b3].includes(x))), evs = shuffle(EV_IDS.slice()), ars = [...shuffle(['forest', 'snow', 'desert']).slice(0, 2), 'castle'];
   /* 한 막은 여섯 걸음: 결투 3 - 3갈래 - 정예(맨 뒤)와 쉼터·상점 - 3갈래 - 쉼터와 상점 - 보스.
      길은 거의 한 줄로만 이어져서, 정예나 보물에 닿으려면 앞에서부터 그쪽 줄을 타야 한다 */
@@ -11667,7 +11895,7 @@ function stageFight() {
   if (n.t === 'boss' && has('ration') && run.hp < run.maxHp) run.hp += 1;
   const pk = { a: run.cls, b: n.foe };
   const opt = { hp: { a: run.hp, b: sp.hp - (has('first') ? 1 : 0) }, hpMax: { a: run.maxHp, b: sp.hp }, mana0: { a: 2 + (has('spring') ? 2 : 0), b: sp.m0 || 2 }, mx: { a: has('vessel') ? 1 : 0, b: sp.mx || 0 },
-    extra: { a: (run.cards || []).slice() }, cut: { a: (run.cut || []).slice() }, rl: { a: [...['stone', 'thornmail', 'spyglass', 'satchel'].filter(has), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
+    extra: { a: (run.cards || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[run.act].extra.slice() : [] }, cut: { a: (run.cut || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[run.act].cut.slice() : [] }, rl: { a: [...['stone', 'thornmail', 'spyglass', 'satchel'].filter(has), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
   run.hp0 = run.hp;
   const gid = doc.gid + 1; startedGid = gid;
   W({ gid, pick: pk, game: JSON.stringify(newGame(pk, opt)), turn: 1, phase: 'play', lock: { a: '', b: '' }, plan: { a: '', b: '' } });
@@ -11682,7 +11910,7 @@ function stageWin() {
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
   run.hp = Math.min(run.maxHp, left + heal + (glove ? 1 : 0)); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
   if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
-  const spoil = shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
+  const spoil = CLS[n.foe].boss ? null : shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
   run.offer = { gold: gain, coin: gain - gain0, glove, clean, heal: heal + (glove ? 1 : 0), step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
   if (run.offer.perks && !run.offer.perks.length) run.offer.perks = null;
   for (let k = 0; k < Math.min(12, gain); k++) setTimeout(() => { if (run && run.offer && doc && doc.phase === 'reward') SND.play('coin'); }, 700 + k * 90);
@@ -12069,11 +12297,11 @@ function stageMapHTML() {
     info = `<p class="cap">${L('다음 장소', 'Next stop')}</p><h3>${L('갈 곳을 고르세요', 'Choose where to go')}</h3>
       <p>${L('붉게 빛나는 곳 가운데 하나로 갈 수 있습니다. 지나온 길로는 돌아갈 수 없습니다.', 'You can move to any glowing red spot. There is no going back.')}</p>
       <p class="cap">${L('결투에서 이기면 금화와 카드 한 장(한 장은 쓰러뜨린 상대의 카드). 정예와 보스는 유물도 줍니다. 지면 처음부터 다시 합니다.', "Win a duel for Gold and a card (one is always the beaten foe's). Elites and bosses also give a relic. Lose and you start over.")}</p>
-      <div class="sd-boss c-${bn.foe}"><p class="cap">${L(`${run.act + 1}막의 보스`, `Act ${run.act + 1} boss`)}</p><div class="st-row"><i class="px a-${bn.foe} flip" aria-hidden="true"></i><div><h4>${CLS[bn.foe].n}</h4><p>${L('체력', 'HP')} <b>${bs.hp}</b>${bs.mx ? ` · ${L('최대 마나 +1', 'Max mana +1')}` : ''}</p></div></div></div>`; }
+      <div class="sd-boss c-${bn.foe}"><p class="cap">${L(`${run.act + 1}막의 보스`, `Act ${run.act + 1} boss`)}</p><div class="st-row"><i class="px a-${bn.foe} flip" aria-hidden="true"></i><div><h4>${CLS[bn.foe].n}${bn.foe === 'admin' ? ' ' + adminVer(run.act) : ''}</h4><p>${L('체력', 'HP')} <b>${bs.hp}</b>${bs.mx ? ` · ${L('최대 마나 +1', 'Max mana +1')}` : ''}</p></div></div>${bn.foe === 'admin' ? adminNewHTML(run.act) : ''}</div>`; }
   else if (sn.foe) { const sp = stSpec(sn), hp = sp.hp - (run.rl.includes('first') ? 1 : 0), g = sn.t === 'boss' ? 7 : sn.t === 'elite' ? 6 : 4;
     const rule = sn.t === 'boss' ? (sp.boss === 'final' ? L(`체력 ${sp.hp}, 최대 마나 +1. 3턴마다 가로 한 줄에 피해 2를 예고한다.`, `HP ${sp.hp}, max mana +1. Every 3rd turn it forecasts 2 damage on a row.`) : L(`체력 ${sp.hp}${sp.mx ? ', 최대 마나 +1' : ''}. 체력이 절반 이하가 되면 한 번 분노해 다음 턴 공격 피해 +1.`, `HP ${sp.hp}${sp.mx ? ', max mana +1' : ''}. At half HP or less it rages once: next turn's attacks deal +1.`))
       : sn.t === 'elite' ? L('정예: 체력과 최대 마나가 더 많고, 마나 3으로 시작한다. 이기면 유물을 고른다.', 'Elite: more HP and max mana, starts with 3 mana. Win to choose a relic.') : '';
-    info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe c-${sn.foe}"><i class="px a-${sn.foe} flip" aria-hidden="true"></i><div><h3>${CLS[sn.foe].n}</h3><p class="cap">${CLS[sn.foe].tag}</p></div></div>
+    info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe c-${sn.foe}"><i class="px a-${sn.foe} flip" aria-hidden="true"></i><div><h3>${CLS[sn.foe].n}${sn.foe === 'admin' ? ' ' + adminVer(run.act) : ''}</h3><p class="cap">${CLS[sn.foe].tag}</p></div></div>${sn.foe === 'admin' ? adminNewHTML(run.act) : ''}
       <dl class="sd-kv"><dt>${L('체력', 'HP')}</dt><dd>${pips('hp', hp, hp)} <b>${hp}</b></dd><dt>${L('봇 수준', 'Bot level')}</dt><dd><b>${BOTS[sp.lv][0]}</b></dd></dl>
       ${rule ? `<p class="bossn">${rule}</p>` : ''}
       <div class="sd-rw"><p class="cap">${L('보상', 'Reward')}</p><ul><li>${GOLD}${L(`금화 ${g} (무피해 +2)`, `${g} Gold (+2 flawless)`)}</li><li>${pxi('deck')}${L('카드 한 장', 'A card')}</li>${sn.t === 'fight' ? '' : `<li>${pxi('relic')}${L('유물 하나', 'A relic')}</li>`}${sn.t === 'boss' ? `<li>${pxi('heart')}${L('체력 +2', 'HP +2')}</li>` : ''}</ul></div>
@@ -12107,10 +12335,10 @@ function showFate() {
     return `<button type="button" class="fate-c${a === 2 ? ' fin' : ''}" data-i="${a}" style="--i:${a}" aria-label="${L(`${a + 1}막 카드 뒤집기`, `Flip act ${a + 1} card`)}"><span class="fc-in">
       <span class="fc-b" aria-hidden="true">${ALL.map(() => '<i></i>').join('')}</span>
       <span class="fc-f th-${m.ar}"><span class="fc-g">${tiles}</span><i class="px a-${boss} fc-boss" aria-hidden="true"></i>
-        <b class="fc-t">${L(`${a + 1}막`, `Act ${a + 1}`)} · ${ar(m.ar)}</b><span class="fc-n">${a === 2 ? L('최종 보스', 'Final boss') : L('보스', 'Boss')} ???</span></span></span></button>`; }).join('');
+        <b class="fc-t">${L(`${a + 1}막`, `Act ${a + 1}`)} · ${ar(m.ar)}</b><span class="fc-n">${a === 2 ? L('최종 보스', 'Final boss') : L('보스', 'Boss')} ${boss === 'admin' ? adminVer(a) : '???'}</span></span></span></button>`; }).join('');
   ov.innerHTML = `<div class="fate${fast ? ' fast' : ''}" role="dialog" aria-label="${L('운명의 세 장', 'Three Cards of Fate')}">
     <p class="fate-h">${L('운명의 세 장', 'Three Cards of Fate')}</p><div class="fate-row">${cards}</div>
-    <p class="fate-l" aria-live="polite">${L('세 개의 막, 세 개의 보스. 운명은 정해졌다.', 'Three acts, three bosses. Fate is sealed.')}</p>
+    <p class="fate-l" aria-live="polite">${run.map.every(m => m.rows[m.rows.length - 1][0].foe === 'admin') ? L('세 개의 막, 하나의 관리자. 막이 오를 때마다 업데이트된다.', 'Three acts, one Admin. It updates itself every act.') : L('세 개의 막, 세 개의 보스. 운명은 정해졌다.', 'Three acts, three bosses. Fate is sealed.')}</p>
     <i class="px a-${run.cls}${skc(run.cls, run.skin)} fate-hero" aria-hidden="true"></i>
     <button type="button" class="btn ghost fate-skip">${L('건너뛰기', 'Skip')}</button></div>`;
   const root = ov.querySelector('.fate'), cs = [...root.querySelectorAll('.fate-c')], tm = [];
@@ -12128,6 +12356,58 @@ function showFate() {
   SND.play('scry');
   if (fast) tm.push(setTimeout(() => cs.forEach(flip), 600));
   else [1100, 1800, 2700].forEach((t, i) => tm.push(setTimeout(() => flip(cs[i]), t)));
+}
+/* 관리자 등장 연출: 보스 결투가 시작될 때 VS 화면 앞에 4단계. 시스템 화면 → 창 → 등장 대사 → 이름 띠.
+   누르면 다음 단계(대사가 찍히는 중이면 끝까지), 한 번 본 막은 빠르게. 대사의 *별표*는 굵게, {c}는 플레이어 직업 */
+const ADMIN_LINE = [
+  ['새 사용자 감지. 직업: {c}.\n이 판은 내 관리 구역이다. 권한 없는 접속은… *삭제한다.*', 'New user detected. Class: {c}.\nThis board is my managed zone. Unauthorized access will be… *deleted.*'],
+  ['1막의 패배는 로그에 남겨 두었다. 버그는 고쳤다.\n같은 수는 *두 번 통하지 않는다,* {c}.', 'Your Act 1 win is in my logs. The bug is fixed.\nThe same trick *won\'t work twice,* {c}.'],
+  ['여기가 마지막 서버다. 모든 판은 내가 짰다.\n이제 너를 *포맷하고,* 처음부터 다시 시작한다.', 'This is the last server. I built every board.\nNow I *format you* and start over from scratch.'],
+];
+var adiOn = false;   /* tick()이 먼저 볼 수 있게 var */
+function adminIntro(next) {
+  const ov = ovEl(); if (!ov || !stageOn() || !G || !seat || G.P[opp(seat)].cls !== 'admin' || G.turn !== 1) return false;
+  const a = Math.max(0, Math.min(2, run.act)), c = L(CLS[run.cls].n, TR(CLS[run.cls].n)), ver = adminVer(a);
+  let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; localStorage.setItem('ssd-adi', String(seen | (1 << a))); } catch (e) { /* 저장소 없음 */ }
+  const fast = !!(seen & (1 << a)), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600];
+  const win = (cls, x, y, w, title, body, d) => `<div class="win${cls}" style="left:${x};top:${y};width:${w};--d:${d || 0}s"><div class="tt">${title}<i>×</i></div><div class="bd">${body}</div></div>`;
+  const ln = (t, i) => `<span style="--i:${i}">${t}</span>`;
+  const s1 = [`<div class="crt" style="--ld:${fast ? 120 : 260}ms"><pre>${[
+      'SAMSAM BIOS v1.0', `${L('메모리 검사', 'Memory check')} ...... <span class="w">${L('9칸 OK', '9 tiles OK')}</span>`, `${L('결투장 장치', 'Arena device')} ...... <span class="w">${L('연결됨', 'connected')}</span>`,
+      `${L('새 사용자 감지', 'New user')} ... <span class="y">${esc(c)}</span>`, '', `${L('관리자.exe 불러오는 중', 'Loading admin.exe')} <i class="cur"></i>`].map((t, i) => `<span style="--i:${i}">${t || '&nbsp;'}</span>`).join('')}</pre><div class="scan"></div></div>`,
+    `<div class="blue"><p>${L('업데이트를 설치하는 중입니다 (2/3)', 'Installing updates (2/3)')}<small>${L('컴퓨터를 끄지 마세요. 결투장도 끄지 마세요.', "Don't turn off your computer. Or the arena.")}</small></p><div class="bar" style="--bt:${DUR[0] / 1000}s"><b></b></div><div class="scan" style="opacity:.4"></div></div>`,
+    `<div class="tint"></div>${[0, 1, 2].map(i => win(' red', `calc(8% + ${i * 9}%)`, `calc(14% + ${i * 13}%)`, 'min(360px, 70%)', L('경고', 'Warning'), L('권한 상승 요청이 감지되었습니다.', 'Privilege escalation request detected.'), i * (fast ? 0.12 : 0.35))).join('')}<i class="glitch" style="top:30%"></i><i class="glitch" style="top:72%;height:3px"></i>`][a];
+  const s2 = [`<div class="crt"><div class="scan"></div></div>${win('', 'calc(50% - min(190px, 45%))', '36%', 'min(380px, 90%)', 'admin.exe', `${L(`관리자 ${ver} 을(를) 실행하는 중...`, `Starting Admin ${ver}...`)}<div class="bar" style="--bt:${DUR[1] / 1000 * 0.8}s"><b></b></div>`)}<i class="ptr" style="left:calc(50% + min(150px, 35%));top:46%"></i>`,
+    `<div class="tint"></div>${win('', 'calc(50% - min(210px, 45%))', '22%', 'min(420px, 90%)', L(`패치 노트 · ${ver}`, `Patch notes · ${ver}`), [L('+ 삭제: 가로 한 줄 지우기', '+ Delete: wipe a row'), L('+ 로딩: 다음 턴 세로줄 폭격', '+ Loading: column strike next turn'), L('+ 렉: 상대 이동 멈추기', '+ Lag: freeze foe movement'), L('* 1막에서 진 버그 수정', '* Fixed the bug that lost Act 1'), L('* 자비 기능 제거', '* Removed mercy feature')].map(ln).join(''))}<i class="ptr" style="left:calc(50% + min(170px, 38%));top:52%"></i>`,
+    `<div class="tint"></div>${win('', 'calc(50% - min(220px, 45%))', '30%', 'min(440px, 90%)', `${L('관리자', 'Admin')} ${ver}`, `${L(`관리자 ${ver} 이(가) 이 결투장의 <b>모든 권한</b>을 요구합니다.`, `Admin ${ver} demands <b>full control</b> of this arena.`)}<div class="btns"><span>${L('허용', 'Allow')}</span><span class="pr">${L('허용', 'Allow')}</span></div>`)}<i class="ptr" style="left:calc(50% + 40px);top:calc(30% + 98px)"></i>`][a];
+  const toks = []; let bold = false; for (const ch of L(...ADMIN_LINE[a]).replace(/\{c\}/g, c)) { if (ch === '*') { bold = !bold; continue; } toks.push([ch, bold]); }
+  const say = n => { let h = '', b = false; toks.slice(0, n).forEach(([ch, bb]) => { if (bb !== b) { h += bb ? '<b>' : '</b>'; b = bb; } h += esc(ch); }); return h + (b ? '</b>' : ''); };
+  const nc = ['#4b3f8f', '#3b62a8', '#b5384a'][a];
+  ov.insertAdjacentHTML('beforeend', `<div class="adi adi-a${a}" data-s="1" role="dialog" aria-label="${L(`${a === 2 ? '최종 보스' : (a + 1) + '막 보스'} 관리자 ${ver} 등장`, `${a === 2 ? 'Final boss' : 'Act ' + (a + 1) + ' boss'} Admin ${ver} appears`)}">
+    <button type="button" class="skip">${L('건너뛰기', 'Skip')}</button>
+    <div class="sc s1">${s1}</div><div class="sc s2">${s2}</div>
+    <div class="sc s3"><div class="tint" style="background:rgba(26,20,32,.35)"></div><div class="boss"><i class="px a-admin flip" aria-hidden="true"></i></div>
+      <p class="dlg" style="--nc:${nc}"><span class="nm">${L('관리자', 'Admin')}<em>${ver}</em></span><span class="tx"></span><i class="tc" aria-hidden="true"></i><span class="nx" hidden>▼ ${L('누르기', 'Tap')}</span></p></div>
+    <div class="sc s4"><div class="bn"><div class="bi"><i class="px a-admin" aria-hidden="true"></i></div><span>${a === 2 ? L('최종 보스', 'Final boss') : L(`${a + 1}막 보스`, `Act ${a + 1} boss`)}</span><b>${L('관리자', 'Admin')} ${ver}</b>
+      <span>${a ? L('새로 설치', 'Newly installed') : L('설치됨', 'Installed')} · ${ADMIN_NEW[a].map(id => L(CARDS[id].n, TR(CARDS[id].n))).join(' · ')}</span></div></div></div>`);
+  const root = ov.lastElementChild, tx = root.querySelector('.tx'), tc = root.querySelector('.tc'), nx = root.querySelector('.nx');
+  let step = 1, timer = 0, typ = 0, n = 0, done = false; adiOn = true;
+  const SND1 = [['mboot', 'mload', 'merr'], ['mboot', 'mclick', 'mclick'], ['', '', ''], ['cutin', 'cutin', 'mbsod']];
+  const enter = s => { step = s; root.dataset.s = s; clearTimeout(timer); const snd = SND1[s - 1][a]; if (snd) SND.play(snd);
+    if (s === 1 && a === 2) [1, 2].forEach(k => setTimeout(() => { if (step === 1 && !done) SND.play('merr'); }, k * (fast ? 120 : 350)));
+    if (s === 2 && a === 2) setTimeout(() => { if (step === 2 && !done) SND.play('mclick'); }, 950);
+    if (s === 3) { const t0 = performance.now(), cps = fast ? 90 : 30; n = 0; tx.innerHTML = ''; if (noMotion) return endType();   /* 지난 시간으로 글자 수를 정해 화면이 바빠도 빠르기가 같다 */
+      typ = setInterval(() => { const m = Math.min(toks.length, Math.floor((performance.now() - t0) / 1000 * cps)); if (m === n) return; if (Math.floor(m / 3) > Math.floor(n / 3)) SND.play('tick'); n = m; tx.innerHTML = say(n); if (n >= toks.length) endType(); }, 33); return; }
+    timer = setTimeout(() => (s < 4 ? enter(s + 1) : close()), DUR[s - 1]); };
+  const endType = () => { clearInterval(typ); typ = 0; n = toks.length; tx.innerHTML = say(n); tc.hidden = true; nx.hidden = false; clearTimeout(timer); timer = setTimeout(() => enter(4), DUR[2]); };
+  const close = () => { if (done) return; done = true; adiOn = false; clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
+    root.classList.add('out'); setTimeout(() => { root.remove(); if (G && G.turn === 1) deadline = Date.now() + TURN_MS; next(); }, 300); };
+  const adv = () => { if (done) return; if (step === 3 && typ) return endType(); if (step < 4) enter(step + 1); else close(); };
+  const key = e => { if (e.key === 'Escape') { e.preventDefault(); close(); } else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); adv(); } };
+  document.addEventListener('keydown', key, true);
+  root.addEventListener('click', e => { e.stopPropagation(); if (e.target.closest('.skip')) close(); else adv(); });
+  enter(1);
+  return true;
 }
 function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.quit = 0; if (!stAvail().some(x => x[0] === r && x[1] === c)) return; run.sel = [r, c]; stDr.r = true; SND.play('tap'); render(); }
 function stOverHTML(won) {
