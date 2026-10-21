@@ -4612,7 +4612,8 @@ function newGame(picks, opt) {
   const P = {};
   for (const k of ['a', 'b']) {
     const cls = picks[k], deck = shuffle([...(CLS[cls].common || COMMON), ...CLS[cls].deck, ...ov('extra', k, [])]); ov('cut', k, []).forEach(id => { const ci = deck.indexOf(id); if (ci >= 0) deck.splice(ci, 1); });
-    P[k] = { cls, hp: ov('hp', k, ov('hpMax', k, hpBase(cls))), hpMax: ov('hpMax', k, hpBase(cls)), mx: ov('mx', k, 0), boss: ov('boss', k, null), rl: ov('rl', k, null), mana: ov('mana0', k, 2), pos: 4, deck, hand: deck.splice(0, HAND), disc: [], stance: false, ki: 0, marks: [], see: 0,
+    const rl = ov('rl', k, null), has = id => !!(rl && rl.includes(id));
+    P[k] = { cls, hp: ov('hp', k, ov('hpMax', k, hpBase(cls))), hpMax: ov('hpMax', k, hpBase(cls)), mx: ov('mx', k, 0), boss: ov('boss', k, null), rl, mana: ov('mana0', k, 2), pos: 4, deck, hand: deck.splice(0, HAND + (has('satchel') ? 1 : 0)), disc: [], stance: false, ki: 0, marks: [], see: has('spyglass') ? 1 : 0,
       mines: [], turrets: [], brambles: [], rooted: 0, calm: 0, cd: 0, clone: null, dug: [], silenced: 0, weather: null, undead: false, rage: 0, pillars: [], stars: [], air: 0, seen: null, pot: 0, temper: {}, beat: 0, eggs: [], dive: false, tags: [], nooses: [], amb: 0, digs: 0, stash: null, prev: null, hurtLast: false, rwCd: 0, trail: [4], combo: 0, spd: 0, dir: null, fuel: 0, mowed: [4], cups: [], trays: [], winkCd: 0, drunk: 0, ess: 0, tmCd: 0, tmap: [], acid: null, paint: [], dyed: 0, dyeBy: null, dyeCd: 0, hawk: null };
   }
   const arena = opt.arena || pick(['castle', 'snow', 'forest', 'desert']), spot = () => pick(ALL.filter(i => i !== 4));
@@ -5348,6 +5349,7 @@ function resolve(s, plans) {
     if (x.drain && p.hp > 0 && p.hp < hpMaxOf(p)) { p.hp += 1; rp.R[k].drain = true; ev.push([k, '피를 빨아 체력 +1']); }
     if (x.feast && X[o].dmg > 0 && p.hp > 0 && p.hp < hpMaxOf(p)) { p.hp += 1; rp.R[k].drain = true; ev.push([k, '피의 향연으로 체력 +1']); }
     if (x.absorb && p.hp > 0 && p.hp < hpMaxOf(p)) { p.hp += 1; rp.R[k].absorb = true; ev.push([k, '삼켜서 체력 +1']); }
+    if (p.hp < hp0[k] && p.hp > 0 && p.rl && p.rl.includes('thornmail') && !p.thornUsed) { p.thornUsed = true; s.P[o].hp -= 1; rp.R[k].thornMail = true; ev.push([k, '가시 갑옷이 되갚아 상대에게 피해 1']); }
     const lost = p.hp < hp0[k];
     if (x.heal) {
       if (!lost && p.hp < hpMaxOf(p)) { p.hp += 1; rp.R[k].heal = true; ev.push([k, '광합성으로 체력 +1']); }
@@ -6069,7 +6071,7 @@ function onDoc() {
   if (doc.game && doc.game !== gameStr) {
     const old = G;
     gameStr = doc.game; G = parse(gameStr);
-    if (G && G.turn === 1) { dealN = HAND; dealOpp = HAND; if (seat && !G.winner) showIntro(); }
+    if (G && G.turn === 1) { dealN = seat && G.P[seat] ? G.P[seat].hand.length : HAND; dealOpp = seat && G.P[opp(seat)] ? G.P[opp(seat)].hand.length : HAND; if (seat && !G.winner) showIntro(); }
     else if (G && old && G.rp && G.turn === old.turn + 1 && seat && !noMotion && !replaying) job = { old, lockedPlan: locked };
     qsTrack(old, G);
   }
@@ -9299,6 +9301,7 @@ async function runReplay(old, neu) {
     const r = rp.R[k], cell = fin(k); let d = 0;
     const say = (txt, c, snd) => { floatText(k, cell, txt, c, d); later(() => play(snd), d); d += 300; any = true; };
     if (r.thorn) { fx(k, FX.thornHit(cell), 600); hurt(k); say('-1 가시', 'f-dmg', 'thorn'); }
+    if (r.thornMail) { const o2 = opp(k), c2 = fin(o2); fx(o2, FX.thornHit(c2), 600); hurt(o2); floatText(o2, c2, mE('-1 가시 갑옷', '-1 Thorn Mail'), 'f-dmg', d); later(() => play('thorn'), d); d += 300; any = true; }
     if (r.undead) { fx(k, FX.sparkle(cell, K.steel), 900); say('불사! 체력 1', 'f-big f-warn', 'undead'); }
     if (r.stagger) say('경직', 'f-miss', 'fizz');
     if (r.enrage) { fx(k, FX.sparkle(cell, K.red), 900); say('분노! 다음 턴 피해 +1', 'f-big f-warn', 'cutin'); }
@@ -11570,6 +11573,14 @@ const RL = {
   stone: ['명상석', '결투 중 3턴마다 마나 +1', 'Focus Stone', '+1 mana every 3rd turn of a duel'],
   seal: ['상인의 인장', '상점의 모든 값 -1', "Merchant's Seal", 'Everything in shops costs 1 less'],
   compass: ['나침반', '지도의 모든 상대가 미리 보인다', 'Compass', 'Every foe on the map is revealed'],
+  thornmail: ['가시 갑옷', '매 결투에서 처음 피해를 받으면 상대도 피해 1', 'Thorn Mail', 'The first time you take damage in a duel, the foe takes 1 damage'],
+  phoenix: ['불사조 깃털', '모험 중 한 번, 쓰러지면 체력 2로 되살아나 그 결투를 다시 한다. 쓰고 나면 사라진다', 'Phoenix Feather', 'Once per run, when you fall you revive with 2 HP and retry that duel. Then it burns away'],
+  spyglass: ['정찰 망원경', '매 결투 첫 턴에 상대 손패를 본다', 'Spyglass', "See the foe's hand on the first turn of each duel"],
+  satchel: ['가죽 가방', '매 결투 시작 손패 +1장', 'Leather Satchel', 'Start each duel with 1 extra card in hand'],
+  ldice: ['행운의 주사위', '결투 보상 카드 선택지 +1장', 'Lucky Die', '+1 card to choose from after every duel'],
+  ccoin: ['저주받은 금화', '결투에서 얻는 금화 2배. 얻을 때 최대 체력 -1', 'Cursed Coin', 'Double Gold from duels. Max HP -1 when you take it'],
+  campkit: ['모닥불 키트', '쉼터 회복 +2. 쉼터에서 다른 일을 한 뒤 카드 1장도 뺄 수 있다', 'Campfire Kit', 'Rest heals 2 more. After resting you may also remove a card'],
+  gloves: ['결투자의 장갑', '무피해 승리 금화 +2 → +5, 무피해 승리 때 최대 체력 +1(모험당 2번까지)', "Duelist's Gloves", 'Flawless wins give +5 Gold instead of +2, and Max HP +1 (twice per run)'],
 };
 const RL_CARDS = ['spear', 'sun', 'grail', 'amulet', 'hourglass', 'turret'];
 const rlName = id => (RL[id] ? L(RL[id][0], RL[id][2]) : id === 'turret' ? L('포탑 설계도', 'Turret Plans') : CARDS[id].n);
@@ -11577,7 +11588,7 @@ const rlDesc = id => (RL[id] ? D2(RL[id][1], RL[id][3]) : id === 'turret' ? D2('
   : `${L('유물 카드', 'Relic card')} · ${L('마나', 'Mana')} ${CARDS[id].c}<br>${hl(CARDS[id].d)}<br>${L('덱에 섞이고, 판마다 한 번 쓸 수 있습니다.', 'Shuffled into your deck. Usable once per duel.')}`);
 const rlOwned = id => (RL[id] ? run.rl.includes(id) : (run.cards || []).includes(id));
 const rlPool = () => [...Object.keys(RL), ...RL_CARDS].filter(id => !rlOwned(id));
-function rlGive(id) { rlSeen(id); if (RL[id]) { run.rl.push(id); if (id === 'heart') { run.maxHp += 1; run.hp += 1; } } else if (id === 'turret') run.cards.push('turret', 'turret'); else run.cards.push(id); }
+function rlGive(id) { rlSeen(id); if (RL[id]) { run.rl.push(id); if (id === 'heart') { run.maxHp += 1; run.hp += 1; } if (id === 'ccoin') { run.maxHp = Math.max(1, run.maxHp - 1); run.hp = Math.min(run.hp, run.maxHp); } } else if (id === 'turret') run.cards.push('turret', 'turret'); else run.cards.push(id); }
 const ABUP = ['능력 강화', '능력을 쓴 턴에는 마나 1을 돌려받는다', 'Ability Boost', 'Get 1 mana back on any turn you use your ability'];
 const PRICE3 = { card: 4, relic: 7, heal: 3, pass: 6, cut: 5 };
 const price3 = k => Math.max(1, PRICE3[k] - (run.rl.includes('seal') ? 1 : 0));
@@ -11656,7 +11667,7 @@ function stageFight() {
   if (n.t === 'boss' && has('ration') && run.hp < run.maxHp) run.hp += 1;
   const pk = { a: run.cls, b: n.foe };
   const opt = { hp: { a: run.hp, b: sp.hp - (has('first') ? 1 : 0) }, hpMax: { a: run.maxHp, b: sp.hp }, mana0: { a: 2 + (has('spring') ? 2 : 0), b: sp.m0 || 2 }, mx: { a: has('vessel') ? 1 : 0, b: sp.mx || 0 },
-    extra: { a: (run.cards || []).slice() }, cut: { a: (run.cut || []).slice() }, rl: { a: [...(has('stone') ? ['stone'] : []), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
+    extra: { a: (run.cards || []).slice() }, cut: { a: (run.cut || []).slice() }, rl: { a: [...['stone', 'thornmail', 'spyglass', 'satchel'].filter(has), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
   run.hp0 = run.hp;
   const gid = doc.gid + 1; startedGid = gid;
   W({ gid, pick: pk, game: JSON.stringify(newGame(pk, opt)), turn: 1, phase: 'play', lock: { a: '', b: '' }, plan: { a: '', b: '' } });
@@ -11666,12 +11677,13 @@ const stageRec3 = () => parse(ls('ssd-stage3')) || {};
 function stageWin() {
   const ov = ovEl(); if (ov) ov.innerHTML = '';
   const n = stCurNode(); if (!n) return; const has = id => run.rl.includes(id), left = Math.max(1, G.P.a.hp), clean = left >= (run.hp0 || 0);
-  const gain = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? 2 : 0) + (has('purse') ? 2 : 0), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
+  const gain0 = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? (has('gloves') ? 5 : 2) : 0) + (has('purse') ? 2 : 0), gain = gain0 * (has('ccoin') ? 2 : 1), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
+  const glove = clean && has('gloves') && (run.gloveHp || 0) < 2; if (glove) { run.gloveHp = (run.gloveHp || 0) + 1; run.maxHp += 1; }
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
-  run.hp = Math.min(run.maxHp, left + heal); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
+  run.hp = Math.min(run.maxHp, left + heal + (glove ? 1 : 0)); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
   if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
-  const spoil = shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, spoil ? 2 : 3);
-  run.offer = { gold: gain, clean, heal, step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
+  const spoil = shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
+  run.offer = { gold: gain, coin: gain - gain0, glove, clean, heal: heal + (glove ? 1 : 0), step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
   if (run.offer.perks && !run.offer.perks.length) run.offer.perks = null;
   for (let k = 0; k < Math.min(12, gain); k++) setTimeout(() => { if (run && run.offer && doc && doc.phase === 'reward') SND.play('coin'); }, 700 + k * 90);
   [0, 1, 2].forEach(k => setTimeout(() => { if (run && run.offer && doc && doc.phase === 'reward') SND.play('flip'); }, 1250 + k * 260));
@@ -11699,8 +11711,8 @@ function rewardHTML() {
   const coins = perk ? '' : Array.from({ length: n }, (_, k) => `<i class="coin drop" style="--k:${k};--dx:${Math.round((rnd(k, 3) - 0.5) * 70)}px" aria-hidden="true"></i>`).join('');
   /* 금화가 어디서 왔는지 항목별로 */
   const parts = [[L('승리', 'Victory'), kind === 'boss' ? 7 : kind === 'elite' ? 6 : 4]];
-  if (o.clean) parts.push([L('무피해', 'Flawless'), 2]); if (run.rl.includes('purse')) parts.push([rlName('purse'), 2]);
-  const brk = perk ? '' : `<ul class="my-brk" aria-label="${L('받은 보상', 'Rewards')}">${parts.map(([k, v]) => `<li>${k} <b>+${v}</b></li>`).join('')}${o.heal ? `<li class="hp">${L('체력', 'HP')} <b>+${o.heal}</b></li>` : ''}</ul>`;
+  if (o.clean) parts.push([L('무피해', 'Flawless'), run.rl.includes('gloves') ? 5 : 2]); if (run.rl.includes('purse')) parts.push([rlName('purse'), 2]); if (o.coin) parts.push([rlName('ccoin'), o.coin]);
+  const brk = perk ? '' : `<ul class="my-brk" aria-label="${L('받은 보상', 'Rewards')}">${parts.map(([k, v]) => `<li>${k} <b>+${v}</b></li>`).join('')}${o.heal ? `<li class="hp">${L('체력', 'HP')} <b>+${o.heal}</b></li>` : ''}${o.glove ? `<li class="hp">${rlName('gloves')} · ${L('최대 체력', 'Max HP')} <b>+1</b></li>` : ''}</ul>`;
   const steps = o.perks ? `<ol class="my-steps" aria-label="${L('보상 순서', 'Reward steps')}"><li class="${perk ? 'done' : 'on'}"${perk ? '' : ' aria-current="step"'}>1 ${L('카드', 'Card')}</li><li class="${perk ? 'on' : ''}"${perk ? ' aria-current="step"' : ''}>2 ${L('유물', 'Relic')}</li></ol>` : '';
   const perkCard = (p, i) => { const m = RL_MODEL(p);
     return `<button type="button" class="mcard pkc" data-a="perk" data-p="${p}" style="--i:${i}"><span class="mc-in"><span class="mc-b" aria-hidden="true"><i></i></span>
@@ -11788,7 +11800,7 @@ const EVT = {
 function stOpts() {
   const sc = run.scene, o = [], add = (id, ko, en, off) => o.push({ id, n: L(ko, en), off: !!off }), full = run.hp >= run.maxHp, small = stDeck().length <= 8;
   const cut = () => add('cut', small ? '카드 1장 제거 (덱이 8장 이하면 불가)' : '카드 1장 제거', small ? 'Remove a card (not at 8 cards or fewer)' : 'Remove a card', small), bye = () => add('bye', '그냥 지나간다', 'Move on');
-  if (sc.t === 'rest') { add('heal2', full ? '쉰다: 체력 +2 (이미 가득)' : '쉰다: 체력 +2', full ? 'Rest: HP +2 (already full)' : 'Rest: HP +2', full); cut(); add('abup', run.abup ? '능력 강화 (이미 강화함)' : '수련한다: 능력 강화', run.abup ? 'Ability Boost (already done)' : 'Train: Ability Boost', run.abup); }
+  if (sc.t === 'rest') { const hh = run.rl.includes('campkit') ? 4 : 2; add('heal2', full ? `쉰다: 체력 +${hh} (이미 가득)` : `쉰다: 체력 +${hh}`, full ? `Rest: HP +${hh} (already full)` : `Rest: HP +${hh}`, full); cut(); add('abup', run.abup ? '능력 강화 (이미 강화함)' : '수련한다: 능력 강화', run.abup ? 'Ability Boost (already done)' : 'Train: Ability Boost', run.abup); }
   else if (sc.t === 'treasure') { (sc.rl || []).forEach(id => o.push({ id: 'rl:' + id, n: rlName(id), d: rlDesc(id) })); add('gold5', '금화 5를 챙긴다', 'Just take 5 Gold'); }
   else if (sc.ev === 'gamble') { add('bet', '금화 3을 건다', 'Bet 3 Gold', run.gold < 3); bye(); }
   else if (sc.ev === 'forge') { add('abup5', run.abup ? '능력 강화 (이미 강화함)' : '금화 5: 능력 강화', run.abup ? 'Ability Boost (already done)' : '5 Gold: Ability Boost', run.abup || run.gold < 5); cut(); bye(); }
@@ -11803,14 +11815,16 @@ function stOpts() {
 function stOpt(id) {
   const sc = run.scene; if (!sc) return;
   if (id === 'go') { stDone(); SND.play('tap'); return render(); }
+  /* 모닥불 키트: 쉼터에서 한 가지를 한 뒤 카드 1장을 더 뺄 수 있다 */
+  if (id === 'kitcut') { if (!sc.msg || sc.kit || sc.t !== 'rest' || !run.rl.includes('campkit') || stDeck().length <= 8) return; sc.kit = sc.msg; sc.msg = ''; sc.step = 'cut'; SND.play('tap'); return render(); }
   if (sc.msg) return;
-  if (id === 'back') { sc.step = ''; return render(); }
-  if (id.indexOf('cut:') === 0) { const c = id.slice(4); if (sc.step !== 'cut' || !stDeck().includes(c) || stDeck().length <= 8) return; stCut(c); sc.msg = L(`${CARDS[c].n} 1장을 덱에서 뺐습니다.`, `Removed 1 ${TR(CARDS[c].n)} from your deck.`); SND.play('flip'); stSave(); return render(); }
+  if (id === 'back') { sc.step = ''; if (sc.kit && sc.kit !== 'cut') { sc.msg = sc.kit; sc.kit = null; } return render(); }
+  if (id.indexOf('cut:') === 0) { const c = id.slice(4); if (sc.step !== 'cut' || !stDeck().includes(c) || stDeck().length <= 8) return; stCut(c); sc.kit = sc.kit || 'cut'; sc.msg = L(`${CARDS[c].n} 1장을 덱에서 뺐습니다.`, `Removed 1 ${TR(CARDS[c].n)} from your deck.`); SND.play('flip'); stSave(); return render(); }
   const o = stOpts().find(x => x.id === id); if (!o || o.off) return;
   let m = '', snd = 'relicGood';
   if (id === 'cut') { sc.step = 'cut'; SND.play('tap'); return render(); }
   if (id === 'bye') { stDone(); SND.play('tap'); return render(); }
-  if (id === 'heal2') { const h = Math.min(2, run.maxHp - run.hp); run.hp += h; m = L(`체력 +${h}.`, `HP +${h}.`); }
+  if (id === 'heal2') { const h = Math.min(sc.t === 'rest' && run.rl.includes('campkit') ? 4 : 2, run.maxHp - run.hp); run.hp += h; m = L(`체력 +${h}.`, `HP +${h}.`); }
   else if (id === 'abup' || id === 'abup5') { if (id === 'abup5') run.gold -= 5; run.abup = true; m = L(`${ABUP[0]}: ${ABUP[1]}.`, `${ABUP[2]}: ${ABUP[3]}.`); }
   else if (id.indexOf('rl:') === 0) { const r = id.slice(3); rlGive(r); m = L(`${rlName(r)}을(를) 얻었습니다.`, `You got ${rlName(r)}.`); }
   else if (id === 'gold5') { run.gold += 5; m = L('금화 +5.', '+5 Gold.'); snd = 'coin'; }
@@ -11829,7 +11843,7 @@ function sceneHTML() {
   const title = ev ? L(ev[0], ev[2]) : sc.t === 'rest' ? L('모닥불 곁에서', 'By the campfire') : L('먼지 쌓인 궤짝', 'A dusty chest');
   const text = ev ? L(ev[1], ev[3]) : sc.t === 'rest' ? L('불을 피우고 숨을 고른다. 하나만 할 수 있다.', 'You light a fire and catch your breath. You can do only one thing.') : L('궤짝 안에 유물이 둘. 들고 갈 수 있는 건 하나뿐이다.', 'Two relics in the chest. You can carry only one.');
   let body;
-  if (sc.msg) body = `<p class="sc-msg">${sc.msg}</p><div class="sc-opts"><button type="button" class="btn red big" data-a="stopt" data-i="go">${L('지도로 돌아간다', 'Back to the map')}</button></div>`;
+  if (sc.msg) body = `<p class="sc-msg">${sc.msg}</p><div class="sc-opts">${sc.t === 'rest' && run.rl.includes('campkit') && !sc.kit && sc.step !== 'cut' && stDeck().length > 8 ? `<button type="button" class="scopt" data-a="stopt" data-i="kitcut"><b>${rlName('campkit')}: ${L('카드 1장도 뺀다', 'Also remove a card')}</b></button>` : ''}<button type="button" class="btn red big" data-a="stopt" data-i="go">${L('지도로 돌아간다', 'Back to the map')}</button></div>`;
   else if (sc.step === 'cut') { const cnt = {}; stDeck().forEach(id => { cnt[id] = (cnt[id] || 0) + 1; });
     body = `<p class="cap">${L('뺄 카드를 고르세요. 되돌릴 수 없습니다.', "Pick a card to remove. This can't be undone.")}</p><div class="sc-cut">${Object.keys(cnt).map(id => `<button type="button" class="chip" data-a="stopt" data-i="cut:${id}" title="${esc(CARDS[id].d)}"><b class="cost">${CARDS[id].c}</b>${CARDS[id].n}${cnt[id] > 1 ? ' ×' + cnt[id] : ''}</button>`).join('')}</div>
       <div class="sc-opts"><button type="button" class="btn ghost" data-a="stopt" data-i="back">${L('돌아가기', 'Back')}</button></div>`; }
@@ -11962,6 +11976,13 @@ document.addEventListener('pointerover', e => { if (!e.target.closest || !docume
 document.addEventListener('focusin', e => { if (document.querySelector('#app .dmix')) dmHover(e.target.closest && e.target.closest('[data-id].mcard, [data-id].scard')); });
 
 /* ===== 도전 결과: 지나온 길, 쓰러진 곳, 가장 잘 싸운 판, 모은 것 ===== */
+/* 불사조 깃털: 쓰러지면 한 번, 체력 2로 같은 결투를 다시 한다 */
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-a="stphoenix"]'); if (!b || !run || !stageOn() || !run.rl.includes('phoenix')) return;
+  e.stopPropagation(); const ov = ovEl(); if (ov) ov.innerHTML = '';
+  if (G) run.turns += Math.max(0, G.turn - 1);
+  run.rl = run.rl.filter(x => x !== 'phoenix'); run.phoenix = true; run.hp = Math.min(2, run.maxHp); SND.play('relicGood'); stSave(); stageFight();
+}, true);
 document.addEventListener('click', e => {
   const b = e.target.closest && e.target.closest('[data-a="stsum"]'); if (!b || !run || !stageOn()) return;
   const ov = ovEl(); if (ov) ov.innerHTML = '';
@@ -12112,6 +12133,7 @@ function stPick(r, c) { if (!run.map || run.scene || run.cleared) return; run.qu
 function stOverHTML(won) {
   const n = stCurNode(), last = n && n.t === 'boss' && run.act === run.map.length - 1;
   return won ? `<p class="vscore">${stLab()} ${L('승리', 'won')}</p><button type="button" class="btn red" data-a="stwin">${last ? L('결과 보기', 'See result') : L('보상 받기', 'Claim reward')}</button>`
+    : run.rl.includes('phoenix') ? `<p class="vscore">${L('쓰러졌다… 품 안의 깃털이 타오른다', 'You fall… the feather in your pack bursts into flame')}</p><button type="button" class="btn red" data-a="stphoenix">${rlName('phoenix')}: ${L('체력 2로 다시 싸운다', 'Rise with 2 HP and fight again')}</button>`
     : `${stLost()}<p class="vscore">${L(`도전 실패 · ${stLab()}에서 멈췄습니다`, `Run over · stopped at ${stLab()}`)}</p><button type="button" class="btn red" data-a="stsum">${L('도전 결과 보기', 'See run result')}</button>`;
 }
 </script>
@@ -13119,6 +13141,30 @@ function stOverHTML(won) {
     else if (kind === 'bandage') { const r = add(cylG(0.3, 0.3, 0.4, 10), 0xf6f3f2, 0, 0.4); r.rotation.x = PI / 2; add(new T.BoxGeometry(0.1, 0.3, 0.06), 0xd8475a, 0, 0.4, 0.22); add(new T.BoxGeometry(0.3, 0.1, 0.06), 0xd8475a, 0, 0.4, 0.22); }
     else if (kind === 'ration') { add(new T.BoxGeometry(0.6, 0.34, 0.42), 0x9a6a3c, 0, 0.2); add(new T.BoxGeometry(0.64, 0.08, 0.46), 0x7a5028, 0, 0.4); add(new T.IcosahedronGeometry(0.16, 0), 0xd8475a, -0.1, 0.56, 0); add(new T.IcosahedronGeometry(0.14, 0), 0x5b9a4a, 0.14, 0.54, 0.05); }
     else if (kind === 'first') { const bl = add(new T.ConeGeometry(0.1, 0.7, 4), 0xc9c6c6, 0.12, 0.72, 0); bl.rotation.z = -0.5; const hd = add(cylG(0.05, 0.05, 0.3, 6), 0x7a5028, -0.16, 0.26, 0); hd.rotation.z = -0.5; add(new T.BoxGeometry(0.3, 0.06, 0.1), 0xe3a33b, -0.06, 0.42, 0).rotation.z = -0.5; }
+    else if (kind === 'thornmail') { const t = add(cylG(0.4, 0.3, 0.66, 6), 0x7c8698, 0, 0.46); t.scale.z = 0.6; add(new T.BoxGeometry(0.3, 0.16, 0.36), 0x5a6274, -0.44, 0.74); add(new T.BoxGeometry(0.3, 0.16, 0.36), 0x5a6274, 0.44, 0.74);
+      [[-0.22, 0.6], [0, 0.72], [0.22, 0.6], [-0.12, 0.38], [0.12, 0.38], [0, 0.5]].forEach(function (q) { add(new T.ConeGeometry(0.06, 0.2, 4), 0x5b9a4a, q[0], q[1], 0.26).rotation.x = PI / 2; }); }
+    else if (kind === 'phoenix') { const f = new T.Group(); f.position.set(0, 0.12, 0); f.rotation.z = 0.32; g.add(f);
+      const fm = function (geo, color, x, y, o) { const m = new T.Mesh(geo, new T.MeshLambertMaterial(Object.assign({ color: color }, o || {}))); m.position.set(x, y, 0); f.add(m); return m; };
+      fm(cylG(0.025, 0.035, 1.1, 5), 0xf6f3f2, 0, 0.5);
+      for (let k = 0; k < 9; k++) { const w = 0.16 + Math.sin((k + 1) / 10 * PI) * 0.26, col = k < 3 ? 0xd8475a : k < 6 ? 0xf08a3c : 0xffd75e; fm(new T.BoxGeometry(w, 0.1, 0.03), col, 0, 0.16 + k * 0.1, { emissive: k < 3 ? 0x5a1010 : k < 6 ? 0x6a3008 : 0xa06a08 }); }
+      fm(new T.OctahedronGeometry(0.07, 0), 0xffd75e, 0.2, 1.12, { emissive: 0xa06a08 }); fm(new T.OctahedronGeometry(0.05, 0), 0xf08a3c, -0.22, 0.9, { emissive: 0x6a3008 }); }
+    else if (kind === 'spyglass') { const a = add(cylG(0.09, 0.13, 1.0, 10), 0xe3a33b, 0, 0.26, 0, { emissive: 0x3a2808 }); a.rotation.z = 1.25; const b2 = add(cylG(0.15, 0.15, 0.12, 10), 0x7a5028, -0.4, 0.37); b2.rotation.z = 1.25;
+      const c2 = add(cylG(0.08, 0.08, 0.1, 10), 0x7a5028, 0.42, 0.14); c2.rotation.z = 1.25; add(cylG(0.13, 0.13, 0.02, 10), 0xa9cfee, -0.47, 0.39, 0, { emissive: 0x2a5a9a }).rotation.z = 1.25; add(cylG(0.18, 0.2, 0.06, 10), 0x7a5028, -0.2, 0.31).rotation.z = 1.25; }
+    else if (kind === 'satchel') { add(new T.BoxGeometry(0.66, 0.46, 0.34), 0x9a6a3c, 0, 0.26); const f = add(new T.BoxGeometry(0.68, 0.24, 0.06), 0x7a5028, 0, 0.42, 0.18); f.rotation.x = -0.3;
+      add(new T.BoxGeometry(0.1, 0.12, 0.04), 0xffd75e, 0, 0.32, 0.22, { emissive: 0x6a5010 }); add(new T.TorusGeometry(0.28, 0.035, 4, 12, PI), 0x7a5028, 0, 0.5); }
+    else if (kind === 'ldice') { const d = new T.Group(); d.position.set(0, 0.36, 0); d.rotation.set(0.35, 0.6, 0); g.add(d);
+      const dm = function (geo, color, x, y, z, o) { const m = new T.Mesh(geo, new T.MeshLambertMaterial(Object.assign({ color: color }, o || {}))); m.position.set(x, y, z); d.add(m); return m; };
+      dm(new T.BoxGeometry(0.5, 0.5, 0.5), 0xffd75e, 0, 0, 0, { emissive: 0x4a3408 });
+      [[0, 0]].forEach(function (q) { dm(new T.BoxGeometry(0.1, 0.1, 0.02), 0xd8475a, q[0], q[1], 0.26); });
+      [[-0.13, -0.13], [0.13, 0.13]].forEach(function (q) { dm(new T.BoxGeometry(0.08, 0.02, 0.08), 0x2a1e1d, q[0], 0.26, q[1]); });
+      [[-0.13, 0.13], [0, 0], [0.13, -0.13]].forEach(function (q) { dm(new T.BoxGeometry(0.02, 0.08, 0.08), 0x2a1e1d, 0.26, q[0], q[1]); }); }
+    else if (kind === 'ccoin') { [[0, 0.06, 0], [0.04, 0.12, 0.02], [-0.02, 0.18, -0.01], [0.02, 0.24, 0.01]].forEach(function (q) { add(cylG(0.32, 0.32, 0.06, 10), 0xb8862a, q[0], q[1], q[2], { emissive: 0x3a0a0a }); });
+      const c3 = add(cylG(0.3, 0.3, 0.06, 10), 0x8f1f2a, 0.06, 0.56, 0, { emissive: 0x5a0a14 }); c3.rotation.x = 1.2; add(new T.OctahedronGeometry(0.07, 0), 0x2a1e1d, 0.06, 0.58, 0.05); }
+    else if (kind === 'campkit') { for (let k = 0; k < 3; k++) { const l = add(cylG(0.06, 0.06, 0.66, 6), 0x7a5028, 0, 0.12, 0); l.rotation.set(PI / 2, 0, k * PI / 3); }
+      add(new T.ConeGeometry(0.16, 0.4, 6), 0xf08a3c, 0, 0.36, 0, { emissive: 0xa04008 }); add(new T.ConeGeometry(0.09, 0.26, 5), 0xffd75e, 0, 0.36, 0, { emissive: 0xa06a08 });
+      add(cylG(0.18, 0.14, 0.18, 8), 0x3b4252, 0.42, 0.12, 0.1); }
+    else if (kind === 'gloves') { [-0.18, 0.2].forEach(function (x, i) { const h = add(new T.BoxGeometry(0.28, 0.34, 0.14), 0x9a6a3c, x, 0.3 + i * 0.06); h.rotation.z = i ? -0.25 : 0.2; const c4 = add(new T.BoxGeometry(0.3, 0.12, 0.16), 0xd8475a, x - (i ? -0.04 : 0.03), 0.1 + i * 0.06); c4.rotation.z = h.rotation.z;
+        const t = add(new T.BoxGeometry(0.08, 0.16, 0.12), 0x9a6a3c, x + (i ? -0.18 : 0.17), 0.3 + i * 0.06); t.rotation.z = i ? 0.6 : -0.6; }); }
     else if (kind === 'turret') { add(cylG(0.4, 0.46, 0.16, 8), 0x5a6274, 0, 0.08); add(cylG(0.26, 0.32, 0.3, 8), 0x7c8698, 0, 0.3); const hd = add(new T.BoxGeometry(0.46, 0.3, 0.42), 0xe3a33b, 0, 0.6); hd.rotation.y = 0.2;
       const br = add(cylG(0.06, 0.06, 0.6, 6), 0x3b4252, 0.38, 0.64, 0.08); br.rotation.z = PI / 2; add(cylG(0.08, 0.08, 0.08, 6), 0xd8475a, 0.68, 0.64, 0.08, { emissive: 0x5a1010 }).rotation.z = PI / 2; add(new T.BoxGeometry(0.18, 0.08, 0.3), 0x4f7fd0, -0.06, 0.8, 0, { emissive: 0x1c3c78 }); }
     else { add(new T.BoxGeometry(0.5, 0.5, 0.5), 0xc79a5b, 0, 0.3); }
