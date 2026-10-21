@@ -2980,6 +2980,11 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pc-stats dt { font-size: 14px; color: #d9cbc7; } .pc-stats dd { margin: 0; font-size: 22px; font-weight: 700; color: #fff; } .pc-stats dd small { margin-left: 6px; font-size: 13px; font-weight: 400; color: #bfaea9; }
 .pc-stats .pf-bar { grid-column: 1 / -1; margin: 0; height: 6px; background: rgba(255, 255, 255, .12); box-shadow: none; }
 .pc-tipc p { margin: 0; font-size: 15px; line-height: 1.65; color: #f1e9e6; }
+.pc-tipc { position: relative; padding-bottom: 18px !important; }
+.tip-gg { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255, 255, 255, .1); }
+.tip-gg i { display: block; height: 100%; width: 100%; background: #e3a33b; transform-origin: left; animation: tipGg 10s linear both; }
+@keyframes tipGg { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: no-preference) { .pc-tipc p.tip-in { animation: sgIn .3s steps(5) backwards; } }
 /* 일일 퀘스트 */
 .qs { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .qs-it { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border: 3px solid var(--sil); box-shadow: 3px 3px 0 rgba(42, 31, 36, .18); }
@@ -7261,6 +7266,11 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
 /* 타이틀 화면: 화면 전체가 결투장 그림. 가운데 3×3 판 위에서 두 직업이 맞서고, 관중은 뒤에.
    넓은 화면은 로고와 메뉴를 왼쪽에, 세로 화면은 위에 쌓는다 */
 const MENU_DUEL = MENU_CAST.slice(0, 2), MENU_TIP = Math.floor(Math.random() * 9);
+/* 메인 홈 '결투 요령': 10초마다 다음 요령으로 넘어가고, 아래 게이지가 남은 시간을 보여 준다 */
+const HTIP = { n: 0, t: Date.now(), ms: 10000 };
+setInterval(() => { const c = document.querySelector('.pc-tipc'); if (!c) { HTIP.t = Date.now(); return; } HTIP.n++; HTIP.t = Date.now();
+  const p = c.querySelector('p'); if (p) { p.innerHTML = hl(RULES[(MENU_TIP + 3 + HTIP.n) % RULES.length]); p.classList.remove('tip-in'); void p.offsetWidth; p.classList.add('tip-in'); }
+  const g = c.querySelector('.tip-gg'); if (g) g.innerHTML = '<i></i>'; }, HTIP.ms);
 /* 타이틀 음악: 고를 수 있다. 결전(기본)·진군은 전투곡, 고요는 예전 타이틀 곡 */
 const TITLE_BGM = { clash: ['결전', 'Clash'], march: ['진군', 'March'], calm: ['고요', 'Calm'] };
 let titleBgm = (() => { const v = ls('ssd-title'); return TITLE_BGM[v] ? v : 'clash'; })();
@@ -7991,7 +8001,7 @@ function pcHomeHTML(on) {
           <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
       ${wkHome(true)}
       ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>`
-        : `<section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3) % RULES.length])}</p></section>`}
+        : `<section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3 + HTIP.n) % RULES.length])}</p><span class="tip-gg" aria-hidden="true"><i style="animation-delay:-${Date.now() - HTIP.t}ms"></i></span></section>`}
     </aside>
     <section class="pc-play" aria-label="${mE('게임 모드', 'Game mode')}">
       <h3 class="pc-ph3">${mE('게임 모드', 'Game Mode')}</h3>
