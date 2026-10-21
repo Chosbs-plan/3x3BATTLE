@@ -2980,6 +2980,11 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pc-stats dt { font-size: 14px; color: #d9cbc7; } .pc-stats dd { margin: 0; font-size: 22px; font-weight: 700; color: #fff; } .pc-stats dd small { margin-left: 6px; font-size: 13px; font-weight: 400; color: #bfaea9; }
 .pc-stats .pf-bar { grid-column: 1 / -1; margin: 0; height: 6px; background: rgba(255, 255, 255, .12); box-shadow: none; }
 .pc-tipc p { margin: 0; font-size: 15px; line-height: 1.65; color: #f1e9e6; }
+.pc-tipc { position: relative; padding-bottom: 18px !important; }
+.tip-gg { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255, 255, 255, .1); }
+.tip-gg i { display: block; height: 100%; width: 100%; background: #e3a33b; transform-origin: left; animation: tipGg 10s linear both; }
+@keyframes tipGg { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: no-preference) { .pc-tipc p.tip-in { animation: sgIn .3s steps(5) backwards; } }
 /* 일일 퀘스트 */
 .qs { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .qs-it { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border: 3px solid var(--sil); box-shadow: 3px 3px 0 rgba(42, 31, 36, .18); }
@@ -3192,6 +3197,15 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .ml-rw { display: grid; justify-items: end; gap: 6px; font-weight: 700; } .ml-ok { font-size: 12px; color: var(--ash); }
 .ml-empty { display: grid; justify-items: center; gap: 4px; padding: 30px 16px; background: #fff; border: 3px dashed var(--line); text-align: center; } .ml-empty i { font-style: normal; font-size: 34px; color: var(--ash); } .ml-empty p { margin: 0; }
 .ml-note { margin: 0; }
+/* 메일함 창: 화면 높이에 맞추고 목록만 안에서 스크롤 */
+.info-in:has(.ml-box) { width: min(640px, 100%); height: 100%; display: grid; align-items: center; }
+.ml-box { max-height: min(100%, 660px); min-height: 0; box-sizing: border-box; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; }
+.ml-box .ml { max-width: none; height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; align-content: stretch; }
+.ml-box .ml-list, .ml-box .ml-empty { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 6px 6px 0; }
+.ml-box .ml-empty { padding: 24px 16px; align-content: center; }
+.ml-box .d-go { margin: 0; }
+@media (max-height: 480px) { .ml-box { gap: 8px; padding: 10px 14px; } .ml-box h1 { font-size: 20px; } .ml-box .ml-note { display: none; } .ml-box .ml { gap: 8px; } }
+@media (max-width: 520px) { .ml-box h1 { font-size: 22px; } .ml-it { padding: 10px; gap: 10px; } .ml-ic { width: 36px; height: 36px; font-size: 20px; } .ml-tx b { font-size: 15px; } }
 @media (max-width: 520px) { .ml-it { grid-template-columns: auto minmax(0, 1fr); } .ml-rw { grid-column: 1 / -1; grid-auto-flow: column; justify-content: end; align-items: center; } }
 /* 메인 홈의 주간 랭킹 */
 .wh { display: grid; gap: 8px; padding: 12px 14px; background: rgba(255, 255, 255, .95); border: 3px solid var(--sil); box-shadow: 4px 4px 0 rgba(42, 31, 36, .3); color: var(--sil); text-align: left; }
@@ -3244,6 +3258,25 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .ach-bar { display: block; height: 6px; background: #d9cfcc; margin-top: 3px; } .ach-bar i { display: block; height: 100%; background: var(--amber); }
 .ach-ti { display: grid; justify-items: end; gap: 4px; } .ach-ti em { font-style: normal; font-size: 12px; font-weight: 700; color: #b97f22; white-space: nowrap; } .ach-c:not(.ok) .ach-ti em { color: var(--ash); }
 .ach-ti .btn.sm { padding: 3px 10px; font-size: 12px; min-height: 28px; } .ach-lk { font-size: 11px; }
+/* 업적 등급: 브론즈·실버·골드·전설 */
+.t-b { --tc: #b0703c; --tc2: #7d4a22; } .t-s { --tc: #8c98a8; --tc2: #5c6676; } .t-g { --tc: #d9a21b; --tc2: #9c7210; } .t-l { --tc: #8a4fd8; --tc2: #5a2d9c; }
+.ach-c { position: relative; border-left: 6px solid var(--tc) !important; }
+.ach-tr { position: absolute; top: -9px; left: 8px; padding: 0 6px; font-style: normal; font-size: 10px; font-weight: 700; line-height: 16px; color: #fff; background: var(--tc); box-shadow: 1px 1px 0 var(--tc2); }
+.ach-c:not(.ok) .ach-tr { opacity: .65; }
+.ach-rw { font-size: 12px; font-weight: 700; color: var(--ash); } .ach-rw.got { color: var(--green-d, #3c8a4a); }
+.ach-claim { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 8px 12px; background: #fff7e8; border: 3px solid #e3a33b; } .ach-claim p { margin: 0; font-size: 14px; } .ach-claim b { color: var(--red-d); }
+.ach-note { margin: 0; }
+.ach-pools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.ach-pl { display: grid; gap: 6px; align-content: start; padding: 10px 12px; background: #fff; border: 3px solid var(--tc); box-shadow: 3px 3px 0 var(--tc2); }
+.ach-pl.done { background: color-mix(in srgb, var(--tc) 12%, #fff); }
+.ach-pn { font-size: 16px; color: var(--tc2); } .ach-pc { font-size: 12px; color: var(--ash); justify-self: end; margin-top: -24px; }
+.ach-pl ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 12px; } .ach-pl ul em { font-style: normal; }
+.ach-pl .pf-bar i { background: var(--tc); } .ach-pl .btn.sm { padding: 3px 10px; font-size: 12px; min-height: 28px; }
+.ttl.t-b { color: #a0602c; } .ttl.t-s { color: #6e7a8c; } .ttl.t-g { color: #c08a0c; text-shadow: 0 0 6px rgba(240, 190, 60, .5); }
+.ttl.t-l { background: linear-gradient(90deg, #8a4fd8, #d45ad0, #5f8ae0, #8a4fd8); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (prefers-reduced-motion: no-preference) { .ttl.t-l { animation: ttlShine 3s linear infinite; } }
+@keyframes ttlShine { to { background-position: 300% 0; } }
+@media (max-width: 900px) { .ach-pools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 440px) { .hub-tab .pxi { display: none; } .hub-tab span { white-space: nowrap; } }
 @media (max-width: 600px) { .ach-top { grid-template-columns: 1fr; } .ach-list { grid-template-columns: 1fr; } .ach-tabs .cx-tb em { display: none; } }
 /* 보스 도감 */
@@ -4065,8 +4098,19 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .sh-it { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; background: #fff; border: 3px solid var(--line); box-shadow: 3px 3px 0 var(--ac, var(--sil)); }
 .sh-it.own { background: var(--wash, #f6f2ea); }
 .sh-it b { font-size: 15px; } .sh-it .btn { width: 100%; min-height: 34px; margin-top: 4px; }
-.sh-fig { position: relative; width: 96px; height: 96px; background: radial-gradient(ellipse at 50% 88%, rgba(0, 0, 0, .14) 0 30%, transparent 31%); }
-.sh-fig > .px { position: absolute; inset: 0; } .sh-a { opacity: 0; }
+/* 그림 칸: 카드 위쪽 창. 고해상도 스킨이 창 밖으로 넘치면 줄이지 않고 잘라낸다 */
+.sh-it { position: relative; }
+.sh-fig { position: relative; align-self: stretch; height: 116px; margin: -10px -8px 0; overflow: hidden; contain: paint; background: radial-gradient(ellipse 48px 12px at 50% 92%, rgba(0, 0, 0, .14) 0 99%, transparent 100%); }
+.sh-fig > .px { position: absolute; left: calc(50% - 48px); bottom: 4px; width: 96px; height: 96px; } .sh-a { opacity: 0; }
+/* 에픽 스킨: 보라색 이중 테두리, 모서리 장식, 빛나는 창, 리본 */
+.sh-it.sp { --sk1: #8a4fd8; --sk2: #5a2d9c; border-color: var(--sk1); box-shadow: 3px 3px 0 var(--sk2), inset 0 0 0 2px #fff, inset 0 0 0 4px color-mix(in srgb, var(--sk1) 45%, #fff); background: linear-gradient(180deg, color-mix(in srgb, var(--sk1) 10%, #fff), #fff 60%); }
+.sh-it.sp::before, .sh-it.sp::after { content: ""; position: absolute; z-index: 2; width: 10px; height: 10px; background: var(--sk1); box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+.sh-it.sp::before { left: -6px; top: -6px; } .sh-it.sp::after { right: -6px; bottom: -6px; }
+.sh-it.sp .sh-fig { margin: -6px -4px 0; border-bottom: 3px solid var(--sk1); background: radial-gradient(ellipse 48px 12px at 50% 92%, rgba(0, 0, 0, .16) 0 99%, transparent 100%), repeating-linear-gradient(135deg, color-mix(in srgb, var(--sk1) 8%, transparent) 0 6px, transparent 6px 12px), linear-gradient(180deg, color-mix(in srgb, var(--sk1) 24%, #fff), #fff); }
+.sh-it.sp .sh-fig::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .55) 48%, transparent 56%) no-repeat; background-size: 250% 100%; background-position: 140% 0; pointer-events: none; }
+.sh-sp { position: absolute; z-index: 3; top: 6px; left: 6px; padding: 1px 7px; font-style: normal; font-size: 11px; font-weight: 700; color: #fff; background: var(--sk1); box-shadow: 2px 2px 0 var(--sk2); letter-spacing: .04em; }
+@media (prefers-reduced-motion: no-preference) { .sh-it.sp .sh-fig::after { animation: shGleam 2.6s steps(13) infinite; } }
+@keyframes shGleam { 0%, 40% { background-position: 140% 0; } 100% { background-position: -40% 0; } }
 .sh-it:hover .sh-a { opacity: 1; } .sh-it:hover .sh-s { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) { .sh-s { animation: breathe 1.3s steps(1) infinite; } .sh-it:hover .sh-a { animation: spAnim .45s steps(1) infinite; } }
 /* 선택 화면: 잠긴 스킨 */
@@ -7222,6 +7266,11 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
 /* 타이틀 화면: 화면 전체가 결투장 그림. 가운데 3×3 판 위에서 두 직업이 맞서고, 관중은 뒤에.
    넓은 화면은 로고와 메뉴를 왼쪽에, 세로 화면은 위에 쌓는다 */
 const MENU_DUEL = MENU_CAST.slice(0, 2), MENU_TIP = Math.floor(Math.random() * 9);
+/* 메인 홈 '결투 요령': 10초마다 다음 요령으로 넘어가고, 아래 게이지가 남은 시간을 보여 준다 */
+const HTIP = { n: 0, t: Date.now(), ms: 10000 };
+setInterval(() => { const c = document.querySelector('.pc-tipc'); if (!c) { HTIP.t = Date.now(); return; } HTIP.n++; HTIP.t = Date.now();
+  const p = c.querySelector('p'); if (p) { p.innerHTML = hl(RULES[(MENU_TIP + 3 + HTIP.n) % RULES.length]); p.classList.remove('tip-in'); void p.offsetWidth; p.classList.add('tip-in'); }
+  const g = c.querySelector('.tip-gg'); if (g) g.innerHTML = '<i></i>'; }, HTIP.ms);
 /* 타이틀 음악: 고를 수 있다. 결전(기본)·진군은 전투곡, 고요는 예전 타이틀 곡 */
 const TITLE_BGM = { clash: ['결전', 'Clash'], march: ['진군', 'March'], calm: ['고요', 'Calm'] };
 let titleBgm = (() => { const v = ls('ssd-title'); return TITLE_BGM[v] ? v : 'clash'; })();
@@ -7323,7 +7372,7 @@ function profBody() {
   return `<div class="pf">
     <section class="pf-card c-${rep}">
       <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}
+      <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}
       <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
       <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
       ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
@@ -7430,11 +7479,40 @@ const ACH = [
   { id: 'relics', c: 'col', n: ['고고학 박사', 'Curator'], d: ['유물 도감을 모두 채운다', 'Complete the Relic codex'], t: ['고고학 박사', 'Curator'], g: () => RL_ALL().length, v: () => { const b = rlBook(); return RL_ALL().filter(id => b[id]).length; } },
   { id: 'bosses', c: 'col', n: ['관리자의 관리자', 'Admin of Admins'], d: ['보스 도감을 모두 채운다', 'Complete the Boss codex'], t: ['관리자의 관리자', 'Root User'], g: 3, v: () => [0, 1, 2].filter(a => bossBook()['a' + a]).length },
 ];
+/* 업적 등급과 등급별 보상풀: 업적마다 메달, 등급 색 칭호. 한 등급을 모두 받으면 완성 보너스 메달과 전용 칭호.
+   메달은 서버(supabase/achievements.sql)가 업적마다 한 번만 준다 */
+const ACH_TIER = { b: 'run1 win1 perf quick heavy noab hard1 pvp1 emo week1 adm1 comeback', s: 'run5 win50 long bo3 ban pvp10 hard10 cls10 adm2 rungold runrl skin5', g: 'runc10 win200 perf10 pvp50 adm3 admfast runhp1 run300 week10 bosses', l: 'runc30 cls30 admflaw relics' };
+const ACH_POOL = {
+  b: { n: ['브론즈', 'Bronze'], m: 20, bonus: 100, t: ['브론즈 컬렉터', 'Bronze Collector'] },
+  s: { n: ['실버', 'Silver'], m: 50, bonus: 250, t: ['실버 컬렉터', 'Silver Collector'] },
+  g: { n: ['골드', 'Gold'], m: 120, bonus: 500, t: ['골드 컬렉터', 'Gold Collector'] },
+  l: { n: ['전설', 'Legend'], m: 300, bonus: 1000, t: ['살아 있는 전설', 'Living Legend'] },
+};
+const achTier = id => { if (/^tier:/.test(id)) return id.slice(5); for (const t in ACH_TIER) if (ACH_TIER[t].split(' ').includes(id)) return t; return 'b'; };
+const tierIds = t => ACH_TIER[t].split(' ');
+const tierDone = t => { const g = achGot(); return tierIds(t).every(id => g[id]); };
+let ACHR = { ids: null, t: 0, busy: false, err: '', claiming: false };
+function achrPull(force) {
+  if (!AUTH.user || ACHR.busy || (!force && Date.now() - ACHR.t < 120000)) return; ACHR.busy = true;
+  rpc('ach_claimed').then(r => { ACHR = Object.assign(ACHR, { ids: Array.isArray(r) ? r : [], t: Date.now(), busy: false, err: '' }); render(); })
+    .catch(e => { ACHR = Object.assign(ACHR, { t: Date.now(), busy: false, err: /ach_claimed|404|PGRST|function/.test(String(e && e.message)) ? 'nosql' : 'net' }); render(); });
+}
+function achClaim(ids) {
+  if (!AUTH.user || ACHR.claiming || !ids.length) return; ACHR.claiming = true; render();
+  rpc('ach_claim', { p_ids: ids }).then(r => {
+    ACHR.claiming = false; if (r && r.wallet != null) AUTH.wallet = r.wallet; if (r && Array.isArray(r.claimed)) ACHR.ids = r.claimed;
+    const got = (r && r.medals) || 0, bn = (r && r.bonus) || 0;
+    if (got + bn > 0) { toast(bn ? L(`메달 +${got + bn} (등급 완성 보너스 ${bn} 포함)`, `+${got + bn} medals (incl. ${bn} tier bonus)`) : L(`메달 +${got} 받았습니다`, `Received ${got} medals`)); for (let k = 0; k < Math.min(8, Math.ceil((got + bn) / 40)); k++) setTimeout(() => SND.play('coin'), k * 90); }
+    render();
+  }).catch(() => { ACHR.claiming = false; toast(L('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); render(); });
+}
 const achGot = () => parse(ls('ssd-ach')) || {};
 const achC = () => Object.assign({ wins: 0, perf: 0, pvpw: 0, hardw: 0, runs: 0, emo: 0, cw: [] }, parse(ls('ssd-achc')) || {});
 const achGoal = a => (typeof a.g === 'function' ? a.g() : a.g || 1);
-const achTitle = id => { const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
-const myTitle = () => { const id = ls('ssd-title'); return id && achGot()[id] ? achTitle(id) : ''; };
+const achTitle = id => { if (/^tier:/.test(id)) { const P = ACH_POOL[id.slice(5)]; return P ? L(...P.t) : ''; } const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
+const titleOk = id => !!id && (/^tier:/.test(id) ? ACH_POOL[id.slice(5)] && tierDone(id.slice(5)) : !!achGot()[id]);
+const myTitle = () => { const id = ls('ssd-title'); return titleOk(id) ? achTitle(id) : ''; };
+const myTitleTier = () => { const id = ls('ssd-title'); return titleOk(id) ? achTier(id) : ''; };
 let achQ = [], achT = 0;
 function achGive(id) {
   const o = achGot(); if (o[id] || !ACH.some(a => a.id === id)) return false;
@@ -7445,7 +7523,7 @@ function achScan(c) { c = c || achC(); ACH.forEach(a => { if (a.v) { try { if (a
 function achShowNext() {
   const id = achQ.shift(); if (!id) { achT = 0; return; } const a = ACH.find(x => x.id === id);
   document.querySelectorAll('.achx').forEach(e => e.remove());
-  document.body.insertAdjacentHTML('beforeend', `<div class="achx" role="status"><i class="achx-ic" aria-hidden="true">${lbIc('rec')}</i><span><small>${L('업적 달성', 'Achievement unlocked')}</small><b>${L(...a.n)}</b><em>${L('칭호', 'Title')} 「${L(...a.t)}」</em></span></div>`);
+  document.body.insertAdjacentHTML('beforeend', `<div class="achx" role="status"><i class="achx-ic" aria-hidden="true">${lbIc('rec')}</i><span><small>${L('업적 달성', 'Achievement unlocked')}</small><b>${L(...a.n)}</b><em>${L('칭호', 'Title')} 「${L(...a.t)}」 · ${L(...ACH_POOL[achTier(id)].n)} ${MDL(ACH_POOL[achTier(id)].m)}</em></span></div>`);
   SND.play('relicGood'); achT = setTimeout(() => { document.querySelectorAll('.achx').forEach(e => e.classList.add('out')); setTimeout(achShowNext, 350); }, 3000);
 }
 /* 결투가 끝날 때(튜토리얼 제외). 모험의 결투, 봇 연습, 대전 모두 */
@@ -7479,17 +7557,29 @@ function achEmote() { const c = achC(); c.emo++; ls('ssd-achc', JSON.stringify(c
 let achTab = 'all';
 function achBody() {
   achScan();   /* 수집 업적은 화면을 열 때도 확인한다 */
-  const got = achGot(), c = achC(), n = ACH.filter(a => got[a.id]).length, tid = ls('ssd-title'), cur = tid && got[tid] ? tid : '';
+  achrPull(); const got = achGot(), c = achC(), n = ACH.filter(a => got[a.id]).length, tid = ls('ssd-title'), cur = titleOk(tid) ? tid : '', cl = ACHR.ids, canClaim = AUTH.user && cl && !ACHR.err;
+  const ready = canClaim ? ACH.filter(a => got[a.id] && !cl.includes(a.id)).map(a => a.id) : [];
   const card = a => { const ok = !!got[a.id], g = achGoal(a); let v = 0; try { v = a.v ? Math.min(g, a.v(c)) : ok ? 1 : 0; } catch (e) { v = 0; }
-    return `<div class="ach-c${ok ? ' ok' : ''}${cur === a.id ? ' on' : ''}"><i class="ach-ic" aria-hidden="true">${lbIc('rec')}</i><div class="ach-tx"><b>${L(...a.n)}</b><span>${L(...a.d)}</span>
+    const t = achTier(a.id), P = ACH_POOL[t], rw = !ok ? `<span class="ach-rw">${MDL(P.m)}</span>` : canClaim && !cl.includes(a.id) ? `<button type="button" class="btn red sm" data-a="achget" data-k="${a.id}"${ACHR.claiming ? ' disabled' : ''}>${MDL(P.m)} ${L('받기', 'Claim')}</button>` : canClaim ? `<span class="ach-rw got">${MDL(P.m)} ✓</span>` : `<span class="ach-rw">${MDL(P.m)}</span>`;
+    return `<div class="ach-c t-${t}${ok ? ' ok' : ''}${cur === a.id ? ' on' : ''}"><em class="ach-tr">${L(...P.n)}</em><i class="ach-ic" aria-hidden="true">${lbIc('rec')}</i><div class="ach-tx"><b>${L(...a.n)}</b><span>${L(...a.d)}</span>
       ${!ok && g > 1 ? `<span class="ach-bar" role="img" aria-label="${v}/${g}"><i style="width:${v / g * 100}%"></i></span><small>${v} / ${g}</small>` : ''}</div>
-      <div class="ach-ti"><em>「${L(...a.t)}」</em>${ok ? (cur === a.id ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${a.id}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="ach-lk">${L('잠김', 'Locked')}</span>`}</div></div>`; };
+      <div class="ach-ti"><em>「${L(...a.t)}」</em>${rw}${ok ? (cur === a.id ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${a.id}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="ach-lk">${L('잠김', 'Locked')}</span>`}</div></div>`; };
   const list = ACH.filter(a => achTab === 'all' || a.c === achTab);
   return `<div class="ach"><div class="ach-top"><div class="ach-sum"><span class="cap">${L('달성', 'Unlocked')}</span><b>${n}<i>/ ${ACH.length}</i></b><span class="pf-bar"><i style="width:${n / ACH.length * 100}%"></i></span></div>
       <div class="ach-now"><span class="cap">${L('지금 단 칭호', 'Current title')}</span><b>${cur ? `「${achTitle(cur)}」` : L('없음', 'None')}</b><small>${L('칭호는 프로필, 메뉴, 결투 시작 화면에 이름과 함께 보이고 대전 상대에게도 보입니다.', 'Your title shows with your name on your profile, the menu and the duel intro, and to PvP opponents.')}</small></div></div>
+    ${achPools(got, cl, cur)}
+    ${!AUTH.user ? `<p class="cap ach-note">${L('로그인하면 업적 보상 메달을 받을 수 있습니다.', 'Log in to claim achievement medals.')}</p>` : ACHR.err === 'nosql' ? `<p class="cap ach-note">${L('업적 보상 서버가 아직 준비되지 않았습니다(관리자: supabase/achievements.sql 실행).', 'Achievement rewards are not set up yet (run supabase/achievements.sql).')}</p>` : ready.length ? `<div class="ach-claim"><p>${L(`받지 않은 업적 보상 <b>${ready.length}</b>개`, `<b>${ready.length}</b> rewards to claim`)} · ${MDL(ready.reduce((s, id) => s + ACH_POOL[achTier(id)].m, 0))}</p><button type="button" class="btn red sm" data-a="achget" data-k="${ready.join(',')}"${ACHR.claiming ? ' disabled' : ''}>${L('모두 받기', 'Claim all')}</button></div>` : ''}
     <nav class="cx-tabs ach-tabs">${[['all', '전체', 'All'], ...ACH_CAT].map(([k, a, b]) => `<button type="button" class="cx-tb${achTab === k ? ' on' : ''}" data-a="achtab" data-t="${k}" aria-pressed="${achTab === k}"><b>${L(a, b)}</b><em>${ACH.filter(x => (k === 'all' || x.c === k) && got[x.id]).length}/${ACH.filter(x => k === 'all' || x.c === k).length}</em></button>`).join('')}</nav>
     <div class="ach-list" data-keep="achl">${list.map(card).join('')}</div></div>`;
 }
+/* 등급별 보상풀: 등급마다 업적 메달, 완성 보너스, 전용 칭호 */
+function achPools(got, cl, cur) {
+  return `<div class="ach-pools">${Object.keys(ACH_POOL).map(t => { const P = ACH_POOL[t], ids = tierIds(t), n = ids.filter(id => got[id]).length, done = n === ids.length, tid = 'tier:' + t, bonusGot = cl && cl.includes(tid);
+    return `<div class="ach-pl t-${t}${done ? ' done' : ''}"><b class="ach-pn">${L(...P.n)}</b><span class="ach-pc">${n} / ${ids.length}</span>
+      <ul><li>${L('업적마다', 'Each')} ${MDL(P.m)}</li><li>${L('칭호 색', 'Title color')} <em class="ttl t-${t}">「${L('칭호', 'Title')}」</em></li><li>${L('모두 달성', 'Complete')} ${MDL(P.bonus)}${bonusGot ? ' ✓' : ''}</li><li>${L('전용 칭호', 'Title')} 「${L(...P.t)}」</li></ul>
+      ${done ? (cur === tid ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${tid}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="pf-bar"><i style="width:${n / ids.length * 100}%"></i></span>`}</div>`; }).join('')}</div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="achget"]'); if (!b || b.disabled) return; e.stopPropagation(); SND.unlock(); SND.play('tap'); achClaim(b.dataset.k.split(',').filter(Boolean)); });
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="achtitle"],[data-a="achtab"]'); if (!b) return; e.stopPropagation(); SND.unlock();
   if (b.dataset.a === 'achtab') achTab = b.dataset.t; else { ls('ssd-title', b.dataset.k || ''); SND.play(b.dataset.k ? 'relicGood' : 'tap'); } render(); });
 /* ===== 주간 도전 모험 =====
@@ -7574,21 +7664,23 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
 /* ===== 메일함: 서버가 보내는 개발자 선물, 이벤트 보상, 주간 도전 1~3등 보상(supabase/mail.sql) ===== */
 let MAIL = { list: [], t: 0, busy: false, err: '' };
 const mailNew = () => MAIL.list.filter(m => !m.claimed).length;
+/* 메일함 창이 열려 있으면 목록 스크롤을 지키며 다시 그린다 */
+function mlOv() { if (ovKind !== 'mail' || infoEl.hidden) return; const sc = infoEl.querySelector('.ml-list'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.ml-list'); if (n) n.scrollTop = y; }
 function mailPull(force) {
   if (!AUTH.user || MAIL.busy || (!force && Date.now() - MAIL.t < 180000)) return;
   MAIL.busy = true;
-  rpc('mail_list').then(r => { MAIL = { list: Array.isArray(r) ? r : [], t: Date.now(), busy: false, err: '' }; render(); })
-    .catch(e => { MAIL = { list: MAIL.list, t: Date.now(), busy: false, err: /mail_list|404|PGRST/.test(String(e && e.message)) ? 'nosql' : 'net' }; render(); });
+  rpc('mail_list').then(r => { MAIL = { list: Array.isArray(r) ? r : [], t: Date.now(), busy: false, err: '' }; mlOv(); render(); })
+    .catch(e => { MAIL = { list: MAIL.list, t: Date.now(), busy: false, err: /mail_list|404|PGRST/.test(String(e && e.message)) ? 'nosql' : 'net' }; mlOv(); render(); });
 }
 function mailClaim(id) {
-  if (!AUTH.user || MAIL.claiming) return; MAIL.claiming = true; render();
+  if (!AUTH.user || MAIL.claiming) return; MAIL.claiming = true; mlOv(); render();
   rpc('mail_claim', { p_id: id == null ? null : +id }).then(r => {
     MAIL.claiming = false; const got = (r && r.medals) || 0;
     if (r && r.wallet != null) AUTH.wallet = r.wallet;
     if (got > 0) { toast(mE(`메달 +${got} 받았습니다`, `Received ${got} medals`)); for (let k = 0; k < Math.min(8, Math.ceil(got / 50)); k++) setTimeout(() => SND.play('coin'), k * 90); }
     else if (r && r.n) { toast(mE('받았습니다', 'Received')); SND.play('relicGood'); }
     mailPull(true);
-  }).catch(() => { MAIL.claiming = false; toast(mE('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); render(); });
+  }).catch(() => { MAIL.claiming = false; toast(mE('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); mlOv(); render(); });
 }
 const MAIL_IC = { weekly: '🏆', event: '🎉', gift: '🎁' };
 /* 주간 보상 메일은 서버가 한국어로 적어 보내므로 영어 화면에서는 여기서 옮긴다 */
@@ -7612,9 +7704,9 @@ function mailBody() {
       <span><button type="button" class="btn ghost sm" data-a="mlre">${mE('새로 고침', 'Refresh')}</button>${n > 1 ? `<button type="button" class="btn red sm" data-a="mlget" data-k=""${MAIL.claiming ? ' disabled' : ''}>${mE('모두 받기', 'Claim all')}</button>` : ''}</span></div>
     ${body}<p class="cap ml-note">${mE('받은 메일은 7일 동안 목록에 남습니다. 기한이 지난 메일은 받을 수 없습니다.', 'Claimed mail stays for 7 days. Expired mail can no longer be claimed.')}</p></div>`;
 }
-const mailBtn = cls => `<button type="button" class="${cls} mlb" data-a="mtab" data-m="mail" title="${mE('메일함', 'Mailbox')}" aria-label="${mE('메일함', 'Mailbox')}${mailNew() ? ` (${mailNew()})` : ''}">${lbIc('mail')}${mailNew() ? `<em class="ml-dot">${mailNew()}</em>` : ''}</button>`;
+const mailBtn = cls => `<button type="button" class="${cls} mlb" data-a="ov" data-o="mail" title="${mE('메일함', 'Mailbox')}" aria-label="${mE('메일함', 'Mailbox')}${mailNew() ? ` (${mailNew()})` : ''}">${lbIc('mail')}${mailNew() ? `<em class="ml-dot">${mailNew()}</em>` : ''}</button>`;
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="mlget"],[data-a="mlre"]'); if (!b) return; e.stopPropagation(); SND.unlock(); SND.play('tap');
-  if (b.dataset.a === 'mlre') { mailPull(true); return render(); }
+  if (b.dataset.a === 'mlre') { mailPull(true); mlOv(); return render(); }
   mailClaim(b.dataset.k === '' ? null : b.dataset.k); });
 /* 메인 홈의 주간 랭킹: 이번 주 1~3등, 내 순위, 보상 안내 */
 function wkHome(pc) {
@@ -7654,7 +7746,8 @@ function shopBody() {
   const own = ownedSkins(), m = medals(), f = shopTab;
   const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    return `<div class="sh-it c-${c}${owned ? ' own' : ''}"><div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+    const sp = x.ac ? ' sp' : '';   /* 에픽 등급(800메달) */
+    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
       <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
       ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
   return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p>
@@ -7812,7 +7905,7 @@ function pcProfBody() {
   return `<div class="pp">
     <aside class="pp-hero c-${rep}">
       <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
       <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
       ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
       ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
@@ -7908,7 +8001,7 @@ function pcHomeHTML(on) {
           <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
       ${wkHome(true)}
       ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>`
-        : `<section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3) % RULES.length])}</p></section>`}
+        : `<section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3 + HTIP.n) % RULES.length])}</p><span class="tip-gg" aria-hidden="true"><i style="animation-delay:-${Date.now() - HTIP.t}ms"></i></span></section>`}
     </aside>
     <section class="pc-play" aria-label="${mE('게임 모드', 'Game mode')}">
       <h3 class="pc-ph3">${mE('게임 모드', 'Game Mode')}</h3>
@@ -7958,6 +8051,7 @@ function ovHTML() {
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">모험 기록 초기화</button></div></div>
       <p class="cap">설정은 이 브라우저에 저장됩니다.${doc ? ' 언어는 첫 화면에서 바꿀 수 있습니다.' : ''}</p>${close}</section></div>`; }
+  if (ovKind === 'mail') return `<div class="info-in"><section class="detail ov-box ml-box"><h1>${mE('메일함', 'Mailbox')}</h1>${mailBody()}${close}</section></div>`;
   if (ovKind === 'shop') return `<div class="info-in"><section class="detail ov-box shop-box"><h1>${mE('스킨 상점', 'Skin Shop')}</h1>${shopBody()}${close}</section></div>`;
   if (ovKind === 'records') { const rec = stageRec(), n = Object.keys(rec).length;
     return `<div class="info-in"><section class="detail ov-box"><h1>기록</h1><p>모험 모드를 돌파한 직업 <b class="k k-d">${n}</b> / ${CLASS_IDS.length}. 숫자는 다섯 판에 걸린 가장 적은 턴 수입니다.</p>
