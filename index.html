@@ -4078,8 +4078,8 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .sh-it { position: relative; }
 .sh-fig { position: relative; align-self: stretch; height: 116px; margin: -10px -8px 0; overflow: hidden; contain: paint; background: radial-gradient(ellipse 48px 12px at 50% 92%, rgba(0, 0, 0, .14) 0 99%, transparent 100%); }
 .sh-fig > .px { position: absolute; left: calc(50% - 48px); bottom: 4px; width: 96px; height: 96px; } .sh-a { opacity: 0; }
-/* 특별 스킨: 스킨 색의 이중 테두리, 모서리 장식, 빛나는 창, 리본 */
-.sh-it.sp { border-color: var(--sk1); box-shadow: 3px 3px 0 var(--sk2), inset 0 0 0 2px #fff, inset 0 0 0 4px color-mix(in srgb, var(--sk1) 45%, #fff); background: linear-gradient(180deg, color-mix(in srgb, var(--sk1) 10%, #fff), #fff 60%); }
+/* 에픽 스킨: 보라색 이중 테두리, 모서리 장식, 빛나는 창, 리본 */
+.sh-it.sp { --sk1: #8a4fd8; --sk2: #5a2d9c; border-color: var(--sk1); box-shadow: 3px 3px 0 var(--sk2), inset 0 0 0 2px #fff, inset 0 0 0 4px color-mix(in srgb, var(--sk1) 45%, #fff); background: linear-gradient(180deg, color-mix(in srgb, var(--sk1) 10%, #fff), #fff 60%); }
 .sh-it.sp::before, .sh-it.sp::after { content: ""; position: absolute; z-index: 2; width: 10px; height: 10px; background: var(--sk1); box-shadow: 0 0 0 2px #fff; pointer-events: none; }
 .sh-it.sp::before { left: -6px; top: -6px; } .sh-it.sp::after { right: -6px; bottom: -6px; }
 .sh-it.sp .sh-fig { margin: -6px -4px 0; border-bottom: 3px solid var(--sk1); background: radial-gradient(ellipse 48px 12px at 50% 92%, rgba(0, 0, 0, .16) 0 99%, transparent 100%), repeating-linear-gradient(135deg, color-mix(in srgb, var(--sk1) 8%, transparent) 0 6px, transparent 6px 12px), linear-gradient(180deg, color-mix(in srgb, var(--sk1) 24%, #fff), #fff); }
@@ -7676,8 +7676,8 @@ function shopBody() {
   const own = ownedSkins(), m = medals(), f = shopTab;
   const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    const sp = x.ac ? ` sp" style="--sk1:${x.ac[0]};--sk2:${x.ac[1]}` : '';
-    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.ac ? `<em class="sh-sp">${mE('특별', 'Special')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+    const sp = x.ac ? ' sp' : '';   /* 에픽 등급(800메달) */
+    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
       <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
       ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
   return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p>
