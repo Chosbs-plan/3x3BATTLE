@@ -13554,60 +13554,80 @@ function stOverHTML(won) {
   function spots(n, rad, fn, tall) { const used = []; let made = 0; for (let t = 0; t < n * 40 && made < n; t++) { const x = ISL.x0 + mr() * (ISL.x1 - ISL.x0), z = ISL.z0 + mr() * (ISL.z1 - ISL.z0);
     if (tall && COLZ.some(function (zs, r) { return Math.abs(x - NX[r]) < 2.8 && zs.some(function (pz) { return z > pz && z < pz + 6.5; }); })) continue;
     if (!mFree(x, z, rad) || used.some(function (u) { return Math.hypot(u[0] - x, u[1] - z) < rad * 2 + 0.6; })) continue; used.push([x, z]); fn(x, z, made++); } }
-  /* 테마별 바탕: 들쭉날쭉한 섬. 칸과 길 자리는 평평하고, 그 밖(특히 뒤쪽과 양 끝)은 계단식 언덕이 된다.
-     둘레에는 물(사막은 모래 바다), 숲·설원은 가운데를 가로지르는 물길과 다리. 소품은 언덕 위(hspots)와 평지(spots)에 나눠 무리 짓는다 */
-  const GS = 1.5, GX0 = ISL.x0 - 2.25, GX1 = ISL.x1 + 2.25, GZ0 = ISL.z0 - 2.25, GZ1 = ISL.z1 + 1.5;
-  const WATER = { forest: [0.36, 0.6, 0.78], snow: [0.46, 0.64, 0.84], desert: [0.84, 0.66, 0.42], castle: [0.3, 0.42, 0.54] };
-  const ROAD = { forest: [0.8, 0.68, 0.48], snow: [0.7, 0.78, 0.9], desert: [0.76, 0.58, 0.38], castle: [0.6, 0.56, 0.56] };
-  const riverX = function (z) { return Math.sin(z * 0.45 + 1) * 0.7; };
+  /* 테마별 바탕: 판은 커다란 둥근 섬의 한가운데. 칸과 길 자리는 평평하고, 판 밖으로는 언덕과 산, 앞쪽은 계단식으로 낮아지며 섬 끝은 화면 밖 바다로 이어진다.
+     판 근처는 잘게(1.5), 먼 곳은 크게(3) 나눈다. 숲·설원은 섬을 가로지르는 물길과 다리. 판 안의 소품은 언덕 위(hspots)와 평지(spots)에 나눠 무리 짓는다 */
+  const GS = 1.5, GX0 = ISL.x0 - 2.25, GZ0 = ISL.z0 - 2.25, CS = 3, CX0 = GX0 - CS * 24, CZ0 = GZ0 - CS * 18, CNX = 64, CNZ = 34;
+  const FINE = { x0: ISL.x0 - 8.25, x1: ISL.x1 + 9, z0: ISL.z0 - 8.25, z1: ISL.z1 + 7.5 };
+  const WATER = { forest: [0.36, 0.6, 0.78], snow: [0.46, 0.64, 0.84], desert: [0.36, 0.62, 0.7], castle: [0.3, 0.46, 0.62] };
+  const riverX = function (z) { return Math.sin(z * 0.45 + 1) * 0.7 + (z < ISL.z0 ? (z - ISL.z0) * 0.25 : z > ISL.z1 ? Math.sin((z - ISL.z1) * 0.2) * 3 : 0); };
   const nz = function (x, z, s) { return (Math.sin(x * 0.37 + s) + Math.sin(z * 0.51 + s * 1.7) + Math.sin((x + z) * 0.23 + s * 0.6) + Math.sin((x - z) * 0.61 + s * 2.3)) / 4; };
   let mHgt = null, mGlow = null;
   /* 마을 자리(출발점 근처): 언덕을 깎아 평지로 둔다 */
   const VIL = { forest: [[SX + 1, 3.8]], snow: [[SX - 1.5, -7.2], [SX + 3.2, -8.6], [SX - 1, 6.6], [SX + 2.6, 4.2], [SX + 4.5, -4.6]], desert: [[SX - 1, -7.4], [SX + 3.4, -8.4]], castle: [] };
+  const inRect = function (x, z, m) { return x > ISL.x0 - m && x < ISL.x1 + m && z > ISL.z0 - m && z < ISL.z1 + m; };
   function terrain(th) {
-    const sd = { forest: 1.3, snow: 2.1, desert: 3.7, castle: 5.2 }[th], cells = {}, key = function (i, j) { return i + ',' + j; };
-    for (let i = 0; GX0 + i * GS < GX1; i++) for (let j = 0; GZ0 + j * GS < GZ1; j++) {
-      const x = GX0 + (i + 0.5) * GS, z = GZ0 + (j + 0.5) * GS;
-      const de = Math.min(x - (ISL.x0 - 0.8), ISL.x1 + 0.8 - x, z - (ISL.z0 - 0.8), (z > ISL.z1 - 3 ? 2 : 0) + ISL.z1 + 0.4 - z) + nz(x, z, sd) * 1.6;
-      if (de < 0) continue;
-      let h = 0;
-      if (th !== 'castle' && !mBusy(x, z, 0.2)) {
-        const back = Math.max(0, Math.min(1, (-z - 3) / 7)), side = Math.max(0, Math.min(1, Math.max(ISL.x0 + 7 - x, x - (ISL.x1 - 5)) / 4));
-        h = Math.max(0, nz(x * 1.3, z * 1.3, sd + 4) * 1.4 + back * 2.4 + side * 1.4 - 0.9);
-        if (mBusy(x, z, 1.4)) h = Math.min(h, 0.5);
-        if (VIL[th].some(function (q) { return Math.hypot(x - q[0], z - q[1]) < 2.8; })) h = 0;
-        h = Math.min(th === 'desert' ? 2 : 3.5, Math.floor(h / 0.5) * 0.5);
-      }
-      const river = (th === 'forest' || th === 'snow') && Math.abs(x - riverX(z)) < 0.76;
-      cells[key(i, j)] = { x: x, z: z, h: river ? -0.3 : h, river: river, de: de, br: river && mBusy(x, z, -0.55) };
+    const sd = { forest: 1.3, snow: 2.1, desert: 3.7, castle: 5.2 }[th], cells = [], fine = {}, key = function (i, j) { return i + ',' + j; }, wet = th === 'forest' || th === 'snow';
+    const cxm = (ISL.x0 + ISL.x1) / 2, top = { forest: 9, snow: 11, desert: 6, castle: 5 }[th];
+    const raw = function (x, z) {
+      const ox = Math.max(0, ISL.x0 - x, x - ISL.x1), ob = Math.max(0, ISL.z0 - z), of = Math.max(0, z - ISL.z1);
+      const back = Math.max(0, Math.min(1, (-z - 3) / 7)), side = Math.max(0, Math.min(1, Math.max(ISL.x0 + 7 - x, x - (ISL.x1 - 5)) / 4));
+      let h = nz(x * 1.3, z * 1.3, sd + 4) * 1.4 + back * 2.4 + side * 1.4 - 0.9;
+      const far = Math.min(1, (ox + ob) / 12);
+      h += ob * 0.32 + ox * 0.2 + (nz(x * 0.33, z * 0.33, sd + 8) * 3.2 + nz(x * 0.8, z * 0.8, sd + 2) * 1.2) * far - of * 0.1 + nz(x * 0.5, z * 0.5, sd + 3) * Math.min(1, of / 6) * 1.2;
+      return th === 'castle' && !inRect(x, z, 0.5) ? Math.min(h, 1 + ox * 0.15 + ob * 0.18) : h;
+    };
+    const add = function (x, z, s, fi, fj) {
+      const e = Math.pow((x - cxm) / 96, 2) + Math.pow((z + 6) / (z > 0 ? 34 : 62), 2) + nz(x * 0.2, z * 0.2, sd + 6) * 0.08;
+      if (e > 1) return;
+      const inside = inRect(x, z, 0); let h;
+      if (inside) {
+        h = 0;
+        if (th !== 'castle' && !mBusy(x, z, 0.2)) { h = Math.max(0, raw(x, z)); if (mBusy(x, z, 1.4)) h = Math.min(h, 0.5);
+          if (VIL[th].some(function (q) { return Math.hypot(x - q[0], z - q[1]) < 2.8; })) h = 0; h = Math.min(th === 'desert' ? 2 : 3.5, Math.floor(h / 0.5) * 0.5); }
+      } else { const q = s > GS ? (th === 'desert' ? 1.5 : 1) : 0.5; h = Math.max(-2.5, Math.min(top, Math.floor(raw(x, z) / q) * q)); }
+      const beach = e > 0.9; if (beach) h = Math.min(h, -2.5 + (1 - e) * 20);   /* 바닷가는 낮아진다 */
+      const river = wet && z > ISL.z0 - 15 && e < 0.94 && Math.abs(x - riverX(z)) < (s > GS ? 1.5 : 0.76);
+      const c = { x: x, z: z, s: s, h: river ? Math.min(0, h) - 0.3 : h, river: river, beach: beach, inr: inRect(x, z, -1), out: !inside, br: river && inside && mBusy(x, z, -0.55), chk: ((fi || 0) + (fj || 0)) % 2 };
+      if (river && z < ISL.z0 - 14) c.pond = 1;
+      cells.push(c); if (fi !== undefined) fine[key(fi, fj)] = c;
+    };
+    for (let i = 0; i < CNX; i++) for (let j = 0; j < CNZ; j++) {
+      const x = CX0 + i * CS, z = CZ0 + j * CS;
+      if (x + CS > FINE.x0 && x < FINE.x1 && z + CS > FINE.z0 && z < FINE.z1) { for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) { const fi = Math.round((x + a * GS - GX0) / GS), fj = Math.round((z + b * GS - GZ0) / GS); add(GX0 + (fi + 0.5) * GS, GZ0 + (fj + 0.5) * GS, GS, fi, fj); } }
+      else add(x + CS / 2, z + CS / 2, CS);
     }
-    return { cells: cells, at: function (x, z) { return cells[key(Math.floor((x - GX0) / GS), Math.floor((z - GZ0) / GS))] || null; } };
+    return { cells: cells, at: function (x, z) { return fine[key(Math.floor((x - GX0) / GS), Math.floor((z - GZ0) / GS))] || null; } };
   }
   function mapEnv(th) {
     if (MENV[th]) return MENV[th];
     const P = MT[th], g = new T.Group(); mseed = { forest: 11, snow: 23, desert: 37, castle: 53 }[th];
     B = newB(); const cxm = (ISL.x0 + ISL.x1) / 2, czm = (ISL.z0 + ISL.z1) / 2, E = P.edge, E2 = [E[0] * 0.78, E[1] * 0.78, E[2] * 0.78], G0 = P.gnd.map(function (v) { return v / 255; }), W0 = WATER[th];
-    const TT = terrain(th); mHgt = function (x, z) { const c = TT.at(x, z); return c ? Math.max(0, c.h) : 0; }; mGlow = [];
-    /* 땅: 칸마다 흙 기둥 + 겉흙. 높은 언덕은 지층 띠, 성채는 바둑판 돌바닥 */
-    Object.keys(TT.cells).forEach(function (k, n) {
-      const c = TT.cells[k], v = (rnd() - 0.5) * P.vary / 255, ij = k.split(',').map(Number), chk = th === 'castle' && (ij[0] + ij[1]) % 2 ? 0.93 : 1;
-      const tint = [(G0[0] + v) * chk, (G0[1] + v) * chk, (G0[2] + v) * chk], bot = -1.2 - Math.min(1.4, c.de * 0.18);
+    const TT = terrain(th); mHgt = function (x, z) { const c = TT.at(x, z); return c && !c.out ? Math.max(0, c.h) : 0; }; mGlow = [];
+    /* 바깥 땅의 색: 성채 밖은 풀밭, 높은 곳은 바위, 더 높으면 눈 */
+    const OG = th === 'castle' ? [0.5, 0.66, 0.38] : G0, ROCK = { forest: [0.56, 0.54, 0.5], snow: [0.62, 0.68, 0.8], desert: [0.8, 0.5, 0.34], castle: [0.58, 0.56, 0.54] }[th], SNOWH = { forest: 7, snow: 99, desert: 99, castle: 4.5 }[th];
+    const SIDE = { forest: E, snow: E, desert: [0.72, 0.44, 0.3], castle: [0.42, 0.34, 0.26] }[th], SAND = th === 'snow' ? [0.86, 0.9, 0.96] : [0.92, 0.84, 0.64];
+    /* 땅: 칸마다 흙 기둥 + 겉흙. 높은 곳은 지층 띠, 성채 안은 바둑판 돌바닥 */
+    TT.cells.forEach(function (c) {
+      const v = (rnd() - 0.5) * P.vary / 255, s = c.s, bot = -4.2, chk = th === 'castle' && !c.out && c.chk ? 0.93 : 1;
+      let base = c.out ? OG : G0; if (c.out && c.h >= SNOWH) base = [0.97, 0.98, 1]; else if (c.out && c.h >= 4 && th !== 'snow') base = ROCK; else if (c.out && c.beach) base = SAND;
+      if (th === 'castle' && c.out && c.h <= 1 && c.h > -2 && nz(c.x * 0.5, c.z * 0.5, 9) > 0.25) base = [[0.86, 0.76, 0.4], [0.62, 0.72, 0.34], [0.7, 0.56, 0.36]][Math.floor((c.x + 200) / 6) % 3];   /* 밭 */
+      const tint = [(base[0] + v) * chk, (base[1] + v) * chk, (base[2] + v) * chk];
       if (c.river) {
-        bx('flat', GS, c.h - bot, GS, c.x, bot, c.z, E2); bx('flat', GS, 0.06, GS, c.x, c.h, c.z, th === 'snow' ? [0.62, 0.8, 0.96] : W0);
-        if (th === 'snow' && (ij[1] % 3 === 0)) bx('flat', 0.9, 0.02, 0.06, c.x, c.h + 0.06, c.z, [1, 1, 1], 0.6);
-        if (c.br) { for (let q = -2; q <= 2; q++) bx('flat', GS + 0.8, 0.12, 0.26, c.x, -0.02, c.z + q * 0.3, q % 2 ? cWOOD : cWOOD2); [-1, 1].forEach(function (s) { bx('flat', 0.14, 0.7, 0.14, c.x + s * (GS / 2 + 0.3), -0.02, c.z - 0.6, cWOOD); bx('flat', 0.14, 0.7, 0.14, c.x + s * (GS / 2 + 0.3), -0.02, c.z + 0.6, cWOOD); bx('flat', 0.1, 0.1, 1.4, c.x + s * (GS / 2 + 0.3), 0.6, c.z, cWOOD2); }); }
+        bx('flat', s, c.h - bot, s, c.x, bot, c.z, E2); bx('flat', s, 0.06, s, c.x, c.h, c.z, th === 'snow' ? [0.62, 0.8, 0.96] : W0);
+        if (th === 'snow' && Math.floor(c.z / GS) % 3 === 0) bx('flat', s * 0.6, 0.02, 0.06, c.x, c.h + 0.06, c.z, [1, 1, 1], 0.6);
+        if (c.br) { for (let q = -2; q <= 2; q++) bx('flat', GS + 0.8, 0.12, 0.26, c.x, -0.02, c.z + q * 0.3, q % 2 ? cWOOD : cWOOD2); [-1, 1].forEach(function (k) { bx('flat', 0.14, 0.7, 0.14, c.x + k * (GS / 2 + 0.3), -0.02, c.z - 0.6, cWOOD); bx('flat', 0.14, 0.7, 0.14, c.x + k * (GS / 2 + 0.3), -0.02, c.z + 0.6, cWOOD); bx('flat', 0.1, 0.1, 1.4, c.x + k * (GS / 2 + 0.3), 0.6, c.z, cWOOD2); }); }
         return;
       }
-      bx('flat', GS, c.h - 0.3 - bot, GS, c.x, bot, c.z, c.h > 0 ? E : E2);
-      bx('flat', GS, 0.3, GS, c.x, c.h - 0.3, c.z, tint);
-      if (c.h >= 1) bx('flat', GS + 0.02, 0.1, GS + 0.02, c.x, c.h - 0.8, c.z, E2);
-      if (c.de < 1.1 && th !== 'desert') bx('flat', GS + 0.7, 0.04, GS + 0.7, c.x, -0.56, c.z, th === 'castle' ? [0.42, 0.54, 0.64] : [0.94, 0.97, 1]);   /* 물가 거품 */
+      const sideC = c.out ? (c.h >= 4 && th !== 'desert' ? [ROCK[0] * 0.85, ROCK[1] * 0.85, ROCK[2] * 0.85] : SIDE) : (c.h > 0 ? E : E2);
+      bx('flat', s, c.h - 0.3 - bot, s, c.x, bot, c.z, sideC);
+      bx('flat', s, 0.3, s, c.x, c.h - 0.3, c.z, tint);
+      for (let y = c.h - 0.8; y > Math.max(bot, -2.5); y -= th === 'desert' ? 0.75 : 1.5) bx('flat', s + 0.02, 0.1, s + 0.02, c.x, y, c.z, th === 'desert' && Math.round(y / 0.75) % 2 ? [0.86, 0.6, 0.4] : E2);
     });
-    /* 둘레의 물(사막은 모래 바다) */
-    const sea = new T.Mesh(new T.PlaneGeometry(320, 200), patch(new T.MeshLambertMaterial({ color: new T.Color(W0[0], W0[1], W0[2]) }), false)); sea.rotation.x = -PI / 2; sea.position.set(cxm, -0.6, czm); g.add(sea); g.userData.sea = sea;
+    /* 섬 끝 너머의 바다 */
+    const sea = new T.Mesh(new T.PlaneGeometry(600, 400), patch(new T.MeshLambertMaterial({ color: new T.Color(W0[0], W0[1], W0[2]) }), false)); sea.rotation.x = -PI / 2; sea.position.set(cxm, -2.9, czm); g.add(sea); g.userData.sea = sea;
     const rock = function (x, z, s, t, y) { ico('flat', s, x, (y || 0) + s * 0.45, z, t, 0.7); if (s > 0.5) ico('flat', s * 0.55, x + s * 0.8, (y || 0) + s * 0.25, z + s * 0.3, t, 0.7); };
     /* 언덕 위 자리: h 이상인 칸에서 고른다. 키 큰 것은 칸 바로 앞(카메라 쪽)에 세우지 않는다 */
-    const hspots = function (n, minH, rad, fn, tall) { const cs = Object.keys(TT.cells).map(function (k) { return TT.cells[k]; }).filter(function (c) { return !c.river && c.h >= minH && c.de > 1.2; }), used = []; let made = 0;
+    const hspots = function (n, minH, rad, fn, tall) { const cs = Object.keys(TT.cells).map(function (k) { return TT.cells[k]; }).filter(function (c) { return !c.river && !c.out && c.h >= minH && c.inr; }), used = []; let made = 0;
       for (let t = 0; t < n * 30 && made < n && cs.length; t++) { const c = cs[Math.floor(mr() * cs.length)], x = c.x + (mr() - 0.5) * GS * 0.5, z = c.z + (mr() - 0.5) * GS * 0.5;
         if (tall && COLZ.some(function (zs, r) { return Math.abs(x - NX[r]) < 3 && zs.some(function (pz) { return z > pz && z < pz + 7; }); })) continue;
         if (used.some(function (u) { return Math.hypot(u[0] - x, u[1] - z) < rad * 2; })) continue; used.push([x, z]); fn(x, c.h, z, made++); } };
@@ -13662,33 +13682,45 @@ function stOverHTML(won) {
       spots(6, 0.5, function (x, z, i) { if (i % 2) { cyl('flat', 0.36, 0.32, 0.8, 8, x, 0, z, cWOOD2); cyl('flat', 0.38, 0.38, 0.08, 8, x, 0.25, z, cINK); cyl('flat', 0.38, 0.38, 0.08, 8, x, 0.55, z, cINK); } else { bx('flat', 0.8, 0.8, 0.8, x, 0, z, cWOOD2, 0.3); bx('flat', 0.5, 0.5, 0.5, x + 0.2, 0.8, z, cWOOD, 0.8); } });
       spots(1, 1.9, function (x, z) { cyl('stone', 1.7, 1.8, 0.5, 10, x, 0, z, TRIM); cyl('flat', 1.4, 1.4, 0.06, 10, x, 0.48, z, [0.46, 0.68, 0.86]); cyl('stone', 0.24, 0.3, 1.4, 6, x, 0.4, z, STONE); cyl('stone', 0.6, 0.3, 0.2, 8, x, 1.8, z, TRIM); ico('flat', 0.2, x, 2.16, z, [0.6, 0.8, 0.95]); });
     }
-    /* 섬 밖 풍경: 뒤로는 먼 산과 섬, 앞으로는 작은 바위섬과 물결. 넓은 화면의 위아래 빈 곳을 채운다 */
-    { const far = function (x, z, s, i) {
-        if (th === 'forest') { ico('flat', s * 3.2, x, -1.4, z, i % 2 ? [0.36, 0.58, 0.32] : [0.3, 0.5, 0.3], 0.6); for (let k = 0; k < 3; k++) conifer(x + (k - 1) * s * 1.6, s * 1.2, z + (k % 2) * s, 0.16 * s, [0.2, 0.42, 0.26]); }
-        else if (th === 'snow') { cone('flat', s * 2.4, s * 5, 5, x, -0.6, z, [0.72, 0.82, 0.94]); cone('flat', s * 1.2, s * 2, 5, x, s * 3, z, [1, 1, 1]); cone('flat', s * 1.6, s * 3, 5, x + s * 2.2, -0.6, z + s, [0.8, 0.88, 0.98]); }
-        else if (th === 'desert') { if (i % 3 === 1) { for (let k = 0; k < 4; k++) bx('stone', s * (4 - k) * 1.1, s * 0.8, s * (4 - k) * 1.1, x, -0.6 + k * s * 0.8, z, [0.94, 0.8, 0.52]); } else { bx('flat', s * 3.4, s * 1.8, s * 2.4, x, -0.6, z, [0.82, 0.5, 0.34]); bx('flat', s * 3.6, s * 0.3, s * 2.6, x, s * 1.2 - 0.6, z, [0.72, 0.42, 0.3]); bx('flat', s * 2, s * 0.9, s * 1.6, x + s * 0.4, s * 1.2 - 0.3, z, [0.86, 0.56, 0.38]); } }
-        else { cone('flat', s * 2.6, s * 3.6, 6, x, -0.6, z, [0.5, 0.52, 0.56]); cone('flat', s * 1, s * 1.2, 6, x, s * 2.4 - 0.6, z, [0.94, 0.95, 1]); if (i % 2) { bx('stone', s * 1.4, s * 1.8, s * 1.4, x + s * 2.4, -0.6, z + s, STONE); cone('flat', s * 1.1, s * 1.2, 4, x + s * 2.4, s * 1.8 - 0.6, z + s, [0.44, 0.33, 0.35]); glowAt(x + s * 2.4, s * 1.1, z + s * 1.72, 0.3, 0xffd27a); } } };
-      for (let i = 0, x = ISL.x0 - 14; x < ISL.x1 + 16; i++, x += 9 + mr() * 6) far(x, ISL.z0 - (th === 'desert' ? 8 : 16) - mr() * 12, 1.1 + mr() * 0.9, i);
-      const islet = function (x, z, r, i) {
-        if (th === 'desert') { ico('flat', r * 1.4, x, -1.2, z, [0.96, 0.82, 0.56], 0.3); const c = [0.36, 0.6, 0.36]; if (i % 2) { cyl('flat', 0.22, 0.24, 1.3, 6, x, -0.2, z, c); bx('flat', 0.4, 0.14, 0.14, x + 0.3, 0.4, z, c); bx('flat', 0.14, 0.4, 0.14, x + 0.46, 0.4, z, c); } else rock(x + 0.4, z, 0.5, [0.78, 0.5, 0.36], -0.3); return; }
-        if (th === 'snow') { cyl('flat', r, r * 1.05, 0.5, 7, x, -0.75, z, [0.94, 0.97, 1]); cyl('flat', r * 1.05, r * 0.9, 0.4, 7, x, -1.15, z, [0.66, 0.84, 0.96]); if (i % 2) cone('flat', 0.4, 1.8, 4, x + 0.3, -0.3, z, [0.66, 0.88, 1]); return; }
-        const G = th === 'castle' ? [0.5, 0.66, 0.4] : [G0[0], G0[1], G0[2]];
-        cyl('flat', r, r * 1.08, 0.4, 8, x, -0.65, z, G); cyl('flat', r * 1.08, r * 0.8, 0.9, 8, x, -1.55, z, E);
-        if (i % 3 === 0) { cyl('flat', 0.18, 0.24, 1.2, 6, x, -0.25, z, cWOOD); ico('flat', 0.9, x, 1.2, z, [0.36, 0.62, 0.3], 0.9); }
-        else if (i % 3 === 1) rock(x, z, r * 0.45, [0.62, 0.64, 0.66], -0.3);
-        else { cone('flat', 0.5, 0.6, 6, x - 0.3, -0.25, z, [0.3, 0.56, 0.3]); bx('flat', 0.12, 0.2, 0.12, x + 0.3, -0.25, z + 0.2, [0.95, 0.5, 0.6]); } };
-      for (let i = 0, x = ISL.x0 - 6; x < ISL.x1 + 8; i++, x += 10 + mr() * 8) islet(x, ISL.z1 + 4 + mr() * 4, 0.8 + mr() * 0.6, i);
-      for (let i = 0; i < 4; i++) islet(i < 2 ? ISL.x0 - 4 - mr() * 3 : ISL.x1 + 4 + mr() * 3, ISL.z0 + 4 + (i % 2) * 12 + mr() * 3, 1 + mr() * 0.8, i + 1);
-      if (th === 'desert') for (let i = 0; i < 26; i++) { const x = ISL.x0 - 14 + mr() * (ISL.x1 - ISL.x0 + 28), z = mr() < 0.5 ? ISL.z1 + 2 + mr() * 10 : ISL.z0 - 3 - mr() * 14; if (x > ISL.x0 - 2 && x < ISL.x1 + 2 && z > ISL.z0 - 2 && z < ISL.z1 + 2) continue; ico('flat', 1.4 + mr() * 1.8, x, -1.3, z, mr() < 0.5 ? [0.96, 0.82, 0.56] : [0.92, 0.76, 0.5], 0.28); if (i % 4 === 0) rock(x + 1.4, z, 0.5, [0.78, 0.5, 0.36], -0.4); }   /* 모래 언덕 */
-      /* 배: 숲·성채는 돛단배, 설원은 얼음 조각, 사막은 낙타 행렬 */
-      const boat = function (x, z, f) { if (th === 'snow') { cyl('flat', 1.1, 1.1, 0.2, 6, x, -0.62, z, [0.92, 0.97, 1]); cyl('flat', 0.6, 0.6, 0.2, 5, x + 2, -0.62, z + 0.6, [0.86, 0.94, 1]); return; }
-        if (th === 'desert') { for (let k = 0; k < 3; k++) { const cx = x + k * 1.6; bx('flat', 1, 0.5, 0.4, cx, 0.3, z, [0.78, 0.56, 0.34]); bx('flat', 0.3, 0.4, 0.3, cx, 0.8, z, [0.72, 0.5, 0.3]); bx('flat', 0.14, 0.7, 0.14, cx + 0.55, 0.5, z, [0.78, 0.56, 0.34]); [-0.3, 0.3].forEach(function (s) { bx('flat', 0.1, 0.5, 0.1, cx + s, -0.2, z, [0.7, 0.5, 0.3]); }); } return; }
-        bx('flat', 2.2, 0.4, 0.9, x, -0.62, z, cWOOD2); bx('flat', 1.6, 0.2, 0.7, x, -0.22, z, cWOOD); bx('flat', 0.1, 2, 0.1, x, -0.2, z, cWOOD); prism('flat', 0.08, 1.5, 1.2, x + 0.1, 0.1, z, f ? cRED : cCREAM, PI / 2); glowAt(x - 0.9, 0.1, z, 0.18, 0xffd27a); };
-      boat(ISL.x0 + 9, ISL.z1 + 8.5, 0); boat(ISL.x1 - 6, ISL.z1 + 6.2, 1); boat(ISL.x1 + 7, ISL.z0 + 1, 0);
-      /* 물결: 반짝이는 짧은 선(사막은 모래 물결) */
-      for (let i = 0; i < 70; i++) { const x = ISL.x0 - 16 + mr() * (ISL.x1 - ISL.x0 + 32), z = ISL.z0 - 18 + mr() * (ISL.z1 - ISL.z0 + 34);
-        if (x > ISL.x0 - 2 && x < ISL.x1 + 2 && z > ISL.z0 - 2 && z < ISL.z1 + 2) continue;
-        bx('flat', 0.9 + mr() * 1.4, 0.03, 0.1, x, -0.58, z, th === 'desert' ? [0.76, 0.58, 0.36] : [0.94, 0.98, 1]); } }
+    /* 판 밖의 땅: 숲과 바위, 설원의 침엽수와 얼음, 사막의 선인장과 피라미드, 성채 밖 마을과 밭 */
+    { const hAt = function (x, z) { let b = null; TT.cells.forEach(function (c) { if (Math.abs(c.x - x) <= c.s / 2 && Math.abs(c.z - z) <= c.s / 2) b = c; }); return b ? Math.max(b.h, 0) : 0; };
+      const tree = function (x, y, z, i) { cyl('flat', 0.22, 0.3, 1.5, 6, x, y, z, cWOOD); ico('flat', 1.25, x, y + 2.2, z, i % 2 ? [0.36, 0.62, 0.3] : [0.46, 0.68, 0.3], 0.9); };
+      const house = function (x, y, z, i) { bx('flat', 1.8, 1.3, 1.4, x, y, z, cCREAM); prism('flat', 2.1, 1, 1.7, x, y + 1.3, z, i % 2 ? cRED : [0.5, 0.36, 0.3], 0); bx('flat', 0.4, 0.7, 0.05, x - 0.4, y, z + 0.71, cWOOD); bx('flat', 0.3, 0.3, 0.05, x + 0.45, y + 0.6, z + 0.71, [1, 0.86, 0.5]); glowAt(x + 0.45, y + 0.75, z + 0.73, 0.22, 0xffd27a); };
+      TT.cells.forEach(function (c, n) {
+        if (!c.out || c.river || c.beach || inRect(c.x, c.z, 1.6)) return;
+        const front = c.z > ISL.z1 && c.z < ISL.z1 + 3, patchy = nz(c.x * 0.25, c.z * 0.25, 17 + mseed) > -0.05, k = c.s > GS ? 2 : 1;
+        for (let t = 0; t < k; t++) {
+          const x = c.x + (mr() - 0.5) * c.s * 0.7, z = c.z + (mr() - 0.5) * c.s * 0.7, y = c.h - 0.1, r = mr();
+          if (th === 'forest') {
+            if (c.h >= 7) continue;
+            if (!front && (patchy ? r < 0.62 : r < 0.07)) { if (c.h >= 3 || r < 0.35) conifer(x, y, z, 0.13 + mr() * 0.1, r < 0.2 ? [0.16, 0.38, 0.22] : [0.2, 0.46, 0.24]); else tree(x, y, z, n); }
+            else if (r > 0.95) rock(x, z, 0.4 + mr() * 0.4, [0.6, 0.62, 0.6], y);
+            else if (r > 0.88 && c.h <= 1) { const cols = [[0.95, 0.5, 0.6], [1, 0.86, 0.36], [0.7, 0.6, 0.95]]; for (let q = 0; q < 5; q++) bx('flat', 0.14, 0.2, 0.14, x + (mr() - 0.5) * 1.2, y, z + (mr() - 0.5) * 1.2, cols[q % 3]); }
+          } else if (th === 'snow') {
+            if (!front && (patchy ? r < 0.5 : r < 0.05) && c.h < 6) conifer(x, y, z, 0.13 + mr() * 0.1, [0.2, 0.38, 0.36], true);
+            else if (c.h >= 4 && r < 0.62) { const h = 1.2 + mr() * 1.8; cone('flat', 0.36, h, 4, x, y, z, [0.62, 0.86, 0.98]); cone('flat', 0.24, h * 0.6, 4, x + 0.4, y, z + 0.1, [0.76, 0.92, 1]); }
+            else if (r < 0.66) ico('flat', 0.9 + mr() * 0.6, x, y, z, [0.97, 0.98, 1], 0.5);
+          } else if (th === 'desert') {
+            if (r < 0.06 && c.h <= 3) { const h = 1.2 + mr() * 0.9, cc = [0.36, 0.6, 0.36]; cyl('flat', 0.26, 0.28, h, 6, x, y, z, cc); bx('flat', 0.5, 0.16, 0.16, x + 0.36, y + h * 0.5, z, cc); bx('flat', 0.16, 0.5, 0.16, x + 0.56, y + h * 0.5, z, cc); }
+            else if (r < 0.11) rock(x, z, 0.4 + mr() * 0.5, [0.78, 0.5, 0.36], y);
+            else if (r < 0.125 && !front) { const h = 0.8 + mr() * 1.4; cyl('flat', 0.34, 0.36, h, 8, x, y, z, [0.92, 0.8, 0.6]); bx('flat', 0.9, 0.16, 0.9, x, y, z, [0.84, 0.7, 0.5]); }
+            else if (r < 0.2 && c.h <= 1) ico('flat', 1 + mr() * 1.2, x, y - 0.2, z, [0.98, 0.86, 0.62], 0.3);
+          } else {
+            if (c.h >= 4.5) continue;
+            if (!front && patchy && r < 0.4 && c.h > 1) tree(x, y, z, n);
+            else if (!front && r < 0.035 && c.h <= 1.5) house(x, y, z, n);
+            else if (r < 0.08) cone('flat', 0.6, 0.7, 6, x, y, z, [0.34, 0.56, 0.3]);
+          }
+        }
+      });
+      if (th === 'desert') [[ISL.x0 - 16, ISL.z0 - 12, 9], [ISL.x1 + 18, ISL.z0 - 8, 7], [cxm + 6, ISL.z0 - 24, 11]].forEach(function (q) { const y = hAt(q[0], q[1]); for (let k = 0; k < 6; k++) bx('stone', q[2] * (1 - k / 6), q[2] / 9, q[2] * (1 - k / 6), q[0], y + k * q[2] / 9, q[1], [0.94, 0.8, 0.52]); });   /* 계단 피라미드 */
+      if (th === 'castle') { /* 판을 두른 낮은 성벽과 모퉁이 탑, 바깥 풍차 */
+        const wl = function (x0, z0, x1, z1) { const l = Math.hypot(x1 - x0, z1 - z0), along = Math.abs(x1 - x0) > 0.1; bx('stone', along ? l : 0.7, 0.9, along ? 0.7 : l, (x0 + x1) / 2, 0, (z0 + z1) / 2, STONE); for (let d = 0.4; d < l; d += 1.2) bx('stone', along ? 0.5 : 0.7, 0.35, along ? 0.7 : 0.5, along ? x0 + d : x0, 0.9, along ? z0 : z0 + d, TRIM); };
+        wl(ISL.x0 + 0.35, ISL.z0 + 1.2, ISL.x0 + 0.35, ISL.z1 - 0.3); wl(ISL.x1 - 0.35, ISL.z0 + 1.2, ISL.x1 - 0.35, ISL.z1 - 0.3); wl(ISL.x0 + 0.35, ISL.z1 - 0.35, ISL.x1 - 0.35, ISL.z1 - 0.35);
+        [[ISL.x0 + 0.5, ISL.z1 - 0.5], [ISL.x1 - 0.5, ISL.z1 - 0.5]].forEach(function (q) { cyl('stone', 0.9, 1, 1.8, 8, q[0], 0, q[1], STONE); cone('flat', 1.1, 1.2, 8, q[0], 1.8, q[1], [0.44, 0.33, 0.35]); });
+        [[ISL.x0 - 9, ISL.z0 + 2], [ISL.x1 + 10, ISL.z1 - 2]].forEach(function (q) { const y = hAt(q[0], q[1]); cyl('flat', 1, 1.3, 3.4, 8, q[0], y, q[1], cCREAM); cone('flat', 1.3, 1.2, 8, q[0], y + 3.4, q[1], [0.5, 0.36, 0.3]); bx('flat', 0.36, 4, 0.08, q[0], y + 1.2, q[1] + 1.2, cWOOD2); bx('flat', 4, 0.36, 0.08, q[0], y + 3, q[1] + 1.2, cWOOD2); }); }
+      /* 바다 위 돛단배 두 척(섬 끝이 보이는 넓은 화면) */
+      [[cxm - 40, 26], [cxm + 50, 22]].forEach(function (q, i) { bx('flat', 2.2, 0.4, 0.9, q[0], -2.9, q[1], cWOOD2); bx('flat', 0.1, 2, 0.1, q[0], -2.5, q[1], cWOOD); prism('flat', 0.08, 1.5, 1.2, q[0] + 0.1, -2.2, q[1], i ? cRED : cCREAM, PI / 2); }); }
     /* 출발 팻말 */
     bx('flat', 0.16, 1.7, 0.16, SX, 0, -1.6, cWOOD); bx('flat', 1.3, 0.4, 0.1, SX + 0.4, 1.2, -1.6, cWOOD2); bx('flat', 0.9, 0.3, 0.1, SX - 0.3, 0.72, -1.6, cWOOD2); cyl('flat', 1.5, 1.5, 0.05, 8, SX, 0, 0, [P.pad[0] * 0.9, P.pad[1] * 0.9, P.pad[2] * 0.9]);
     finish(g, { stone: mStone, uv: 1 / 4 });
