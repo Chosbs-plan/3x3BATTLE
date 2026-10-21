@@ -233,6 +233,7 @@ h2 { font-size: 24px; line-height: 1.1; }
 .unit.ko { opacity: .8; animation: koDrop .3s steps(4) 1; }
 @keyframes koDrop { 0% { translate: 0 calc(-6 * var(--u)); } }
 canvas.fx { position: absolute; z-index: 7; left: 0; top: 0; width: calc(3 * var(--cs)); height: calc(3 * var(--cs)); image-rendering: pixelated; pointer-events: none; }
+canvas.fxw { position: absolute; z-index: 8; left: calc(-18 / 32 * var(--cs)); top: calc(-18 / 32 * var(--cs)); width: calc(132 / 32 * var(--cs)); height: calc(132 / 32 * var(--cs)); image-rendering: pixelated; pointer-events: none; }
 .cell .ghost { opacity: .35; }
 .cell .tok { position: absolute; z-index: 4; font-size: 12px; line-height: 1; padding: 2px 4px; background: var(--paper); color: var(--sil); }
 .cell .tok.well { left: 3px; bottom: 3px; color: var(--paper); background: var(--blue); }
@@ -480,6 +481,9 @@ canvas.fx { position: absolute; z-index: 7; left: 0; top: 0; width: calc(3 * var
 .emo { position: absolute; z-index: 13; left: 50%; top: calc(-10 * var(--u)); translate: -50% -100%; white-space: nowrap; background: var(--paper); color: var(--sil); font-weight: 700; font-size: 16px; padding: 6px 12px; border: 2px solid var(--sil); box-shadow: 3px 3px 0 var(--line); animation: emoIn 2.6s steps(26) forwards; pointer-events: none; }
 .emo::after { content: ''; position: absolute; left: 50%; bottom: -8px; width: 8px; height: 8px; margin-left: -4px; background: var(--paper); border-right: 2px solid var(--sil); border-bottom: 2px solid var(--sil); rotate: 45deg; }
 .emo.tn { border-color: var(--red); color: var(--red-d); box-shadow: 3px 3px 0 var(--red); } .emo.tn::after { border-color: var(--red); }
+.emo.adm { padding: 0 12px 7px; border-color: #1a1420; color: #1a1420; background: #fff; box-shadow: 3px 3px 0 rgba(26, 20, 32, .35); font-family: 'Galmuri11', inherit; font-size: 15px; white-space: normal; width: max-content; max-width: min(320px, 80vw); text-align: left; line-height: 1.5; }
+.emo.adm span { display: block; margin: 0 -12px 6px; padding: 2px 8px; background: #4b3f8f; color: #fff; font-size: 12px; }
+.emo.adm::after { border-color: #1a1420; }
 @keyframes emoIn { 0% { scale: .3; opacity: 0; } 6% { scale: 1.15; opacity: 1; } 10% { scale: 1; } 88% { opacity: 1; } 100% { opacity: 0; } }
 .intro { flex-direction: column; gap: 18px; }
 .in-row { display: flex; align-items: center; justify-content: center; gap: 24px; }
@@ -1287,6 +1291,7 @@ canvas.fx { position: absolute; z-index: 7; left: 0; top: 0; width: calc(3 * var
 /* 관리자 보스 등장: 막마다 다른 시스템 화면 → 창 → 등장 대사 → 이름 띠. 누르면 다음 단계 */
 .adi { position: fixed; inset: 0; z-index: 31; overflow: hidden; background: rgba(26, 20, 32, .78); color: #1a1420; font-family: 'Galmuri11', var(--pix, inherit); cursor: pointer; user-select: none; }
 .adi.out { opacity: 0; transition: opacity .3s steps(4); }
+.adi.lock { cursor: default; }   /* 처음 보는 막: 끝까지 본다 */
 .adi .sc { position: absolute; inset: 0; display: none; }
 .adi[data-s="1"] .s1, .adi[data-s="2"] .s2, .adi[data-s="3"] .s3, .adi[data-s="4"] .s4 { display: block; animation: adiIn .18s steps(3) both; }
 @keyframes adiIn { from { opacity: 0; } }
@@ -6504,7 +6509,20 @@ function showEmote(k, i) {
   SND.play(i >= 5 ? 'taunt' : 'emote');
   setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, 2650);
 }
-function emoHTML(k) { const e = emNow[k]; return e && e.until > Date.now() ? `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i]}</div>` : ''; }
+function emoHTML(k) { const e = emNow[k]; if (!e || e.until <= Date.now()) return ''; if (e.adm) return `<div class="emo adm" role="status"><span>${esc(e.adm)}</span>${esc(e.txt)}</div>`; return `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i]}</div>`; }
+/* 관리자 보스의 결투 중 대사: 이모트 말풍선 자리에 작은 창 모양으로 띄운다 */
+function adminSay(k, txt, ms) {
+  ms = ms || 3400; emNow[k] = { adm: `${L('관리자', 'Admin')} ${adminVer(run ? run.act : 0)}`, txt, until: Date.now() + ms };
+  const side = app.querySelector('.side.' + (k === seat ? 'me' : 'op'));
+  if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); }
+  SND.play('merr');
+  setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, ms + 50);
+}
+const ADMIN_TALK = {
+  rage: [['경고. 체력 50%. 냉각팬 최대 가동.', 'Warning. HP 50%. Cooling fans at max.'], ['오류, 오류… 재시작은 없다!', 'Error, error… no restarts!'], ['치명적 오류? 아니. 이건 최종 기능이다.', 'Fatal error? No. This is the final feature.']],
+  ko: [['프로세스 종료… 다음 버전에서 보자.', 'Process terminated… see you next version.'], ['업데이트… 실패… 롤백할 수 없다…', 'Update… failed… cannot roll back…'], ['시스템을 종료합니다. …수고하셨습니다.', 'Shutting down. …Good work.']],
+};
+const adminTalk = kind => { const a = Math.max(0, Math.min(2, run ? run.act : 0)); return L(...ADMIN_TALK[kind][a]); };
 function sendEmote(i) {
   if (!doc || !seat) return;
   if (Date.now() - emLast < 2500) return toast('이모트는 잠시 뒤에 다시 보낼 수 있습니다');
@@ -8100,18 +8118,27 @@ function fx(k, fn, dur, delay) {
   l.push({ fn, t0: performance.now() + (delay || 0), dur: dur || 600 });
   if (!fxRaf) fxRaf = requestAnimationFrame(fxLoop);
 }
+/* 판 밖으로 나가도 되는 이펙트(wide, 관리자의 포인터 등)는 판 둘레로 FXM칸씩 넓은 캔버스(canvas.fxw)에 그린다. 좌표는 그대로 판 기준 */
+const FXM = 18, FXW96 = 96 + FXM * 2, wide = fn => { fn.wide = true; return fn; };
+function fxWide(cv) {
+  let w = cv.parentNode && cv.parentNode.querySelector('canvas.fxw');
+  if (!w && cv.parentNode) { w = document.createElement('canvas'); w.className = 'fxw'; w.width = w.height = FXW96; w.setAttribute('aria-hidden', 'true'); cv.after(w); }
+  return w;
+}
 function fxLoop(now) {
   fxRaf = 0; let live = false; if (HOLD) { now = HOLD; live = true; }
   for (const [cv, l] of FXQ) {
     if (!cv.isConnected) { FXQ.delete(cv); continue; }
     const g = cv.getContext('2d'); g.clearRect(0, 0, 96, 96);
+    const wc = l.some(e => e.fn.wide) || cv.wdirty ? fxWide(cv) : null, wg = wc && wc.getContext('2d');
+    if (wg) { wg.setTransform(1, 0, 0, 1, 0, 0); wg.clearRect(0, 0, FXW96, FXW96); wg.setTransform(1, 0, 0, 1, FXM, FXM); cv.wdirty = false; }
     for (let i = l.length - 1; i >= 0; i--) {
       const e = l[i], el = Math.floor((now - e.t0) / 66) * 66;
       if (el >= e.dur) { l.splice(i, 1); continue; }
       live = true;
-      if (el >= 0) { g.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; e.fn(g, el / e.dur, Math.floor(el / 66)); }
+      if (el >= 0) { const gg = e.fn.wide && wg ? wg : g; if (gg === wg) cv.wdirty = true; gg.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; e.fn(gg, el / e.dur, Math.floor(el / 66)); }
     }
-    if (!l.length) FXQ.delete(cv);
+    if (!l.length && !cv.wdirty) FXQ.delete(cv);
   }
   if (live) fxRaf = requestAnimationFrame(fxLoop);
 }
@@ -8809,6 +8836,7 @@ function setSpeed(n) { SPD = n; try { localStorage.setItem('ssd-spd', String(n))
 function skipReplay() {
   slowEnd(); SKIP = true; HOLD = 0; TIMERS.forEach(clearTimeout); TIMERS.clear(); FXQ.clear();
   app.querySelectorAll('canvas.fx').forEach(c => c.getContext('2d').clearRect(0, 0, 96, 96));
+  app.querySelectorAll('canvas.fxw').forEach(c => c.getContext('2d').clearRect(0, 0, c.width, c.height));
   app.querySelectorAll('.cut, .cutin, .float, .reveal').forEach(e => e.remove());
   [...WAITS].forEach(f => f());
 }
@@ -9425,6 +9453,7 @@ async function runReplay(old, neu) {
     if (r.undead) { fx(k, FX.sparkle(cell, K.steel), 900); say('불사! 체력 1', 'f-big f-warn', 'undead'); }
     if (r.stagger) say('경직', 'f-miss', 'fizz');
     if (r.enrage) { fx(k, FX.sparkle(cell, K.red), 900); say('분노! 다음 턴 피해 +1', 'f-big f-warn', 'cutin'); }
+    if (cls(k) === 'admin' && stageOn() && neu.P[k].hp > 0 && old.P[k].hp > hpMaxOf(neu.P[k]) / 2 && neu.P[k].hp <= hpMaxOf(neu.P[k]) / 2) later(() => adminSay(k, adminTalk('rage')), d + 200);
     if (r.rage) say('분노', 'f-sp', 'stance');
     if (r.col) { fx(k, FX.crumble(cell), 600); hurt(k); say('-1 붕괴', 'f-dmg', 'rumble'); }
     if (r.heal) { fx(k, FX.healFx(cell, true), 700); say('체력 +1', 'f-big f-heal', 'heal'); }
@@ -9682,6 +9711,7 @@ async function koScene(neu, cls, fin) {
   a.classList.add('ko-zoom', w === 'draw' || losers.length > 1 ? 'kz-c' : losers[0] === seat ? 'kz-me' : 'kz-op');
   const e = document.createElement('div'); e.className = 'kofx'; e.innerHTML = '<b>K.O.</b>'; a.appendChild(e);
   play('ko'); pulse(app.querySelector('.field'), 'quake', 520);
+  if (stageOn()) losers.filter(k => cls(k) === 'admin').forEach(k => setTimeout(() => adminSay(k, adminTalk('ko'), 3600), 500));
   await sleep(2100);
   if (SKIP) return;
   if (w && w !== 'draw') {
@@ -10093,6 +10123,8 @@ Object.assign(FX, {
   admF5: cell => gnd(hi((g, t, f) => { const [cx, cy] = m3(cell), a0 = t * 9; for (let k = 0; k < 18; k++) { const a = a0 + k / 18 * 5.2; D(g, cx + Math.cos(a) * 14 - 1, cy - 6 + Math.sin(a) * 14 - 1, k > 14 ? K.wht : K.grn, 2, 2); }
     const a = a0 + 5.3, hx = cx + Math.cos(a) * 14, hy = cy - 6 + Math.sin(a) * 14; D(g, hx - 2, hy - 2, K.grnd, 4, 4); })),
 });
+/* 포인터와 창은 판 가장자리 밖으로 나가므로 넓은 캔버스에 그린다 */
+['admClick', 'admDrag', 'admLoad', 'admPopup', 'admLag', 'admWall', 'admBsod', 'admFormat', 'admF5'].forEach(k => { const f = FX[k]; FX[k] = (...a) => wide(f(...a)); });
 /* 계획 화면에서 쓰는 되비추기 정보 */
 const echoId = () => (G && seat ? mirrorCopy(G, seat) : null);
 const echoCost = () => { const e = echoId(); return e && myP().stash !== e ? CARDS[e].c : 0; };
@@ -12358,7 +12390,7 @@ function showFate() {
   else [1100, 1800, 2700].forEach((t, i) => tm.push(setTimeout(() => flip(cs[i]), t)));
 }
 /* 관리자 등장 연출: 보스 결투가 시작될 때 VS 화면 앞에 4단계. 시스템 화면 → 창 → 등장 대사 → 이름 띠.
-   누르면 다음 단계(대사가 찍히는 중이면 끝까지), 한 번 본 막은 빠르게. 대사의 *별표*는 굵게, {c}는 플레이어 직업 */
+   그 막을 처음 볼 때는 끝까지 봐야 한다(넘기기·건너뛰기 없음). 끝까지 본 막은 다음부터 빠르게, 누르면 다음 단계(대사가 찍히는 중이면 끝까지)와 건너뛰기. 대사의 *별표*는 굵게, {c}는 플레이어 직업 */
 const ADMIN_LINE = [
   ['새 사용자 감지. 직업: {c}.\n이 판은 내 관리 구역이다. 권한 없는 접속은… *삭제한다.*', 'New user detected. Class: {c}.\nThis board is my managed zone. Unauthorized access will be… *deleted.*'],
   ['1막의 패배는 로그에 남겨 두었다. 버그는 고쳤다.\n같은 수는 *두 번 통하지 않는다,* {c}.', 'Your Act 1 win is in my logs. The bug is fixed.\nThe same trick *won\'t work twice,* {c}.'],
@@ -12368,7 +12400,7 @@ var adiOn = false;   /* tick()이 먼저 볼 수 있게 var */
 function adminIntro(next) {
   const ov = ovEl(); if (!ov || !stageOn() || !G || !seat || G.P[opp(seat)].cls !== 'admin' || G.turn !== 1) return false;
   const a = Math.max(0, Math.min(2, run.act)), c = L(CLS[run.cls].n, TR(CLS[run.cls].n)), ver = adminVer(a);
-  let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; localStorage.setItem('ssd-adi', String(seen | (1 << a))); } catch (e) { /* 저장소 없음 */ }
+  let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; } catch (e) { /* 저장소 없음 */ }
   const fast = !!(seen & (1 << a)), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600];
   const win = (cls, x, y, w, title, body, d) => `<div class="win${cls}" style="left:${x};top:${y};width:${w};--d:${d || 0}s"><div class="tt">${title}<i>×</i></div><div class="bd">${body}</div></div>`;
   const ln = (t, i) => `<span style="--i:${i}">${t}</span>`;
@@ -12384,10 +12416,10 @@ function adminIntro(next) {
   const say = n => { let h = '', b = false; toks.slice(0, n).forEach(([ch, bb]) => { if (bb !== b) { h += bb ? '<b>' : '</b>'; b = bb; } h += esc(ch); }); return h + (b ? '</b>' : ''); };
   const nc = ['#4b3f8f', '#3b62a8', '#b5384a'][a];
   ov.insertAdjacentHTML('beforeend', `<div class="adi adi-a${a}" data-s="1" role="dialog" aria-label="${L(`${a === 2 ? '최종 보스' : (a + 1) + '막 보스'} 관리자 ${ver} 등장`, `${a === 2 ? 'Final boss' : 'Act ' + (a + 1) + ' boss'} Admin ${ver} appears`)}">
-    <button type="button" class="skip">${L('건너뛰기', 'Skip')}</button>
+    ${fast ? `<button type="button" class="skip">${L('건너뛰기', 'Skip')}</button>` : ''}
     <div class="sc s1">${s1}</div><div class="sc s2">${s2}</div>
     <div class="sc s3"><div class="tint" style="background:rgba(26,20,32,.35)"></div><div class="boss"><i class="px a-admin flip" aria-hidden="true"></i></div>
-      <p class="dlg" style="--nc:${nc}"><span class="nm">${L('관리자', 'Admin')}<em>${ver}</em></span><span class="tx"></span><i class="tc" aria-hidden="true"></i><span class="nx" hidden>▼ ${L('누르기', 'Tap')}</span></p></div>
+      <p class="dlg" style="--nc:${nc}"><span class="nm">${L('관리자', 'Admin')}<em>${ver}</em></span><span class="tx"></span><i class="tc" aria-hidden="true"></i>${fast ? `<span class="nx" hidden>▼ ${L('누르기', 'Tap')}</span>` : ''}</p></div>
     <div class="sc s4"><div class="bn"><div class="bi"><i class="px a-admin" aria-hidden="true"></i></div><span>${a === 2 ? L('최종 보스', 'Final boss') : L(`${a + 1}막 보스`, `Act ${a + 1} boss`)}</span><b>${L('관리자', 'Admin')} ${ver}</b>
       <span>${a ? L('새로 설치', 'Newly installed') : L('설치됨', 'Installed')} · ${ADMIN_NEW[a].map(id => L(CARDS[id].n, TR(CARDS[id].n))).join(' · ')}</span></div></div></div>`);
   const root = ov.lastElementChild, tx = root.querySelector('.tx'), tc = root.querySelector('.tc'), nx = root.querySelector('.nx');
@@ -12399,13 +12431,14 @@ function adminIntro(next) {
     if (s === 3) { const t0 = performance.now(), cps = fast ? 90 : 30; n = 0; tx.innerHTML = ''; if (noMotion) return endType();   /* 지난 시간으로 글자 수를 정해 화면이 바빠도 빠르기가 같다 */
       typ = setInterval(() => { const m = Math.min(toks.length, Math.floor((performance.now() - t0) / 1000 * cps)); if (m === n) return; if (Math.floor(m / 3) > Math.floor(n / 3)) SND.play('tick'); n = m; tx.innerHTML = say(n); if (n >= toks.length) endType(); }, 33); return; }
     timer = setTimeout(() => (s < 4 ? enter(s + 1) : close()), DUR[s - 1]); };
-  const endType = () => { clearInterval(typ); typ = 0; n = toks.length; tx.innerHTML = say(n); tc.hidden = true; nx.hidden = false; clearTimeout(timer); timer = setTimeout(() => enter(4), DUR[2]); };
-  const close = () => { if (done) return; done = true; adiOn = false; clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
+  const endType = () => { clearInterval(typ); typ = 0; n = toks.length; tx.innerHTML = say(n); tc.hidden = true; if (nx) nx.hidden = false; clearTimeout(timer); timer = setTimeout(() => enter(4), DUR[2]); };
+  const close = () => { if (done) return; done = true; adiOn = false; try { localStorage.setItem('ssd-adi', String((+localStorage.getItem('ssd-adi') || 0) | (1 << a))); } catch (e) { /* 저장소 없음 */ }   /* 끝까지 본 막만 본 것으로 친다 */ clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
     root.classList.add('out'); setTimeout(() => { root.remove(); if (G && G.turn === 1) deadline = Date.now() + TURN_MS; next(); }, 300); };
-  const adv = () => { if (done) return; if (step === 3 && typ) return endType(); if (step < 4) enter(step + 1); else close(); };
-  const key = e => { if (e.key === 'Escape') { e.preventDefault(); close(); } else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); adv(); } };
+  const adv = () => { if (done || !fast) return; if (step === 3 && typ) return endType(); if (step < 4) enter(step + 1); else close(); };
+  const key = e => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); if (!fast) return; if (e.key === 'Escape') close(); else adv(); } };
   document.addEventListener('keydown', key, true);
-  root.addEventListener('click', e => { e.stopPropagation(); if (e.target.closest('.skip')) close(); else adv(); });
+  root.addEventListener('click', e => { e.stopPropagation(); if (fast && e.target.closest('.skip')) close(); else adv(); });
+  if (!fast) root.classList.add('lock');
   enter(1);
   return true;
 }
@@ -12958,7 +12991,7 @@ function stOverHTML(won) {
      칸 기준(c, c1): 칸마다 따로 그려 그 칸에 세운다 / 줄 기준(r, r1, rows3): 가로줄마다 세운다 / a: 기준 칸 하나에 통째로 세운다
      vol: 세로줄이나 진영 전체를 지나는 것은 위로 여러 겹 쌓아 벽과 기둥으로 / ground: 표식과 자국은 바닥에 그대로
      칸을 물들이는 색(tint)은 항상 바닥으로 보내고, 타격과 폭발에는 복셀 파편을 더한다. */
-  const GM = (function () { try { return { FX: FX, FXQ: FXQ, K: K }; } catch (e) { return null; } })();
+  const GM = (function () { try { return { FX: FX, FXQ: FXQ, K: K, FXM: FXM }; } catch (e) { return null; } })();
   const FX0 = {}, MODE = {};
   [['c', 'hawkHopFx staffFx encircleFx stoopFx brushFx splashFx rollerFx magnumFx bingoFx footFx flaskFx philoFx trayBreakFx punchFx upperFx bladeFx pebbleFx clumpFx heelFx showFx mgMotes mgFire mgSky drSeed drBurst asConStar asNovaArm asCometR asConstel blJet blPop blHelium mfProng mfHarpoon gbChips qnChips wwArrow wwVolley cmTalis cmTaiji smHammer smSkewer smErupt gdebris surgeRing shardFx twinFx kaleidoCast kaleidoFx tickFx clockCast clockBoom bellFx echoFx biteFx bspearFx batsFx feastFx arrowFx volleyFx pickFx wispCast wispFx ghandFx boom fireCast meteor markPop thrust whiff spore splat engulf shovelFx heavy rubble balls notes sparks talisFx sickleFx peckFx eggBreak prongFx'],
     ['c1', 'hawkSwoopFx whistleFx talonFx treatFx sketchFx dyeFx acidPoolFx acidFx antiFx catFx tmFx grabFx counterFx tuneFx trayFx cupFx winkFx castRing clBoxPop asStar asNova asComet asLens asHole asHoleBurst blInflate blBang blKnot mfBubble mfDive mfSurf gbWheel gbCoin gbAllin gbBluff gbPot qnWheel qnCoin qnAllin qnBluff qnPot wwTag wwPrey wwNoose wwSnap wwAmbush cmWard smOpus smAnvil smStoke gplungeFx gblockFx gstomp surgeCharge surgeFx copyFx flipFx haltFx mistFx drainFx bloodPay tagFx preyFx nooseFx nooseSnap ambushFx coffinFx quakeFx parryReady clash guard guardOk dust sparkle hit crumble place hookFx bramble thornHit healFx dirt pillarFx headFx starFx splash'],
@@ -13015,7 +13048,10 @@ function stOverHTML(won) {
     const gc = mkCanvas(96, 96), vc = mkCanvas(96, 96), gt = pixelTex(gc), vt = pixelTex(vc);
     const gm = new T.Mesh(fxGeo, new T.MeshBasicMaterial({ map: gt, transparent: true, depthWrite: false })); gm.position.set(x, TY + 0.02, 0); gm.renderOrder = 5; gm.visible = false; boardG[b].add(gm);
     const vm = VOLH.map(function (h, i) { const m = new T.Mesh(fxGeo, new T.MeshBasicMaterial({ map: vt, transparent: true, opacity: VOLA[i], depthWrite: false })); m.position.set(x, TY + h, 0); m.renderOrder = 6; m.visible = false; boardG[b].add(m); return m; });
-    return { gc: gc, gg: gc.getContext('2d'), gt: gt, gm: gm, vc: vc, vg: vc.getContext('2d'), vt: vt, vm: vm, ps: [], live: false };
+    /* 판 밖으로 나가도 되는 이펙트(wide)용: 판보다 둘레가 넓은 바닥 캔버스 */
+    const WM = GM ? GM.FXM : 18, WS = 96 + WM * 2, wc = mkCanvas(WS, WS), wt = pixelTex(wc), wgeo = new T.PlaneGeometry(WS / 32, WS / 32); wgeo.rotateX(-PI / 2);
+    const wm = new T.Mesh(wgeo, new T.MeshBasicMaterial({ map: wt, transparent: true, depthWrite: false })); wm.position.set(x, TY + 0.03, 0); wm.renderOrder = 7; wm.visible = false; boardG[b].add(wm);
+    return { gc: gc, gg: gc.getContext('2d'), gt: gt, gm: gm, vc: vc, vg: vc.getContext('2d'), vt: vt, vm: vm, wc: wc, wg: wc.getContext('2d'), wt: wt, wm: wm, WM: WM, WS: WS, ps: [], live: false, wlive: false };
   });
   /* 복셀 파편 */
   const PN = 320, pMesh = new T.InstancedMesh(new T.BoxGeometry(1, 1, 1), new T.MeshBasicMaterial(), PN), pD = new Float32Array(PN * 10), _o = new T.Object3D(), _c = new T.Color(); let pNext = 0, pLive = 0;
@@ -13061,9 +13097,10 @@ function stOverHTML(won) {
       burst(b, s.cell, n, cols, P[3], P[4], P[5]); });
   }
   function syncFx(b, cv, now) {
-    const L = fxB[b], list = GM && cv ? GM.FXQ.get(cv) : null, tn = (typeof HOLD !== 'undefined' && HOLD) ? HOLD : now; let np = 0, act = false, vol = false;
+    const L = fxB[b], list = GM && cv ? GM.FXQ.get(cv) : null, tn = (typeof HOLD !== 'undefined' && HOLD) ? HOLD : now; let np = 0, act = false, vol = false, wide = false;
     if (list && list.length) {
       L.gg.setTransform(1, 0, 0, 1, 0, 0); L.gg.globalAlpha = 1; L.gg.clearRect(0, 0, 96, 96); L.vg.setTransform(1, 0, 0, 1, 0, 0); L.vg.globalAlpha = 1; L.vg.clearRect(0, 0, 96, 96);
+      L.wg.setTransform(1, 0, 0, 1, 0, 0); L.wg.globalAlpha = 1; L.wg.clearRect(0, 0, L.WS, L.WS); L.wg.setTransform(1, 0, 0, 1, L.WM, L.WM);
       RED = L.gg;
       for (const e of list) {
         const el = Math.floor((tn - e.t0) / 66) * 66; if (el < 0 || el >= e.dur) continue;
@@ -13078,7 +13115,8 @@ function stOverHTML(won) {
           p.tex.needsUpdate = true; p.grp.visible = true; p.grp.position.set(cellX(b, cell % 3), TY, cellZ(Math.floor(cell / 3)) + 0.24);
           p.mesh.scale.set(PW * s.s, PH * s.s, 1); p.mesh.position.y = (PH / 2 - 8) * s.s; p.mesh.renderOrder = 10 + Math.floor(cell / 3);
         }
-        if (S.mode === 'vol' || S.mode === 'ground') { const g = S.mode === 'vol' ? L.vg : L.gg; g.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; try { e.fn(g, t, f); } catch (err) { /* 무시 */ } g.globalAlpha = 1; if (S.mode === 'vol') vol = true; }
+        if (S.mode === 'ground' && e.fn.wide) { L.wg.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; try { e.fn(L.wg, t, f); } catch (err) { /* 무시 */ } L.wg.globalAlpha = 1; wide = true; }
+        else if (S.mode === 'vol' || S.mode === 'ground') { const g = S.mode === 'vol' ? L.vg : L.gg; g.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; try { e.fn(g, t, f); } catch (err) { /* 무시 */ } g.globalAlpha = 1; if (S.mode === 'vol') vol = true; }
         emit(b, S, t);
       }
       RED = null;
@@ -13086,6 +13124,7 @@ function stOverHTML(won) {
     for (let k = np; k < L.ps.length; k++) L.ps[k].grp.visible = false;
     if (act || L.live) { if (!act) { L.gg.clearRect(0, 0, 96, 96); L.vg.clearRect(0, 0, 96, 96); } L.gt.needsUpdate = true; L.vt.needsUpdate = true; }
     L.gm.visible = act; L.vm.forEach(function (m) { m.visible = act && vol; }); L.live = act;
+    if (wide || L.wlive) { if (!wide) { L.wg.setTransform(1, 0, 0, 1, 0, 0); L.wg.clearRect(0, 0, L.WS, L.WS); } L.wt.needsUpdate = true; } L.wm.visible = wide; L.wlive = wide;
   }
   /* --- 스테이지 지도: 책상 위 미니어처. 막의 테마(숲·설원·사막·성채)마다 땅과 소품이 다르고,
          칸마다 전용 모형이 선다(결투 단, 정예·보스의 건축물, 모닥불, 궤짝, 물음표, 가판대). DOM 칸은 글자표와 누르는 자리로만 남는다 --- */
