@@ -4074,8 +4074,19 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .sh-it { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; background: #fff; border: 3px solid var(--line); box-shadow: 3px 3px 0 var(--ac, var(--sil)); }
 .sh-it.own { background: var(--wash, #f6f2ea); }
 .sh-it b { font-size: 15px; } .sh-it .btn { width: 100%; min-height: 34px; margin-top: 4px; }
-.sh-fig { position: relative; width: 96px; height: 96px; background: radial-gradient(ellipse at 50% 88%, rgba(0, 0, 0, .14) 0 30%, transparent 31%); }
-.sh-fig > .px { position: absolute; inset: 0; } .sh-a { opacity: 0; }
+/* 그림 칸: 카드 위쪽 창. 고해상도 스킨이 창 밖으로 넘치면 줄이지 않고 잘라낸다 */
+.sh-it { position: relative; }
+.sh-fig { position: relative; align-self: stretch; height: 116px; margin: -10px -8px 0; overflow: hidden; contain: paint; background: radial-gradient(ellipse 48px 12px at 50% 92%, rgba(0, 0, 0, .14) 0 99%, transparent 100%); }
+.sh-fig > .px { position: absolute; left: calc(50% - 48px); bottom: 4px; width: 96px; height: 96px; } .sh-a { opacity: 0; }
+/* 특별 스킨: 스킨 색의 이중 테두리, 모서리 장식, 빛나는 창, 리본 */
+.sh-it.sp { border-color: var(--sk1); box-shadow: 3px 3px 0 var(--sk2), inset 0 0 0 2px #fff, inset 0 0 0 4px color-mix(in srgb, var(--sk1) 45%, #fff); background: linear-gradient(180deg, color-mix(in srgb, var(--sk1) 10%, #fff), #fff 60%); }
+.sh-it.sp::before, .sh-it.sp::after { content: ""; position: absolute; z-index: 2; width: 10px; height: 10px; background: var(--sk1); box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+.sh-it.sp::before { left: -6px; top: -6px; } .sh-it.sp::after { right: -6px; bottom: -6px; }
+.sh-it.sp .sh-fig { margin: -6px -4px 0; border-bottom: 3px solid var(--sk1); background: radial-gradient(ellipse 48px 12px at 50% 92%, rgba(0, 0, 0, .16) 0 99%, transparent 100%), repeating-linear-gradient(135deg, color-mix(in srgb, var(--sk1) 8%, transparent) 0 6px, transparent 6px 12px), linear-gradient(180deg, color-mix(in srgb, var(--sk1) 24%, #fff), #fff); }
+.sh-it.sp .sh-fig::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .55) 48%, transparent 56%) no-repeat; background-size: 250% 100%; background-position: 140% 0; pointer-events: none; }
+.sh-sp { position: absolute; z-index: 3; top: 6px; left: 6px; padding: 1px 7px; font-style: normal; font-size: 11px; font-weight: 700; color: #fff; background: var(--sk1); box-shadow: 2px 2px 0 var(--sk2); letter-spacing: .04em; }
+@media (prefers-reduced-motion: no-preference) { .sh-it.sp .sh-fig::after { animation: shGleam 2.6s steps(13) infinite; } }
+@keyframes shGleam { 0%, 40% { background-position: 140% 0; } 100% { background-position: -40% 0; } }
 .sh-it:hover .sh-a { opacity: 1; } .sh-it:hover .sh-s { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) { .sh-s { animation: breathe 1.3s steps(1) infinite; } .sh-it:hover .sh-a { animation: spAnim .45s steps(1) infinite; } }
 /* 선택 화면: 잠긴 스킨 */
@@ -7665,7 +7676,8 @@ function shopBody() {
   const own = ownedSkins(), m = medals(), f = shopTab;
   const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    return `<div class="sh-it c-${c}${owned ? ' own' : ''}"><div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+    const sp = x.ac ? ` sp" style="--sk1:${x.ac[0]};--sk2:${x.ac[1]}` : '';
+    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.ac ? `<em class="sh-sp">${mE('특별', 'Special')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
       <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
       ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
   return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p>
