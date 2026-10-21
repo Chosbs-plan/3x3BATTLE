@@ -3192,6 +3192,15 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .ml-rw { display: grid; justify-items: end; gap: 6px; font-weight: 700; } .ml-ok { font-size: 12px; color: var(--ash); }
 .ml-empty { display: grid; justify-items: center; gap: 4px; padding: 30px 16px; background: #fff; border: 3px dashed var(--line); text-align: center; } .ml-empty i { font-style: normal; font-size: 34px; color: var(--ash); } .ml-empty p { margin: 0; }
 .ml-note { margin: 0; }
+/* 메일함 창: 화면 높이에 맞추고 목록만 안에서 스크롤 */
+.info-in:has(.ml-box) { width: min(640px, 100%); height: 100%; display: grid; align-items: center; }
+.ml-box { max-height: min(100%, 660px); min-height: 0; box-sizing: border-box; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; }
+.ml-box .ml { max-width: none; height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; align-content: stretch; }
+.ml-box .ml-list, .ml-box .ml-empty { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 6px 6px 0; }
+.ml-box .ml-empty { padding: 24px 16px; align-content: center; }
+.ml-box .d-go { margin: 0; }
+@media (max-height: 480px) { .ml-box { gap: 8px; padding: 10px 14px; } .ml-box h1 { font-size: 20px; } .ml-box .ml-note { display: none; } .ml-box .ml { gap: 8px; } }
+@media (max-width: 520px) { .ml-box h1 { font-size: 22px; } .ml-it { padding: 10px; gap: 10px; } .ml-ic { width: 36px; height: 36px; font-size: 20px; } .ml-tx b { font-size: 15px; } }
 @media (max-width: 520px) { .ml-it { grid-template-columns: auto minmax(0, 1fr); } .ml-rw { grid-column: 1 / -1; grid-auto-flow: column; justify-content: end; align-items: center; } }
 /* 메인 홈의 주간 랭킹 */
 .wh { display: grid; gap: 8px; padding: 12px 14px; background: rgba(255, 255, 255, .95); border: 3px solid var(--sil); box-shadow: 4px 4px 0 rgba(42, 31, 36, .3); color: var(--sil); text-align: left; }
@@ -7574,21 +7583,23 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
 /* ===== 메일함: 서버가 보내는 개발자 선물, 이벤트 보상, 주간 도전 1~3등 보상(supabase/mail.sql) ===== */
 let MAIL = { list: [], t: 0, busy: false, err: '' };
 const mailNew = () => MAIL.list.filter(m => !m.claimed).length;
+/* 메일함 창이 열려 있으면 목록 스크롤을 지키며 다시 그린다 */
+function mlOv() { if (ovKind !== 'mail' || infoEl.hidden) return; const sc = infoEl.querySelector('.ml-list'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.ml-list'); if (n) n.scrollTop = y; }
 function mailPull(force) {
   if (!AUTH.user || MAIL.busy || (!force && Date.now() - MAIL.t < 180000)) return;
   MAIL.busy = true;
-  rpc('mail_list').then(r => { MAIL = { list: Array.isArray(r) ? r : [], t: Date.now(), busy: false, err: '' }; render(); })
-    .catch(e => { MAIL = { list: MAIL.list, t: Date.now(), busy: false, err: /mail_list|404|PGRST/.test(String(e && e.message)) ? 'nosql' : 'net' }; render(); });
+  rpc('mail_list').then(r => { MAIL = { list: Array.isArray(r) ? r : [], t: Date.now(), busy: false, err: '' }; mlOv(); render(); })
+    .catch(e => { MAIL = { list: MAIL.list, t: Date.now(), busy: false, err: /mail_list|404|PGRST/.test(String(e && e.message)) ? 'nosql' : 'net' }; mlOv(); render(); });
 }
 function mailClaim(id) {
-  if (!AUTH.user || MAIL.claiming) return; MAIL.claiming = true; render();
+  if (!AUTH.user || MAIL.claiming) return; MAIL.claiming = true; mlOv(); render();
   rpc('mail_claim', { p_id: id == null ? null : +id }).then(r => {
     MAIL.claiming = false; const got = (r && r.medals) || 0;
     if (r && r.wallet != null) AUTH.wallet = r.wallet;
     if (got > 0) { toast(mE(`메달 +${got} 받았습니다`, `Received ${got} medals`)); for (let k = 0; k < Math.min(8, Math.ceil(got / 50)); k++) setTimeout(() => SND.play('coin'), k * 90); }
     else if (r && r.n) { toast(mE('받았습니다', 'Received')); SND.play('relicGood'); }
     mailPull(true);
-  }).catch(() => { MAIL.claiming = false; toast(mE('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); render(); });
+  }).catch(() => { MAIL.claiming = false; toast(mE('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); mlOv(); render(); });
 }
 const MAIL_IC = { weekly: '🏆', event: '🎉', gift: '🎁' };
 /* 주간 보상 메일은 서버가 한국어로 적어 보내므로 영어 화면에서는 여기서 옮긴다 */
@@ -7612,9 +7623,9 @@ function mailBody() {
       <span><button type="button" class="btn ghost sm" data-a="mlre">${mE('새로 고침', 'Refresh')}</button>${n > 1 ? `<button type="button" class="btn red sm" data-a="mlget" data-k=""${MAIL.claiming ? ' disabled' : ''}>${mE('모두 받기', 'Claim all')}</button>` : ''}</span></div>
     ${body}<p class="cap ml-note">${mE('받은 메일은 7일 동안 목록에 남습니다. 기한이 지난 메일은 받을 수 없습니다.', 'Claimed mail stays for 7 days. Expired mail can no longer be claimed.')}</p></div>`;
 }
-const mailBtn = cls => `<button type="button" class="${cls} mlb" data-a="mtab" data-m="mail" title="${mE('메일함', 'Mailbox')}" aria-label="${mE('메일함', 'Mailbox')}${mailNew() ? ` (${mailNew()})` : ''}">${lbIc('mail')}${mailNew() ? `<em class="ml-dot">${mailNew()}</em>` : ''}</button>`;
+const mailBtn = cls => `<button type="button" class="${cls} mlb" data-a="ov" data-o="mail" title="${mE('메일함', 'Mailbox')}" aria-label="${mE('메일함', 'Mailbox')}${mailNew() ? ` (${mailNew()})` : ''}">${lbIc('mail')}${mailNew() ? `<em class="ml-dot">${mailNew()}</em>` : ''}</button>`;
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="mlget"],[data-a="mlre"]'); if (!b) return; e.stopPropagation(); SND.unlock(); SND.play('tap');
-  if (b.dataset.a === 'mlre') { mailPull(true); return render(); }
+  if (b.dataset.a === 'mlre') { mailPull(true); mlOv(); return render(); }
   mailClaim(b.dataset.k === '' ? null : b.dataset.k); });
 /* 메인 홈의 주간 랭킹: 이번 주 1~3등, 내 순위, 보상 안내 */
 function wkHome(pc) {
@@ -7958,6 +7969,7 @@ function ovHTML() {
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">모험 기록 초기화</button></div></div>
       <p class="cap">설정은 이 브라우저에 저장됩니다.${doc ? ' 언어는 첫 화면에서 바꿀 수 있습니다.' : ''}</p>${close}</section></div>`; }
+  if (ovKind === 'mail') return `<div class="info-in"><section class="detail ov-box ml-box"><h1>${mE('메일함', 'Mailbox')}</h1>${mailBody()}${close}</section></div>`;
   if (ovKind === 'shop') return `<div class="info-in"><section class="detail ov-box shop-box"><h1>${mE('스킨 상점', 'Skin Shop')}</h1>${shopBody()}${close}</section></div>`;
   if (ovKind === 'records') { const rec = stageRec(), n = Object.keys(rec).length;
     return `<div class="info-in"><section class="detail ov-box"><h1>기록</h1><p>모험 모드를 돌파한 직업 <b class="k k-d">${n}</b> / ${CLASS_IDS.length}. 숫자는 다섯 판에 걸린 가장 적은 턴 수입니다.</p>
