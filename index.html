@@ -13520,7 +13520,7 @@ function stOverHTML(won) {
   const NX = [-20, -12, -4, 4, 12, 21], COLZ = [[-7, 0, 7], [-7, 0, 7], [-7, 2.26], [-7, 0, 7], [-3.61, 3.61], [0]], SX = -27.5, ISL = { x0: -31.5, x1: 28, z0: -13, z1: 11.5 }, MCX = -1.75;
   const nodePos = function (r, c) { return [NX[r], COLZ[r][c]]; };
   let mseed = 7; const mr = function () { mseed = (mseed * 1103515245 + 12345) & 0x7fffffff; return mseed / 0x7fffffff; };
-  let mStone = null, mapSky = null; const MENV = {}, mapNodes = [], mapEdges = []; let mapKey = '', mapTheme = '', heroS = null, camFit = 0, camD = 60, camZ = 0, panLim = 0, panX = 0, panUser = 0, panHold = false, panKey = '', upp = 0.05, dragEl = null;
+  let mStone = null, mapSky = null; const MENV = {}, mapNodes = [], mapEdges = []; let mapKey = '', mapTheme = '', mapAct = 0, heroS = null, camFit = 0, camD = 60, camZ = 0, panLim = 0, panX = 0, panUser = 0, panHold = false, panKey = '', upp = 0.05, dragEl = null;
   const cWOOD = [0.45, 0.3, 0.2], cWOOD2 = [0.58, 0.4, 0.26], cGOLD = [1, 0.8, 0.3], cRED = [0.85, 0.28, 0.35], cCREAM = [0.98, 0.94, 0.86], cINK = [0.35, 0.27, 0.27], cAMB = [0.89, 0.64, 0.23];
   function ico(k, r, x, y, z, t, sy) { const g = new T.IcosahedronGeometry(r, 0); if (sy) g.scale(1, sy, 1); B.add(k, g, t, TM(x, y, z)); }
   function tilt(k, w, h, d, x, y, z, t, rx, ry) { const m = new T.Matrix4().makeRotationY(ry || 0).multiply(new T.Matrix4().makeRotationX(rx)); m.setPosition(x, y, z); B.add(k, new T.BoxGeometry(w, h, d), t, m); }
@@ -13535,74 +13535,196 @@ function stOverHTML(won) {
   /* 소품 자리: 칸과 길, 보스 건물 터는 비운다 */
   function mFree(x, z, rad) {
     if (x < ISL.x0 + 1.2 || x > ISL.x1 - 1.2 || z < ISL.z0 + 1.2 || z > ISL.z1 - 1.4) return false;
+    if (mHgt && mHgt(x, z) > 0.01) return false;   /* 언덕 위는 따로(hspots) */
+    return !mBusy(x, z, rad);
+  }
+  /* 칸·길·보스 터·출발점 자리인가 */
+  function mBusy(x, z, rad) {
     const pts = [[SX, 0]]; COLZ.forEach(function (zs, r) { zs.forEach(function (z) { pts.push([NX[r], z]); }); });
-    for (let i = 0; i < pts.length; i++) if (Math.hypot(x - pts[i][0], z - pts[i][1]) < 3.3 + rad) return false;
-    if (x > NX[5] - 4.5 && z < -1.5) return false; if (Math.abs(x - NX[2]) < 3 && z < -7) return false;
+    for (let i = 0; i < pts.length; i++) if (Math.hypot(x - pts[i][0], z - pts[i][1]) < 3.3 + rad) return true;
+    if (x > NX[5] - 4.5 && z < -1.5) return true; if (Math.abs(x - NX[2]) < 3 && z < -7) return true;
     const seg = function (a, b) { const dx = b[0] - a[0], dz = b[1] - a[1], u = Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz))); return Math.hypot(x - a[0] - dx * u, z - a[1] - dz * u) < 1.1 + rad; };
-    for (let c = 0; c < 3; c++) if (seg([SX, 0], nodePos(0, c))) return false;
+    for (let c = 0; c < 3; c++) if (seg([SX, 0], nodePos(0, c))) return true;
     for (let r = 0; r < 5; r++) { const A = COLZ[r].length, Bn = COLZ[r + 1].length; for (let c = 0; c < A; c++) for (let d = 0; d < Bn; d++) {
       const ok = Bn === 1 || (A === 3 && Bn === 3 ? Math.abs(c - d) <= 1 : A === 3 ? (c === 0 ? d === 0 : c === 2 ? d === 1 : true) : (d === 0 ? c === 0 : d === 2 ? c === 1 : true));
-      if (ok && seg(nodePos(r, c), nodePos(r + 1, d))) return false; } }
-    return true;
+      if (ok && seg(nodePos(r, c), nodePos(r + 1, d))) return true; } }
+    return false;
   }
   /* 키 큰 소품(tall)은 칸 바로 앞에 세우지 않는다: 뒤의 칸을 가리기 때문 */
   function spots(n, rad, fn, tall) { const used = []; let made = 0; for (let t = 0; t < n * 40 && made < n; t++) { const x = ISL.x0 + mr() * (ISL.x1 - ISL.x0), z = ISL.z0 + mr() * (ISL.z1 - ISL.z0);
     if (tall && COLZ.some(function (zs, r) { return Math.abs(x - NX[r]) < 2.8 && zs.some(function (pz) { return z > pz && z < pz + 6.5; }); })) continue;
     if (!mFree(x, z, rad) || used.some(function (u) { return Math.hypot(u[0] - x, u[1] - z) < rad * 2 + 0.6; })) continue; used.push([x, z]); fn(x, z, made++); } }
-  /* 테마별 바탕: 땅판과 소품 */
+  /* 테마별 바탕: 들쭉날쭉한 섬. 칸과 길 자리는 평평하고, 그 밖(특히 뒤쪽과 양 끝)은 계단식 언덕이 된다.
+     둘레에는 물(사막은 모래 바다), 숲·설원은 가운데를 가로지르는 물길과 다리. 소품은 언덕 위(hspots)와 평지(spots)에 나눠 무리 짓는다 */
+  const GS = 1.5, GX0 = ISL.x0 - 2.25, GX1 = ISL.x1 + 2.25, GZ0 = ISL.z0 - 2.25, GZ1 = ISL.z1 + 1.5;
+  const WATER = { forest: [0.36, 0.6, 0.78], snow: [0.46, 0.64, 0.84], desert: [0.84, 0.66, 0.42], castle: [0.3, 0.42, 0.54] };
+  const ROAD = { forest: [0.8, 0.68, 0.48], snow: [0.7, 0.78, 0.9], desert: [0.76, 0.58, 0.38], castle: [0.6, 0.56, 0.56] };
+  const riverX = function (z) { return Math.sin(z * 0.45 + 1) * 0.7; };
+  const nz = function (x, z, s) { return (Math.sin(x * 0.37 + s) + Math.sin(z * 0.51 + s * 1.7) + Math.sin((x + z) * 0.23 + s * 0.6) + Math.sin((x - z) * 0.61 + s * 2.3)) / 4; };
+  let mHgt = null, mGlow = null;
+  /* 마을 자리(출발점 근처): 언덕을 깎아 평지로 둔다 */
+  const VIL = { forest: [[SX + 1, 3.8]], snow: [[SX - 1.5, -7.2], [SX + 3.2, -8.6], [SX - 1, 6.6], [SX + 2.6, 4.2], [SX + 4.5, -4.6]], desert: [[SX - 1, -7.4], [SX + 3.4, -8.4]], castle: [] };
+  function terrain(th) {
+    const sd = { forest: 1.3, snow: 2.1, desert: 3.7, castle: 5.2 }[th], cells = {}, key = function (i, j) { return i + ',' + j; };
+    for (let i = 0; GX0 + i * GS < GX1; i++) for (let j = 0; GZ0 + j * GS < GZ1; j++) {
+      const x = GX0 + (i + 0.5) * GS, z = GZ0 + (j + 0.5) * GS;
+      const de = Math.min(x - (ISL.x0 - 0.8), ISL.x1 + 0.8 - x, z - (ISL.z0 - 0.8), (z > ISL.z1 - 3 ? 2 : 0) + ISL.z1 + 0.4 - z) + nz(x, z, sd) * 1.6;
+      if (de < 0) continue;
+      let h = 0;
+      if (th !== 'castle' && !mBusy(x, z, 0.2)) {
+        const back = Math.max(0, Math.min(1, (-z - 3) / 7)), side = Math.max(0, Math.min(1, Math.max(ISL.x0 + 7 - x, x - (ISL.x1 - 5)) / 4));
+        h = Math.max(0, nz(x * 1.3, z * 1.3, sd + 4) * 1.4 + back * 2.4 + side * 1.4 - 0.9);
+        if (mBusy(x, z, 1.4)) h = Math.min(h, 0.5);
+        if (VIL[th].some(function (q) { return Math.hypot(x - q[0], z - q[1]) < 2.8; })) h = 0;
+        h = Math.min(th === 'desert' ? 2 : 3.5, Math.floor(h / 0.5) * 0.5);
+      }
+      const river = (th === 'forest' || th === 'snow') && Math.abs(x - riverX(z)) < 0.76;
+      cells[key(i, j)] = { x: x, z: z, h: river ? -0.3 : h, river: river, de: de, br: river && mBusy(x, z, -0.55) };
+    }
+    return { cells: cells, at: function (x, z) { return cells[key(Math.floor((x - GX0) / GS), Math.floor((z - GZ0) / GS))] || null; } };
+  }
   function mapEnv(th) {
     if (MENV[th]) return MENV[th];
     const P = MT[th], g = new T.Group(); mseed = { forest: 11, snow: 23, desert: 37, castle: 53 }[th];
-    let tex;
-    if (th === 'castle') { tex = tileTex(64, 16, 16, P.gnd, P.vary); tex.repeat.set(10, 4); }
-    else { const c = mkCanvas(64, 64), cx = c.getContext('2d'), img = cx.createImageData(64, 64);
-      for (let i = 0; i < 4096; i++) { const n = rnd(), s = n > 0.88 ? 1.1 : (n < 0.16 ? 0.9 : 1), v = rnd() * P.vary - P.vary / 2; img.data[i * 4] = P.gnd[0] * s + v; img.data[i * 4 + 1] = P.gnd[1] * s + v; img.data[i * 4 + 2] = P.gnd[2] * s + v; img.data[i * 4 + 3] = 255; }
-      cx.putImageData(img, 0, 0); tex = pixelTex(c); tex.wrapS = tex.wrapT = T.RepeatWrapping; tex.repeat.set(5, 2); }
-    const W = ISL.x1 - ISL.x0, D = ISL.z1 - ISL.z0, top = new T.Mesh(new T.PlaneGeometry(W, D), patch(new T.MeshLambertMaterial({ map: tex }), false));
-    top.rotation.x = -PI / 2; top.position.set((ISL.x0 + ISL.x1) / 2, 0, (ISL.z0 + ISL.z1) / 2); g.add(top);
-    B = newB(); const cxm = (ISL.x0 + ISL.x1) / 2, czm = (ISL.z0 + ISL.z1) / 2, E = P.edge, E2 = [E[0] * 0.8, E[1] * 0.8, E[2] * 0.8];
-    bx('flat', W, 0.9, D, cxm, -1.05, czm, E); bx('flat', W + 0.6, 0.5, D + 0.6, cxm, -1.4, czm, E2);
-    bx('flat', W + 0.02, 0.14, 0.3, cxm, -0.12, ISL.z1 + 0.14, [P.gnd[0] / 300, P.gnd[1] / 300, P.gnd[2] / 300]);
-    const rock = function (x, z, s, t) { ico('flat', s, x, s * 0.45, z, t, 0.7); if (s > 0.5) ico('flat', s * 0.55, x + s * 0.8, s * 0.25, z + s * 0.3, t, 0.7); };
+    B = newB(); const cxm = (ISL.x0 + ISL.x1) / 2, czm = (ISL.z0 + ISL.z1) / 2, E = P.edge, E2 = [E[0] * 0.78, E[1] * 0.78, E[2] * 0.78], G0 = P.gnd.map(function (v) { return v / 255; }), W0 = WATER[th];
+    const TT = terrain(th); mHgt = function (x, z) { const c = TT.at(x, z); return c ? Math.max(0, c.h) : 0; }; mGlow = [];
+    /* 땅: 칸마다 흙 기둥 + 겉흙. 높은 언덕은 지층 띠, 성채는 바둑판 돌바닥 */
+    Object.keys(TT.cells).forEach(function (k, n) {
+      const c = TT.cells[k], v = (rnd() - 0.5) * P.vary / 255, ij = k.split(',').map(Number), chk = th === 'castle' && (ij[0] + ij[1]) % 2 ? 0.93 : 1;
+      const tint = [(G0[0] + v) * chk, (G0[1] + v) * chk, (G0[2] + v) * chk], bot = -1.2 - Math.min(1.4, c.de * 0.18);
+      if (c.river) {
+        bx('flat', GS, c.h - bot, GS, c.x, bot, c.z, E2); bx('flat', GS, 0.06, GS, c.x, c.h, c.z, th === 'snow' ? [0.62, 0.8, 0.96] : W0);
+        if (th === 'snow' && (ij[1] % 3 === 0)) bx('flat', 0.9, 0.02, 0.06, c.x, c.h + 0.06, c.z, [1, 1, 1], 0.6);
+        if (c.br) { for (let q = -2; q <= 2; q++) bx('flat', GS + 0.8, 0.12, 0.26, c.x, -0.02, c.z + q * 0.3, q % 2 ? cWOOD : cWOOD2); [-1, 1].forEach(function (s) { bx('flat', 0.14, 0.7, 0.14, c.x + s * (GS / 2 + 0.3), -0.02, c.z - 0.6, cWOOD); bx('flat', 0.14, 0.7, 0.14, c.x + s * (GS / 2 + 0.3), -0.02, c.z + 0.6, cWOOD); bx('flat', 0.1, 0.1, 1.4, c.x + s * (GS / 2 + 0.3), 0.6, c.z, cWOOD2); }); }
+        return;
+      }
+      bx('flat', GS, c.h - 0.3 - bot, GS, c.x, bot, c.z, c.h > 0 ? E : E2);
+      bx('flat', GS, 0.3, GS, c.x, c.h - 0.3, c.z, tint);
+      if (c.h >= 1) bx('flat', GS + 0.02, 0.1, GS + 0.02, c.x, c.h - 0.8, c.z, E2);
+      if (c.de < 1.1 && th !== 'desert') bx('flat', GS + 0.7, 0.04, GS + 0.7, c.x, -0.56, c.z, th === 'castle' ? [0.42, 0.54, 0.64] : [0.94, 0.97, 1]);   /* 물가 거품 */
+    });
+    /* 둘레의 물(사막은 모래 바다) */
+    const sea = new T.Mesh(new T.PlaneGeometry(320, 200), patch(new T.MeshLambertMaterial({ color: new T.Color(W0[0], W0[1], W0[2]) }), false)); sea.rotation.x = -PI / 2; sea.position.set(cxm, -0.6, czm); g.add(sea); g.userData.sea = sea;
+    const rock = function (x, z, s, t, y) { ico('flat', s, x, (y || 0) + s * 0.45, z, t, 0.7); if (s > 0.5) ico('flat', s * 0.55, x + s * 0.8, (y || 0) + s * 0.25, z + s * 0.3, t, 0.7); };
+    /* 언덕 위 자리: h 이상인 칸에서 고른다. 키 큰 것은 칸 바로 앞(카메라 쪽)에 세우지 않는다 */
+    const hspots = function (n, minH, rad, fn, tall) { const cs = Object.keys(TT.cells).map(function (k) { return TT.cells[k]; }).filter(function (c) { return !c.river && c.h >= minH && c.de > 1.2; }), used = []; let made = 0;
+      for (let t = 0; t < n * 30 && made < n && cs.length; t++) { const c = cs[Math.floor(mr() * cs.length)], x = c.x + (mr() - 0.5) * GS * 0.5, z = c.z + (mr() - 0.5) * GS * 0.5;
+        if (tall && COLZ.some(function (zs, r) { return Math.abs(x - NX[r]) < 3 && zs.some(function (pz) { return z > pz && z < pz + 7; }); })) continue;
+        if (used.some(function (u) { return Math.hypot(u[0] - x, u[1] - z) < rad * 2; })) continue; used.push([x, z]); fn(x, c.h, z, made++); } };
+    const near = function (x0, z0, r, rad, fn) { for (let t = 0; t < 30; t++) { const a = mr() * PI * 2, d = mr() * r, x = x0 + Math.cos(a) * d, z = z0 + Math.sin(a) * d; if (mFree(x, z, rad)) { fn(x, z); return true; } } return false; };
+    const glowAt = function (x, y, z, s, c) { mGlow.push([x, y, z, s || 0.3, c || 0xffd27a]); };
     if (th === 'forest') {
-      spots(20, 1.1, function (x, z, i) { conifer(x, -0.1, z, 0.13 + mr() * 0.09, i % 3 ? [0.2, 0.46, 0.24] : [0.16, 0.38, 0.22]); }, true);
-      spots(7, 0.9, function (x, z, i) { cyl('flat', 0.22, 0.3, 1.5, 6, x, 0, z, cWOOD); ico('flat', 1.25, x, 2.2, z, i % 2 ? [0.36, 0.62, 0.3] : [0.46, 0.68, 0.3], 0.9); ico('flat', 0.8, x + 0.7, 1.9, z + 0.3, [0.3, 0.55, 0.28], 0.9); }, true);
-      spots(9, 0.5, function (x, z, i) { cone('flat', 0.7, 0.8, 6, x, 0, z, i % 2 ? [0.3, 0.56, 0.3] : [0.4, 0.62, 0.32]); });
-      spots(11, 0.3, function (x, z, i) { cyl('flat', 0.1, 0.12, 0.34, 5, x, 0, z, cCREAM); cone('flat', 0.34, 0.3, 6, x, 0.3, z, i % 3 ? cRED : [0.95, 0.7, 0.3]); });
-      spots(6, 0.5, function (x, z) { rock(x, z, 0.45 + mr() * 0.4, [0.62, 0.64, 0.62]); });
+      hspots(30, 1, 0.9, function (x, y, z, i) { conifer(x, y - 0.1, z, 0.14 + mr() * 0.1, i % 3 ? [0.2, 0.46, 0.24] : [0.16, 0.38, 0.22]); }, true);
+      hspots(10, 0.5, 1.1, function (x, y, z, i) { cyl('flat', 0.22, 0.3, 1.5, 6, x, y, z, cWOOD); ico('flat', 1.25, x, y + 2.2, z, i % 2 ? [0.36, 0.62, 0.3] : [0.46, 0.68, 0.3], 0.9); ico('flat', 0.8, x + 0.7, y + 1.9, z + 0.3, [0.3, 0.55, 0.28], 0.9); }, true);
+      hspots(8, 1.5, 0.6, function (x, y, z) { rock(x, z, 0.5 + mr() * 0.4, [0.6, 0.62, 0.6], y); });
+      spots(10, 0.5, function (x, z, i) { cone('flat', 0.7, 0.8, 6, x, 0, z, i % 2 ? [0.3, 0.56, 0.3] : [0.4, 0.62, 0.32]); });
+      spots(4, 0.6, function (x, z) { for (let k = 0; k < 6; k++) { const a = k / 6 * PI * 2; cyl('flat', 0.08, 0.1, 0.26, 5, x + Math.cos(a) * 0.7, 0, z + Math.sin(a) * 0.7, cCREAM); cone('flat', 0.22, 0.2, 6, x + Math.cos(a) * 0.7, 0.24, z + Math.sin(a) * 0.7, k % 2 ? cRED : [0.95, 0.7, 0.3]); } });   /* 버섯 고리 */
+      spots(8, 0.5, function (x, z) { const cols = [[0.95, 0.5, 0.6], [1, 0.86, 0.36], [0.7, 0.6, 0.95], [1, 1, 1]]; for (let k = 0; k < 7; k++) bx('flat', 0.14, 0.2, 0.14, x + (mr() - 0.5) * 1.2, 0, z + (mr() - 0.5) * 1.2, cols[k % 4]); bx('flat', 1.2, 0.06, 1.1, x, 0, z, [0.32, 0.56, 0.3]); });   /* 꽃밭 */
+      spots(4, 0.9, function (x, z) { tilt('flat', 0.5, 0.5, 2.2, x, 0.25, z, cWOOD, 0, mr() * PI); });   /* 쓰러진 통나무 */
       spots(5, 0.4, function (x, z) { cyl('flat', 0.4, 0.46, 0.4, 7, x, 0, z, cWOOD2); cyl('flat', 0.3, 0.3, 0.02, 7, x, 0.4, z, [0.8, 0.66, 0.46]); });
       spots(1, 2.2, function (x, z) { cyl('flat', 2.2, 2.2, 0.06, 9, x, 0, z, [0.38, 0.62, 0.78]); cyl('flat', 1.4, 1.4, 0.07, 7, x + 0.3, 0, z - 0.2, [0.52, 0.74, 0.86]); cone('flat', 0.4, 0.5, 5, x + 1.9, 0, z + 1, [0.3, 0.56, 0.3]); });
+      for (let x = SX - 3.5; x <= SX + 2.5; x += 1.2) { bx('flat', 0.16, 0.8, 0.16, x, 0, -4.2, cWOOD); if (x < SX + 2) bx('flat', 1.2, 0.1, 0.08, x + 0.6, 0.55, -4.2, cWOOD2); }   /* 출발점 울타리 */
+      spots(6, 0.5, function (x, z) { bx('flat', 0.12, 1.6, 0.12, x, 0, z, cWOOD); bx('flat', 0.6, 0.08, 0.08, x + 0.24, 1.55, z, cWOOD); bx('flat', 0.04, 0.24, 0.04, x + 0.48, 1.3, z, cINK); glowAt(x + 0.48, 1.2, z, 0.24, 0xffd27a); });   /* 등불 기둥 */
+      near(SX + 1, 3.8, 2, 0.6, function (x, z) { bx('flat', 0.8, 0.9, 0.8, x, 0, z, [0.94, 0.78, 0.36]); bx('flat', 0.9, 0.12, 0.9, x, 0.9, z, cWOOD); glowAt(x, 1.3, z, 0.18, 0xffe08a); });   /* 벌통 */
     } else if (th === 'snow') {
-      spots(15, 1.1, function (x, z) { conifer(x, -0.1, z, 0.12 + mr() * 0.09, [0.2, 0.38, 0.36], true); }, true);
-      spots(9, 0.8, function (x, z) { ico('flat', 0.9 + mr() * 0.7, x, 0, z, [0.97, 0.98, 1], 0.5); });
-      spots(4, 0.7, function (x, z) { ico('flat', 0.62, x, 0.5, z, [1, 1, 1]); ico('flat', 0.45, x, 1.25, z, [1, 1, 1]); ico('flat', 0.32, x, 1.85, z, [1, 1, 1]); cone('flat', 0.07, 0.3, 4, x, 1.8, z + 0.3, [0.95, 0.55, 0.2]); bx('flat', 0.42, 0.08, 0.42, x, 2.12, z, cINK); bx('flat', 0.26, 0.26, 0.26, x, 2.2, z, cINK); bx('flat', 0.5, 0.1, 0.12, x, 1.05, z + 0.3, cRED); });
-      spots(10, 0.6, function (x, z) { const c = [0.62, 0.86, 0.98], h = 0.9 + mr() * 1.2; cone('flat', 0.3, h, 4, x, 0, z, c); cone('flat', 0.2, h * 0.6, 4, x + 0.36, 0, z + 0.1, [0.76, 0.92, 1]); cone('flat', 0.16, h * 0.45, 4, x - 0.3, 0, z + 0.2, c); });
+      hspots(24, 1, 0.9, function (x, y, z) { conifer(x, y - 0.1, z, 0.13 + mr() * 0.1, [0.2, 0.38, 0.36], true); }, true);
+      hspots(12, 1.5, 0.7, function (x, y, z) { const c = [0.62, 0.86, 0.98], h = 1.1 + mr() * 1.4; cone('flat', 0.32, h, 4, x, y, z, c); cone('flat', 0.22, h * 0.6, 4, x + 0.4, y, z + 0.1, [0.76, 0.92, 1]); cone('flat', 0.18, h * 0.45, 4, x - 0.32, y, z + 0.2, c); }, true);
+      spots(8, 0.8, function (x, z) { ico('flat', 0.9 + mr() * 0.7, x, 0, z, [0.97, 0.98, 1], 0.5); });
+      spots(3, 0.7, function (x, z) { ico('flat', 0.62, x, 0.5, z, [1, 1, 1]); ico('flat', 0.45, x, 1.25, z, [1, 1, 1]); ico('flat', 0.32, x, 1.85, z, [1, 1, 1]); cone('flat', 0.07, 0.3, 4, x, 1.8, z + 0.3, [0.95, 0.55, 0.2]); bx('flat', 0.42, 0.08, 0.42, x, 2.12, z, cINK); bx('flat', 0.26, 0.26, 0.26, x, 2.2, z, cINK); });
       spots(5, 0.5, function (x, z) { rock(x, z, 0.4 + mr() * 0.35, [0.6, 0.66, 0.78]); ico('flat', 0.3, x, 0.5, z, [1, 1, 1], 0.5); });
       spots(1, 2.4, function (x, z) { cyl('flat', 2.4, 2.4, 0.05, 8, x, 0, z, [0.7, 0.86, 0.96]); cyl('flat', 1.5, 1.5, 0.06, 6, x - 0.2, 0, z + 0.2, [0.86, 0.95, 1]); bx('flat', 0.9, 0.02, 0.06, x + 0.4, 0.07, z - 0.4, [1, 1, 1], 0.6); });
-      spots(1, 1.4, function (x, z) { ico('flat', 1.3, x, 0, z, [0.95, 0.97, 1], 0.85); bx('flat', 0.6, 0.6, 0.5, x, 0, z + 1.1, [0.24, 0.3, 0.44]); });
+      /* 출발점 이글루 마을과 모닥불, 썰매 */
+      [[SX - 1.5, -7.2], [SX + 3.2, -8.6], [SX - 1, 6.6]].forEach(function (q) { near(q[0], q[1], 1.5, 1.4, function (x, z) { ico('flat', 1.4, x, 0, z, [0.95, 0.97, 1], 0.75); bx('flat', 0.7, 0.75, 0.9, x, 0, z + 1.2, [0.86, 0.92, 1]); bx('flat', 0.44, 0.55, 0.1, x, 0, z + 1.66, [0.2, 0.26, 0.4]); glowAt(x, 0.3, z + 1.7, 0.22, 0xffc870); }); });
+      near(SX + 2.6, 4.2, 1.5, 0.8, function (x, z) { for (let k = 0; k < 6; k++) { const a = k / 6 * PI * 2; ico('flat', 0.22, x + Math.cos(a) * 0.6, 0.1, z + Math.sin(a) * 0.6, [0.6, 0.62, 0.66], 0.7); } [0, 1.05, 2.1].forEach(function (a) { tilt('flat', 0.16, 0.16, 1.1, x, 0.15, z, cWOOD, 0, a); }); glowAt(x, 0.5, z, 0.42, 0xff9a40); glowAt(x, 0.85, z, 0.26, 0xffe08a); });
+      near(SX + 4.5, -4.6, 1.5, 0.8, function (x, z) { bx('flat', 1.6, 0.12, 0.7, x, 0.2, z, cRED); [-0.5, 0.5].forEach(function (s) { bx('flat', 1.8, 0.08, 0.08, x, 0.06, z + s * 0.3, [0.4, 0.42, 0.46]); }); });
     } else if (th === 'desert') {
-      spots(12, 1, function (x, z) { ico('flat', 1.2 + mr() * 1.1, x, 0, z, [0.98, 0.84, 0.6], 0.32); });
-      spots(12, 0.6, function (x, z) { const h = 1.3 + mr() * 0.9, c = [0.36, 0.6, 0.36]; cyl('flat', 0.26, 0.28, h, 6, x, 0, z, c); bx('flat', 0.5, 0.16, 0.16, x + 0.36, h * 0.5, z, c); bx('flat', 0.16, 0.5, 0.16, x + 0.56, h * 0.5, z, c); if (mr() < 0.6) { bx('flat', 0.4, 0.16, 0.16, x - 0.32, h * 0.36, z, c); bx('flat', 0.16, 0.4, 0.16, x - 0.46, h * 0.36, z, c); } if (mr() < 0.4) ico('flat', 0.13, x, h + 0.08, z, [0.95, 0.5, 0.6]); });
-      const palm = function (x, z, h) { for (let i = 0; i < 4; i++) cyl('flat', 0.16, 0.2, h / 4 + 0.04, 5, x + i * 0.12, i * h / 4, z, [0.58, 0.42, 0.26]); const tx = x + 0.42; for (let i = 0; i < 6; i++) { const a = i / 6 * PI * 2; tilt('flat', 0.42, 0.06, 1.5, tx + Math.sin(a) * 0.62, h - 0.12, z + Math.cos(a) * 0.62, i % 2 ? [0.3, 0.62, 0.32] : [0.4, 0.7, 0.34], 0.38, a); } ico('flat', 0.15, tx, h - 0.2, z + 0.16, [0.5, 0.32, 0.18]); };
-      spots(5, 0.9, function (x, z) { palm(x, z, 2.6 + mr() * 1.2); }, true);
-      spots(7, 0.5, function (x, z) { rock(x, z, 0.4 + mr() * 0.4, [0.78, 0.5, 0.36]); });
-      spots(3, 0.9, function (x, z) { for (let i = 0; i < 4; i++) { bxc('flat', 0.1, 0.9 - i * 0.12, 0.1, x + i * 0.34, 0.4 - i * 0.05, z - 0.3, [0.96, 0.94, 0.88], 0.2); bxc('flat', 0.1, 0.9 - i * 0.12, 0.1, x + i * 0.34, 0.4 - i * 0.05, z + 0.3, [0.96, 0.94, 0.88], 0.2); } bx('flat', 1.5, 0.1, 0.12, x + 0.5, 0, z, [0.96, 0.94, 0.88]); ico('flat', 0.26, x - 0.4, 0.2, z, [0.96, 0.94, 0.88]); });
-      spots(3, 0.6, function (x, z) { const h = 0.8 + mr() * 1.4; cyl('flat', 0.34, 0.36, h, 8, x, 0, z, [0.92, 0.8, 0.6]); bx('flat', 0.9, 0.16, 0.9, x, 0, z, [0.84, 0.7, 0.5]); if (h > 1.6) bx('flat', 0.84, 0.16, 0.84, x, h, z, [0.84, 0.7, 0.5]); });
-      spots(1, 2.6, function (x, z) { cyl('flat', 2.1, 2.1, 0.05, 9, x, 0, z, [0.3, 0.66, 0.66]); cyl('flat', 2.5, 2.5, 0.03, 9, x, 0, z, [0.5, 0.7, 0.36]); cyl('flat', 2.1, 2.1, 0.05, 9, x, 0.005, z, [0.3, 0.66, 0.7]); palm(x - 2, z - 0.6, 3); palm(x + 1.8, z + 0.9, 2.4); });
+      hspots(10, 1, 1, function (x, y, z) { ico('flat', 1.1 + mr() * 0.9, x, y - 0.2, z, [0.98, 0.86, 0.62], 0.3); });
+      hspots(6, 1, 0.9, function (x, y, z) { for (let k = 0; k < 3; k++) bx('stone', 0.6, 0.9 - k * 0.25, 0.6, x + k * 0.62, y, z, [0.92, 0.82, 0.66]); }, true);   /* 무너진 벽 */
+      spots(12, 0.6, function (x, z) { const h = 1.3 + mr() * 0.9, c = [0.36, 0.6, 0.36]; cyl('flat', 0.26, 0.28, h, 6, x, 0, z, c); bx('flat', 0.5, 0.16, 0.16, x + 0.36, h * 0.5, z, c); bx('flat', 0.16, 0.5, 0.16, x + 0.56, h * 0.5, z, c); if (mr() < 0.6) { bx('flat', 0.4, 0.16, 0.16, x - 0.32, h * 0.36, z, c); bx('flat', 0.16, 0.4, 0.16, x - 0.48, h * 0.36, z, c); } });
+      const palm = function (x, z, h) { for (let i = 0; i < 4; i++) cyl('flat', 0.16, 0.2, h / 4 + 0.04, 5, x + i * 0.12, i * h / 4, z, [0.58, 0.42, 0.26]); const tx = x + 0.42; for (let i = 0; i < 6; i++) { const a = i / 6 * PI * 2; tilt('flat', 0.42, 0.06, 1.5, tx + Math.sin(a) * 0.62, h - 0.12, z + Math.cos(a) * 0.62, i % 2 ? [0.3, 0.56, 0.3] : [0.4, 0.66, 0.32], 0.35, a); } };
+      spots(4, 0.9, function (x, z) { palm(x, z, 2.6 + mr() * 1.2); }, true);
+      spots(6, 0.5, function (x, z) { rock(x, z, 0.4 + mr() * 0.4, [0.78, 0.5, 0.36]); });
+      spots(3, 0.9, function (x, z) { for (let i = 0; i < 4; i++) { bxc('flat', 0.1, 0.9 - i * 0.12, 0.1, x + i * 0.34, 0.4 - i * 0.05, z - 0.3, [0.96, 0.94, 0.88], 0.2); bxc('flat', 0.1, 0.9 - i * 0.12, 0.1, x + i * 0.34, 0.4 - i * 0.05, z + 0.3, [0.96, 0.94, 0.88], 0.2); } bx('flat', 1.5, 0.1, 0.12, x + 0.5, 0, z, [0.96, 0.94, 0.88]); });   /* 뼈 */
+      spots(4, 0.6, function (x, z) { const h = 0.8 + mr() * 1.4; cyl('flat', 0.34, 0.36, h, 8, x, 0, z, [0.92, 0.8, 0.6]); bx('flat', 0.9, 0.16, 0.9, x, 0, z, [0.84, 0.7, 0.5]); if (h > 1.6) bx('flat', 0.84, 0.16, 0.84, x, h, z, [0.84, 0.7, 0.5]); else tilt('flat', 0.6, 0.6, 1.2, x + 1, 0.3, z + 0.3, [0.92, 0.8, 0.6], PI / 2, 0.4); });   /* 기둥과 쓰러진 토막 */
+      spots(1, 1.6, function (x, z) { bx('flat', 1.8, 1.3, 1.6, x, -0.3, z, [0.86, 0.72, 0.5]); bx('flat', 2, 0.4, 0.4, x, 1, z - 0.6, [0.78, 0.6, 0.4]); bx('flat', 0.3, 0.2, 0.06, x - 0.4, 0.55, z + 0.81, [0.3, 0.2, 0.18]); bx('flat', 0.3, 0.2, 0.06, x + 0.4, 0.55, z + 0.81, [0.3, 0.2, 0.18]); bx('flat', 0.2, 0.4, 0.2, x, 0.2, z + 0.85, [0.8, 0.66, 0.46]); });   /* 반쯤 묻힌 석상 머리 */
+      spots(1, 2.6, function (x, z) { cyl('flat', 2.1, 2.1, 0.05, 9, x, 0, z, [0.3, 0.66, 0.66]); cyl('flat', 2.5, 2.5, 0.03, 9, x, 0, z, [0.5, 0.7, 0.36]); palm(x - 2, z - 0.6, 3); palm(x + 1.8, z + 0.9, 2.4); });
+      /* 출발점 대상 천막 */
+      [[SX - 1, -7.4, cRED], [SX + 3.4, -8.4, [0.3, 0.5, 0.8]]].forEach(function (q) { near(q[0], q[1], 1.5, 1.5, function (x, z) { prism('flat', 2.4, 1.7, 2.2, x, 0, z, cCREAM, 0); bx('flat', 0.6, 1, 0.04, x, 0, z + 1.1, q[2]); bx('flat', 0.08, 2.2, 0.08, x + 1.3, 0, z + 1, cWOOD); glowAt(x + 1.3, 2.25, z + 1, 0.2, 0xffb050); }); });
     } else {
-      const zb = ISL.z0 + 0.7;
+      const zb = ISL.z0 + 0.7, W = ISL.x1 - ISL.x0;
       bx('stone', W - 1, 2.3, 0.9, cxm, 0, zb, STONE); for (let x = ISL.x0 + 1; x < ISL.x1 - 0.6; x += 1.2) bx('stone', 0.6, 0.45, 0.9, x, 2.3, zb, TRIM);
-      [ISL.x0 + 1.4, ISL.x0 + 13, ISL.x0 + 37].forEach(function (x) { cyl('stone', 1.2, 1.3, 3.6, 8, x, 0, zb, STONE); cyl('stone', 1.4, 1.4, 0.3, 8, x, 3.6, zb, TRIM); cone('flat', 1.5, 1.8, 8, x, 3.9, zb, [0.44, 0.33, 0.35]); bx('flat', 0.06, 0.9, 0.06, x, 5.7, zb, cINK); bx('flat', 0.6, 0.34, 0.04, x + 0.33, 6.2, zb, cRED); });
+      [ISL.x0 + 1.4, ISL.x0 + 13, ISL.x0 + 37].forEach(function (x) { cyl('stone', 1.2, 1.3, 3.6, 8, x, 0, zb, STONE); cyl('stone', 1.4, 1.4, 0.3, 8, x, 3.6, zb, TRIM); cone('flat', 1.5, 1.8, 8, x, 3.9, zb, [0.44, 0.33, 0.35]); bx('flat', 0.06, 0.9, 0.06, x, 5.7, zb, cINK); bx('flat', 0.6, 0.34, 0.04, x + 0.33, 6.2, zb, cRED); glowAt(x, 2.6, zb + 1.25, 0.24, 0xffd27a); });
       for (let x = ISL.x0 + 4.5; x < NX[5] - 6; x += 4.4) { bx('flat', 0.9, 1.4, 0.06, x, 0.7, zb + 0.5, cRED); bx('flat', 0.5, 0.2, 0.07, x, 1.2, zb + 0.52, cGOLD); }
-      spots(9, 0.5, function (x, z) { bx('flat', 0.14, 2, 0.14, x, 0, z, cINK); bx('flat', 0.5, 0.08, 0.5, x, 2, z, cINK); bx('flat', 0.34, 0.4, 0.34, x, 2.08, z, [1, 0.86, 0.5]); cone('flat', 0.34, 0.26, 4, x, 2.48, z, cINK); }, true);
-      spots(7, 0.7, function (x, z, i) { const w = 1.2 + mr() * 1.4; bx('flat', w, 0.8, 0.8, x, 0, z, i % 2 ? [0.36, 0.56, 0.36] : [0.3, 0.5, 0.34], mr() < 0.5 ? 0 : PI / 2); });
+      spots(9, 0.5, function (x, z) { bx('flat', 0.14, 2, 0.14, x, 0, z, cINK); bx('flat', 0.5, 0.08, 0.5, x, 2, z, cINK); bx('flat', 0.34, 0.4, 0.34, x, 2.08, z, [1, 0.86, 0.5]); cone('flat', 0.34, 0.26, 4, x, 2.48, z, cINK); glowAt(x, 2.28, z, 0.24, 0xffd27a); }, true);
+      spots(6, 0.7, function (x, z) { bx('flat', 1.6, 0.4, 0.9, x, 0, z, [0.5, 0.36, 0.3]); bx('flat', 1.5, 0.12, 0.8, x, 0.4, z, [0.32, 0.54, 0.3]); for (let k = 0; k < 5; k++) bx('flat', 0.14, 0.18, 0.14, x - 0.6 + k * 0.3, 0.5, z + (k % 2 ? 0.2 : -0.2), k % 2 ? cRED : [1, 0.86, 0.36]); });   /* 꽃 화단 */
+      spots(4, 0.6, function (x, z) { cyl('flat', 0.45, 0.45, 0.7, 8, x, 0, z, [0.92, 0.8, 0.44]); bx('flat', 0.9, 0.06, 0.06, x, 0.35, z + 0.45, [0.7, 0.56, 0.3]); });   /* 짚더미 */
+      spots(3, 0.6, function (x, z) { bx('flat', 0.12, 1.4, 0.12, x, 0, z, cWOOD); bx('flat', 1.1, 0.12, 0.12, x, 1.05, z, cWOOD); cyl('flat', 0.3, 0.32, 0.7, 6, x, 0.6, z, [0.9, 0.82, 0.6]); ico('flat', 0.24, x, 1.45, z, [0.9, 0.82, 0.6]); });   /* 훈련 허수아비 */
       spots(6, 0.5, function (x, z, i) { if (i % 2) { cyl('flat', 0.36, 0.32, 0.8, 8, x, 0, z, cWOOD2); cyl('flat', 0.38, 0.38, 0.08, 8, x, 0.25, z, cINK); cyl('flat', 0.38, 0.38, 0.08, 8, x, 0.55, z, cINK); } else { bx('flat', 0.8, 0.8, 0.8, x, 0, z, cWOOD2, 0.3); bx('flat', 0.5, 0.5, 0.5, x + 0.2, 0.8, z, cWOOD, 0.8); } });
-      spots(3, 0.8, function (x, z) { bx('stone', 1.1, 0.8, 1.1, x, 0, z, TRIM); bx('stone', 0.5, 1, 0.36, x, 0.8, z, STONE); ico('stone', 0.26, x, 2.05, z, STONE); bx('stone', 0.9, 0.2, 0.2, x, 1.45, z, STONE); });
       spots(1, 1.9, function (x, z) { cyl('stone', 1.7, 1.8, 0.5, 10, x, 0, z, TRIM); cyl('flat', 1.4, 1.4, 0.06, 10, x, 0.48, z, [0.46, 0.68, 0.86]); cyl('stone', 0.24, 0.3, 1.4, 6, x, 0.4, z, STONE); cyl('stone', 0.6, 0.3, 0.2, 8, x, 1.8, z, TRIM); ico('flat', 0.2, x, 2.16, z, [0.6, 0.8, 0.95]); });
     }
+    /* 섬 밖 풍경: 뒤로는 먼 산과 섬, 앞으로는 작은 바위섬과 물결. 넓은 화면의 위아래 빈 곳을 채운다 */
+    { const far = function (x, z, s, i) {
+        if (th === 'forest') { ico('flat', s * 3.2, x, -1.4, z, i % 2 ? [0.36, 0.58, 0.32] : [0.3, 0.5, 0.3], 0.6); for (let k = 0; k < 3; k++) conifer(x + (k - 1) * s * 1.6, s * 1.2, z + (k % 2) * s, 0.16 * s, [0.2, 0.42, 0.26]); }
+        else if (th === 'snow') { cone('flat', s * 2.4, s * 5, 5, x, -0.6, z, [0.72, 0.82, 0.94]); cone('flat', s * 1.2, s * 2, 5, x, s * 3, z, [1, 1, 1]); cone('flat', s * 1.6, s * 3, 5, x + s * 2.2, -0.6, z + s, [0.8, 0.88, 0.98]); }
+        else if (th === 'desert') { if (i % 3 === 1) { for (let k = 0; k < 4; k++) bx('stone', s * (4 - k) * 1.1, s * 0.8, s * (4 - k) * 1.1, x, -0.6 + k * s * 0.8, z, [0.94, 0.8, 0.52]); } else { bx('flat', s * 3.4, s * 1.8, s * 2.4, x, -0.6, z, [0.82, 0.5, 0.34]); bx('flat', s * 3.6, s * 0.3, s * 2.6, x, s * 1.2 - 0.6, z, [0.72, 0.42, 0.3]); bx('flat', s * 2, s * 0.9, s * 1.6, x + s * 0.4, s * 1.2 - 0.3, z, [0.86, 0.56, 0.38]); } }
+        else { cone('flat', s * 2.6, s * 3.6, 6, x, -0.6, z, [0.5, 0.52, 0.56]); cone('flat', s * 1, s * 1.2, 6, x, s * 2.4 - 0.6, z, [0.94, 0.95, 1]); if (i % 2) { bx('stone', s * 1.4, s * 1.8, s * 1.4, x + s * 2.4, -0.6, z + s, STONE); cone('flat', s * 1.1, s * 1.2, 4, x + s * 2.4, s * 1.8 - 0.6, z + s, [0.44, 0.33, 0.35]); glowAt(x + s * 2.4, s * 1.1, z + s * 1.72, 0.3, 0xffd27a); } } };
+      for (let i = 0, x = ISL.x0 - 14; x < ISL.x1 + 16; i++, x += 9 + mr() * 6) far(x, ISL.z0 - (th === 'desert' ? 8 : 16) - mr() * 12, 1.1 + mr() * 0.9, i);
+      const islet = function (x, z, r, i) {
+        if (th === 'desert') { ico('flat', r * 1.4, x, -1.2, z, [0.96, 0.82, 0.56], 0.3); const c = [0.36, 0.6, 0.36]; if (i % 2) { cyl('flat', 0.22, 0.24, 1.3, 6, x, -0.2, z, c); bx('flat', 0.4, 0.14, 0.14, x + 0.3, 0.4, z, c); bx('flat', 0.14, 0.4, 0.14, x + 0.46, 0.4, z, c); } else rock(x + 0.4, z, 0.5, [0.78, 0.5, 0.36], -0.3); return; }
+        if (th === 'snow') { cyl('flat', r, r * 1.05, 0.5, 7, x, -0.75, z, [0.94, 0.97, 1]); cyl('flat', r * 1.05, r * 0.9, 0.4, 7, x, -1.15, z, [0.66, 0.84, 0.96]); if (i % 2) cone('flat', 0.4, 1.8, 4, x + 0.3, -0.3, z, [0.66, 0.88, 1]); return; }
+        const G = th === 'castle' ? [0.5, 0.66, 0.4] : [G0[0], G0[1], G0[2]];
+        cyl('flat', r, r * 1.08, 0.4, 8, x, -0.65, z, G); cyl('flat', r * 1.08, r * 0.8, 0.9, 8, x, -1.55, z, E);
+        if (i % 3 === 0) { cyl('flat', 0.18, 0.24, 1.2, 6, x, -0.25, z, cWOOD); ico('flat', 0.9, x, 1.2, z, [0.36, 0.62, 0.3], 0.9); }
+        else if (i % 3 === 1) rock(x, z, r * 0.45, [0.62, 0.64, 0.66], -0.3);
+        else { cone('flat', 0.5, 0.6, 6, x - 0.3, -0.25, z, [0.3, 0.56, 0.3]); bx('flat', 0.12, 0.2, 0.12, x + 0.3, -0.25, z + 0.2, [0.95, 0.5, 0.6]); } };
+      for (let i = 0, x = ISL.x0 - 6; x < ISL.x1 + 8; i++, x += 10 + mr() * 8) islet(x, ISL.z1 + 4 + mr() * 4, 0.8 + mr() * 0.6, i);
+      for (let i = 0; i < 4; i++) islet(i < 2 ? ISL.x0 - 4 - mr() * 3 : ISL.x1 + 4 + mr() * 3, ISL.z0 + 4 + (i % 2) * 12 + mr() * 3, 1 + mr() * 0.8, i + 1);
+      if (th === 'desert') for (let i = 0; i < 26; i++) { const x = ISL.x0 - 14 + mr() * (ISL.x1 - ISL.x0 + 28), z = mr() < 0.5 ? ISL.z1 + 2 + mr() * 10 : ISL.z0 - 3 - mr() * 14; if (x > ISL.x0 - 2 && x < ISL.x1 + 2 && z > ISL.z0 - 2 && z < ISL.z1 + 2) continue; ico('flat', 1.4 + mr() * 1.8, x, -1.3, z, mr() < 0.5 ? [0.96, 0.82, 0.56] : [0.92, 0.76, 0.5], 0.28); if (i % 4 === 0) rock(x + 1.4, z, 0.5, [0.78, 0.5, 0.36], -0.4); }   /* 모래 언덕 */
+      /* 배: 숲·성채는 돛단배, 설원은 얼음 조각, 사막은 낙타 행렬 */
+      const boat = function (x, z, f) { if (th === 'snow') { cyl('flat', 1.1, 1.1, 0.2, 6, x, -0.62, z, [0.92, 0.97, 1]); cyl('flat', 0.6, 0.6, 0.2, 5, x + 2, -0.62, z + 0.6, [0.86, 0.94, 1]); return; }
+        if (th === 'desert') { for (let k = 0; k < 3; k++) { const cx = x + k * 1.6; bx('flat', 1, 0.5, 0.4, cx, 0.3, z, [0.78, 0.56, 0.34]); bx('flat', 0.3, 0.4, 0.3, cx, 0.8, z, [0.72, 0.5, 0.3]); bx('flat', 0.14, 0.7, 0.14, cx + 0.55, 0.5, z, [0.78, 0.56, 0.34]); [-0.3, 0.3].forEach(function (s) { bx('flat', 0.1, 0.5, 0.1, cx + s, -0.2, z, [0.7, 0.5, 0.3]); }); } return; }
+        bx('flat', 2.2, 0.4, 0.9, x, -0.62, z, cWOOD2); bx('flat', 1.6, 0.2, 0.7, x, -0.22, z, cWOOD); bx('flat', 0.1, 2, 0.1, x, -0.2, z, cWOOD); prism('flat', 0.08, 1.5, 1.2, x + 0.1, 0.1, z, f ? cRED : cCREAM, PI / 2); glowAt(x - 0.9, 0.1, z, 0.18, 0xffd27a); };
+      boat(ISL.x0 + 9, ISL.z1 + 8.5, 0); boat(ISL.x1 - 6, ISL.z1 + 6.2, 1); boat(ISL.x1 + 7, ISL.z0 + 1, 0);
+      /* 물결: 반짝이는 짧은 선(사막은 모래 물결) */
+      for (let i = 0; i < 70; i++) { const x = ISL.x0 - 16 + mr() * (ISL.x1 - ISL.x0 + 32), z = ISL.z0 - 18 + mr() * (ISL.z1 - ISL.z0 + 34);
+        if (x > ISL.x0 - 2 && x < ISL.x1 + 2 && z > ISL.z0 - 2 && z < ISL.z1 + 2) continue;
+        bx('flat', 0.9 + mr() * 1.4, 0.03, 0.1, x, -0.58, z, th === 'desert' ? [0.76, 0.58, 0.36] : [0.94, 0.98, 1]); } }
     /* 출발 팻말 */
     bx('flat', 0.16, 1.7, 0.16, SX, 0, -1.6, cWOOD); bx('flat', 1.3, 0.4, 0.1, SX + 0.4, 1.2, -1.6, cWOOD2); bx('flat', 0.9, 0.3, 0.1, SX - 0.3, 0.72, -1.6, cWOOD2); cyl('flat', 1.5, 1.5, 0.05, 8, SX, 0, 0, [P.pad[0] * 0.9, P.pad[1] * 0.9, P.pad[2] * 0.9]);
-    finish(g, { stone: mStone, uv: 1 / 4 }); g.visible = false; ms.add(g); return (MENV[th] = g);
+    finish(g, { stone: mStone, uv: 1 / 4 });
+    /* 밤에도 빛나는 등불: 조명을 받지 않는 작은 상자 */
+    if (mGlow.length) { const gm = new T.InstancedMesh(new T.BoxGeometry(1, 1, 1), new T.MeshBasicMaterial({ color: 0xffffff }), mGlow.length), d = new T.Object3D();
+      mGlow.forEach(function (q, i) { d.position.set(q[0], q[1], q[2]); d.scale.setScalar(q[3]); d.updateMatrix(); gm.setMatrixAt(i, d.matrix); gm.setColorAt(i, new T.Color(q[4])); }); gm.instanceColor.needsUpdate = true; g.add(gm); g.userData.glow = gm; }
+    /* 구름: 섬 앞뒤 하늘에서 천천히 흘러간다 */
+    { const cl = new T.Group(), cm = new T.MeshLambertMaterial({ color: th === 'desert' ? 0xfff6e6 : 0xffffff, transparent: true, opacity: 0.92 }), cg = new T.BoxGeometry(1, 1, 1);
+      for (let i = 0; i < 7; i++) { const c = new T.Group(), w = 3 + mr() * 3; [[0, 0, 0, w, 0.9, 1.8], [w * 0.2, 0.6, 0.1, w * 0.5, 0.8, 1.4], [-w * 0.25, 0.3, 0.3, w * 0.4, 0.7, 1.2]].forEach(function (q) { const m = new T.Mesh(cg, cm); m.position.set(q[0], q[1], q[2]); m.scale.set(q[3], q[4], q[5]); c.add(m); });
+        c.position.set(ISL.x0 - 10 + mr() * (ISL.x1 - ISL.x0 + 20), 9 + mr() * 4, ISL.z0 - 8 - mr() * 14); c.userData.v = 0.4 + mr() * 0.5; cl.add(c); }
+      g.add(cl); g.userData.clouds = cl; }
+    /* 관리자 성 위에 떠서 도는 3x3 빛 상자 */
+    { const cube = new T.Group(), cm = new T.MeshBasicMaterial({ color: 0x7ae8ff, transparent: true, opacity: 0.85 }), cg = new T.BoxGeometry(0.62, 0.62, 0.62);
+      for (let i = 0; i < 27; i++) if (i !== 13 && (i % 2 === 0 || i === 4 || i === 22)) { const m = new T.Mesh(cg, cm); m.position.set((i % 3 - 1) * 0.8, (Math.floor(i / 3) % 3 - 1) * 0.8, (Math.floor(i / 9) - 1) * 0.8); cube.add(m); }
+      cube.position.set(NX[5] + 1, 12.6, -5.4); g.add(cube); g.userData.cube = cube; }
+    /* 날리는 것: 숲은 나뭇잎, 설원은 눈, 사막은 모래바람, 성채는 꽃잎 */
+    { const n = 90, im = new T.InstancedMesh(new T.BoxGeometry(1, 1, 1), new T.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 }), n), PC = { forest: [0x7cc464, 0xe8b44a, 0xa6d870], snow: [0xffffff, 0xeaf4ff], desert: [0xf4dca8, 0xe6c48a], castle: [0xf6a8c0, 0xffffff, 0xf0c4d4] }[th], pts = [];
+      for (let i = 0; i < n; i++) { pts.push([ISL.x0 + mr() * (ISL.x1 - ISL.x0 + 6), mr() * 14, ISL.z0 + mr() * (ISL.z1 - ISL.z0), mr() * 6.28, 0.5 + mr()]); im.setColorAt(i, new T.Color(PC[i % PC.length])); }
+      im.instanceColor.needsUpdate = true; im.frustumCulled = false; g.add(im); g.userData.pt = { im: im, pts: pts, th: th }; }
+    g.visible = false; ms.add(g); return (MENV[th] = g);
+  }
+  /* 막마다 빛: 1막 한낮, 2막 노을, 3막 밤(등불만 빛난다) */
+  const ACT_LIT = [null, { amb: 0xffc89c, ai: 0.78, sun: 0xff9a5a, si: 0.8, bg: 0xf2c8a2, tint: [1, 0.86, 0.74] }, { amb: 0x6474b8, ai: 0.62, sun: 0x9aa8e8, si: 0.36, bg: 0x2c3458, tint: [0.42, 0.48, 0.74] }];
+  const _pd = new T.Object3D();
+  function mapFx(g, act, dt) {
+    const c = g.userData.cube; if (c) { c.rotation.y = still ? 0.6 : tSec * 0.8; c.rotation.x = still ? 0.5 : Math.sin(tSec * 0.6) * 0.4 + 0.5; c.position.y = 12.6 + (still ? 0 : Math.sin(tSec * 1.6) * 0.3); }
+    const cl = g.userData.clouds; if (cl && !still) cl.children.forEach(function (c) { c.position.x += dt * c.userData.v; if (c.position.x > ISL.x1 + 14) c.position.x = ISL.x0 - 14; });
+    const p = g.userData.pt; if (!p) return; const w = p.th === 'desert', fly = act === 3 && p.th === 'forest';   /* 밤 숲: 반딧불이 */
+    p.pts.forEach(function (q, i) {
+      if (fly) { _pd.position.set(q[0] + Math.sin(tSec * 0.7 + q[3]) * 0.8, 0.6 + (q[1] % 3) + Math.sin(tSec * 1.3 + q[3] * 2) * 0.4, q[2]); _pd.rotation.set(0, 0, 0); _pd.scale.setScalar(0.13); _pd.updateMatrix(); p.im.setMatrixAt(i, _pd.matrix); return; }
+      if (!still) { q[1] -= dt * (w ? 0.3 : p.th === 'snow' ? 1.6 : 1) * q[4]; q[0] += dt * (w ? 7 : 0.9) * q[4]; q[3] += dt * 2;
+        if (q[1] < 0 || q[0] > ISL.x1 + 4) { q[1] = w ? mr() * 3 : 10 + mr() * 4; q[0] = w ? ISL.x0 - 4 : ISL.x0 + mr() * (ISL.x1 - ISL.x0); } }
+      _pd.position.set(q[0] + Math.sin(q[3]) * 0.4, q[1], q[2]); _pd.rotation.set(q[3], q[3] * 0.7, 0);
+      if (w) _pd.scale.set(0.9, 0.06, 0.06); else if (p.th === 'snow') _pd.scale.setScalar(0.14); else _pd.scale.set(0.22, 0.04, 0.16);
+      _pd.updateMatrix(); p.im.setMatrixAt(i, _pd.matrix); });
+    p.im.instanceMatrix.needsUpdate = true; p.im.material.color.setScalar(act === 3 ? 1.3 : 1);
   }
   /* 칸 모형 */
   function banner(x, z, h, col) { bx('flat', 0.08, h, 0.08, x, 0, z, cINK); bx('flat', 0.7, 0.44, 0.05, x + 0.39, h - 0.5, z, col); }
@@ -13699,7 +13821,12 @@ function stOverHTML(won) {
     if (!vw || !vh || vw !== host.clientWidth || vh !== host.clientHeight) { resize(); if (!vw || !vh) return; }
     if (!still) tSec += dt; U.time.value = Math.floor(tSec * 7.5) / 7.5;
     const th = ['snow', 'forest', 'desert'].find(function (x) { return mapEl.classList.contains('th-' + x); }) || 'castle', P = MT[th];
-    if (th !== mapTheme) { Object.keys(MENV).forEach(function (k) { MENV[k].visible = false; }); mapEnv(th).visible = true; mapTheme = th; mAmb.color.setHex(P.amb); mapKey = ''; }
+    const act = Math.max(1, Math.min(3, (typeof run !== 'undefined' && run ? run.act : 0) + 1)), L = ACT_LIT[act - 1];
+    if (th !== mapTheme || act !== mapAct) { Object.keys(MENV).forEach(function (k) { MENV[k].visible = false; }); mapEnv(th).visible = true; mapTheme = th; mapAct = act; mapKey = '';
+      mAmb.color.setHex(L ? L.amb : P.amb); mAmb.intensity = L ? L.ai : 0.92; mSun.color.setHex(L ? L.sun : 0xffffff); mSun.intensity = L ? L.si : 0.7;
+      { const sea = MENV[th].userData.sea; if (sea) sea.material.emissive.setHex(act === 2 ? (th === 'desert' ? 0x2a1408 : 0x1c3060) : act === 3 ? 0x0a1636 : 0); }
+    }
+    mapFx(MENV[th], act, dt);
     const els = Array.prototype.slice.call(mapEl.querySelectorAll('.mnode')), key = th + '|' + els.map(function (e) { return (/k-(\w+)/.exec(e.className) || [])[1] + e.dataset.r + e.dataset.c + ':' + (e.dataset.to || ''); }).join(',');
     if (key !== mapKey) { buildMapNodes(els, th); mapKey = key; } else mapNodes.forEach(function (n, i) { n.el = els[i]; });
     /* 카메라: 섬 전체가 들어오면 고정, 화면이 좁으면 높이에 맞추고 지금 있는 곳을 따라간다(끌어서 둘러볼 수 있다) */
@@ -13749,7 +13876,7 @@ function stOverHTML(won) {
       e.mesh.position.y = (s === 'open' || s === 'hl') && !still ? pulse * 0.06 + (s === 'hl' ? 0.04 : 0) : 0;
     });
     curCam = camB;
-    renderer.setRenderTarget(rt); renderer.setClearColor(P.bg, 1); renderer.clear(); renderer.render(ms, camM);
+    renderer.setRenderTarget(rt); renderer.setClearColor(L ? L.bg : P.bg, 1); renderer.clear(); renderer.render(ms, camM);
     postMat.uniforms.uDusk.value = 0; postMat.uniforms.uVig.value = 0; renderer.setRenderTarget(null); renderer.render(postScene, postCam);
   }
   /* --- 쉼터·사건·보물 화면의 그림 칸: 둥근 땅 위에 그 장면의 모형과 인물 --- */
