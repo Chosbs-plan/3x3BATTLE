@@ -3178,6 +3178,28 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .rl-main.unk .rl-stage { background: radial-gradient(ellipse 55% 45% at 50% 60%, #fff, transparent 70%), linear-gradient(#ece6e4, #d9cfcc); } .rl-main { align-self: start; }
 .rl-tx { display: grid; gap: 6px; } .rl-k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--red-d); } .rl-tx h3 { margin: 0; font-size: 26px; }
 .rl-main.unk h3 { letter-spacing: 4px; color: var(--ash); } .rl-ds { margin: 0; font-size: 15px; line-height: 1.6; } .rl-n { margin: 0; font-size: 13px; color: var(--ash); } .rl-n b { color: var(--sil); }
+/* 업적과 칭호 */
+.ttl { margin: 2px 0 0; font-size: 14px; font-weight: 700; color: #b97f22; letter-spacing: 1px; }
+.in-tt { font-style: normal; font-size: 13px; font-weight: 700; color: #b97f22; }
+.achx { position: fixed; z-index: 60; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); translate: -50% 0; display: flex; align-items: center; gap: 12px; padding: 10px 18px 10px 12px; background: #1a1420; color: #fff; border: 3px solid #ffd75e; box-shadow: 4px 4px 0 rgba(0, 0, 0, .35); animation: achIn .3s steps(5) both; pointer-events: none; }
+.achx.out { opacity: 0; transition: opacity .3s steps(4); } @keyframes achIn { from { translate: -50% -140%; } }
+.achx-ic { display: grid; place-items: center; width: 38px; height: 38px; background: #ffd75e; color: #1a1420; } .achx-ic .pxi { width: 26px; height: 26px; fill: currentColor; }
+.achx span { display: grid; gap: 1px; } .achx small { font-size: 11px; color: #ffd75e; letter-spacing: 2px; } .achx b { font-size: 17px; } .achx em { font-style: normal; font-size: 12px; color: #c9c6d6; }
+.ach { display: grid; gap: 14px; align-content: start; min-height: 0; }
+.ach-top { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 12px; }
+.ach-sum, .ach-now { display: grid; gap: 4px; align-content: start; padding: 12px 14px; background: #fff; border: 3px solid var(--sil); box-shadow: 4px 4px 0 var(--line); }
+.ach-sum b { font-size: 28px; } .ach-sum b i { font-style: normal; font-size: 15px; color: var(--ash); margin-left: 4px; }
+.ach-now b { font-size: 20px; color: #b97f22; } .ach-now small { font-size: 12px; color: var(--ash); line-height: 1.5; }
+.ach-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; min-height: 0; overflow: auto; padding: 2px 4px 8px 2px; }
+.ach-c { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; background: #ece6e4; border: 3px solid var(--line); color: var(--ash); }
+.ach-c.ok { background: #fff; border-color: var(--sil); color: var(--sil); box-shadow: 3px 3px 0 rgba(42, 31, 36, .15); } .ach-c.on { box-shadow: 3px 3px 0 #e3a33b; border-color: #b97f22; }
+.ach-ic { display: grid; place-items: center; width: 36px; height: 36px; background: #d9cfcc; color: #fff; } .ach-ic .pxi { width: 24px; height: 24px; fill: currentColor; } .ach-c.ok .ach-ic { background: #ffd75e; color: #1a1420; }
+.ach-tx { display: grid; gap: 2px; min-width: 0; } .ach-tx b { font-size: 15px; } .ach-tx span { font-size: 12px; line-height: 1.45; } .ach-tx small { font-size: 11px; }
+.ach-bar { display: block; height: 6px; background: #d9cfcc; margin-top: 3px; } .ach-bar i { display: block; height: 100%; background: var(--amber); }
+.ach-ti { display: grid; justify-items: end; gap: 4px; } .ach-ti em { font-style: normal; font-size: 12px; font-weight: 700; color: #b97f22; white-space: nowrap; } .ach-c:not(.ok) .ach-ti em { color: var(--ash); }
+.ach-ti .btn.sm { padding: 3px 10px; font-size: 12px; min-height: 28px; } .ach-lk { font-size: 11px; }
+@media (max-width: 440px) { .hub-tab .pxi { display: none; } .hub-tab span { white-space: nowrap; } }
+@media (max-width: 600px) { .ach-top { grid-template-columns: 1fr; } .ach-list { grid-template-columns: 1fr; } .ach-tabs .cx-tb em { display: none; } }
 /* 보스 도감 */
 .bsx { grid-template-columns: minmax(0, 1fr) minmax(320px, 500px); } .bsx .rl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 640px; } .bsx .rl-list > .cap { max-width: 640px; line-height: 1.6; }
 .bs-t { padding: 14px 8px 10px; } .bs-t .bs-im { width: clamp(72px, 12vw, 140px); height: clamp(72px, 12vw, 140px); } .bs-t > span:not(.bs-im) { font-size: 15px; }
@@ -4710,6 +4732,7 @@ function qsStage(g) {
 }
 function setSkin(c, id) { try { const o = JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {}; o[c] = id; localStorage.setItem('ssd-skins', JSON.stringify(o)); } catch (e) { /* 저장소 없음 */ } }
 /* 닉네임: 각 자리가 결투 문서에 적어 둔다. 봇은 '봇', 모험의 내 자리는 계정 닉네임 */
+const titleOf = k => (k === seat ? (typeof myTitle === 'function' ? myTitle() : '') : String(((doc && doc.title) || {})[k] || '').slice(0, 20));
 function nickOf(k) { const n = doc && doc.nick && doc.nick[k]; if (n) return n; if (k === seat && typeof AUTH !== 'undefined' && AUTH.nick) return AUTH.nick; return doc && doc.seats && doc.seats[k] === 'bot' ? mE('봇', 'Bot') : ''; }
 const skc = (c, id) => (id && skinList(c).some(x => x.id === id) ? ` sk-${c}-${id}` : '');
 function skOf(k) {
@@ -6199,6 +6222,8 @@ function onDoc() {
   }
   if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
   if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
+  /* 칭호: 대전 상대에게 보이도록 결투 문서에 적어 둔다 */
+  if (seat && !local && typeof myTitle === 'function') { const tt = myTitle(); if (((doc.title || {})[seat] || '') !== tt && onDoc.tt !== seat + (code || '') + tt) { onDoc.tt = seat + (code || '') + tt; W({ title: { [seat]: tt } }); } }
   let job = null;
   if (doc.game && doc.game !== gameStr) {
     const old = G;
@@ -6234,7 +6259,7 @@ async function startReplay(job) {
   const drawn = k => { const q = neu.rp.P[k]; return Math.max(0, neu.P[k].hand.length - (job.old.P[k].hand.length - (q.mvId ? 1 : 0) - (q.actId ? 1 : 0) - (q.regroup || 0))); };
   dealN = drawn(seat); dealOpp = drawn(opp(seat));
   replaying = false; rpLocked = null; deadline = Date.now() + TURN_MS;
-  if (doc && doc.phase === 'over') { qsStage(neu); matchReward(neu); }
+  if (doc && doc.phase === 'over') { qsStage(neu); matchReward(neu); achGame(neu); }
   render();
   if (doc && doc.phase === 'over') SND.play(neu.winner === seat ? 'win' : neu.winner === 'draw' ? 'turn' : 'lose'); else { SND.play('turn'); turnBanner(); }
   if (doc && doc.phase === 'play' && neu.P[seat].hp === 1 && job.old.P[seat].hp > 1) crisis();
@@ -6543,7 +6568,7 @@ const adminTalk = kind => { const a = Math.max(0, Math.min(2, run ? run.act : 0)
 function sendEmote(i) {
   if (!doc || !seat) return;
   if (Date.now() - emLast < 2500) return toast('이모트는 잠시 뒤에 다시 보낼 수 있습니다');
-  emLast = Date.now(); emOpen = false; W({ emote: { [seat]: { i, n: Date.now() } } }); render();
+  emLast = Date.now(); emOpen = false; W({ emote: { [seat]: { i, n: Date.now() } } }); achEmote(); render();
   const p = app.querySelector('.emp'); if (p) p.remove();
 }
 function crisis() {
@@ -7200,7 +7225,7 @@ const LB_IC = {
   rec: ['...........', '.#########.', '##.#####.##', '#..#####..#', '##.#####.##', '...#####...', '....###....', '.....#.....', '....###....', '...#####...', '...........'],
 };
 const lbIc = k => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${LB_IC[k].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
-const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['도감', 'Codex', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'] };
+const HUB = { acct: ['프로필', 'Profile', 'prof'], ach: ['업적', 'Achievements', 'rec'], codex: ['도감', 'Codex', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'] };
 let repOpen = false, collTab = 'all';
 
 function lobbyHTML(logo) {
@@ -7210,7 +7235,7 @@ function lobbyHTML(logo) {
   const dock = [['data-a="mtab" data-m="acct"', 'prof', '프로필', 'Profile'], ['data-a="mtab" data-m="codex"', 'codex', '도감', 'Classes'], ['data-a="mtab" data-m="coll"', 'coll', '컬렉션', 'Collection'],
     ['data-a="mtab" data-m="shop"', 'shop', '상점', 'Shop'], ['data-a="ov" data-o="rules"', 'rules', '규칙', 'Rules'], ['data-a="ov" data-o="settings"', 'gear', '설정', 'Settings']];
   return `<header class="lb-top">
-      <button type="button" class="lb-prof" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span class="lb-pn"><b data-notr>${esc(AUTH.nick)}</b><span>${CLS[rep].n} · ${mE('대표 캐릭터', 'Main')}</span></span></button>
+      <button type="button" class="lb-prof" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span class="lb-pn"><b data-notr>${esc(AUTH.nick)}</b><span>${myTitle() ? `「${myTitle()}」` : `${CLS[rep].n} · ${mE('대표 캐릭터', 'Main')}`}</span></span></button>
       ${logo}
       <div class="lb-cur"><button type="button" class="lb-coin" data-a="mtab" data-m="shop" aria-label="${mE('메달, 스킨 상점 열기', 'Medals, open shop')}">${MDL(m)}<i class="lb-plus" aria-hidden="true">+</i></button>
         <button type="button" class="lb-ib" data-a="ov" data-o="settings" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></div>
@@ -7230,12 +7255,12 @@ function lobbyHTML(logo) {
 }
 
 function hubHTML(kind, off, ta) {
-  const [ko, en] = HUB[kind], fam = ['acct', 'codex', 'coll', 'shop'].includes(kind);
-  const body = kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : kind === 'quest' ? questBody() : multiBody(off);
+  const [ko, en] = HUB[kind], fam = ['acct', 'ach', 'codex', 'coll', 'shop'].includes(kind);
+  const body = kind === 'acct' ? profBody() : kind === 'ach' ? achBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : kind === 'quest' ? questBody() : multiBody(off);
   return `<div class="hub hub-${kind}${ta ? ' pop' : ''}">
     <header class="hub-bar"><button type="button" class="hub-back" data-a="mback"><i aria-hidden="true"></i><span>${mE('로비', 'Lobby')}</span></button>
       <h2>${mE(ko, en)}</h2>
-      ${fam ? `<nav class="hub-tabs" aria-label="${mE('메뉴', 'Menu')}">${Object.entries(HUB).filter(([k]) => ['acct', 'codex', 'coll', 'shop'].includes(k)).map(([k, [a, b, ic]]) => `<button type="button" class="hub-tab${k === kind ? ' on' : ''}" data-a="mtab" data-m="${k}" aria-pressed="${k === kind}">${lbIc(ic)}<span>${mE(a, b)}</span></button>`).join('')}</nav>` : ''}
+      ${fam ? `<nav class="hub-tabs" aria-label="${mE('메뉴', 'Menu')}">${Object.entries(HUB).filter(([k]) => ['acct', 'ach', 'codex', 'coll', 'shop'].includes(k)).map(([k, [a, b, ic]]) => `<button type="button" class="hub-tab${k === kind ? ' on' : ''}" data-a="mtab" data-m="${k}" aria-pressed="${k === kind}">${lbIc(ic)}<span>${mE(a, b)}</span></button>`).join('')}</nav>` : ''}
       <button type="button" class="lb-coin" data-a="mtab" data-m="shop" aria-label="${mE('메달', 'Medals')}">${MDL(medals())}<i class="lb-plus" aria-hidden="true">+</i></button></header>
     <div class="hub-body" data-keep="hub-${kind}">${body}</div></div>`;
 }
@@ -7249,7 +7274,7 @@ function profBody() {
   return `<div class="pf">
     <section class="pf-card c-${rep}">
       <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <h3 data-notr>${esc(AUTH.nick)}</h3>
+      <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}
       <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
       <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
       ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
@@ -7312,6 +7337,111 @@ function relicBody() {
       <div class="rl-tx"><p class="rl-k">${got ? rlType(v) : mE('미발견 유물', 'Undiscovered')}</p><h3>${got ? rlName(v) : '???'}</h3>
         ${got ? `<p class="rl-ds">${rlDesc(v)}</p><p class="rl-n">${mE('모험에서 얻은 횟수', 'Times found')} <b>${bk[v]}</b></p>` : `<p class="rl-ds">${mE('모험의 정예·보스 보상, 상점, 보물에서 얻으면 이름과 효과가 기록됩니다.', 'Find it in Adventure (elite and boss rewards, shops, treasure) to record its name and effect.')}</p>`}</div></section></div>`;
 }
+/* ===== 업적과 칭호 =====
+   업적을 달성하면 칭호가 생긴다. 칭호 하나를 달면 프로필, 메뉴, 결투 시작 화면(대전 상대에게도)에 이름과 함께 보인다.
+   ssd-ach: 달성한 업적 {id: 시각}, ssd-achc: 누적 기록, ssd-title: 단 칭호. 전부 계정에도 저장된다 */
+const ACH_CAT = [['run', '모험', 'Adventure'], ['duel', '결투', 'Duels'], ['pvp', '대전', 'PvP'], ['col', '수집', 'Collection']];
+const ACH = [
+  { id: 'run1', c: 'run', n: ['첫 완주', 'First Clear'], d: ['모험을 처음으로 완주한다', 'Clear an Adventure'], t: ['모험가', 'Adventurer'], g: 1, v: c => c.runs },
+  { id: 'run5', c: 'run', n: ['단골 모험가', 'Regular'], d: ['모험을 5번 완주한다', 'Clear 5 Adventures'], t: ['베테랑 모험가', 'Veteran'], g: 5, v: c => c.runs },
+  { id: 'runc10', c: 'run', n: ['열 갈래 길', 'Ten Paths'], d: ['서로 다른 직업 10개로 모험을 완주한다', 'Clear Adventure with 10 different classes'], t: ['만능 결투가', 'All-Rounder'], g: 10, v: () => Object.keys(stageRec3()).filter(k => CLS[k]).length },
+  { id: 'runc30', c: 'run', n: ['서른 개의 이야기', 'Thirty Tales'], d: ['모든 직업으로 모험을 완주한다', 'Clear Adventure with every class'], t: ['삼삼결투의 전설', 'Legend of 3x3'], g: 30, v: () => Object.keys(stageRec3()).filter(k => CLS[k]).length },
+  { id: 'adm1', c: 'run', n: ['버그 발견', 'Bug Found'], d: ['관리자 v1.0을 쓰러뜨린다', 'Defeat Admin v1.0'], t: ['디버거', 'Debugger'] },
+  { id: 'adm2', c: 'run', n: ['긴급 패치', 'Hotfix'], d: ['관리자 v2.0을 쓰러뜨린다', 'Defeat Admin v2.0'], t: ['핫픽스', 'Hotfix'] },
+  { id: 'adm3', c: 'run', n: ['최종 버전 종료', 'End of Support'], d: ['관리자 v3.0을 쓰러뜨린다', 'Defeat Admin v3.0'], t: ['포맷 생존자', 'Format Survivor'] },
+  { id: 'admflaw', c: 'run', n: ['무결점 패치', 'Clean Patch'], d: ['피해를 하나도 받지 않고 관리자를 쓰러뜨린다', 'Defeat the Admin without taking damage'], t: ['무결점 패치', 'Zero-Day'] },
+  { id: 'admfast', c: 'run', n: ['강제 종료', 'Force Quit'], d: ['관리자 v3.0을 6턴 안에 쓰러뜨린다', 'Defeat Admin v3.0 within 6 turns'], t: ['강제 종료', 'Force Quit'] },
+  { id: 'runhp1', c: 'run', n: ['아슬아슬', 'By a Thread'], d: ['체력 1이 남은 채로 마지막 보스를 쓰러뜨린다', 'Beat the final boss with 1 HP left'], t: ['아슬아슬', 'Hanging On'] },
+  { id: 'rungold', c: 'run', n: ['부자', 'Loaded'], d: ['한 모험에서 금화 60개 이상을 들고 완주한다', 'Clear an Adventure holding 60+ Gold'], t: ['금고지기', 'Vault Keeper'] },
+  { id: 'runrl', c: 'run', n: ['유물 수집가', 'Hoarder'], d: ['한 모험에서 유물 8개 이상을 모은다', 'Hold 8+ relics in one Adventure'], t: ['유물 사냥꾼', 'Relic Hunter'] },
+  { id: 'run300', c: 'run', n: ['고득점', 'High Score'], d: ['모험 점수 300점 이상으로 완주한다', 'Clear an Adventure with 300+ points'], t: ['고득점자', 'High Scorer'] },
+  { id: 'week1', c: 'run', n: ['주간 도전자', 'Weekly Challenger'], d: ['주간 도전 모험을 완주한다', 'Clear a Weekly Challenge'], t: ['주간 도전자', 'Weekly Challenger'] },
+  { id: 'week10', c: 'run', n: ['순위표의 이름', 'On the Board'], d: ['주간 도전 순위표 10위 안에 든다', 'Reach the top 10 of a Weekly board'], t: ['랭커', 'Ranker'] },
+  { id: 'win1', c: 'duel', n: ['첫 승리', 'First Win'], d: ['결투에서 처음으로 이긴다', 'Win your first duel'], t: ['새내기', 'Rookie'], g: 1, v: c => c.wins },
+  { id: 'win50', c: 'duel', n: ['결투가', 'Duelist'], d: ['결투에서 50번 이긴다', 'Win 50 duels'], t: ['결투가', 'Duelist'], g: 50, v: c => c.wins },
+  { id: 'win200', c: 'duel', n: ['결투의 달인', 'Master Duelist'], d: ['결투에서 200번 이긴다', 'Win 200 duels'], t: ['결투의 달인', 'Grandmaster'], g: 200, v: c => c.wins },
+  { id: 'perf', c: 'duel', n: ['무결점', 'Flawless'], d: ['피해를 하나도 받지 않고 이긴다', 'Win without taking damage'], t: ['무결점', 'Flawless'], g: 1, v: c => c.perf },
+  { id: 'perf10', c: 'duel', n: ['철벽', 'Ironclad'], d: ['피해 없이 10번 이긴다', 'Win 10 duels without taking damage'], t: ['철벽', 'Ironclad'], g: 10, v: c => c.perf },
+  { id: 'comeback', c: 'duel', n: ['역전승', 'Comeback'], d: ['체력 1이 남은 채로 이긴다', 'Win with 1 HP left'], t: ['역전의 명수', 'Comeback Kid'] },
+  { id: 'quick', c: 'duel', n: ['번개', 'Lightning'], d: ['4턴 안에 이긴다', 'Win within 4 turns'], t: ['번개', 'Lightning'] },
+  { id: 'long', c: 'duel', n: ['끈기', 'Endurance'], d: ['15턴 넘게 버텨서 이긴다', 'Win a duel lasting 15+ turns'], t: ['버티기 장인', 'Stubborn'] },
+  { id: 'heavy', c: 'duel', n: ['한 방', 'Big Hit'], d: ['한 턴에 피해 4 이상을 준다', 'Deal 4+ damage in a single turn'], t: ['한 방', 'Heavy Hitter'] },
+  { id: 'noab', c: 'duel', n: ['맨손', 'Bare Hands'], d: ['능력을 한 번도 쓰지 않고 이긴다', 'Win without using your ability'], t: ['맨손', 'Bare-Handed'] },
+  { id: 'cls10', c: 'duel', n: ['다재다능', 'Versatile'], d: ['서로 다른 직업 10개로 이긴다', 'Win with 10 different classes'], t: ['다재다능', 'Versatile'], g: 10, v: c => c.cw.length },
+  { id: 'cls30', c: 'duel', n: ['만물박사', 'Jack of All'], d: ['모든 직업으로 이긴다', 'Win with every class'], t: ['만물박사', 'Polymath'], g: 30, v: c => c.cw.length },
+  { id: 'hard1', c: 'duel', n: ['봇 사냥꾼', 'Bot Hunter'], d: ['어려움 봇을 이긴다', 'Beat a Hard bot'], t: ['봇 사냥꾼', 'Bot Hunter'], g: 1, v: c => c.hardw },
+  { id: 'hard10', c: 'duel', n: ['인공지능 킬러', 'AI Slayer'], d: ['어려움 봇을 10번 이긴다', 'Beat a Hard bot 10 times'], t: ['인공지능 킬러', 'AI Slayer'], g: 10, v: c => c.hardw },
+  { id: 'pvp1', c: 'pvp', n: ['도전자', 'Challenger'], d: ['대전에서 처음으로 이긴다', 'Win your first PvP duel'], t: ['도전자', 'Challenger'], g: 1, v: c => c.pvpw },
+  { id: 'pvp10', c: 'pvp', n: ['강자', 'Contender'], d: ['대전에서 10번 이긴다', 'Win 10 PvP duels'], t: ['강자', 'Contender'], g: 10, v: c => c.pvpw },
+  { id: 'pvp50', c: 'pvp', n: ['챔피언', 'Champion'], d: ['대전에서 50번 이긴다', 'Win 50 PvP duels'], t: ['챔피언', 'Champion'], g: 50, v: c => c.pvpw },
+  { id: 'bo3', c: 'pvp', n: ['승부사', 'Closer'], d: ['3판 2선승 대전에서 이긴다', 'Win a best-of-3 match'], t: ['승부사', 'Closer'] },
+  { id: 'ban', c: 'pvp', n: ['전략가', 'Strategist'], d: ['밴픽 대전에서 이긴다', 'Win a ban-pick match'], t: ['전략가', 'Strategist'] },
+  { id: 'emo', c: 'pvp', n: ['수다쟁이', 'Chatterbox'], d: ['이모트를 30번 보낸다', 'Send 30 emotes'], t: ['수다쟁이', 'Chatterbox'], g: 30, v: c => c.emo },
+  { id: 'skin5', c: 'col', n: ['멋쟁이', 'Stylish'], d: ['스킨 5개를 모은다', 'Collect 5 skins'], t: ['멋쟁이', 'Fashionista'], g: 5, v: () => ownedSkins().length },
+  { id: 'relics', c: 'col', n: ['고고학 박사', 'Curator'], d: ['유물 도감을 모두 채운다', 'Complete the Relic codex'], t: ['고고학 박사', 'Curator'], g: () => RL_ALL().length, v: () => { const b = rlBook(); return RL_ALL().filter(id => b[id]).length; } },
+  { id: 'bosses', c: 'col', n: ['관리자의 관리자', 'Admin of Admins'], d: ['보스 도감을 모두 채운다', 'Complete the Boss codex'], t: ['관리자의 관리자', 'Root User'], g: 3, v: () => [0, 1, 2].filter(a => bossBook()['a' + a]).length },
+];
+const achGot = () => parse(ls('ssd-ach')) || {};
+const achC = () => Object.assign({ wins: 0, perf: 0, pvpw: 0, hardw: 0, runs: 0, emo: 0, cw: [] }, parse(ls('ssd-achc')) || {});
+const achGoal = a => (typeof a.g === 'function' ? a.g() : a.g || 1);
+const achTitle = id => { const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
+const myTitle = () => { const id = ls('ssd-title'); return id && achGot()[id] ? achTitle(id) : ''; };
+let achQ = [], achT = 0;
+function achGive(id) {
+  const o = achGot(); if (o[id] || !ACH.some(a => a.id === id)) return false;
+  o[id] = Date.now(); ls('ssd-ach', JSON.stringify(o)); achQ.push(id); if (!achT) achShowNext(); return true;
+}
+/* 쌓인 기록으로 판정되는 업적을 한꺼번에 확인한다 */
+function achScan(c) { c = c || achC(); ACH.forEach(a => { if (a.v) { try { if (a.v(c) >= achGoal(a)) achGive(a.id); } catch (e) { /* 아직 준비되지 않은 기록 */ } } }); }
+function achShowNext() {
+  const id = achQ.shift(); if (!id) { achT = 0; return; } const a = ACH.find(x => x.id === id);
+  document.querySelectorAll('.achx').forEach(e => e.remove());
+  document.body.insertAdjacentHTML('beforeend', `<div class="achx" role="status"><i class="achx-ic" aria-hidden="true">${lbIc('rec')}</i><span><small>${L('업적 달성', 'Achievement unlocked')}</small><b>${L(...a.n)}</b><em>${L('칭호', 'Title')} 「${L(...a.t)}」</em></span></div>`);
+  SND.play('relicGood'); achT = setTimeout(() => { document.querySelectorAll('.achx').forEach(e => e.classList.add('out')); setTimeout(achShowNext, 350); }, 3000);
+}
+/* 결투가 끝날 때(튜토리얼 제외). 모험의 결투, 봇 연습, 대전 모두 */
+function achGame(g) {
+  if (!g || !g.winner || !seat || !g.P || !g.P[seat] || (typeof tutOn === 'function' && tutOn())) return;
+  const key = (code || '') + ':' + (doc && doc.gid) + ':' + g.turn; if (achGame.k === key) return; achGame.k = key;
+  const c = achC(), me = g.P[seat], q = QS || {}, mode = stageOn() ? 'run' : local ? 'bot' : 'pvp';
+  if (g.st && g.st[seat] && g.st[seat].best >= 4) achGive('heavy');
+  if (g.winner === seat) {
+    c.wins++; if (!c.cw.includes(me.cls)) c.cw.push(me.cls);
+    if (!(q.taken > 0)) c.perf++;
+    if (me.hp === 1) achGive('comeback');
+    if (q.turns && q.turns <= 4) achGive('quick');
+    if (q.turns >= 15) achGive('long');
+    if (!q.ab) achGive('noab');
+    if (mode === 'bot' && botLv === 'hard') c.hardw++;
+    if (mode === 'pvp') { c.pvpw++; if (modeOf() === 'bo3' && scoreOf()[seat] >= 2) achGive('bo3'); if (modeOf() === 'ban') achGive('ban'); }
+    if (mode === 'run' && g.P[opp(seat)].cls === 'admin' && run) { const a = Math.max(0, Math.min(2, run.act)); achGive('adm' + (a + 1)); if (!(q.taken > 0)) achGive('admflaw'); if (a === 2 && q.turns && q.turns <= 6) achGive('admfast'); }
+  }
+  ls('ssd-achc', JSON.stringify(c)); achScan(c);
+}
+/* 모험을 끝까지 깼을 때 */
+function achRun(left) {
+  if (!run) return; const c = achC(); c.runs++; ls('ssd-achc', JSON.stringify(c));
+  if (left === 1) achGive('runhp1'); if (run.gold >= 60) achGive('rungold'); if (run.score >= 300) achGive('run300'); if (run.weekly) achGive('week1');
+  achScan(c);
+}
+function achEmote() { const c = achC(); c.emo++; ls('ssd-achc', JSON.stringify(c)); achScan(c); }
+/* 업적 화면: 칭호 고르기, 분류별 목록 */
+let achTab = 'all';
+function achBody() {
+  achScan();   /* 수집 업적은 화면을 열 때도 확인한다 */
+  const got = achGot(), c = achC(), n = ACH.filter(a => got[a.id]).length, tid = ls('ssd-title'), cur = tid && got[tid] ? tid : '';
+  const card = a => { const ok = !!got[a.id], g = achGoal(a); let v = 0; try { v = a.v ? Math.min(g, a.v(c)) : ok ? 1 : 0; } catch (e) { v = 0; }
+    return `<div class="ach-c${ok ? ' ok' : ''}${cur === a.id ? ' on' : ''}"><i class="ach-ic" aria-hidden="true">${lbIc('rec')}</i><div class="ach-tx"><b>${L(...a.n)}</b><span>${L(...a.d)}</span>
+      ${!ok && g > 1 ? `<span class="ach-bar" role="img" aria-label="${v}/${g}"><i style="width:${v / g * 100}%"></i></span><small>${v} / ${g}</small>` : ''}</div>
+      <div class="ach-ti"><em>「${L(...a.t)}」</em>${ok ? (cur === a.id ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${a.id}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="ach-lk">${L('잠김', 'Locked')}</span>`}</div></div>`; };
+  const list = ACH.filter(a => achTab === 'all' || a.c === achTab);
+  return `<div class="ach"><div class="ach-top"><div class="ach-sum"><span class="cap">${L('달성', 'Unlocked')}</span><b>${n}<i>/ ${ACH.length}</i></b><span class="pf-bar"><i style="width:${n / ACH.length * 100}%"></i></span></div>
+      <div class="ach-now"><span class="cap">${L('지금 단 칭호', 'Current title')}</span><b>${cur ? `「${achTitle(cur)}」` : L('없음', 'None')}</b><small>${L('칭호는 프로필, 메뉴, 결투 시작 화면에 이름과 함께 보이고 대전 상대에게도 보입니다.', 'Your title shows with your name on your profile, the menu and the duel intro, and to PvP opponents.')}</small></div></div>
+    <nav class="cx-tabs ach-tabs">${[['all', '전체', 'All'], ...ACH_CAT].map(([k, a, b]) => `<button type="button" class="cx-tb${achTab === k ? ' on' : ''}" data-a="achtab" data-t="${k}" aria-pressed="${achTab === k}"><b>${L(a, b)}</b><em>${ACH.filter(x => (k === 'all' || x.c === k) && got[x.id]).length}/${ACH.filter(x => k === 'all' || x.c === k).length}</em></button>`).join('')}</nav>
+    <div class="ach-list" data-keep="achl">${list.map(card).join('')}</div></div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="achtitle"],[data-a="achtab"]'); if (!b) return; e.stopPropagation(); SND.unlock();
+  if (b.dataset.a === 'achtab') achTab = b.dataset.t; else { ls('ssd-title', b.dataset.k || ''); SND.play(b.dataset.k ? 'relicGood' : 'tap'); } render(); });
 function codexBody() {
   if (cxTab === 'rl') return cxWrap(relicBody());
   if (cxTab === 'bs') return cxWrap(bossBody());
@@ -7406,11 +7536,12 @@ pcZoom(); addEventListener('resize', pcZoom);
 let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
 const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
   coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['도감', 'Codex', '직업의 패시브·능력·전용 카드와 모험에서 찾은 유물', 'Classes, abilities and cards, plus relics found in Adventure'],
-  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'] };
+  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'],
+  ach: ['업적', 'Achievements', '업적을 달성하고 칭호를 답니다', 'Unlock achievements and wear titles'] };
 
 function pcHTML(scene, logo, off, ta, anim) {
   const kind = PC_PAGES[menuTab] ? menuTab : null; if (!kind) menuTab = null;
-  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '도감', 'Codex'], ['shop', '상점', 'Shop']];
+  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '도감', 'Codex'], ['ach', '업적', 'Achievements'], ['shop', '상점', 'Shop']];
   const top = `<header class="pc-top">
       ${logo}
       <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
@@ -7422,13 +7553,13 @@ function pcHTML(scene, logo, off, ta, anim) {
           <button type="button" class="pc-ic${SND.bgm ? '' : ' off'}" data-a="bgm" title="${mE('배경음', 'Music')}" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button>
           <button type="button" class="pc-ic tx" data-a="lang" data-notr aria-label="Language">${mE('EN', '한')}</button>
           <button type="button" class="pc-ic" data-a="ov" data-o="settings" title="${mE('설정', 'Settings')}" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></span>
-        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${CLS[rep].n}</small></span></button>
+        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${myTitle() ? `「${myTitle()}」` : CLS[rep].n}</small></span></button>
       </div></header>`;
   const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
   const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
         ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
-      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
+      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'ach' ? achBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
   return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
 }
 
@@ -7494,7 +7625,7 @@ function pcProfBody() {
   return `<div class="pp">
     <aside class="pp-hero c-${rep}">
       <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3><p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
       <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
       ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
       ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
@@ -9723,7 +9854,7 @@ function tutHTML() { const n = Math.min(G.turn, 5), s = TUT[n]; return `<div cla
 /* ----- 대결 인트로: 결투장 슬롯이 돌다가 멈추고, 그 결투장의 규칙 한 줄이 뜬다 ----- */
 function showIntro() {
   const ov = ovEl(); if (noMotion || !ov || !G) return;
-  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${nickOf(k) ? esc(nickOf(k)) : k === seat ? '나' : '상대'}</span></div>`;
+  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${nickOf(k) ? esc(nickOf(k)) : k === seat ? '나' : '상대'}</span>${titleOf(k) ? `<em class="in-tt">「${esc(titleOf(k))}」</em>` : ''}</div>`;
   const ids = Object.keys(ARENAS), goal = ARENAS[G.arena] ? G.arena : 'castle', tutM = typeof tutOn === 'function' && tutOn();
   ov.innerHTML = `<div class="intro intro2"><p class="in-ar">${tutM ? '튜토리얼' : stageOn() ? stLab() : MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf().a + scoreOf().b + 1}번째 판` : ''}</p>
     <div class="in-row">${side(seat, false)}<b class="in-vs">VS</b>${side(opp(seat), true)}</div>
@@ -11989,7 +12120,7 @@ function stageWin() {
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
   if (n.t === 'boss' && n.foe === 'admin') bossRec(run.act, G.turn - 1);
   run.hp = Math.min(run.maxHp, left + heal + (glove ? 1 : 0)); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
-  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
+  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); achRun(left); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
   const spoil = CLS[n.foe].boss ? null : shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
   run.offer = { gold: gain, coin: gain - gain0, glove, clean, heal: heal + (glove ? 1 : 0), step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
   if (run.offer.perks && !run.offer.perks.length) run.offer.perks = null;
