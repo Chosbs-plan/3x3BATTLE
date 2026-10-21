@@ -6576,7 +6576,7 @@ function showEmote(k, i) {
 function emoHTML(k) { const e = emNow[k]; if (!e || e.until <= Date.now()) return ''; if (e.adm) return `<div class="emo adm" role="status"><span>${esc(e.adm)}</span>${esc(e.txt)}</div>`; return `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i]}</div>`; }
 /* 관리자 보스의 결투 중 대사: 이모트 말풍선 자리에 작은 창 모양으로 띄운다 */
 function adminSay(k, txt, ms) {
-  ms = ms || 3400; emNow[k] = { adm: `${L('관리자', 'Admin')} ${adminVer(run ? run.act : 0)}`, txt, until: Date.now() + ms };
+  ms = ms || 3400; emNow[k] = { adm: `${L('관리자', 'Admin')} ${adminVer(stTier())}`, txt, until: Date.now() + ms };
   const side = app.querySelector('.side.' + (k === seat ? 'me' : 'op'));
   if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); }
   SND.play('merr');
@@ -6586,7 +6586,7 @@ const ADMIN_TALK = {
   rage: [['경고. 체력 50%. 냉각팬 최대 가동.', 'Warning. HP 50%. Cooling fans at max.'], ['오류, 오류… 재시작은 없다!', 'Error, error… no restarts!'], ['치명적 오류? 아니. 이건 최종 기능이다.', 'Fatal error? No. This is the final feature.']],
   ko: [['프로세스 종료… 다음 버전에서 보자.', 'Process terminated… see you next version.'], ['업데이트… 실패… 롤백할 수 없다…', 'Update… failed… cannot roll back…'], ['시스템을 종료합니다. …수고하셨습니다.', 'Shutting down. …Good work.']],
 };
-const adminTalk = kind => { const a = Math.max(0, Math.min(2, run ? run.act : 0)); return L(...ADMIN_TALK[kind][a]); };
+const adminTalk = kind => { const a = stTier(); return L(...ADMIN_TALK[kind][a]); };
 function sendEmote(i) {
   if (!doc || !seat) return;
   if (Date.now() - emLast < 2500) return toast('이모트는 잠시 뒤에 다시 보낼 수 있습니다');
@@ -7437,13 +7437,14 @@ function achGame(g) {
     if (!q.ab) achGive('noab');
     if (mode === 'bot' && botLv === 'hard') c.hardw++;
     if (mode === 'pvp') { c.pvpw++; if (modeOf() === 'bo3' && scoreOf()[seat] >= 2) achGive('bo3'); if (modeOf() === 'ban') achGive('ban'); }
-    if (mode === 'run' && g.P[opp(seat)].cls === 'admin' && run) { const a = Math.max(0, Math.min(2, run.act)); achGive('adm' + (a + 1)); if (!(q.taken > 0)) achGive('admflaw'); if (a === 2 && q.turns && q.turns <= 6) achGive('admfast'); }
+    if (mode === 'run' && g.P[opp(seat)].cls === 'admin' && run) { const a = stTier(); achGive('adm' + (a + 1)); if (!(q.taken > 0)) achGive('admflaw'); if (a === 2 && q.turns && q.turns <= 6) achGive('admfast'); }
   }
   ls('ssd-achc', JSON.stringify(c)); achScan(c);
 }
 /* 모험을 끝까지 깼을 때 */
 function achRun(left) {
-  if (!run) return; const c = achC(); c.runs++; ls('ssd-achc', JSON.stringify(c));
+  if (!run) return; if (run.weekly) { achGive('week1'); if (left === 1) achGive('runhp1'); return achScan(); }   /* 주간 도전은 한 막이라 모험 완주로 치지 않는다 */
+  const c = achC(); c.runs++; ls('ssd-achc', JSON.stringify(c));
   if (left === 1) achGive('runhp1'); if (run.gold >= 60) achGive('rungold'); if (run.score >= 300) achGive('run300'); if (run.weekly) achGive('week1');
   achScan(c);
 }
@@ -7469,7 +7470,6 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
    한 주(월요일 0시, 한국 시간) 동안 모두가 같은 직업, 같은 지도, 같은 특별 규칙으로 도전한다. 몇 번이든 다시 할 수 있고, 완주한 최고 점수가 순위표에 오른다.
    진행은 일반 모험과 따로 ssd-wrun에 저장. 순위표는 서버(supabase/weekly.sql) */
 const WK_RULES = {
-  snow: ['눈의 주간', 'Snow Week', '모든 결투장이 설원입니다. 기본 이동이 한 칸 더 미끄러집니다.', 'Every arena is the snowfield. Basic moves slide one more tile.'],
   noshop: ['상점 휴업', 'Shops Closed', '지도의 상점이 모두 쉼터로 바뀝니다.', 'Every shop on the map becomes a rest site.'],
   rich: ['빚진 부자', 'Rich but Frail', '금화 15개를 들고 시작하지만 최대 체력 -2.', 'Start with 15 Gold, but Max HP -2.'],
   glass: ['유리 대포', 'Glass Cannon', '모든 상대의 체력 -1, 내 최대 체력 -2.', 'All foes have 1 less HP; your Max HP -2.'],
@@ -7482,12 +7482,11 @@ const wkSeed = id => { let h = 2166136261; for (const ch of 'ssd' + id) { h ^= c
 const wkRng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 function wkInfo(id) { id = id || wkId(); const r = wkRng(wkSeed(id)), ks = Object.keys(WK_RULES); return { id, cls: CLASS_IDS[Math.floor(r() * CLASS_IDS.length)], rule: ks[Math.floor(r() * ks.length)] }; }
 const wkDates = id => { const a = new Date(Date.parse(id.slice(1) + 'T00:00:00+09:00') + 9 * 3600e3), b = new Date(a.getTime() + 6 * 864e5), f = d => `${d.getUTCMonth() + 1}/${d.getUTCDate()}`; return `${f(a)} ~ ${f(b)}`; };
-function wkLoad() { try { const r = JSON.parse(localStorage.getItem('ssd-wrun') || 'null'); return r && r.v === 4 && r.map && CLS[r.cls] && !r.cleared && r.weekly === wkId() ? r : null; } catch (e) { return null; } }
+function wkLoad() { try { const r = JSON.parse(localStorage.getItem('ssd-wrun') || 'null'); return r && r.v === 4 && r.wv === 2 && r.map && CLS[r.cls] && !r.cleared && r.weekly === wkId() ? r : null; } catch (e) { return null; } }
 const wkBest = () => (parse(ls('ssd-wbest')) || {})[wkId()] || null;
 /* 지도를 만든 뒤 이번 주 규칙을 건다(시작할 때 한 번) */
 function wkApply() {
   const R = run.wrule, r = wkRng(wkSeed(run.weekly) ^ 0x9e3779b9);
-  if (R === 'snow') run.map.forEach(m => { m.ar = 'snow'; });
   if (R === 'noshop') run.map.forEach(m => m.rows.forEach(row => row.forEach(n => { if (n.t === 'shop') { n.t = 'rest'; } })));
   if (R === 'rich') { run.gold += 15; run.maxHp = Math.max(2, run.maxHp - 2); run.hp = run.maxHp; }
   if (R === 'glass') { run.maxHp = Math.max(2, run.maxHp - 2); run.hp = run.maxHp; }
@@ -7496,7 +7495,7 @@ function wkApply() {
 function startWeekly() {
   const w = wkInfo(), sv = wkLoad(); emSeen = null; local = true; code = '모험'; me = me || 'me'; doc = freshDoc(me); doc.seats.b = 'bot'; doc.ready.b = true; doc.mode = 'stage'; doc.gid = 1;
   if (sv) { run = sv; if (run.offer) run.offer.busy = false; run.cur = run.offer || run.shop || run.scene ? run.cur : null; doc.pick = { a: run.cls, b: null }; doc.phase = run.offer ? 'reward' : run.shop ? 'shop' : 'map'; }
-  else { run = Object.assign(newRun2(), { weekly: w.id, wrule: w.rule }); doc.pick = { a: w.cls, b: null }; doc.skin = { a: skinOf(w.cls) }; doc.phase = 'select'; }
+  else { run = Object.assign(newRun2(), { weekly: w.id, wrule: w.rule, wv: 2 }); doc.pick = { a: w.cls, b: null }; doc.skin = { a: skinOf(w.cls) }; doc.phase = 'select'; }
   onDoc();
 }
 /* 순위표: 서버에서 받아 잠시 들고 있는다 */
@@ -7525,10 +7524,10 @@ function wkBody() {
     : B.rows.length ? `<ol class="wk-list">${B.rows.map(x => row(x, B.me && x.rank === B.me.rank && x.nick === AUTH.nick)).join('')}</ol>${B.me && B.me.rank > B.rows.length ? `<ol class="wk-list wk-mine">${row(Object.assign({ nick: AUTH.nick }, B.me), true)}</ol>` : ''}<p class="cap">${L(`이번 주 완주 ${B.n}명`, `${B.n} cleared this week`)}</p>`
     : `<p class="cap">${L('아직 아무도 완주하지 못했습니다. 첫 이름을 올려 보세요!', 'Nobody has cleared it yet. Be the first!')}</p>`;
   return `<div class="wk">
-    <section class="wk-card c-${w.cls}"><div class="wk-art th-${w.rule === 'snow' ? 'snow' : 'castle'}"><i class="px wk-hero a-${w.cls}${skc(w.cls, skinOf(w.cls))}" aria-hidden="true"></i><i class="px wk-boss a-admin flip" aria-hidden="true"></i></div>
+    <section class="wk-card c-${w.cls}"><div class="wk-art th-castle"><i class="px wk-hero a-${w.cls}${skc(w.cls, skinOf(w.cls))}" aria-hidden="true"></i><i class="px wk-boss a-admin flip" aria-hidden="true"></i></div>
       <div class="wk-tx"><p class="cap">${L('주간 도전', 'Weekly Challenge')} · ${wkDates(w.id)} · ${wkLeft(w.id)}</p><h3>${L(`이번 주 직업: ${CLS[w.cls].n}`, `This week: ${TR(CLS[w.cls].n)}`)}</h3>
         <p class="wk-rule"><b>${L(R[0], R[1])}</b>${L(R[2], R[3])}</p>
-        <p>${L('모두가 같은 지도로 도전합니다. 몇 번이든 다시 할 수 있고, 완주한 최고 점수가 순위표에 오릅니다. 메달 보상은 일반 모험과 같습니다.', 'Everyone plays the same map. Retry as often as you like; your best cleared score goes on the board. Medals work like a normal run.')}</p>
+        <p>${L('모두가 같은 지도의 한 막(여섯 걸음, 끝에 관리자)에 도전합니다. 몇 번이든 다시 할 수 있고, 완주한 최고 점수가 순위표에 오릅니다. 메달은 지나온 칸만큼(일반 모험 한 막 몫) 받습니다.', 'Everyone plays the same one-act map (six steps, the Admin at the end). Retry as often as you like; your best cleared score goes on the board. Medals are paid per step, like one act of a normal run.')}</p>
         ${best ? `<p class="wk-best">${L('내 최고', 'My best')} <b>${best.score}${L('점', ' pts')}</b> · ${best.turns}${L('턴', ' turns')}${B && B.me ? ` · <b>${B.me.rank}${L('위', 'th')}</b>` : ''}</p>` : ''}
         ${sv ? `<p class="wk-best">${L('진행 중', 'In progress')} · ${L(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)} · ${L('체력', 'HP')} ${sv.hp}/${sv.maxHp}</p>` : ''}
         <div class="wk-go"><button type="button" class="btn red big" data-a="wkgo">${sv ? L('이어하기', 'Continue') : best ? L('다시 도전', 'Try again') : L('도전하기', 'Start')}</button>${sv ? `<button type="button" class="btn ghost" data-a="wknew">${L('처음부터', 'Restart')}</button>` : ''}</div></div></section>
@@ -12137,6 +12136,7 @@ const LV3 = ['easy', 'normal', 'hard'];
 const BOSS_SPEC = [{ boss: 'mid', hp: 7, lv: 'normal', mx: 0 }, { boss: 'mid', hp: 8, lv: 'hard', mx: 1 }, { boss: 'final', hp: 9, lv: 'hard', mx: 1 }];   /* 막별 보스 수치 */
 /* 관리자 보스: 막마다 판이 오른다(v1.0 → v3.0). 이번 막에 새로 들인 시스템 카드를 보여 준다 */
 const adminVer = a => `v${a + 1}.0`;
+const stTier = () => (run ? Math.max(0, Math.min(2, run.act + (run.wrule === 'admin' ? 1 : 0))) : 0);   /* 이번 막 관리자의 버전(주간 '조기 업데이트'면 한 단계 위) */
 const adminNewHTML = a => `<p class="cap adm-new">${a ? L('이번 막에 새로 설치한 카드', 'Newly installed this act') : L('기본 설치 카드', 'Installed cards')} · ${ADMIN_NEW[a].map(id => `<b>${CARDS[id].n}</b>`).join(' · ')}</p>`;
 /* 11×11 픽셀 아이콘 */
 const PXI = {
@@ -12166,6 +12166,7 @@ function stInit() {
   if (run.weekly && !stInit.wk) {   /* 주간 도전: 이번 주 씨앗으로 지도를 만들어 모두 같은 지도. 그다음 이번 주 규칙 */
     const R0 = Math.random; Math.random = wkRng(wkSeed(run.weekly)); stInit.wk = true;
     try { stInit(); } finally { Math.random = R0; stInit.wk = false; }
+    run.map = run.map.slice(0, 1);   /* 주간 도전은 한 막짜리 */
     wkApply(); stSave(); return;
   }
   const cls = run.cls, b1 = 'admin', b2 = 'admin', b3 = 'admin';   /* 보스는 세 막 모두 관리자. 막이 오를수록 덱이 강해진다(ADMIN_TIER) */
@@ -12214,7 +12215,7 @@ function stageFight() {
   const sp = stSpec(n), has = id => run.rl.includes(id);
   if (n.t === 'boss' && has('ration') && run.hp < run.maxHp) run.hp += 1;
   const pk = { a: run.cls, b: n.foe };
-  const glass = run.wrule === 'glass' ? 1 : 0, tier = Math.min(2, run.act + (run.wrule === 'admin' ? 1 : 0));
+  const glass = run.wrule === 'glass' ? 1 : 0, tier = stTier();
   const opt = { hp: { a: run.hp, b: Math.max(1, sp.hp - glass - (has('first') ? 1 : 0)) }, hpMax: { a: run.maxHp, b: Math.max(1, sp.hp - glass) }, mana0: { a: 2 + (has('spring') ? 2 : 0), b: sp.m0 || 2 }, mx: { a: has('vessel') ? 1 : 0, b: sp.mx || 0 },
     extra: { a: (run.cards || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[tier].extra.slice() : [] }, cut: { a: (run.cut || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[tier].cut.slice() : [] }, rl: { a: [...['stone', 'thornmail', 'spyglass', 'satchel'].filter(has), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
   run.hp0 = run.hp;
@@ -12229,9 +12230,9 @@ function stageWin() {
   const gain0 = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? (has('gloves') ? 5 : 2) : 0) + (has('purse') ? 2 : 0), gain = gain0 * (has('ccoin') ? 2 : 1), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
   const glove = clean && has('gloves') && (run.gloveHp || 0) < 2; if (glove) { run.gloveHp = (run.gloveHp || 0) + 1; run.maxHp += 1; }
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
-  if (n.t === 'boss' && n.foe === 'admin') bossRec(run.act, G.turn - 1);
+  if (n.t === 'boss' && n.foe === 'admin') bossRec(stTier(), G.turn - 1);
   run.hp = Math.min(run.maxHp, left + heal + (glove ? 1 : 0)); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
-  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); achRun(left); wkSubmit(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
+  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); achRun(left); wkSubmit(); const r = stageRec3(); if (!run.weekly && (!r[run.cls] || run.score > r[run.cls])) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
   const spoil = CLS[n.foe].boss ? null : shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
   run.offer = { gold: gain, coin: gain - gain0, glove, clean, heal: heal + (glove ? 1 : 0), step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
   if (run.offer.perks && !run.offer.perks.length) run.offer.perks = null;
@@ -12541,7 +12542,7 @@ document.addEventListener('click', e => {
 });
 /* 모험 보상: 지나온 칸 비율(클리어율)만큼, 끝까지 깨면 보너스. 한 모험에 한 번 */
 function stMedal(won) {
-  if (!run || run.medalReq) return; const total = run.map ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18, done = (run.path || []).length;
+  if (!run || run.medalReq) return; const total = run.map && !run.weekly ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18,   /* 주간 도전(한 막)은 일반 모험 18칸 중 한 막 몫 */ done = (run.path || []).length;
   run.rate = Math.min(1, done / total); run.medal = null; run.medalReq = true;
   if (!AUTH.user || !run.sid) { run.medal = 0; return; }
   const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won, p_stats: Object.assign({ cls: r.cls }, r.qs || {}) }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
@@ -12563,9 +12564,9 @@ function stSumHTML() {
   const where = ln ? L(`${run.act + 1}막 ${nodeN(ln.t)}에서 ${ln.foe ? CLS[ln.foe].n + '에게 ' : ''}쓰러졌습니다`, `Fell at Act ${run.act + 1} ${nodeN(ln.t)}${ln.foe ? ' to the ' + TR(CLS[ln.foe].n) : ''}`) : '';
   return `<div class="gate stmap ssum${won ? ' won' : ' lost'}">
     <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
-      <div><p class="cap">${run.weekly ? L('주간 도전 · 도전 결과', 'Weekly · Run result') : L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
+      <div><p class="cap">${run.weekly ? L('주간 도전 · 도전 결과', 'Weekly · Run result') : L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? (run.weekly ? L('이번 주 도전을 완주했습니다!', 'Weekly challenge cleared!') : L('세 막을 모두 돌파했습니다!', 'All three acts cleared!')) : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
-    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
+    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won && !run.weekly ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
     <div class="ss-body">
       <section class="ss-route"><h3>${L('지나온 길', 'Your route')}</h3><ol class="sr-acts">${route}</ol></section>
       <section class="ss-side">
@@ -12620,11 +12621,11 @@ function stageMapHTML() {
     info = `<p class="cap">${L('다음 장소', 'Next stop')}</p><h3>${L('갈 곳을 고르세요', 'Choose where to go')}</h3>
       <p>${L('붉게 빛나는 곳 가운데 하나로 갈 수 있습니다. 지나온 길로는 돌아갈 수 없습니다.', 'You can move to any glowing red spot. There is no going back.')}</p>
       <p class="cap">${L('결투에서 이기면 금화와 카드 한 장(한 장은 쓰러뜨린 상대의 카드). 정예와 보스는 유물도 줍니다. 지면 처음부터 다시 합니다.', "Win a duel for Gold and a card (one is always the beaten foe's). Elites and bosses also give a relic. Lose and you start over.")}</p>
-      <div class="sd-boss c-${bn.foe}"><p class="cap">${L(`${run.act + 1}막의 보스`, `Act ${run.act + 1} boss`)}</p><div class="st-row"><i class="px a-${bn.foe} flip" aria-hidden="true"></i><div><h4>${CLS[bn.foe].n}${bn.foe === 'admin' ? ' ' + adminVer(run.act) : ''}</h4><p>${L('체력', 'HP')} <b>${bs.hp}</b>${bs.mx ? ` · ${L('최대 마나 +1', 'Max mana +1')}` : ''}</p></div></div>${bn.foe === 'admin' ? adminNewHTML(run.act) : ''}</div>`; }
+      <div class="sd-boss c-${bn.foe}"><p class="cap">${L(`${run.act + 1}막의 보스`, `Act ${run.act + 1} boss`)}</p><div class="st-row"><i class="px a-${bn.foe} flip" aria-hidden="true"></i><div><h4>${CLS[bn.foe].n}${bn.foe === 'admin' ? ' ' + adminVer(stTier()) : ''}</h4><p>${L('체력', 'HP')} <b>${bs.hp}</b>${bs.mx ? ` · ${L('최대 마나 +1', 'Max mana +1')}` : ''}</p></div></div>${bn.foe === 'admin' ? adminNewHTML(stTier()) : ''}</div>`; }
   else if (sn.foe) { const sp = stSpec(sn), hp = sp.hp - (run.rl.includes('first') ? 1 : 0), g = sn.t === 'boss' ? 7 : sn.t === 'elite' ? 6 : 4;
     const rule = sn.t === 'boss' ? (sp.boss === 'final' ? L(`체력 ${sp.hp}, 최대 마나 +1. 3턴마다 가로 한 줄에 피해 2를 예고한다.`, `HP ${sp.hp}, max mana +1. Every 3rd turn it forecasts 2 damage on a row.`) : L(`체력 ${sp.hp}${sp.mx ? ', 최대 마나 +1' : ''}. 체력이 절반 이하가 되면 한 번 분노해 다음 턴 공격 피해 +1.`, `HP ${sp.hp}${sp.mx ? ', max mana +1' : ''}. At half HP or less it rages once: next turn's attacks deal +1.`))
       : sn.t === 'elite' ? L('정예: 체력과 최대 마나가 더 많고, 마나 3으로 시작한다. 이기면 유물을 고른다.', 'Elite: more HP and max mana, starts with 3 mana. Win to choose a relic.') : '';
-    info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe c-${sn.foe}"><i class="px a-${sn.foe} flip" aria-hidden="true"></i><div><h3>${CLS[sn.foe].n}${sn.foe === 'admin' ? ' ' + adminVer(run.act) : ''}</h3><p class="cap">${CLS[sn.foe].tag}</p></div></div>${sn.foe === 'admin' ? adminNewHTML(run.act) : ''}
+    info = `<p class="cap sd-kind k-${sn.t}">${pxi(sn.t)}${nodeN(sn.t)}</p><div class="sd-foe c-${sn.foe}"><i class="px a-${sn.foe} flip" aria-hidden="true"></i><div><h3>${CLS[sn.foe].n}${sn.foe === 'admin' ? ' ' + adminVer(stTier()) : ''}</h3><p class="cap">${CLS[sn.foe].tag}</p></div></div>${sn.foe === 'admin' ? adminNewHTML(stTier()) : ''}
       <dl class="sd-kv"><dt>${L('체력', 'HP')}</dt><dd>${pips('hp', hp, hp)} <b>${hp}</b></dd><dt>${L('봇 수준', 'Bot level')}</dt><dd><b>${BOTS[sp.lv][0]}</b></dd></dl>
       ${rule ? `<p class="bossn">${rule}</p>` : ''}
       <div class="sd-rw"><p class="cap">${L('보상', 'Reward')}</p><ul><li>${GOLD}${L(`금화 ${g} (무피해 +2)`, `${g} Gold (+2 flawless)`)}</li><li>${pxi('deck')}${L('카드 한 장', 'A card')}</li>${sn.t === 'fight' ? '' : `<li>${pxi('relic')}${L('유물 하나', 'A relic')}</li>`}${sn.t === 'boss' ? `<li>${pxi('heart')}${L('체력 +2', 'HP +2')}</li>` : ''}</ul></div>
@@ -12658,10 +12659,11 @@ function showFate() {
     return `<button type="button" class="fate-c${a === 2 ? ' fin' : ''}" data-i="${a}" style="--i:${a}" aria-label="${L(`${a + 1}막 카드 뒤집기`, `Flip act ${a + 1} card`)}"><span class="fc-in">
       <span class="fc-b" aria-hidden="true">${ALL.map(() => '<i></i>').join('')}</span>
       <span class="fc-f th-${m.ar}"><span class="fc-g">${tiles}</span><i class="px a-${boss} fc-boss" aria-hidden="true"></i>
-        <b class="fc-t">${L(`${a + 1}막`, `Act ${a + 1}`)} · ${ar(m.ar)}</b><span class="fc-n">${a === 2 ? L('최종 보스', 'Final boss') : L('보스', 'Boss')} ${boss === 'admin' ? adminVer(a) : '???'}</span></span></span></button>`; }).join('');
-  ov.innerHTML = `<div class="fate${fast ? ' fast' : ''}" role="dialog" aria-label="${L('운명의 세 장', 'Three Cards of Fate')}">
-    <p class="fate-h">${L('운명의 세 장', 'Three Cards of Fate')}</p><div class="fate-row">${cards}</div>
-    <p class="fate-l" aria-live="polite">${run.map.every(m => m.rows[m.rows.length - 1][0].foe === 'admin') ? L('세 개의 막, 하나의 관리자. 막이 오를 때마다 업데이트된다.', 'Three acts, one Admin. It updates itself every act.') : L('세 개의 막, 세 개의 보스. 운명은 정해졌다.', 'Three acts, three bosses. Fate is sealed.')}</p>
+        <b class="fc-t">${L(`${a + 1}막`, `Act ${a + 1}`)} · ${ar(m.ar)}</b><span class="fc-n">${a === 2 ? L('최종 보스', 'Final boss') : L('보스', 'Boss')} ${boss === 'admin' ? adminVer(Math.min(2, a + (run.wrule === 'admin' ? 1 : 0))) : '???'}</span></span></span></button>`; }).join('');
+  const fh = run.weekly ? L('이번 주의 한 장', 'This Week\'s Card') : L('운명의 세 장', 'Three Cards of Fate');
+  ov.innerHTML = `<div class="fate${fast ? ' fast' : ''}" role="dialog" aria-label="${fh}">
+    <p class="fate-h">${fh}</p><div class="fate-row">${cards}</div>
+    <p class="fate-l" aria-live="polite">${run.weekly ? L('한 막, 한 번의 승부. 이번 주의 관리자가 기다린다.', 'One act, one shot. This week\'s Admin is waiting.') : run.map.every(m => m.rows[m.rows.length - 1][0].foe === 'admin') ? L('세 개의 막, 하나의 관리자. 막이 오를 때마다 업데이트된다.', 'Three acts, one Admin. It updates itself every act.') : L('세 개의 막, 세 개의 보스. 운명은 정해졌다.', 'Three acts, three bosses. Fate is sealed.')}</p>
     <i class="px a-${run.cls}${skc(run.cls, run.skin)} fate-hero" aria-hidden="true"></i>
     <button type="button" class="btn ghost fate-skip">${L('건너뛰기', 'Skip')}</button></div>`;
   const root = ov.querySelector('.fate'), cs = [...root.querySelectorAll('.fate-c')], tm = [];
@@ -12678,7 +12680,7 @@ function showFate() {
   root.addEventListener('click', () => { if (root.classList.contains('all')) close(); });
   SND.play('scry');
   if (fast) tm.push(setTimeout(() => cs.forEach(flip), 600));
-  else [1100, 1800, 2700].forEach((t, i) => tm.push(setTimeout(() => flip(cs[i]), t)));
+  else [1100, 1800, 2700].slice(0, cs.length).forEach((t, i) => tm.push(setTimeout(() => flip(cs[i]), t)));
 }
 /* 관리자 등장 연출: 보스 결투가 시작될 때 VS 화면 앞에 4단계. 시스템 화면 → 창 → 등장 대사 → 이름 띠.
    그 막을 처음 볼 때는 끝까지 봐야 한다(넘기기·건너뛰기 없음). 끝까지 본 막은 다음부터 빠르게, 누르면 다음 단계(대사가 찍히는 중이면 끝까지)와 건너뛰기. 대사의 *별표*는 굵게, {c}는 플레이어 직업 */
@@ -12691,7 +12693,7 @@ var adiOn = false;   /* tick()이 먼저 볼 수 있게 var */
 function adminIntro(next) {
   const ov = ovEl(); if (!ov || !stageOn() || !G || !seat || G.P[opp(seat)].cls !== 'admin' || G.turn !== 1) return false;
   let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; } catch (e) { /* 저장소 없음 */ }
-  const a = Math.max(0, Math.min(2, run.act));
+  const a = stTier();
   return adminShow(ov, a, run.cls, !!(seen & (1 << a)), false, next);
 }
 /* 연출 본체. fast: 이미 본 막(빠르게, 넘기기 가능). free: 도감에서 다시 보기(보통 빠르기, 넘기기 가능) */
