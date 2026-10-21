@@ -2980,7 +2980,8 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pc-stats dt { font-size: 14px; color: #d9cbc7; } .pc-stats dd { margin: 0; font-size: 22px; font-weight: 700; color: #fff; } .pc-stats dd small { margin-left: 6px; font-size: 13px; font-weight: 400; color: #bfaea9; }
 .pc-stats .pf-bar { grid-column: 1 / -1; margin: 0; height: 6px; background: rgba(255, 255, 255, .12); box-shadow: none; }
 .pc-tipc p { margin: 0; font-size: 15px; line-height: 1.65; color: #f1e9e6; }
-.pc-tipc { position: relative; padding-bottom: 18px !important; }
+.pc-tipc { position: relative; margin: 0 0 6px; padding: 10px 14px 16px; background: rgba(0, 0, 0, .22); border: 1px solid rgba(255, 255, 255, .1); } .pc-tipc .pc-ch { display: block; margin-bottom: 4px; }
+.pc-tipc p { font-size: 14px !important; line-height: 1.6 !important; }
 .tip-gg { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255, 255, 255, .1); }
 .tip-gg i { display: block; height: 100%; width: 100%; background: #e3a33b; transform-origin: left; animation: tipGg 10s linear both; }
 @keyframes tipGg { from { transform: scaleX(1); } to { transform: scaleX(0); } }
@@ -3052,7 +3053,13 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pcb:active:not(:disabled) { translate: 0 2px; } .pcb:disabled { filter: grayscale(.7); opacity: .6; cursor: default; }
 /* 모드 카드 */
 .pg-single .pc-pb, .pg-multi .pc-pb { display: flex; flex-direction: column; gap: 12px; background: linear-gradient(#f6f3f2, #fff 40%); }
-.pmcs { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 22px; }
+.pmcs { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1.6fr 1fr; gap: 22px; }
+/* 방 만들기와 코드로 입장을 한 줄에 위아래로 */
+.pmc-col { display: grid; grid-template-rows: 1fr 1fr; gap: 16px; min-height: 0; }
+.pmc-col .pmc { min-height: 0; grid-template-rows: minmax(0, 1fr) auto; }
+.pmc-col .pmc .pmc-art { display: none; }
+.pmc-col .pmc-tx h3 { font-size: 30px; }
+.pmc-col .pmc-tx > p { font-size: 14px; line-height: 1.5; }
 .pmc { position: relative; display: grid; grid-template-rows: minmax(0, 42%) minmax(0, 1fr) auto; min-height: 560px; color: #f1e9e6; overflow: hidden;
   background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, inset 0 0 0 4px rgba(255, 255, 255, .07);
   clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); transition: translate .15s; filter: drop-shadow(6px 8px 0 rgba(42, 31, 36, .22)); }
@@ -3093,6 +3100,13 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .pmc .pc-lv button { height: 42px; }
 .pmc-go { display: grid; gap: 8px; padding: 12px 24px 24px; } .pmc-go:has(> :nth-child(2)) { grid-template-columns: 1fr auto; }
 .pmc-go .mm-box { margin: 0; }
+/* 대전 방식별 매칭 버튼 */
+.mm-modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.mm-md { display: grid; justify-items: center; gap: 2px; text-align: center; } .mm-md b { font-size: 20px; } .mm-md small { font-size: 12px; opacity: .85; font-weight: 400; }
+.pcb.mm-md.big { min-height: 76px; padding: 8px 6px; }
+.mbtn.mm-md { padding: 10px 6px; color: #fff; background: var(--sil); border: 2px solid #1d1413; box-shadow: 0 4px 0 #1d1413; } .mbtn.mm-md.gold { background: var(--amber); color: var(--sil); } .mbtn.mm-md b { font-size: 16px; } .mbtn.mm-md small { font-size: 11px; }
+.mbtn.mm-md::before, .mbtn.mm-md::after { display: none !important; } .mbtn.mm-md { padding-left: 6px !important; padding-right: 6px !important; align-content: center; }
+.mm-mdn { font-size: .6em; padding: 1px 8px; margin-left: 6px; vertical-align: middle; color: #fff; background: var(--red); }
 .pmc.light .mu-slots { max-width: 360px; } .pmc.light .mu-slots i { aspect-ratio: 1; }
 .pmc-note { margin: 0; font-size: 13px; color: var(--ash); }
 @media (prefers-reduced-motion: no-preference) { .pc-page.pop .pmc { animation: sgIn .35s steps(5) calc(var(--i) * 80ms) backwards; } }
@@ -3331,7 +3345,7 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .ps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
 .ps-it { display: grid; gap: 10px; padding: 10px 10px 12px; background: #fff; box-shadow: inset 0 0 0 2px var(--sil), 5px 5px 0 var(--line); transition: translate .1s; }
 .ps-it.hov { translate: 0 -3px; box-shadow: inset 0 0 0 3px var(--ac), 5px 5px 0 var(--sil); }
-.ps-fig { position: relative; height: 150px; display: flex; justify-content: center; align-items: flex-end; background: linear-gradient(color-mix(in srgb, var(--ac) 30%, #fff), #fff); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ac) 45%, #fff); }
+.ps-fig { position: relative; overflow: hidden; contain: paint; height: 150px; display: flex; justify-content: center; align-items: flex-end; background: linear-gradient(color-mix(in srgb, var(--ac) 30%, #fff), #fff); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ac) 45%, #fff); }
 .ps-s, .ps-a { position: absolute; left: 50%; bottom: 4px; translate: -50% 0; width: 140px; height: 140px; } .ps-a { opacity: 0; }
 .ps-it:hover .ps-s { opacity: 0; } .ps-it:hover .ps-a { opacity: 1; animation: spAnim .5s steps(1) infinite; }
 .ps-tag { position: absolute; left: 6px; top: 6px; padding: 1px 8px; font-size: 12px; font-weight: 700; color: #fff; background: var(--sil); }
@@ -6256,12 +6270,12 @@ function W(patch) {
 }
 
 /* 방 */
-async function createRoom(fixed) {
+async function createRoom(fixed, mmMode) {
   if (busy || !db) return false; busy = true;
   const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   if (p2p()) toast('방을 만드는 중입니다', 15000);
   for (let n = 0; n < (fixed ? 1 : 5); n++) {
-    const c = fixed || Array.from({ length: 4 }, () => pick([...A])).join(''), d0 = freshDoc(me); if (fixed) d0.mm = true;   /* 랜덤 매칭 방: 대기실을 건너뛰고 바로 시작 */
+    const c = fixed || Array.from({ length: 4 }, () => pick([...A])).join(''), d0 = freshDoc(me); if (fixed) { d0.mm = true; d0.mode = mmMode || 'single'; }   /* 랜덤 매칭 방: 대기실을 건너뛰고 바로 시작 */
     try { await db.doc('rooms/' + c).set(d0); }
     catch (e) { if (p2p() && e && e.type === 'unavailable-id' && !fixed) continue; busy = false; return toast(p2p() ? '중계 서버에 연결하지 못했습니다. 네트워크를 확인하고 다시 시도하세요' : '방을 만들지 못했습니다. 이 페이지에 쓰기 권한이 필요합니다', 4000); }
     busy = false; if (p2p()) toastEl.hidden = true;
@@ -6306,9 +6320,9 @@ function leave() { run = null; busy = false; if (!local && p2p()) db.close(); if
 function onDoc() {
   if (!doc) return render();
   seat = doc.seats.a === me ? 'a' : doc.seats.b === me ? 'b' : null;
-  if (doc.mm && doc.phase === 'lobby' && seat && !local) {   /* 랜덤 매칭 방: 둘 다 들어오면 저절로 준비하고 방장이 단판으로 시작 */
+  if (doc.mm && doc.phase === 'lobby' && seat && !local) {   /* 랜덤 매칭 방: 둘 다 들어오면 저절로 준비하고 방장이 매칭한 방식(단판·3판 2선승·밴픽)으로 시작 */
     if (!doc.ready[seat] && onDoc.mmR !== code + seat) { onDoc.mmR = code + seat; W({ ready: { [seat]: true } }); }
-    else if (seat === 'a' && doc.seats.b && doc.ready.a && doc.ready.b && onDoc.mmS !== code) { onDoc.mmS = code; W({ phase: 'select', mode: 'single', pick: { a: null, b: null }, ban: { a: null, b: null }, score: { a: 0, b: 0 }, gid: doc.gid + 1 }); }
+    else if (seat === 'a' && doc.seats.b && doc.ready.a && doc.ready.b && onDoc.mmS !== code) { onDoc.mmS = code; W({ phase: doc.mode === 'ban' ? 'ban' : 'select', mode: doc.mode || 'single', pick: { a: null, b: null }, ban: { a: null, b: null }, score: { a: 0, b: 0 }, gid: doc.gid + 1 }); }
   }
   if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
   if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
@@ -7763,9 +7777,9 @@ function multiBody(off) {
     <section class="mu2-rand" style="--i:0" aria-labelledby="mu2-h">
       <div class="mu2-art" aria-hidden="true"><span class="mu2-me">${faceOf(rep, skinOf(rep))}<b data-notr>${esc(AUTH.nick)}</b></span><b class="mu2-vs">VS</b><span class="mu2-op"><span class="lb-face q"><i>?</i></span><b>${mE('누군가', 'Anyone')}</b></span></div>
       <div class="mu2-tx"><p class="cap">${mE('추천', 'Recommended')} · <span class="mu-net ${st[0]}"><i></i>${st[1]}</span></p><h3 id="mu2-h">${mE('랜덤 매칭', 'Random Match')}</h3>
-        <p>${mE('기다리는 사람 중 한 명과 바로 단판 대결을 합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Get paired with someone waiting for a single game. Both players confirm the result.')}</p>
+        <p>${mE('대전 방식을 고르면 같은 방식을 기다리는 사람과 바로 대결합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Pick a format to face someone waiting for the same one. Both players confirm the result.')}</p>
         <p class="mu2-rw"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span><span class="mu2-rec">${mE('내 전적', 'Record')} ${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</span></p>
-        ${MM.on ? mmHTML() : `<button type="button" class="mbtn red mu-rand" data-mm="go" ${on ? '' : 'disabled'}><b>${mE('매칭 시작', 'Find a match')}</b><span>${mE('취소는 언제든 할 수 있습니다', 'Cancel anytime')}</span></button>`}</div>
+        ${MM.on ? mmHTML() : mmBtns(on, 'mbtn')}</div>
     </section>
     <div class="mu-grid">
       <section class="mu-host" style="--i:1" aria-labelledby="mu-h1">
@@ -7800,7 +7814,7 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   else if (a === 'colltab') collTab = b.dataset.t;
   else if (a === 'pcsel') { collSel = b.dataset.k; collPrev = null; }
   else if (a === 'pcprev') { collSel = b.dataset.c; collPrev = b.dataset.id; }
-  else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); render(); return mmStart(); }
+  else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); return render(); }   /* 매칭 화면에서 대전 방식을 골라 시작 */
   SND.play('tap'); render(); }, true);
 /* ===== PC 전용 로비: 위 내비게이션 바 + 모드 고르기와 게임 시작 + 소식 패널 =====
    1920×1080을 기준 화면으로 그리고 창 크기에 맞춰 통째로 확대·축소한다. 하위 메뉴는 위 바 아래 전체 페이지로 연다 */
@@ -7874,10 +7888,11 @@ function pcMultiBody(off) {
   return `<div class="pmcs">
     <section class="pmc wide red" style="--i:0"><div class="pmc-art rand-art"><span class="pmc-f">${faceOf(rep, skinOf(rep))}<b data-notr>${esc(AUTH.nick)}</b></span><b class="pmc-vs">VS</b><span class="pmc-f"><span class="lb-face q"><i>?</i></span><b>${mE('누군가', 'Anyone')}</b></span></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('추천', 'Recommended')} <span class="mu-net ${st[0]}"><i></i>${st[1]}</span></p><h3>${mE('랜덤 매칭', 'Random Match')}</h3>
-        <p>${mE('기다리는 사람 중 한 명과 바로 단판 대결을 합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Get paired with someone waiting for a single game. Both players confirm the result.')}</p>
+        <p>${mE('대전 방식을 고르면 같은 방식을 기다리는 사람과 바로 대결합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Pick a format to face someone waiting for the same one. Both players confirm the result.')}</p>
         <p class="pmc-chips"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span></p>
         <p class="pmc-rw">${mE('내 전적', 'My record')} <b>${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</b></p></div>
-      <div class="pmc-go">${MM.on ? mmHTML() : `<button type="button" class="pcb gold big" data-mm="go" ${on ? '' : 'disabled'}>${mE('매칭 시작', 'Find Match')}</button>`}</div></section>
+      <div class="pmc-go">${MM.on ? mmHTML() : mmBtns(on, 'pcb big')}</div></section>
+    <div class="pmc-col">
     <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3>${mE('방 만들기', 'Create Room')}</h3>
         <p>${mE('방을 열면 4글자 코드와 초대 링크가 생깁니다. 친구가 들어오면 대기실에서 대전 방식을 고르세요.', 'Get a 4-letter code and invite link, then pick the format in the lobby.')}</p>
@@ -7889,6 +7904,7 @@ function pcMultiBody(off) {
           <span class="mu-slots" aria-hidden="true">${[0, 1, 2, 3].map(n => `<i>${esc((prefill || '')[n] || '')}</i>`).join('')}</span></label>
         <p class="pmc-rw" id="mu-ch">${mE('영문과 숫자 4글자 · Enter로 입장', '4 letters or digits · Enter to join')}</p></div>
       <div class="pmc-go"><button type="button" class="pcb dark big" data-a="join" ${on ? '' : 'disabled'}>${mE('입장', 'Join')}</button></div></section>
+    </div>
   </div>`;
 }
 /* ===== PC 프로필 · 컬렉션 · 도감 · 상점 ===== */
@@ -7988,11 +8004,11 @@ function pcHomeHTML(on) {
   const modes = [
     ['adv', 'boss', '모험 모드', 'Adventure', hasRun ? mE(`이어하기 · ${CLS[sv.cls].n} ${(sv.act || 0) + 1}막`, `Continue · ${CLS[sv.cls].n} Act ${(sv.act || 0) + 1}`) : mE('직업 하나로 세 막을 돌파', 'Three acts with one class'), mE('최대', 'Up to') + ' ' + MDL(300)],
     ['bot', 'fight', '연습 대전', 'Practice', mE(`봇과 한 판 · ${BOTS[botLv][0]}`, `One game vs bot · ${BOTS[botLv][0]}`), MDL('5~12')],
-    ['rand', 'elite', '랜덤 매칭', 'Random Match', mE('아무나와 바로 단판 대결', 'Quick 1v1 with anyone'), MDL(30)],
+    ['rand', 'elite', '랜덤 매칭', 'Random Match', mE('단판·3판 2선승·밴픽 중 골라 매칭', 'Pick single, Bo3 or ban-pick'), MDL(30)],
     ['room', 'treasure', '친구 대전', 'Friendly Duel', mE('방을 만들거나 코드로 입장', 'Create a room or join by code'), ''],
   ];
   const go = { adv: 'data-a="stage"', bot: 'data-a="local"', rand: `data-a="mmquick"${on ? '' : ' disabled'}`, room: 'data-a="mtab" data-m="multi"' }[pcMode];
-  const goTx = { adv: hasRun ? ['이어하기', 'Continue'] : ['모험 시작', 'Start Adventure'], bot: ['연습 시작', 'Start Practice'], rand: ['매칭 시작', 'Find Match'], room: ['친구 대전', 'Friendly Duel'] }[pcMode];
+  const goTx = { adv: hasRun ? ['이어하기', 'Continue'] : ['모험 시작', 'Start Adventure'], bot: ['연습 시작', 'Start Practice'], rand: ['방식 고르기', 'Choose Format'], room: ['친구 대전', 'Friendly Duel'] }[pcMode];
   return `<aside class="pc-news" aria-label="${mE('소식', 'News')}">
       ${hasRun ? `<button type="button" class="pc-card pc-cont c-${sv.cls}" data-a="stage" style="--i:0"><span class="pc-ch">${mE('진행 중인 모험', 'Run in progress')}</span><span class="pc-cb">${faceOf(sv.cls, sv.skin || '')}<span><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><small>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</small></span><em>${mE('이어하기', 'Continue')} ▶</em></span></button>` : ''}
       <section class="pc-card" style="--i:1"><span class="pc-ch">${mE('내 기록', 'My records')}<button type="button" class="pc-more" data-a="mtab" data-m="acct">${mE('프로필', 'Profile')} ▶</button></span>
@@ -8000,10 +8016,10 @@ function pcHomeHTML(on) {
           <div><dt>${mE('모험 돌파', 'Adventure')}</dt><dd>${clr}<small>/ ${CLASS_IDS.length}</small></dd><span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span></div>
           <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
       ${wkHome(true)}
-      ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>`
-        : `<section class="pc-card pc-tipc" style="--i:2"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3 + HTIP.n) % RULES.length])}</p><span class="tip-gg" aria-hidden="true"><i style="animation-delay:-${Date.now() - HTIP.t}ms"></i></span></section>`}
+      ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>` : ''}
     </aside>
     <section class="pc-play" aria-label="${mE('게임 모드', 'Game mode')}">
+      <div class="pc-tipc"><span class="pc-ch">${mE('결투 요령', 'Dueling tip')}</span><p>${hl(RULES[(MENU_TIP + 3 + HTIP.n) % RULES.length])}</p><span class="tip-gg" aria-hidden="true"><i style="animation-delay:-${Date.now() - HTIP.t}ms"></i></span></div>
       <h3 class="pc-ph3">${mE('게임 모드', 'Game Mode')}</h3>
       <div class="pc-modes" role="radiogroup">${modes.map(([k, ic, a, b, d, rw], i) => `<button type="button" class="pc-mode${pcMode === k ? ' on' : ''}" data-a="pmode" data-k="${k}" role="radio" aria-checked="${pcMode === k}" style="--i:${i}">
           <i class="pc-mi">${typeof pxi === 'function' ? pxi(ic) : ''}</i><span><b>${mE(a, b)}</b><small>${d}</small></span>${rw ? `<em>${rw}</em>` : ''}</button>`).join('')}</div>
@@ -8468,19 +8484,23 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
     const v = parseInt(window.prompt('', '1000') || '', 10); if (!(v > 0)) return;
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
 /* ===== 랜덤 매칭: 서버 줄(mm_queue)에서 짝을 찾고, 먼저 기다린 쪽이 방을 연다 ===== */
-const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0 };
-async function mmStart() {
+const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0, mode: 'single' };
+const MM_MODES = [['single', '단판', 'Single', '한 판 승부', 'One game'], ['bo3', '3판 2선승', 'Best of 3', '먼저 두 판을 이기면 승리', 'First to two wins'], ['ban', '밴픽', 'Ban-pick', '서로 직업 하나씩 금지', 'Each side bans a class']];
+const mmModeN = m => { const x = MM_MODES.find(q => q[0] === m) || MM_MODES[0]; return mE(x[1], x[2]); };
+/* 랜덤 매칭 버튼: 대전 방식마다 따로 */
+const mmBtns = (on, cls) => `<div class="mm-modes">${MM_MODES.map(([m, a, b, c, d], i) => `<button type="button" class="${cls} ${i ? 'dark' : 'gold'} mm-md" data-mm="go" data-md="${m}" ${on ? '' : 'disabled'}><b>${mE(a, b)}</b><small>${mE(c, d)}</small></button>`).join('')}</div>`;
+async function mmStart(mode) {
   if (!AUTH.user) return toast(mE('로그인해야 랜덤 매칭을 쓸 수 있습니다', 'Log in to use random match'));
   if (!netReady || !db) return toast(mE('온라인 연결을 기다리는 중입니다', 'Waiting for the network'));
-  Object.assign(MM, { on: true, st: 'wait', t0: Date.now(), opp: '', n: 0 }); SND.play('pop'); render();
-  try { await mmGot(await rpc('mm_join')); } catch (e) { mmStop(true); return toast(e.net ? mE('서버에 연결하지 못했습니다', 'Could not reach the server') : mE('매칭을 시작하지 못했습니다', 'Could not start matching')); }
+  Object.assign(MM, { on: true, st: 'wait', t0: Date.now(), opp: '', n: 0, mode: MM_MODES.some(q => q[0] === mode) ? mode : 'single' }); SND.play('pop'); render();
+  try { await mmGot(await rpc('mm_join', { p_mode: MM.mode })); } catch (e) { mmStop(true); return toast(e.net ? mE('서버에 연결하지 못했습니다', 'Could not reach the server') : mE('매칭을 시작하지 못했습니다', 'Could not start matching')); }
   mmLoop();
 }
 function mmLoop() {
   clearTimeout(MM.timer); if (!MM.on || MM.st !== 'wait') return;
   MM.timer = setTimeout(async () => {
     if (!MM.on || MM.st !== 'wait') return;
-    try { let r = await rpc('mm_poll'); if (r && r.state === 'gone') r = await rpc('mm_join'); await mmGot(r); MM.n = await rpc('mm_count').catch(() => MM.n); } catch (e) { /* 다음 차례에 다시 */ }
+    try { let r = await rpc('mm_poll'); if (r && r.state === 'gone') r = await rpc('mm_join', { p_mode: MM.mode }); await mmGot(r); MM.n = await rpc('mm_count', { p_mode: MM.mode }).catch(() => MM.n); } catch (e) { /* 다음 차례에 다시 */ }
     if (MM.on && MM.st === 'wait') { if (!doc && menuTab === 'multi') render(); mmLoop(); }
   }, 2000);
 }
@@ -8488,24 +8508,24 @@ async function mmGot(r) {
   if (!MM.on || !r || r.state !== 'matched') return; clearTimeout(MM.timer);
   MM.st = 'found'; MM.opp = r.opp_nick || ''; SND.play('relicGood'); render();
   let ok = false;
-  if (r.host) ok = await createRoom(r.room);
+  if (r.host) ok = await createRoom(r.room, r.mode || MM.mode);
   else for (let n = 0; n < 6 && MM.on && !ok; n++) { await new Promise(res => setTimeout(res, n ? 2500 : 3000)); if (!MM.on) break; ok = await joinRoom(r.room, true); }   /* 방장이 방을 여는 동안 잠깐 기다렸다 들어간다 */
   MM.on = false; rpc('mm_leave').catch(() => {});
-  if (!ok) { toast(mE('상대와 연결하지 못했습니다. 다시 찾습니다', 'Could not connect. Searching again')); setTimeout(mmStart, 800); }
+  if (!ok) { const md = MM.mode; toast(mE('상대와 연결하지 못했습니다. 다시 찾습니다', 'Could not connect. Searching again')); setTimeout(() => mmStart(md), 800); }
 }
 function mmStop(quiet) { const was = MM.on; MM.on = false; MM.st = ''; clearTimeout(MM.timer); if (was) rpc('mm_leave').catch(() => {}); if (!quiet) { SND.play('tap'); render(); } }
 function mmHTML() {
   const sec = Math.floor((Date.now() - MM.t0) / 1000), found = MM.st === 'found';
   return `<div class="mm-box${found ? ' found' : ''}" role="status" aria-live="polite">
     <div class="mm-ring" aria-hidden="true">${ALL.map(n => `<i style="--i:${n}"></i>`).join('')}</div>
-    <h3>${found ? mE('상대를 찾았습니다!', 'Opponent found!') : mE('상대를 찾는 중', 'Searching for an opponent')}</h3>
+    <h3>${found ? mE('상대를 찾았습니다!', 'Opponent found!') : mE('상대를 찾는 중', 'Searching for an opponent')} <small class="mm-mdn">${mmModeN(MM.mode)}</small></h3>
     <p class="mm-t">${found ? `<b data-notr>${esc(MM.opp)}</b> ${mE('님과 연결하는 중', 'connecting')}…` : `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}${MM.n ? ` · ${mE(`기다리는 사람 ${MM.n}명`, `${MM.n} waiting`)}` : ''}`}</p>
     ${found ? '' : `<div class="mm-go"><button type="button" class="btn ghost" data-mm="stop">${mE('취소', 'Cancel')}</button>${sec >= 30 ? `<button type="button" class="btn" data-a="local">${mE('봇과 연습하기', 'Practice vs bot')}</button>` : ''}</div>`}
   </div>`;
 }
 setInterval(() => { if (MM.on && MM.st === 'wait' && !doc && menuTab === 'multi') { const t = app.querySelector('.mm-t'); if (t) render(); } }, 1000);
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-mm],[data-a="local"],[data-a="mback"],[data-a="create"],[data-a="join"]'); if (!b) return;
-  if (b.dataset.mm === 'go') { e.stopPropagation(); mmStart(); } else if (b.dataset.mm === 'stop') { e.stopPropagation(); mmStop(); } else if (MM.on) mmStop(true); }, true);
+  if (b.dataset.mm === 'go') { e.stopPropagation(); if (!b.disabled) mmStart(b.dataset.md); } else if (b.dataset.mm === 'stop') { e.stopPropagation(); mmStop(); } else if (MM.on) mmStop(true); }, true);
 window.addEventListener('pagehide', () => { if (MM.on && AUTH.tok) { try { fetch(SB_URL + '/rest/v1/rpc/mm_leave', { method: 'POST', keepalive: true, headers: { apikey: SB_KEY, Authorization: 'Bearer ' + AUTH.tok.access_token, 'Content-Type': 'application/json' }, body: '{}' }); } catch (e) { /* 무시 */ } } });
 
 /* ===== 환영 선물: 계정마다 한 번, 메달 300. 메뉴에 처음 들어오면 선물 상자가 뜬다 ===== */
