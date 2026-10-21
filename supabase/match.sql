@@ -31,26 +31,30 @@ create table if not exists public.mm_queue (
   room text, host boolean, opp uuid, opp_nick text, matched_at timestamptz
 );
 alter table public.mm_queue enable row level security;   -- 정책 없음: 아래 함수로만 쓴다
+-- 대전 방식(single 단판, bo3 3판 2선승, ban 밴픽)마다 따로 줄을 선다
+alter table public.mm_queue add column if not exists mode text not null default 'single';
+drop function if exists public.mm_join();
+drop function if exists public.mm_count();
 
-create or replace function public.mm_join() returns json
+create or replace function public.mm_join(p_mode text default 'single') returns json
 language plpgsql security definer set search_path = public as $$
-declare me uuid := auth.uid(); nk text; o mm_queue; code text;
+declare me uuid := auth.uid(); nk text; o mm_queue; code text; md text := case when p_mode in ('single', 'bo3', 'ban') then p_mode else 'single' end;
 begin
   if me is null then raise exception 'login'; end if;
   select nickname into nk from profiles where id = me;
   -- 오래된 줄과 끝난 짝은 치운다
   delete from mm_queue where (room is null and beat < now() - interval '20 seconds') or matched_at < now() - interval '2 minutes' or id = me;
   -- 8초 안에 살아 있다고 알린 사람 중 가장 오래 기다린 사람
-  select * into o from mm_queue where id <> me and room is null and beat > now() - interval '8 seconds'
+  select * into o from mm_queue where id <> me and room is null and mode = md and beat > now() - interval '8 seconds'
     order by joined limit 1 for update skip locked;
   if found then
     select string_agg(substr('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 1 + floor(random() * 32)::int, 1), '') into code from generate_series(1, 4);
     update mm_queue set room = code, host = true, opp = me, opp_nick = nk, matched_at = now() where id = o.id;
-    insert into mm_queue (id, nick, room, host, opp, opp_nick, matched_at) values (me, nk, code, false, o.id, o.nick, now());
-    return json_build_object('state', 'matched', 'room', code, 'host', false, 'opp_nick', o.nick);
+    insert into mm_queue (id, nick, room, host, opp, opp_nick, matched_at, mode) values (me, nk, code, false, o.id, o.nick, now(), md);
+    return json_build_object('state', 'matched', 'room', code, 'host', false, 'opp_nick', o.nick, 'mode', md);
   end if;
-  insert into mm_queue (id, nick) values (me, nk);
-  return json_build_object('state', 'wait');
+  insert into mm_queue (id, nick, mode) values (me, nk, md);
+  return json_build_object('state', 'wait', 'mode', md);
 end $$;
 
 -- 기다리는 동안 2초마다: 살아 있다고 알리고 짝이 생겼는지 본다
@@ -61,25 +65,25 @@ begin
   update mm_queue set beat = now() where id = auth.uid() returning * into r;
   if not found then return json_build_object('state', 'gone'); end if;
   if r.room is null then return json_build_object('state', 'wait', 'since', extract(epoch from now() - r.joined)::int); end if;
-  return json_build_object('state', 'matched', 'room', r.room, 'host', r.host, 'opp_nick', r.opp_nick);
+  return json_build_object('state', 'matched', 'room', r.room, 'host', r.host, 'opp_nick', r.opp_nick, 'mode', r.mode);
 end $$;
 
 create or replace function public.mm_leave() returns void
 language sql security definer set search_path = public as $$ delete from mm_queue where id = auth.uid() $$;
 
--- 지금 줄 선 사람 수(화면 표시용)
-create or replace function public.mm_count() returns int
+-- 지금 줄 선 사람 수(화면 표시용). 방식을 주면 그 방식만
+create or replace function public.mm_count(p_mode text default null) returns int
 language sql security definer set search_path = public as $$
-  select count(*)::int from mm_queue where room is null and beat > now() - interval '8 seconds'
+  select count(*)::int from mm_queue where room is null and beat > now() - interval '8 seconds' and (p_mode is null or mode = p_mode)
 $$;
 
 revoke all on function public.claim_gift(text) from public, anon;
-revoke all on function public.mm_join() from public, anon;
+revoke all on function public.mm_join(text) from public, anon;
 revoke all on function public.mm_poll() from public, anon;
 revoke all on function public.mm_leave() from public, anon;
-revoke all on function public.mm_count() from public, anon;
+revoke all on function public.mm_count(text) from public, anon;
 grant execute on function public.claim_gift(text) to authenticated;
-grant execute on function public.mm_join() to authenticated;
+grant execute on function public.mm_join(text) to authenticated;
 grant execute on function public.mm_poll() to authenticated;
 grant execute on function public.mm_leave() to authenticated;
-grant execute on function public.mm_count() to authenticated;
+grant execute on function public.mm_count(text) to authenticated;
