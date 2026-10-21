@@ -3162,6 +3162,8 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .cx-tabs { display: flex; gap: 8px; } .cx-tb { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font: inherit; color: var(--sil); cursor: pointer; background: #fff; border: 3px solid var(--sil); box-shadow: 3px 3px 0 var(--line); }
 .cx-tb .pxi { width: 18px; height: 18px; fill: currentColor; } .cx-tb b { font-size: 16px; } .cx-tb em { font-style: normal; font-size: 12px; color: var(--ash); }
 .cx-tb.on { color: #fff; background: var(--sil); box-shadow: 3px 3px 0 var(--red); } .cx-tb.on em { color: #ffd75e; }
+.cx-tb b { white-space: nowrap; }
+@media (max-width: 480px) { .cx-tabs { gap: 6px; } .cx-tb { flex: 1 1 0; justify-content: center; gap: 5px; padding: 7px 6px; min-width: 0; } .cx-tb b { font-size: 14px; } .cx-tb .pxi { display: none; } }
 .rlx { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 16px; min-height: 0; }
 .rl-list { min-height: 0; overflow: auto; padding: 2px 4px 8px 2px; } .rl-gh { margin: 4px 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--ash); } .rl-gh b { color: var(--sil); }
 .rl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin-bottom: 14px; }
@@ -3176,6 +3178,65 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .rl-main.unk .rl-stage { background: radial-gradient(ellipse 55% 45% at 50% 60%, #fff, transparent 70%), linear-gradient(#ece6e4, #d9cfcc); } .rl-main { align-self: start; }
 .rl-tx { display: grid; gap: 6px; } .rl-k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--red-d); } .rl-tx h3 { margin: 0; font-size: 26px; }
 .rl-main.unk h3 { letter-spacing: 4px; color: var(--ash); } .rl-ds { margin: 0; font-size: 15px; line-height: 1.6; } .rl-n { margin: 0; font-size: 13px; color: var(--ash); } .rl-n b { color: var(--sil); }
+/* 주간 도전 */
+.wks { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 14px; background: #1a1420; color: #fff; border: 3px solid var(--ac, #4b3f8f); box-shadow: 4px 4px 0 rgba(42, 31, 36, .25); }
+.wks > i.px { width: 48px; height: 48px; } .wks > div { display: grid; gap: 2px; min-width: 0; } .wks .cap { color: #ffd75e; } .wks b { font-size: 16px; } .wks span { font-size: 12px; color: #c9c6d6; }
+.wks.pc { margin: 0 0 14px; } .wks .btn, .wks .pcb { white-space: nowrap; }
+.wk { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr); gap: 16px; align-items: start; min-height: 0; }
+.wk-card { display: grid; gap: 0; background: #fff; border: 3px solid var(--sil); box-shadow: 5px 5px 0 var(--line); }
+.wk-art { position: relative; height: 170px; background: linear-gradient(#2a3fd0 0 0) 0 100% / 100% 6px no-repeat, linear-gradient(#efe4d0, #d9c7a6); overflow: hidden; }
+.wk-art.th-snow { background: linear-gradient(#a9cfee 0 0) 0 100% / 100% 6px no-repeat, linear-gradient(#e6eff8, #c4d7ea); }
+.wk-hero, .wk-boss { position: absolute; bottom: 8px; width: 128px; height: 128px; animation: breathe 1.3s steps(1) infinite; } .wk-hero { left: 14%; } .wk-boss { right: 14%; }
+.wk-tx { display: grid; gap: 8px; padding: 14px 16px 16px; } .wk-tx h3 { margin: 0; font-size: 22px; } .wk-tx p { margin: 0; line-height: 1.6; font-size: 14px; }
+.wk-rule { padding: 8px 10px; background: #ece9fb; box-shadow: inset 4px 0 0 #4b3f8f; } .wk-rule b { display: block; color: #4b3f8f; }
+.wk-best b { color: var(--red-d); } .wk-go { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.wk-board { display: grid; gap: 10px; padding: 14px 16px; background: #fff; border: 3px solid var(--sil); box-shadow: 5px 5px 0 var(--line); min-height: 0; }
+.wk-bh { display: flex; align-items: center; justify-content: space-between; gap: 8px; } .wk-bh h3 { display: flex; gap: 6px; align-items: center; margin: 0; font-size: 18px; } .wk-bh .pxi { width: 18px; height: 18px; fill: currentColor; }
+.wk-bh .btn.sm { min-height: 30px; padding: 3px 10px; font-size: 12px; }
+.wk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; max-height: 60vh; overflow: auto; }
+.wk-list li { display: grid; grid-template-columns: 34px 1fr auto 46px; gap: 8px; align-items: center; padding: 5px 8px; background: var(--wash); font-size: 14px; }
+.wk-list li.me { background: #fff1c2; box-shadow: inset 4px 0 0 var(--amber); } .wk-list li.top1 .wk-rk { color: #b97f22; } .wk-list li.top2 .wk-rk { color: #8a8a9a; } .wk-list li.top3 .wk-rk { color: #a8703a; }
+.wk-rk { font-size: 16px; text-align: center; } .wk-nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; } .wk-sc { font-weight: 700; } .wk-sc small { font-size: 11px; color: var(--ash); margin-left: 2px; } .wk-tn { font-size: 12px; color: var(--ash); text-align: right; }
+.wk-mine { margin-top: 6px; border-top: 2px dashed var(--line); padding-top: 6px; }
+.wk-res b { color: var(--red-d); }
+@media (max-width: 760px) { .wk { grid-template-columns: 1fr; } .wk-art { height: 130px; } .wk-hero, .wk-boss { width: 96px; height: 96px; } .wks { grid-template-columns: auto 1fr; } .wks > .btn { grid-column: 1 / -1; } }
+/* 업적과 칭호 */
+.ttl { margin: 2px 0 0; font-size: 14px; font-weight: 700; color: #b97f22; letter-spacing: 1px; }
+.in-tt { font-style: normal; font-size: 13px; font-weight: 700; color: #b97f22; }
+.achx { position: fixed; z-index: 60; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); translate: -50% 0; display: flex; align-items: center; gap: 12px; padding: 10px 18px 10px 12px; background: #1a1420; color: #fff; border: 3px solid #ffd75e; box-shadow: 4px 4px 0 rgba(0, 0, 0, .35); animation: achIn .3s steps(5) both; pointer-events: none; }
+.achx.out { opacity: 0; transition: opacity .3s steps(4); } @keyframes achIn { from { translate: -50% -140%; } }
+.achx-ic { display: grid; place-items: center; width: 38px; height: 38px; background: #ffd75e; color: #1a1420; } .achx-ic .pxi { width: 26px; height: 26px; fill: currentColor; }
+.achx span { display: grid; gap: 1px; } .achx small { font-size: 11px; color: #ffd75e; letter-spacing: 2px; } .achx b { font-size: 17px; } .achx em { font-style: normal; font-size: 12px; color: #c9c6d6; }
+.ach { display: grid; gap: 14px; align-content: start; min-height: 0; }
+.ach-top { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 12px; }
+.ach-sum, .ach-now { display: grid; gap: 4px; align-content: start; padding: 12px 14px; background: #fff; border: 3px solid var(--sil); box-shadow: 4px 4px 0 var(--line); }
+.ach-sum b { font-size: 28px; } .ach-sum b i { font-style: normal; font-size: 15px; color: var(--ash); margin-left: 4px; }
+.ach-now b { font-size: 20px; color: #b97f22; } .ach-now small { font-size: 12px; color: var(--ash); line-height: 1.5; }
+.ach-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; min-height: 0; overflow: auto; padding: 2px 4px 8px 2px; }
+.ach-c { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; background: #ece6e4; border: 3px solid var(--line); color: var(--ash); }
+.ach-c.ok { background: #fff; border-color: var(--sil); color: var(--sil); box-shadow: 3px 3px 0 rgba(42, 31, 36, .15); } .ach-c.on { box-shadow: 3px 3px 0 #e3a33b; border-color: #b97f22; }
+.ach-ic { display: grid; place-items: center; width: 36px; height: 36px; background: #d9cfcc; color: #fff; } .ach-ic .pxi { width: 24px; height: 24px; fill: currentColor; } .ach-c.ok .ach-ic { background: #ffd75e; color: #1a1420; }
+.ach-tx { display: grid; gap: 2px; min-width: 0; } .ach-tx b { font-size: 15px; } .ach-tx span { font-size: 12px; line-height: 1.45; } .ach-tx small { font-size: 11px; }
+.ach-bar { display: block; height: 6px; background: #d9cfcc; margin-top: 3px; } .ach-bar i { display: block; height: 100%; background: var(--amber); }
+.ach-ti { display: grid; justify-items: end; gap: 4px; } .ach-ti em { font-style: normal; font-size: 12px; font-weight: 700; color: #b97f22; white-space: nowrap; } .ach-c:not(.ok) .ach-ti em { color: var(--ash); }
+.ach-ti .btn.sm { padding: 3px 10px; font-size: 12px; min-height: 28px; } .ach-lk { font-size: 11px; }
+@media (max-width: 440px) { .hub-tab .pxi { display: none; } .hub-tab span { white-space: nowrap; } }
+@media (max-width: 600px) { .ach-top { grid-template-columns: 1fr; } .ach-list { grid-template-columns: 1fr; } .ach-tabs .cx-tb em { display: none; } }
+/* 보스 도감 */
+.bsx { grid-template-columns: minmax(0, 1fr) minmax(320px, 500px); } .bsx .rl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 640px; } .bsx .rl-list > .cap { max-width: 640px; line-height: 1.6; }
+.bs-t { padding: 14px 8px 10px; } .bs-t .bs-im { width: clamp(72px, 12vw, 140px); height: clamp(72px, 12vw, 140px); } .bs-t > span:not(.bs-im) { font-size: 15px; }
+.bs-im { display: block; width: 72px; height: 72px; } .bs-im i, .bs-big i { display: block; width: 100%; height: 100%; animation: breathe 1.3s steps(1) infinite; }
+.px.sil { filter: brightness(0) opacity(.55); animation: none !important; }
+.bs-st { font-style: normal; font-size: 11px; color: var(--ash); } .bs-st.ok { color: var(--red-d); font-weight: 700; }
+.bs-stage { background: radial-gradient(ellipse 55% 45% at 50% 62%, #8f86d6, transparent 70%), linear-gradient(#1d1730, #120e1c); }
+.bs-stage.bs-a1 { background: radial-gradient(ellipse 55% 45% at 50% 62%, #6f86ff, transparent 70%), linear-gradient(#1a2366, #10153d); }
+.bs-stage.bs-a2 { background: radial-gradient(ellipse 55% 45% at 50% 62%, #ff7a8a, transparent 70%), linear-gradient(#3d0f1a, #1e0810); }
+.bs-big { position: relative; display: block; width: 190px; height: 190px; }
+.bs-ln { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 4px 0; font-size: 14px; line-height: 1.55; } .bs-ln dt { font-weight: 700; color: #4b3f8f; } .bs-ln dd { margin: 0; }
+.bs-nwk { color: #4b3f8f; }
+.bs-deck { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .bs-deck li { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 4px 8px; background: var(--wash); font-size: 13px; }
+.bs-deck li > span { color: var(--ash); font-size: 12px; } .bs-deck li > span i { font-style: normal; } .bs-deck li em { font-style: normal; font-weight: 700; } .bs-deck li.nw { background: #ece9fb; box-shadow: inset 3px 0 0 #4b3f8f; }
+.bs-play { justify-self: start; margin-top: 6px; }
 @media (max-width: 760px) { .rlx { grid-template-columns: 1fr; } .rl-main { order: -1; } .rl-stage { height: 170px; } .rl-stage canvas { width: 150px; height: 150px; } .rl-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); } .rl-t canvas { width: 60px; height: 60px; } .cx-tb { padding: 7px 12px; } }
 .pcx { flex: 1 1 auto; display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; min-height: 0; }
 .pcx-list { display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 16px; min-height: 0; }
@@ -4693,6 +4754,7 @@ function qsStage(g) {
 }
 function setSkin(c, id) { try { const o = JSON.parse(localStorage.getItem('ssd-skins') || '{}') || {}; o[c] = id; localStorage.setItem('ssd-skins', JSON.stringify(o)); } catch (e) { /* 저장소 없음 */ } }
 /* 닉네임: 각 자리가 결투 문서에 적어 둔다. 봇은 '봇', 모험의 내 자리는 계정 닉네임 */
+const titleOf = k => (k === seat ? (typeof myTitle === 'function' ? myTitle() : '') : String(((doc && doc.title) || {})[k] || '').slice(0, 20));
 function nickOf(k) { const n = doc && doc.nick && doc.nick[k]; if (n) return n; if (k === seat && typeof AUTH !== 'undefined' && AUTH.nick) return AUTH.nick; return doc && doc.seats && doc.seats[k] === 'bot' ? mE('봇', 'Bot') : ''; }
 const skc = (c, id) => (id && skinList(c).some(x => x.id === id) ? ` sk-${c}-${id}` : '');
 function skOf(k) {
@@ -6182,6 +6244,8 @@ function onDoc() {
   }
   if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
   if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
+  /* 칭호: 대전 상대에게 보이도록 결투 문서에 적어 둔다 */
+  if (seat && !local && typeof myTitle === 'function') { const tt = myTitle(); if (((doc.title || {})[seat] || '') !== tt && onDoc.tt !== seat + (code || '') + tt) { onDoc.tt = seat + (code || '') + tt; W({ title: { [seat]: tt } }); } }
   let job = null;
   if (doc.game && doc.game !== gameStr) {
     const old = G;
@@ -6217,7 +6281,7 @@ async function startReplay(job) {
   const drawn = k => { const q = neu.rp.P[k]; return Math.max(0, neu.P[k].hand.length - (job.old.P[k].hand.length - (q.mvId ? 1 : 0) - (q.actId ? 1 : 0) - (q.regroup || 0))); };
   dealN = drawn(seat); dealOpp = drawn(opp(seat));
   replaying = false; rpLocked = null; deadline = Date.now() + TURN_MS;
-  if (doc && doc.phase === 'over') { qsStage(neu); matchReward(neu); }
+  if (doc && doc.phase === 'over') { qsStage(neu); matchReward(neu); achGame(neu); }
   render();
   if (doc && doc.phase === 'over') SND.play(neu.winner === seat ? 'win' : neu.winner === 'draw' ? 'turn' : 'lose'); else { SND.play('turn'); turnBanner(); }
   if (doc && doc.phase === 'play' && neu.P[seat].hp === 1 && job.old.P[seat].hp > 1) crisis();
@@ -6526,7 +6590,7 @@ const adminTalk = kind => { const a = Math.max(0, Math.min(2, run ? run.act : 0)
 function sendEmote(i) {
   if (!doc || !seat) return;
   if (Date.now() - emLast < 2500) return toast('이모트는 잠시 뒤에 다시 보낼 수 있습니다');
-  emLast = Date.now(); emOpen = false; W({ emote: { [seat]: { i, n: Date.now() } } }); render();
+  emLast = Date.now(); emOpen = false; W({ emote: { [seat]: { i, n: Date.now() } } }); achEmote(); render();
   const p = app.querySelector('.emp'); if (p) p.remove();
 }
 function crisis() {
@@ -7114,6 +7178,7 @@ function singleHTML(ta, inHub) {
         ${top.length ? `<p class="adv-rec"><span class="cap">${E('최고 점수', 'Best scores')}</span>${top.map(([k, v]) => `<span class="c-${k}"><i class="px a-${k}" aria-hidden="true"></i>${CLS[k].n} <b>${v}</b></span>`).join('')}</p>` : `<p class="adv-rec cap">${E('아직 돌파 기록이 없습니다.', 'No clears yet.')}</p>`}
       </section>
       <div class="sg-side">
+        ${wkStrip(false)}
         <section class="sg-card" style="--i:1"><h3>${E('연습 모드', 'Practice')}</h3><p>${E('봇과 한 판. 직업과 대전 방식을 자유롭게 고릅니다.', 'One match against a bot. Any class, any format.')}</p>
           <div class="lvs" role="group" aria-label="${E('봇 난이도', 'Bot difficulty')}"><span class="cap">${E('봇 난이도', 'Bot difficulty')}</span>${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</div>
           <button type="button" class="mbtn" data-a="local"><b>${E('연습 시작', 'Start practice')}</b><span>${E('봇', 'Bot')} ${BOTS[botLv][0]}</span></button></section>
@@ -7183,7 +7248,7 @@ const LB_IC = {
   rec: ['...........', '.#########.', '##.#####.##', '#..#####..#', '##.#####.##', '...#####...', '....###....', '.....#.....', '....###....', '...#####...', '...........'],
 };
 const lbIc = k => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${LB_IC[k].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
-const HUB = { acct: ['프로필', 'Profile', 'prof'], codex: ['도감', 'Codex', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'] };
+const HUB = { acct: ['프로필', 'Profile', 'prof'], ach: ['업적', 'Achievements', 'rec'], codex: ['도감', 'Codex', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'], weekly: ['주간 도전', 'Weekly Challenge'] };
 let repOpen = false, collTab = 'all';
 
 function lobbyHTML(logo) {
@@ -7193,7 +7258,7 @@ function lobbyHTML(logo) {
   const dock = [['data-a="mtab" data-m="acct"', 'prof', '프로필', 'Profile'], ['data-a="mtab" data-m="codex"', 'codex', '도감', 'Classes'], ['data-a="mtab" data-m="coll"', 'coll', '컬렉션', 'Collection'],
     ['data-a="mtab" data-m="shop"', 'shop', '상점', 'Shop'], ['data-a="ov" data-o="rules"', 'rules', '규칙', 'Rules'], ['data-a="ov" data-o="settings"', 'gear', '설정', 'Settings']];
   return `<header class="lb-top">
-      <button type="button" class="lb-prof" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span class="lb-pn"><b data-notr>${esc(AUTH.nick)}</b><span>${CLS[rep].n} · ${mE('대표 캐릭터', 'Main')}</span></span></button>
+      <button type="button" class="lb-prof" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span class="lb-pn"><b data-notr>${esc(AUTH.nick)}</b><span>${myTitle() ? `「${myTitle()}」` : `${CLS[rep].n} · ${mE('대표 캐릭터', 'Main')}`}</span></span></button>
       ${logo}
       <div class="lb-cur"><button type="button" class="lb-coin" data-a="mtab" data-m="shop" aria-label="${mE('메달, 스킨 상점 열기', 'Medals, open shop')}">${MDL(m)}<i class="lb-plus" aria-hidden="true">+</i></button>
         <button type="button" class="lb-ib" data-a="ov" data-o="settings" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></div>
@@ -7213,12 +7278,12 @@ function lobbyHTML(logo) {
 }
 
 function hubHTML(kind, off, ta) {
-  const [ko, en] = HUB[kind], fam = ['acct', 'codex', 'coll', 'shop'].includes(kind);
-  const body = kind === 'acct' ? profBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : kind === 'quest' ? questBody() : multiBody(off);
+  const [ko, en] = HUB[kind], fam = ['acct', 'ach', 'codex', 'coll', 'shop'].includes(kind);
+  const body = kind === 'acct' ? profBody() : kind === 'ach' ? achBody() : kind === 'codex' ? codexBody() : kind === 'coll' ? collBody() : kind === 'shop' ? shopBody() : kind === 'single' ? singleHTML(ta, true) : kind === 'quest' ? questBody() : kind === 'weekly' ? wkBody() : multiBody(off);
   return `<div class="hub hub-${kind}${ta ? ' pop' : ''}">
     <header class="hub-bar"><button type="button" class="hub-back" data-a="mback"><i aria-hidden="true"></i><span>${mE('로비', 'Lobby')}</span></button>
       <h2>${mE(ko, en)}</h2>
-      ${fam ? `<nav class="hub-tabs" aria-label="${mE('메뉴', 'Menu')}">${Object.entries(HUB).filter(([k]) => ['acct', 'codex', 'coll', 'shop'].includes(k)).map(([k, [a, b, ic]]) => `<button type="button" class="hub-tab${k === kind ? ' on' : ''}" data-a="mtab" data-m="${k}" aria-pressed="${k === kind}">${lbIc(ic)}<span>${mE(a, b)}</span></button>`).join('')}</nav>` : ''}
+      ${fam ? `<nav class="hub-tabs" aria-label="${mE('메뉴', 'Menu')}">${Object.entries(HUB).filter(([k]) => ['acct', 'ach', 'codex', 'coll', 'shop'].includes(k)).map(([k, [a, b, ic]]) => `<button type="button" class="hub-tab${k === kind ? ' on' : ''}" data-a="mtab" data-m="${k}" aria-pressed="${k === kind}">${lbIc(ic)}<span>${mE(a, b)}</span></button>`).join('')}</nav>` : ''}
       <button type="button" class="lb-coin" data-a="mtab" data-m="shop" aria-label="${mE('메달', 'Medals')}">${MDL(medals())}<i class="lb-plus" aria-hidden="true">+</i></button></header>
     <div class="hub-body" data-keep="hub-${kind}">${body}</div></div>`;
 }
@@ -7232,7 +7297,7 @@ function profBody() {
   return `<div class="pf">
     <section class="pf-card c-${rep}">
       <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <h3 data-notr>${esc(AUTH.nick)}</h3>
+      <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}
       <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
       <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
       ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
@@ -7259,7 +7324,32 @@ const rlBook = () => { const o = parse(ls('ssd-relics')) || {}, sv = typeof stLo
 function rlSeen(id) { if (!RL_ALL().includes(id)) return; const o = parse(ls('ssd-relics')) || {}; o[id] = (o[id] || 0) + 1; ls('ssd-relics', JSON.stringify(o)); }
 function cxWrap(body) { const bk = rlBook(), n = RL_ALL().filter(id => bk[id]).length;
   return `<div class="cxw"><nav class="cx-tabs" aria-label="${mE('도감', 'Codex')}"><button type="button" class="cx-tb${cxTab === 'cls' ? ' on' : ''}" data-a="cxtab" data-t="cls" aria-pressed="${cxTab === 'cls'}">${lbIc('codex')}<b>${mE('직업', 'Classes')}</b><em>${CLASS_IDS.length}</em></button>
-    <button type="button" class="cx-tb${cxTab === 'rl' ? ' on' : ''}" data-a="cxtab" data-t="rl" aria-pressed="${cxTab === 'rl'}">${lbIc('rec')}<b>${mE('모험 유물', 'Relics')}</b><em>${n}/${RL_ALL().length}</em></button></nav>${body}</div>`; }
+    <button type="button" class="cx-tb${cxTab === 'rl' ? ' on' : ''}" data-a="cxtab" data-t="rl" aria-pressed="${cxTab === 'rl'}">${lbIc('rec')}<b>${mE('모험 유물', 'Relics')}</b><em>${n}/${RL_ALL().length}</em></button>
+    <button type="button" class="cx-tb${cxTab === 'bs' ? ' on' : ''}" data-a="cxtab" data-t="bs" aria-pressed="${cxTab === 'bs'}">${lbIc('rec')}<b>${mE('보스', 'Bosses')}</b><em>${[0, 1, 2].filter(a => bossBook()['a' + a]).length}/3</em></button></nav>${body}</div>`; }
+/* 보스 도감: 관리자 v1.0~v3.0. 만난 적이 있으면(등장 연출을 끝까지 봄) 이름과 등장 대사, 처치하면 전부 */
+const bossBook = () => parse(ls('ssd-boss')) || {};
+function bossRec(a, turns) { const o = bossBook(), r = o['a' + a] || { n: 0, t: 0 }; r.n += 1; r.t = r.t ? Math.min(r.t, turns) : turns; o['a' + a] = r; ls('ssd-boss', JSON.stringify(o)); }
+const adminDeck = a => { const d = [...COMMON, ...CLS.admin.deck, ...ADMIN_TIER[a].extra]; ADMIN_TIER[a].cut.forEach(id => { const i = d.indexOf(id); if (i >= 0) d.splice(i, 1); }); return d; };
+const adminLine = (t, c) => esc(t.replace(/\{c\}/g, c)).replace(/\*([^*]+)\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+let bsView = 0;
+function bossBody() {
+  const bk = bossBook(), seen = +(ls('ssd-adi') || 0), met = a => !!(seen & (1 << a)) || !!bk['a' + a], a = bsView, r = bk['a' + a], m = met(a), sp = BOSS_SPEC[a], c = mE('도전자', 'challenger');
+  const tile = i => `<button type="button" class="rl-t bs-t${met(i) ? '' : ' unk'}${i === a ? ' on' : ''}" data-a="bsv" data-k="${i}" aria-pressed="${i === a}"><span class="bs-im"><i class="px a-admin${met(i) ? '' : ' sil'}" aria-hidden="true"></i></span>
+      <span>${met(i) ? `${mE('관리자', 'Admin')} ${adminVer(i)}` : '???'}</span><em class="bs-st${bk['a' + i] ? ' ok' : ''}">${bk['a' + i] ? mE('처치', 'Defeated') : met(i) ? mE('만남', 'Met') : mE('미발견', 'Unknown')}</em></button>`;
+  const cnt = {}; adminDeck(a).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; });
+  const deck = Object.keys(cnt).sort((x, y) => (ADMIN_NEW[a].includes(y) - ADMIN_NEW[a].includes(x)) || CARDS[x].c - CARDS[y].c).map(id => `<li class="${ADMIN_NEW[a].includes(id) ? 'nw' : ''}" title="${esc(CARDS[id].d)}"><b>${CARDS[id].n}</b><span><i>${mE('마나', 'Mana')} ${CARDS[id].c} · </i><span>${hl(CARDS[id].d)}</span></span><em>×${cnt[id]}</em></li>`).join('');
+  const lines = [[mE('등장', 'Intro'), L(...ADMIN_LINE[a]), m], [mE('분노', 'Rage'), L(...ADMIN_TALK.rage[a]), !!r], [mE('패배', 'Defeat'), L(...ADMIN_TALK.ko[a]), !!r]];
+  return `<div class="rlx bsx"><div class="rl-list"><p class="rl-gh">${mE('모험의 보스', 'Adventure boss')} <b>${[0, 1, 2].filter(i => bk['a' + i]).length}/3</b></p><div class="rl-grid">${[0, 1, 2].map(tile).join('')}</div>
+      <p class="cap">${mE('관리자는 모험의 1·2·3막 끝에서 기다립니다. 등장 연출을 끝까지 보면 이름과 등장 대사가, 쓰러뜨리면 나머지 기록이 열립니다.', 'The Admin waits at the end of every Adventure act. Watch its intro to record its name and line; defeat it to unlock the rest.')}</p></div>
+    <section class="rl-main bs-main${m ? '' : ' unk'}" aria-live="polite"><div class="rl-stage bs-stage bs-a${a}"><i class="rl-sh" aria-hidden="true"></i><span class="bs-big"><i class="px a-admin${m ? '' : ' sil'}" aria-hidden="true"></i></span></div>
+      <div class="rl-tx"><p class="rl-k">${a === 2 ? mE('3막 · 최종 보스', 'Act 3 · Final boss') : mE(`${a + 1}막 보스`, `Act ${a + 1} boss`)}</p><h3>${m ? `${mE('관리자', 'Admin')} ${adminVer(a)}` : '???'}</h3>
+        ${m ? `<p class="rl-ds">${mE('체력', 'HP')} <b>${sp.hp}</b> · ${mE('봇', 'Bot')} <b>${TR(BOTS[sp.lv][0])}</b>${sp.mx ? ` · ${mE('최대 마나 +1', 'Max mana +1')}` : ''}<br>${sp.boss === 'final' ? mE('3턴마다 가로 한 줄에 피해 2를 예고한다.', 'Every 3rd turn it forecasts 2 damage on a row.') : mE('체력이 절반 이하가 되면 한 번 분노해 다음 턴 공격 피해 +1.', 'At half HP or less it rages once: next turn\'s attacks deal +1.')}</p>
+        <p class="rl-n">${r ? `${mE('처치', 'Defeated')} <b>${r.n}</b>${mE('회', 'x')} · ${mE('가장 빨리', 'Fastest')} <b>${r.t}</b>${mE('턴', ' turns')}` : mE('아직 쓰러뜨리지 못했습니다.', 'Not defeated yet.')}</p>
+        <dl class="bs-ln">${lines.map(([k, t, ok]) => `<dt>${k}</dt><dd>${ok ? `「${adminLine(t, c)}」` : '???'}</dd>`).join('')}</dl>
+        <p class="rl-gh">${mE('덱', 'Deck')} <b>${adminDeck(a).length}${mE('장', '')}</b> · <span class="bs-nwk">${a ? mE('이번 막에 새로 설치', 'New this act') : mE('기본 설치', 'Base install')}</span></p><ul class="bs-deck">${deck}</ul>
+        <button type="button" class="btn bs-play" data-a="bsplay" data-k="${a}">▶ ${mE('등장 연출 다시 보기', 'Replay intro')}</button>`
+        : `<p class="rl-ds">${mE('모험에서 이 막의 보스를 만나면 기록됩니다.', 'Meet this act\'s boss in Adventure to record it.')}</p>`}</div></section></div>`;
+}
 function relicBody() {
   const bk = rlBook(), all = RL_ALL(), v = all.includes(rlView) ? rlView : (all.find(id => bk[id]) || all[0]), got = !!bk[v], m = RL_MODEL(v);
   const tile = id => { const ok = !!bk[id]; return `<button type="button" class="rl-t${ok ? '' : ' unk'}${id === v ? ' on' : ''}" data-a="rlv" data-k="${id}" aria-pressed="${id === v}" title="${ok ? esc(rlName(id)) : '???'}">
@@ -7270,8 +7360,195 @@ function relicBody() {
       <div class="rl-tx"><p class="rl-k">${got ? rlType(v) : mE('미발견 유물', 'Undiscovered')}</p><h3>${got ? rlName(v) : '???'}</h3>
         ${got ? `<p class="rl-ds">${rlDesc(v)}</p><p class="rl-n">${mE('모험에서 얻은 횟수', 'Times found')} <b>${bk[v]}</b></p>` : `<p class="rl-ds">${mE('모험의 정예·보스 보상, 상점, 보물에서 얻으면 이름과 효과가 기록됩니다.', 'Find it in Adventure (elite and boss rewards, shops, treasure) to record its name and effect.')}</p>`}</div></section></div>`;
 }
+/* ===== 업적과 칭호 =====
+   업적을 달성하면 칭호가 생긴다. 칭호 하나를 달면 프로필, 메뉴, 결투 시작 화면(대전 상대에게도)에 이름과 함께 보인다.
+   ssd-ach: 달성한 업적 {id: 시각}, ssd-achc: 누적 기록, ssd-title: 단 칭호. 전부 계정에도 저장된다 */
+const ACH_CAT = [['run', '모험', 'Adventure'], ['duel', '결투', 'Duels'], ['pvp', '대전', 'PvP'], ['col', '수집', 'Collection']];
+const ACH = [
+  { id: 'run1', c: 'run', n: ['첫 완주', 'First Clear'], d: ['모험을 처음으로 완주한다', 'Clear an Adventure'], t: ['모험가', 'Adventurer'], g: 1, v: c => c.runs },
+  { id: 'run5', c: 'run', n: ['단골 모험가', 'Regular'], d: ['모험을 5번 완주한다', 'Clear 5 Adventures'], t: ['베테랑 모험가', 'Veteran'], g: 5, v: c => c.runs },
+  { id: 'runc10', c: 'run', n: ['열 갈래 길', 'Ten Paths'], d: ['서로 다른 직업 10개로 모험을 완주한다', 'Clear Adventure with 10 different classes'], t: ['만능 결투가', 'All-Rounder'], g: 10, v: () => Object.keys(stageRec3()).filter(k => CLS[k]).length },
+  { id: 'runc30', c: 'run', n: ['서른 개의 이야기', 'Thirty Tales'], d: ['모든 직업으로 모험을 완주한다', 'Clear Adventure with every class'], t: ['삼삼결투의 전설', 'Legend of 3x3'], g: 30, v: () => Object.keys(stageRec3()).filter(k => CLS[k]).length },
+  { id: 'adm1', c: 'run', n: ['버그 발견', 'Bug Found'], d: ['관리자 v1.0을 쓰러뜨린다', 'Defeat Admin v1.0'], t: ['디버거', 'Debugger'] },
+  { id: 'adm2', c: 'run', n: ['긴급 패치', 'Hotfix'], d: ['관리자 v2.0을 쓰러뜨린다', 'Defeat Admin v2.0'], t: ['핫픽스', 'Hotfix'] },
+  { id: 'adm3', c: 'run', n: ['최종 버전 종료', 'End of Support'], d: ['관리자 v3.0을 쓰러뜨린다', 'Defeat Admin v3.0'], t: ['포맷 생존자', 'Format Survivor'] },
+  { id: 'admflaw', c: 'run', n: ['무결점 패치', 'Clean Patch'], d: ['피해를 하나도 받지 않고 관리자를 쓰러뜨린다', 'Defeat the Admin without taking damage'], t: ['무결점 패치', 'Zero-Day'] },
+  { id: 'admfast', c: 'run', n: ['강제 종료', 'Force Quit'], d: ['관리자 v3.0을 6턴 안에 쓰러뜨린다', 'Defeat Admin v3.0 within 6 turns'], t: ['강제 종료', 'Force Quit'] },
+  { id: 'runhp1', c: 'run', n: ['아슬아슬', 'By a Thread'], d: ['체력 1이 남은 채로 마지막 보스를 쓰러뜨린다', 'Beat the final boss with 1 HP left'], t: ['아슬아슬', 'Hanging On'] },
+  { id: 'rungold', c: 'run', n: ['부자', 'Loaded'], d: ['한 모험에서 금화 60개 이상을 들고 완주한다', 'Clear an Adventure holding 60+ Gold'], t: ['금고지기', 'Vault Keeper'] },
+  { id: 'runrl', c: 'run', n: ['유물 수집가', 'Hoarder'], d: ['한 모험에서 유물 8개 이상을 모은다', 'Hold 8+ relics in one Adventure'], t: ['유물 사냥꾼', 'Relic Hunter'] },
+  { id: 'run300', c: 'run', n: ['고득점', 'High Score'], d: ['모험 점수 300점 이상으로 완주한다', 'Clear an Adventure with 300+ points'], t: ['고득점자', 'High Scorer'] },
+  { id: 'week1', c: 'run', n: ['주간 도전자', 'Weekly Challenger'], d: ['주간 도전 모험을 완주한다', 'Clear a Weekly Challenge'], t: ['주간 도전자', 'Weekly Challenger'] },
+  { id: 'week10', c: 'run', n: ['순위표의 이름', 'On the Board'], d: ['주간 도전 순위표 10위 안에 든다', 'Reach the top 10 of a Weekly board'], t: ['랭커', 'Ranker'] },
+  { id: 'win1', c: 'duel', n: ['첫 승리', 'First Win'], d: ['결투에서 처음으로 이긴다', 'Win your first duel'], t: ['새내기', 'Rookie'], g: 1, v: c => c.wins },
+  { id: 'win50', c: 'duel', n: ['결투가', 'Duelist'], d: ['결투에서 50번 이긴다', 'Win 50 duels'], t: ['결투가', 'Duelist'], g: 50, v: c => c.wins },
+  { id: 'win200', c: 'duel', n: ['결투의 달인', 'Master Duelist'], d: ['결투에서 200번 이긴다', 'Win 200 duels'], t: ['결투의 달인', 'Grandmaster'], g: 200, v: c => c.wins },
+  { id: 'perf', c: 'duel', n: ['무결점', 'Flawless'], d: ['피해를 하나도 받지 않고 이긴다', 'Win without taking damage'], t: ['무결점', 'Flawless'], g: 1, v: c => c.perf },
+  { id: 'perf10', c: 'duel', n: ['철벽', 'Ironclad'], d: ['피해 없이 10번 이긴다', 'Win 10 duels without taking damage'], t: ['철벽', 'Ironclad'], g: 10, v: c => c.perf },
+  { id: 'comeback', c: 'duel', n: ['역전승', 'Comeback'], d: ['체력 1이 남은 채로 이긴다', 'Win with 1 HP left'], t: ['역전의 명수', 'Comeback Kid'] },
+  { id: 'quick', c: 'duel', n: ['번개', 'Lightning'], d: ['4턴 안에 이긴다', 'Win within 4 turns'], t: ['번개', 'Lightning'] },
+  { id: 'long', c: 'duel', n: ['끈기', 'Endurance'], d: ['15턴 넘게 버텨서 이긴다', 'Win a duel lasting 15+ turns'], t: ['버티기 장인', 'Stubborn'] },
+  { id: 'heavy', c: 'duel', n: ['한 방', 'Big Hit'], d: ['한 턴에 피해 4 이상을 준다', 'Deal 4+ damage in a single turn'], t: ['한 방', 'Heavy Hitter'] },
+  { id: 'noab', c: 'duel', n: ['맨손', 'Bare Hands'], d: ['능력을 한 번도 쓰지 않고 이긴다', 'Win without using your ability'], t: ['맨손', 'Bare-Handed'] },
+  { id: 'cls10', c: 'duel', n: ['다재다능', 'Versatile'], d: ['서로 다른 직업 10개로 이긴다', 'Win with 10 different classes'], t: ['다재다능', 'Versatile'], g: 10, v: c => c.cw.length },
+  { id: 'cls30', c: 'duel', n: ['만물박사', 'Jack of All'], d: ['모든 직업으로 이긴다', 'Win with every class'], t: ['만물박사', 'Polymath'], g: 30, v: c => c.cw.length },
+  { id: 'hard1', c: 'duel', n: ['봇 사냥꾼', 'Bot Hunter'], d: ['어려움 봇을 이긴다', 'Beat a Hard bot'], t: ['봇 사냥꾼', 'Bot Hunter'], g: 1, v: c => c.hardw },
+  { id: 'hard10', c: 'duel', n: ['인공지능 킬러', 'AI Slayer'], d: ['어려움 봇을 10번 이긴다', 'Beat a Hard bot 10 times'], t: ['인공지능 킬러', 'AI Slayer'], g: 10, v: c => c.hardw },
+  { id: 'pvp1', c: 'pvp', n: ['도전자', 'Challenger'], d: ['대전에서 처음으로 이긴다', 'Win your first PvP duel'], t: ['도전자', 'Challenger'], g: 1, v: c => c.pvpw },
+  { id: 'pvp10', c: 'pvp', n: ['강자', 'Contender'], d: ['대전에서 10번 이긴다', 'Win 10 PvP duels'], t: ['강자', 'Contender'], g: 10, v: c => c.pvpw },
+  { id: 'pvp50', c: 'pvp', n: ['챔피언', 'Champion'], d: ['대전에서 50번 이긴다', 'Win 50 PvP duels'], t: ['챔피언', 'Champion'], g: 50, v: c => c.pvpw },
+  { id: 'bo3', c: 'pvp', n: ['승부사', 'Closer'], d: ['3판 2선승 대전에서 이긴다', 'Win a best-of-3 match'], t: ['승부사', 'Closer'] },
+  { id: 'ban', c: 'pvp', n: ['전략가', 'Strategist'], d: ['밴픽 대전에서 이긴다', 'Win a ban-pick match'], t: ['전략가', 'Strategist'] },
+  { id: 'emo', c: 'pvp', n: ['수다쟁이', 'Chatterbox'], d: ['이모트를 30번 보낸다', 'Send 30 emotes'], t: ['수다쟁이', 'Chatterbox'], g: 30, v: c => c.emo },
+  { id: 'skin5', c: 'col', n: ['멋쟁이', 'Stylish'], d: ['스킨 5개를 모은다', 'Collect 5 skins'], t: ['멋쟁이', 'Fashionista'], g: 5, v: () => ownedSkins().length },
+  { id: 'relics', c: 'col', n: ['고고학 박사', 'Curator'], d: ['유물 도감을 모두 채운다', 'Complete the Relic codex'], t: ['고고학 박사', 'Curator'], g: () => RL_ALL().length, v: () => { const b = rlBook(); return RL_ALL().filter(id => b[id]).length; } },
+  { id: 'bosses', c: 'col', n: ['관리자의 관리자', 'Admin of Admins'], d: ['보스 도감을 모두 채운다', 'Complete the Boss codex'], t: ['관리자의 관리자', 'Root User'], g: 3, v: () => [0, 1, 2].filter(a => bossBook()['a' + a]).length },
+];
+const achGot = () => parse(ls('ssd-ach')) || {};
+const achC = () => Object.assign({ wins: 0, perf: 0, pvpw: 0, hardw: 0, runs: 0, emo: 0, cw: [] }, parse(ls('ssd-achc')) || {});
+const achGoal = a => (typeof a.g === 'function' ? a.g() : a.g || 1);
+const achTitle = id => { const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
+const myTitle = () => { const id = ls('ssd-title'); return id && achGot()[id] ? achTitle(id) : ''; };
+let achQ = [], achT = 0;
+function achGive(id) {
+  const o = achGot(); if (o[id] || !ACH.some(a => a.id === id)) return false;
+  o[id] = Date.now(); ls('ssd-ach', JSON.stringify(o)); achQ.push(id); if (!achT) achShowNext(); return true;
+}
+/* 쌓인 기록으로 판정되는 업적을 한꺼번에 확인한다 */
+function achScan(c) { c = c || achC(); ACH.forEach(a => { if (a.v) { try { if (a.v(c) >= achGoal(a)) achGive(a.id); } catch (e) { /* 아직 준비되지 않은 기록 */ } } }); }
+function achShowNext() {
+  const id = achQ.shift(); if (!id) { achT = 0; return; } const a = ACH.find(x => x.id === id);
+  document.querySelectorAll('.achx').forEach(e => e.remove());
+  document.body.insertAdjacentHTML('beforeend', `<div class="achx" role="status"><i class="achx-ic" aria-hidden="true">${lbIc('rec')}</i><span><small>${L('업적 달성', 'Achievement unlocked')}</small><b>${L(...a.n)}</b><em>${L('칭호', 'Title')} 「${L(...a.t)}」</em></span></div>`);
+  SND.play('relicGood'); achT = setTimeout(() => { document.querySelectorAll('.achx').forEach(e => e.classList.add('out')); setTimeout(achShowNext, 350); }, 3000);
+}
+/* 결투가 끝날 때(튜토리얼 제외). 모험의 결투, 봇 연습, 대전 모두 */
+function achGame(g) {
+  if (!g || !g.winner || !seat || !g.P || !g.P[seat] || (typeof tutOn === 'function' && tutOn())) return;
+  const key = (code || '') + ':' + (doc && doc.gid) + ':' + g.turn; if (achGame.k === key) return; achGame.k = key;
+  const c = achC(), me = g.P[seat], q = QS || {}, mode = stageOn() ? 'run' : local ? 'bot' : 'pvp';
+  if (g.st && g.st[seat] && g.st[seat].best >= 4) achGive('heavy');
+  if (g.winner === seat) {
+    c.wins++; if (!c.cw.includes(me.cls)) c.cw.push(me.cls);
+    if (!(q.taken > 0)) c.perf++;
+    if (me.hp === 1) achGive('comeback');
+    if (q.turns && q.turns <= 4) achGive('quick');
+    if (q.turns >= 15) achGive('long');
+    if (!q.ab) achGive('noab');
+    if (mode === 'bot' && botLv === 'hard') c.hardw++;
+    if (mode === 'pvp') { c.pvpw++; if (modeOf() === 'bo3' && scoreOf()[seat] >= 2) achGive('bo3'); if (modeOf() === 'ban') achGive('ban'); }
+    if (mode === 'run' && g.P[opp(seat)].cls === 'admin' && run) { const a = Math.max(0, Math.min(2, run.act)); achGive('adm' + (a + 1)); if (!(q.taken > 0)) achGive('admflaw'); if (a === 2 && q.turns && q.turns <= 6) achGive('admfast'); }
+  }
+  ls('ssd-achc', JSON.stringify(c)); achScan(c);
+}
+/* 모험을 끝까지 깼을 때 */
+function achRun(left) {
+  if (!run) return; const c = achC(); c.runs++; ls('ssd-achc', JSON.stringify(c));
+  if (left === 1) achGive('runhp1'); if (run.gold >= 60) achGive('rungold'); if (run.score >= 300) achGive('run300'); if (run.weekly) achGive('week1');
+  achScan(c);
+}
+function achEmote() { const c = achC(); c.emo++; ls('ssd-achc', JSON.stringify(c)); achScan(c); }
+/* 업적 화면: 칭호 고르기, 분류별 목록 */
+let achTab = 'all';
+function achBody() {
+  achScan();   /* 수집 업적은 화면을 열 때도 확인한다 */
+  const got = achGot(), c = achC(), n = ACH.filter(a => got[a.id]).length, tid = ls('ssd-title'), cur = tid && got[tid] ? tid : '';
+  const card = a => { const ok = !!got[a.id], g = achGoal(a); let v = 0; try { v = a.v ? Math.min(g, a.v(c)) : ok ? 1 : 0; } catch (e) { v = 0; }
+    return `<div class="ach-c${ok ? ' ok' : ''}${cur === a.id ? ' on' : ''}"><i class="ach-ic" aria-hidden="true">${lbIc('rec')}</i><div class="ach-tx"><b>${L(...a.n)}</b><span>${L(...a.d)}</span>
+      ${!ok && g > 1 ? `<span class="ach-bar" role="img" aria-label="${v}/${g}"><i style="width:${v / g * 100}%"></i></span><small>${v} / ${g}</small>` : ''}</div>
+      <div class="ach-ti"><em>「${L(...a.t)}」</em>${ok ? (cur === a.id ? `<button type="button" class="btn ghost sm" data-a="achtitle" data-k="">${L('달고 있음 · 떼기', 'Equipped · Remove')}</button>` : `<button type="button" class="btn sm" data-a="achtitle" data-k="${a.id}">${L('칭호 달기', 'Equip')}</button>`) : `<span class="ach-lk">${L('잠김', 'Locked')}</span>`}</div></div>`; };
+  const list = ACH.filter(a => achTab === 'all' || a.c === achTab);
+  return `<div class="ach"><div class="ach-top"><div class="ach-sum"><span class="cap">${L('달성', 'Unlocked')}</span><b>${n}<i>/ ${ACH.length}</i></b><span class="pf-bar"><i style="width:${n / ACH.length * 100}%"></i></span></div>
+      <div class="ach-now"><span class="cap">${L('지금 단 칭호', 'Current title')}</span><b>${cur ? `「${achTitle(cur)}」` : L('없음', 'None')}</b><small>${L('칭호는 프로필, 메뉴, 결투 시작 화면에 이름과 함께 보이고 대전 상대에게도 보입니다.', 'Your title shows with your name on your profile, the menu and the duel intro, and to PvP opponents.')}</small></div></div>
+    <nav class="cx-tabs ach-tabs">${[['all', '전체', 'All'], ...ACH_CAT].map(([k, a, b]) => `<button type="button" class="cx-tb${achTab === k ? ' on' : ''}" data-a="achtab" data-t="${k}" aria-pressed="${achTab === k}"><b>${L(a, b)}</b><em>${ACH.filter(x => (k === 'all' || x.c === k) && got[x.id]).length}/${ACH.filter(x => k === 'all' || x.c === k).length}</em></button>`).join('')}</nav>
+    <div class="ach-list" data-keep="achl">${list.map(card).join('')}</div></div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="achtitle"],[data-a="achtab"]'); if (!b) return; e.stopPropagation(); SND.unlock();
+  if (b.dataset.a === 'achtab') achTab = b.dataset.t; else { ls('ssd-title', b.dataset.k || ''); SND.play(b.dataset.k ? 'relicGood' : 'tap'); } render(); });
+/* ===== 주간 도전 모험 =====
+   한 주(월요일 0시, 한국 시간) 동안 모두가 같은 직업, 같은 지도, 같은 특별 규칙으로 도전한다. 몇 번이든 다시 할 수 있고, 완주한 최고 점수가 순위표에 오른다.
+   진행은 일반 모험과 따로 ssd-wrun에 저장. 순위표는 서버(supabase/weekly.sql) */
+const WK_RULES = {
+  snow: ['눈의 주간', 'Snow Week', '모든 결투장이 설원입니다. 기본 이동이 한 칸 더 미끄러집니다.', 'Every arena is the snowfield. Basic moves slide one more tile.'],
+  noshop: ['상점 휴업', 'Shops Closed', '지도의 상점이 모두 쉼터로 바뀝니다.', 'Every shop on the map becomes a rest site.'],
+  rich: ['빚진 부자', 'Rich but Frail', '금화 15개를 들고 시작하지만 최대 체력 -2.', 'Start with 15 Gold, but Max HP -2.'],
+  glass: ['유리 대포', 'Glass Cannon', '모든 상대의 체력 -1, 내 최대 체력 -2.', 'All foes have 1 less HP; your Max HP -2.'],
+  relic: ['보물 지도', 'Treasure Map', '무작위 유물 2개를 들고 시작합니다.', 'Start with 2 random relics.'],
+  admin: ['조기 업데이트', 'Early Update', '관리자가 한 막 앞선 버전의 덱을 씁니다.', 'The Admin runs the next act\'s deck.'],
+};
+const wkId = t => { const d = new Date((t || Date.now()) + 9 * 3600e3), day = (d.getUTCDay() + 6) % 7; return 'W' + new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day)).toISOString().slice(0, 10); };
+const wkEnd = id => Date.parse(id.slice(1) + 'T00:00:00+09:00') + 7 * 864e5;
+const wkSeed = id => { let h = 2166136261; for (const ch of 'ssd' + id) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const wkRng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+function wkInfo(id) { id = id || wkId(); const r = wkRng(wkSeed(id)), ks = Object.keys(WK_RULES); return { id, cls: CLASS_IDS[Math.floor(r() * CLASS_IDS.length)], rule: ks[Math.floor(r() * ks.length)] }; }
+const wkDates = id => { const a = new Date(Date.parse(id.slice(1) + 'T00:00:00+09:00') + 9 * 3600e3), b = new Date(a.getTime() + 6 * 864e5), f = d => `${d.getUTCMonth() + 1}/${d.getUTCDate()}`; return `${f(a)} ~ ${f(b)}`; };
+function wkLoad() { try { const r = JSON.parse(localStorage.getItem('ssd-wrun') || 'null'); return r && r.v === 4 && r.map && CLS[r.cls] && !r.cleared && r.weekly === wkId() ? r : null; } catch (e) { return null; } }
+const wkBest = () => (parse(ls('ssd-wbest')) || {})[wkId()] || null;
+/* 지도를 만든 뒤 이번 주 규칙을 건다(시작할 때 한 번) */
+function wkApply() {
+  const R = run.wrule, r = wkRng(wkSeed(run.weekly) ^ 0x9e3779b9);
+  if (R === 'snow') run.map.forEach(m => { m.ar = 'snow'; });
+  if (R === 'noshop') run.map.forEach(m => m.rows.forEach(row => row.forEach(n => { if (n.t === 'shop') { n.t = 'rest'; } })));
+  if (R === 'rich') { run.gold += 15; run.maxHp = Math.max(2, run.maxHp - 2); run.hp = run.maxHp; }
+  if (R === 'glass') { run.maxHp = Math.max(2, run.maxHp - 2); run.hp = run.maxHp; }
+  if (R === 'relic') { const pool = Object.keys(RL).filter(id => !['phoenix', 'ccoin', 'heart', 'compass'].includes(id)); for (let k = 0; k < 2; k++) { const id = pool.splice(Math.floor(r() * pool.length), 1)[0]; rlGive(id); } }
+}
+function startWeekly() {
+  const w = wkInfo(), sv = wkLoad(); emSeen = null; local = true; code = '모험'; me = me || 'me'; doc = freshDoc(me); doc.seats.b = 'bot'; doc.ready.b = true; doc.mode = 'stage'; doc.gid = 1;
+  if (sv) { run = sv; if (run.offer) run.offer.busy = false; run.cur = run.offer || run.shop || run.scene ? run.cur : null; doc.pick = { a: run.cls, b: null }; doc.phase = run.offer ? 'reward' : run.shop ? 'shop' : 'map'; }
+  else { run = Object.assign(newRun2(), { weekly: w.id, wrule: w.rule }); doc.pick = { a: w.cls, b: null }; doc.skin = { a: skinOf(w.cls) }; doc.phase = 'select'; }
+  onDoc();
+}
+/* 순위표: 서버에서 받아 잠시 들고 있는다 */
+let WKB = null;
+function wkPull(force) {
+  const id = wkId(); if (!AUTH.user || (!force && WKB && WKB.id === id && Date.now() - WKB.t < 60000)) return;
+  WKB = Object.assign(WKB && WKB.id === id ? WKB : { id, rows: [], me: null }, { t: Date.now(), busy: true, err: '' });
+  rpc('weekly_board', { p_week: id }).then(r => { WKB = { id, t: Date.now(), rows: (r && r.rows) || [], me: (r && r.me) || null, n: (r && r.n) || 0 }; if (WKB.me && WKB.me.rank <= 10) achGive('week10'); render(); })
+    .catch(e => { WKB = { id, t: Date.now(), rows: [], me: null, err: /weekly_board|404|PGRST/.test(String(e && e.message)) ? 'nosql' : 'net' }; render(); });
+}
+/* 완주하면 점수를 올린다(로그인했을 때). 이 기기 최고 점수도 따로 둔다 */
+function wkSubmit() {
+  if (!run || !run.weekly) return; const r = run, o = parse(ls('ssd-wbest')) || {}, b = o[r.weekly];
+  if (!b || r.score > b.score) { o[r.weekly] = { score: r.score, turns: r.turns, cls: r.cls }; ls('ssd-wbest', JSON.stringify(o)); }
+  if (!AUTH.user || !r.sid) { r.wk = { local: true }; return; }
+  r.wk = { busy: true };
+  rpc('weekly_submit', { p_sid: r.sid, p_week: r.weekly, p_score: r.score, p_turns: r.turns, p_cls: r.cls }).then(x => { r.wk = { rank: x && x.rank, best: x && x.best, n: x && x.n }; if (x && x.rank <= 10) achGive('week10'); WKB = null; render(); })
+    .catch(() => { r.wk = { err: true }; render(); });
+}
+const wkLeft = id => { const ms = wkEnd(id) - Date.now(), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5); return d > 0 ? L(`${d}일 ${h}시간 남음`, `${d}d ${h}h left`) : L(`${Math.max(0, h)}시간 남음`, `${Math.max(0, h)}h left`); };
+function wkBody() {
+  const w = wkInfo(), R = WK_RULES[w.rule], sv = wkLoad(), best = wkBest(); wkPull();
+  const B = WKB && WKB.id === w.id ? WKB : null, row = (x, mine) => `<li class="${mine ? 'me' : ''}${x.rank <= 3 ? ' top' + x.rank : ''}"><b class="wk-rk">${x.rank}</b><span class="wk-nm" data-notr>${esc(x.nick || '?')}</span><span class="wk-sc">${x.score}<small>${L('점', ' pts')}</small></span><span class="wk-tn">${x.turns}${L('턴', 't')}</span></li>`;
+  const board = !AUTH.user ? `<p class="cap">${L('로그인하면 순위표에 오릅니다.', 'Log in to join the leaderboard.')}</p>` : !B || (B.busy && !B.rows.length) ? `<p class="cap">${L('순위표를 불러오는 중…', 'Loading leaderboard…')}</p>`
+    : B.err === 'nosql' ? `<p class="cap">${L('순위표 서버가 아직 준비되지 않았습니다(관리자: supabase/weekly.sql 실행).', 'Leaderboard is not set up yet (run supabase/weekly.sql).')}</p>` : B.err ? `<p class="cap">${L('순위표를 불러오지 못했습니다.', 'Could not load the leaderboard.')}</p>`
+    : B.rows.length ? `<ol class="wk-list">${B.rows.map(x => row(x, B.me && x.rank === B.me.rank && x.nick === AUTH.nick)).join('')}</ol>${B.me && B.me.rank > B.rows.length ? `<ol class="wk-list wk-mine">${row(Object.assign({ nick: AUTH.nick }, B.me), true)}</ol>` : ''}<p class="cap">${L(`이번 주 완주 ${B.n}명`, `${B.n} cleared this week`)}</p>`
+    : `<p class="cap">${L('아직 아무도 완주하지 못했습니다. 첫 이름을 올려 보세요!', 'Nobody has cleared it yet. Be the first!')}</p>`;
+  return `<div class="wk">
+    <section class="wk-card c-${w.cls}"><div class="wk-art th-${w.rule === 'snow' ? 'snow' : 'castle'}"><i class="px wk-hero a-${w.cls}${skc(w.cls, skinOf(w.cls))}" aria-hidden="true"></i><i class="px wk-boss a-admin flip" aria-hidden="true"></i></div>
+      <div class="wk-tx"><p class="cap">${L('주간 도전', 'Weekly Challenge')} · ${wkDates(w.id)} · ${wkLeft(w.id)}</p><h3>${L(`이번 주 직업: ${CLS[w.cls].n}`, `This week: ${TR(CLS[w.cls].n)}`)}</h3>
+        <p class="wk-rule"><b>${L(R[0], R[1])}</b>${L(R[2], R[3])}</p>
+        <p>${L('모두가 같은 지도로 도전합니다. 몇 번이든 다시 할 수 있고, 완주한 최고 점수가 순위표에 오릅니다. 메달 보상은 일반 모험과 같습니다.', 'Everyone plays the same map. Retry as often as you like; your best cleared score goes on the board. Medals work like a normal run.')}</p>
+        ${best ? `<p class="wk-best">${L('내 최고', 'My best')} <b>${best.score}${L('점', ' pts')}</b> · ${best.turns}${L('턴', ' turns')}${B && B.me ? ` · <b>${B.me.rank}${L('위', 'th')}</b>` : ''}</p>` : ''}
+        ${sv ? `<p class="wk-best">${L('진행 중', 'In progress')} · ${L(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)} · ${L('체력', 'HP')} ${sv.hp}/${sv.maxHp}</p>` : ''}
+        <div class="wk-go"><button type="button" class="btn red big" data-a="wkgo">${sv ? L('이어하기', 'Continue') : best ? L('다시 도전', 'Try again') : L('도전하기', 'Start')}</button>${sv ? `<button type="button" class="btn ghost" data-a="wknew">${L('처음부터', 'Restart')}</button>` : ''}</div></div></section>
+    <section class="wk-board"><div class="wk-bh"><h3>${lbIc('rec')}${L('이번 주 순위', 'This week\'s ranking')}</h3>${AUTH.user ? `<button type="button" class="btn ghost sm" data-a="wkre">${L('새로 고침', 'Refresh')}</button>` : ''}</div>${board}</section></div>`;
+}
+/* 싱글 플레이 화면의 주간 도전 띠 */
+function wkStrip(pc) {
+  const w = wkInfo(), R = WK_RULES[w.rule], best = wkBest(), sv = wkLoad();
+  return `<section class="wks${pc ? ' pc' : ''} c-${w.cls}"><i class="px a-${w.cls}${skc(w.cls, skinOf(w.cls))}" aria-hidden="true"></i><div><p class="cap">${L('주간 도전', 'Weekly Challenge')} · ${wkLeft(w.id)}</p><b>${CLS[w.cls].n} · ${L(R[0], R[1])}</b>
+      <span>${best ? L(`내 최고 ${best.score}점`, `My best ${best.score}`) : sv ? L('진행 중', 'In progress') : L(R[2], R[3])}</span></div>
+    <button type="button" class="${pc ? 'pcb red' : 'btn red'}" data-a="mtab" data-m="weekly">${L('순위표 · 도전', 'Board · Play')}</button></section>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="wkgo"],[data-a="wknew"],[data-a="wkre"],[data-a="wkboard"]'); if (!b) return; e.stopPropagation(); SND.unlock(); SND.play('tap');
+  if (b.dataset.a === 'wkre') { wkPull(true); return render(); }
+  if (b.dataset.a === 'wkboard') { const ov = ovEl(); if (ov) ov.innerHTML = ''; leave(); menuSt = 'main'; menuTab = 'weekly'; WKB = null; return render(); }
+  if (b.dataset.a === 'wknew') { try { localStorage.removeItem('ssd-wrun'); } catch (x) { /* 저장소 없음 */ } }
+  startWeekly(); });
 function codexBody() {
   if (cxTab === 'rl') return cxWrap(relicBody());
+  if (cxTab === 'bs') return cxWrap(bossBody());
   const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
   const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
     return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(skinPrice(v, x.id))}</span></button>`; }).join('')}</div>`;
@@ -7336,12 +7613,14 @@ function multiBody(off) {
     </div></div>`;
 }
 /* 로비 버튼들 */
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="bsv"],[data-a="bsplay"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
   e.stopPropagation(); const a = b.dataset.a; SND.unlock();
   if (a === 'reppick') repOpen = !repOpen;
   else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
   else if (a === 'cxv') cxView = b.dataset.k;
   else if (a === 'cxtab') { if (cxTab === b.dataset.t) return; cxTab = b.dataset.t; }
+  else if (a === 'bsv') bsView = +b.dataset.k || 0;
+  else if (a === 'bsplay') { const ov = ovEl(); if (ov) adminShow(ov, +b.dataset.k || 0, repCls(), true, true, null); return; }
   else if (a === 'rlv') { rlView = b.dataset.k; setTimeout(() => { const m = app.querySelector('.rl-main'); if (m && matchMedia('(max-width: 760px)').matches) m.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 0); }
   else if (a === 'collwear') { if (skinOf(b.dataset.c) === b.dataset.id) return; setSkin(b.dataset.c, b.dataset.id); SND.play('relicGood'); return render(); }
   else if (a === 'shopgo') { shopTab = 'new'; menuTab = 'shop'; tabAnim = true; }
@@ -7361,11 +7640,13 @@ pcZoom(); addEventListener('resize', pcZoom);
 let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
 const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
   coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['도감', 'Codex', '직업의 패시브·능력·전용 카드와 모험에서 찾은 유물', 'Classes, abilities and cards, plus relics found in Adventure'],
-  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'] };
+  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'],
+  ach: ['업적', 'Achievements', '업적을 달성하고 칭호를 답니다', 'Unlock achievements and wear titles'],
+  weekly: ['주간 도전', 'Weekly Challenge', '이번 주 모두가 같은 지도·직업·규칙으로 겨룹니다', 'Same map, class and rule for everyone this week'] };
 
 function pcHTML(scene, logo, off, ta, anim) {
   const kind = PC_PAGES[menuTab] ? menuTab : null; if (!kind) menuTab = null;
-  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '도감', 'Codex'], ['shop', '상점', 'Shop']];
+  const rep = repCls(), on = netReady && db, nav = [[null, '홈', 'Home'], ['single', '싱글 플레이', 'Single'], ['multi', '멀티 플레이', 'Multiplayer'], ['coll', '컬렉션', 'Collection'], ['codex', '도감', 'Codex'], ['ach', '업적', 'Achievements'], ['shop', '상점', 'Shop']];
   const top = `<header class="pc-top">
       ${logo}
       <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
@@ -7377,13 +7658,13 @@ function pcHTML(scene, logo, off, ta, anim) {
           <button type="button" class="pc-ic${SND.bgm ? '' : ' off'}" data-a="bgm" title="${mE('배경음', 'Music')}" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button>
           <button type="button" class="pc-ic tx" data-a="lang" data-notr aria-label="Language">${mE('EN', '한')}</button>
           <button type="button" class="pc-ic" data-a="ov" data-o="settings" title="${mE('설정', 'Settings')}" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></span>
-        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${CLS[rep].n}</small></span></button>
+        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${myTitle() ? `「${myTitle()}」` : CLS[rep].n}</small></span></button>
       </div></header>`;
   const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
   const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
         ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
-      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
+      <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'ach' ? achBody() : kind === 'weekly' ? wkBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
   return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
 }
 
@@ -7392,7 +7673,7 @@ function pcSingleBody() {
   const sv = typeof stLoad === 'function' ? stLoad() : null, hasRun = sv && CLS[sv.cls], rep = repCls(), rec = typeof stageRec3 === 'function' ? stageRec3() : {};
   const top = Object.entries(rec).filter(([k]) => CLS[k]).sort((a, b) => b[1] - a[1]).slice(0, 3), foe = MENU_DUEL.find(k => k !== rep) || 'samurai';
   const ic = k => (typeof pxi === 'function' ? pxi(k) : '');
-  return `<div class="pmcs">
+  return `${wkStrip(true)}<div class="pmcs">
     <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art"><ol class="pmc-acts">${[['forest', '1막', 'Act 1', 'fight'], ['snow', '2막', 'Act 2', 'elite'], ['castle', '3막', 'Act 3', 'boss']].map(([th, a, b, k]) => `<li class="th-${th}"><i>${ic(k)}</i><b>${mE(a, b)}</b></li>`).join('')}</ol>
         <i class="px pmc-hero a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('메인 모드', 'Main mode')}</p><h3>${mE('모험 모드', 'Adventure')}</h3>
@@ -7449,7 +7730,7 @@ function pcProfBody() {
   return `<div class="pp">
     <aside class="pp-hero c-${rep}">
       <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3><p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
       <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
       ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
       ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
@@ -7496,6 +7777,7 @@ function pcCollBody() {
 
 function pcCodexBody() {
   if (cxTab === 'rl') return cxWrap(relicBody());
+  if (cxTab === 'bs') return cxWrap(bossBody());
   const v = CLS[cxView] ? cxView : repCls(), sks = skinList(v), cur = skinOf(v);
   const strip = `<div class="cx2-sk"><span class="cap">${mE('스킨', 'Skins')}</span>${[{ id: '', n: '기본', en: 'Default' }, ...sks].map(x => { const own = skinOwned(v, x.id);
     return `<button type="button" class="cx2-s${x.id === cur ? ' on' : ''}${own ? '' : ' lock'}" data-a="${own ? 'collwear' : 'shopgo'}" data-c="${v}" data-id="${x.id}" title="${esc(mE(x.n, x.en))}">${faceOf(v, x.id)}<span>${own ? (x.id === cur ? mE('착용 중', 'On') : esc(mE(x.n, x.en))) : MDL(skinPrice(v, x.id))}</span></button>`; }).join('')}</div>`;
@@ -9677,7 +9959,7 @@ function tutHTML() { const n = Math.min(G.turn, 5), s = TUT[n]; return `<div cla
 /* ----- 대결 인트로: 결투장 슬롯이 돌다가 멈추고, 그 결투장의 규칙 한 줄이 뜬다 ----- */
 function showIntro() {
   const ov = ovEl(); if (noMotion || !ov || !G) return;
-  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${nickOf(k) ? esc(nickOf(k)) : k === seat ? '나' : '상대'}</span></div>`;
+  const side = (k, rv) => `<div class="in-s c-${G.P[k].cls}${rv ? ' rv' : ''}"><i class="px a-${G.P[k].cls}${skOf(k)}${rv ? ' flip' : ''}"></i><b>${CLS[G.P[k].cls].n}</b><span>${nickOf(k) ? esc(nickOf(k)) : k === seat ? '나' : '상대'}</span>${titleOf(k) ? `<em class="in-tt">「${esc(titleOf(k))}」</em>` : ''}</div>`;
   const ids = Object.keys(ARENAS), goal = ARENAS[G.arena] ? G.arena : 'castle', tutM = typeof tutOn === 'function' && tutOn();
   ov.innerHTML = `<div class="intro intro2"><p class="in-ar">${tutM ? '튜토리얼' : stageOn() ? stLab() : MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` · ${scoreOf().a + scoreOf().b + 1}번째 판` : ''}</p>
     <div class="in-row">${side(seat, false)}<b class="in-vs">VS</b>${side(opp(seat), true)}</div>
@@ -11852,6 +12134,7 @@ const price3 = k => Math.max(1, PRICE3[k] - (run.rl.includes('seal') ? 1 : 0));
 const NODE_N = { fight: ['결투', 'Duel'], elite: ['정예', 'Elite'], boss: ['보스', 'Boss'], shop: ['상점', 'Shop'], rest: ['쉼터', 'Rest'], event: ['사건', 'Event'], treasure: ['보물', 'Treasure'] };
 const nodeN = t => L(NODE_N[t][0], NODE_N[t][1]);
 const LV3 = ['easy', 'normal', 'hard'];
+const BOSS_SPEC = [{ boss: 'mid', hp: 7, lv: 'normal', mx: 0 }, { boss: 'mid', hp: 8, lv: 'hard', mx: 1 }, { boss: 'final', hp: 9, lv: 'hard', mx: 1 }];   /* 막별 보스 수치 */
 /* 관리자 보스: 막마다 판이 오른다(v1.0 → v3.0). 이번 막에 새로 들인 시스템 카드를 보여 준다 */
 const adminVer = a => `v${a + 1}.0`;
 const adminNewHTML = a => `<p class="cap adm-new">${a ? L('이번 막에 새로 설치한 카드', 'Newly installed this act') : L('기본 설치 카드', 'Installed cards')} · ${ADMIN_NEW[a].map(id => `<b>${CARDS[id].n}</b>`).join(' · ')}</p>`;
@@ -11868,18 +12151,23 @@ const PXI = {
 const pxi = t => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${PXI[t].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
 
 function newRun2() { return Object.assign(newRun(), { v: 4, gold: 0, cards: [], cut: [], rl: [], abup: false, map: null, act: 0, row: -1, col: 0, sel: null, cur: null, scene: null, shop: null, path: [], elite: 0, fights: 0, score: 0 }); }
-function stSave() { try { if (run && run.map && !run.cleared && !run.over) localStorage.setItem('ssd-run', JSON.stringify(run)); else localStorage.removeItem('ssd-run'); } catch (e) { /* 저장소 없음 */ } }
+function stSave() { const K = run && run.weekly ? 'ssd-wrun' : 'ssd-run'; try { if (run && run.map && !run.cleared && !run.over) localStorage.setItem(K, JSON.stringify(run)); else localStorage.removeItem(K); } catch (e) { /* 저장소 없음 */ } }
 function stLoad() { try { const r = JSON.parse(localStorage.getItem('ssd-run') || 'null'); return r && r.v === 4 && r.map && CLS[r.cls] && !r.cleared ? r : null; } catch (e) { return null; } }
-function stLost() { try { localStorage.removeItem('ssd-run'); } catch (e) { /* 저장소 없음 */ } return ''; }
+function stLost() { try { localStorage.removeItem(run && run.weekly ? 'ssd-wrun' : 'ssd-run'); } catch (e) { /* 저장소 없음 */ } return ''; }
 function startStage() {
   const sv = stLoad(); run = sv || newRun2(); emSeen = null; local = true; code = '모험'; me = me || 'me'; doc = freshDoc(me); doc.seats.b = 'bot'; doc.ready.b = true; doc.mode = 'stage'; doc.gid = 1;
   if (sv) { if (run.offer) run.offer.busy = false; run.cur = run.offer || run.shop || run.scene ? run.cur : null; doc.pick = { a: run.cls, b: null }; doc.phase = run.offer ? 'reward' : run.shop ? 'shop' : 'map'; } else doc.phase = 'select';
   onDoc();
 }
-function stageReset() { const ov = ovEl(); if (ov) ov.innerHTML = ''; stLost(); run = newRun2(); W({ phase: 'select', pick: { a: null, b: null }, gid: doc.gid + 1, lock: { a: '', b: '' }, plan: { a: '', b: '' } }); }
+function stageReset() { const ov = ovEl(); if (ov) ov.innerHTML = ''; stLost(); if (run && run.weekly) { run = null; return startWeekly(); } run = newRun2(); W({ phase: 'select', pick: { a: null, b: null }, gid: doc.gid + 1, lock: { a: '', b: '' }, plan: { a: '', b: '' } }); }
 /* 지도 만들기 */
 const EV_IDS = ['gamble', 'forge', 'grave', 'herb', 'cart', 'mirror', 'vamp', 'hunter'];
 function stInit() {
+  if (run.weekly && !stInit.wk) {   /* 주간 도전: 이번 주 씨앗으로 지도를 만들어 모두 같은 지도. 그다음 이번 주 규칙 */
+    const R0 = Math.random; Math.random = wkRng(wkSeed(run.weekly)); stInit.wk = true;
+    try { stInit(); } finally { Math.random = R0; stInit.wk = false; }
+    wkApply(); stSave(); return;
+  }
   const cls = run.cls, b1 = 'admin', b2 = 'admin', b3 = 'admin';   /* 보스는 세 막 모두 관리자. 막이 오를수록 덱이 강해진다(ADMIN_TIER) */
   const pool = shuffle(CLASS_IDS.filter(x => ![cls, b1, b2, b3].includes(x))), evs = shuffle(EV_IDS.slice()), ars = [...shuffle(['forest', 'snow', 'desert']).slice(0, 2), 'castle'];
   /* 한 막은 여섯 걸음: 결투 3 - 3갈래 - 정예(맨 뒤)와 쉼터·상점 - 3갈래 - 쉼터와 상점 - 보스.
@@ -11903,7 +12191,7 @@ const stCurNode = () => (run && run.map && run.cur ? stNode(run.cur.r, run.cur.c
 function stAvail() { if (!run.map || run.cleared) return []; const r = run.row + 1; return (run.row < 0 ? [0, 1, 2] : stNode(run.row, run.col).to).map(c => [r, c]); }
 function stSpec(n, a) {
   a = a == null ? run.act : a; const base = hpBase(n.foe);
-  if (n.t === 'boss') return [{ boss: 'mid', hp: 7, lv: 'normal', mx: 0 }, { boss: 'mid', hp: 8, lv: 'hard', mx: 1 }, { boss: 'final', hp: 9, lv: 'hard', mx: 1 }][a];
+  if (n.t === 'boss') return BOSS_SPEC[a];
   /* 앞쪽 막의 상대는 체력이 적다(1막 -2, 2막 -1). 대신 싸울 곳이 늘었다 */
   const cut = [2, 1, 0][a] || 0;
   if (n.t === 'elite') return { hp: Math.max(3, base - cut + 1 + (a === 2 ? 1 : 0)), lv: LV3[Math.min(2, a + 1)], mx: 1, m0: 3 };
@@ -11926,8 +12214,9 @@ function stageFight() {
   const sp = stSpec(n), has = id => run.rl.includes(id);
   if (n.t === 'boss' && has('ration') && run.hp < run.maxHp) run.hp += 1;
   const pk = { a: run.cls, b: n.foe };
-  const opt = { hp: { a: run.hp, b: sp.hp - (has('first') ? 1 : 0) }, hpMax: { a: run.maxHp, b: sp.hp }, mana0: { a: 2 + (has('spring') ? 2 : 0), b: sp.m0 || 2 }, mx: { a: has('vessel') ? 1 : 0, b: sp.mx || 0 },
-    extra: { a: (run.cards || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[run.act].extra.slice() : [] }, cut: { a: (run.cut || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[run.act].cut.slice() : [] }, rl: { a: [...['stone', 'thornmail', 'spyglass', 'satchel'].filter(has), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
+  const glass = run.wrule === 'glass' ? 1 : 0, tier = Math.min(2, run.act + (run.wrule === 'admin' ? 1 : 0));
+  const opt = { hp: { a: run.hp, b: Math.max(1, sp.hp - glass - (has('first') ? 1 : 0)) }, hpMax: { a: run.maxHp, b: Math.max(1, sp.hp - glass) }, mana0: { a: 2 + (has('spring') ? 2 : 0), b: sp.m0 || 2 }, mx: { a: has('vessel') ? 1 : 0, b: sp.mx || 0 },
+    extra: { a: (run.cards || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[tier].extra.slice() : [] }, cut: { a: (run.cut || []).slice(), b: n.foe === 'admin' ? ADMIN_TIER[tier].cut.slice() : [] }, rl: { a: [...['stone', 'thornmail', 'spyglass', 'satchel'].filter(has), ...(run.abup ? ['abup'] : [])] }, boss: { b: sp.boss || null }, arena: run.map[run.act].ar };
   run.hp0 = run.hp;
   const gid = doc.gid + 1; startedGid = gid;
   W({ gid, pick: pk, game: JSON.stringify(newGame(pk, opt)), turn: 1, phase: 'play', lock: { a: '', b: '' }, plan: { a: '', b: '' } });
@@ -11940,8 +12229,9 @@ function stageWin() {
   const gain0 = (n.t === 'boss' ? 7 : n.t === 'elite' ? 6 : 4) + (clean ? (has('gloves') ? 5 : 2) : 0) + (has('purse') ? 2 : 0), gain = gain0 * (has('ccoin') ? 2 : 1), heal = (n.t === 'boss' ? 2 : 0) + (has('bandage') ? 1 : 0);
   const glove = clean && has('gloves') && (run.gloveHp || 0) < 2; if (glove) { run.gloveHp = (run.gloveHp || 0) + 1; run.maxHp += 1; }
   (run.log = run.log || []).push({ a: run.act, t: n.t, foe: n.foe, turns: G.turn - 1, lost: Math.max(0, (run.hp0 || 0) - left) });
+  if (n.t === 'boss' && n.foe === 'admin') bossRec(run.act, G.turn - 1);
   run.hp = Math.min(run.maxHp, left + heal + (glove ? 1 : 0)); run.turns += G.turn - 1; run.gold += gain; run.fights += 1; if (n.t === 'elite') run.elite += 1;
-  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
+  if (n.t === 'boss' && run.act === run.map.length - 1) { stDone(); stMedal(true); run.score = stScore(); achRun(left); wkSubmit(); const r = stageRec3(); if (!r[run.cls] || run.score > r[run.cls]) { r[run.cls] = run.score; ls('ssd-stage3', JSON.stringify(r)); } SND.play('win'); return W({ phase: 'map' }); }
   const spoil = CLS[n.foe].boss ? null : shuffle(CLS[n.foe].deck.filter(id => !POOL_X.includes(id) && !CARDS[id].relic))[0] || null, others = shuffle(CARD_POOL.filter(id => id !== spoil)).slice(0, (spoil ? 2 : 3) + (has('ldice') ? 1 : 0));
   run.offer = { gold: gain, coin: gain - gain0, glove, clean, heal: heal + (glove ? 1 : 0), step: 'card', t0: Date.now() + 300, cards: spoil ? [spoil, ...others] : others, spoil: spoil ? 0 : -1, foe: n.foe, kind: n.t, perks: n.t === 'fight' ? null : shuffle(rlPool()).slice(0, 3) };
   if (run.offer.perks && !run.offer.perks.length) run.offer.perks = null;
@@ -12109,7 +12399,7 @@ function sceneHTML() {
       <div class="sc-opts"><button type="button" class="btn ghost" data-a="stopt" data-i="back">${L('돌아가기', 'Back')}</button></div>`; }
   else body = `<div class="sc-opts">${stOpts().map(o => `<button type="button" class="scopt${o.d ? ' rich' : ''}" data-a="stopt" data-i="${o.id}" ${o.off ? 'disabled' : ''}><b>${o.n}</b>${o.d ? `<span>${o.d}</span>` : ''}</button>`).join('')}</div>`;
   const npc = sc.t === 'event' ? ({ gamble: 'gambler', grave: 'grave', herb: 'druid', vamp: 'vampire', hunter: 'hunter', forge: '', cart: '', mirror: '' })[sc.ev] || '' : '', th = run.map[run.act].ar;
-  return `<div class="gate stmap scn"><div class="gate-top"><div><p class="cap">${L('모험 모드', 'Adventure')} · ${stLab()}</p><h2>${title}</h2></div><p class="stgold">${L('금화', 'Gold')} ${GOLD}<b>${run.gold}</b></p></div>
+  return `<div class="gate stmap scn"><div class="gate-top"><div><p class="cap">${run.weekly ? L('주간 도전', 'Weekly') : L('모험 모드', 'Adventure')} · ${stLab()}</p><h2>${title}</h2></div><p class="stgold">${L('금화', 'Gold')} ${GOLD}<b>${run.gold}</b></p></div>
     <div class="scene sc-${sc.t}"><div class="sc-art th-${th}" data-sc="${sc.t === 'event' ? sc.ev : sc.t}" aria-hidden="true"><span class="sc-2d">${npc ? `<i class="px a-${npc} flip sc-npc"></i>` : pxi(sc.t)}<i class="px a-${run.cls} sc-hero"></i></span></div><div class="sc-body"><p class="sc-text">${text}</p>${body}</div></div>
     ${stBag()}</div>`;
 }
@@ -12155,7 +12445,7 @@ function stHud() {
   const acts = run.map.map((m, i) => { const past = i < run.act || run.cleared, on = i === run.act && !run.cleared;
     return `<li class="th-${m.ar}${past ? ' past' : ''}${on ? ' on' : ''}"${on ? ' aria-current="step"' : ''}><b>${L(`${i + 1}막`, `Act ${i + 1}`)}</b><span class="an">${L(ARENAS[m.ar] || m.ar, TR(ARENAS[m.ar] || m.ar))}</span>${on ? `<span class="adots" role="img" aria-label="${L(`${n}걸음 가운데 ${prog}걸음`, `Step ${prog} of ${n}`)}">${Array.from({ length: n }, (_, k) => `<i class="${k < prog ? 'f' : ''}${k === n - 1 ? ' b' : ''}"></i>`).join('')}</span>` : ''}</li>`; }).join('');
   return `<header class="sm-hud">
-    <div class="hud-me c-${run.cls}"><i class="px a-${run.cls}${skc(run.cls, run.skin)}" aria-hidden="true"></i><div><p class="cap">${L('모험 모드', 'Adventure')}</p><b>${CLS[run.cls].n}</b></div></div>
+    <div class="hud-me c-${run.cls}"><i class="px a-${run.cls}${skc(run.cls, run.skin)}" aria-hidden="true"></i><div><p class="cap">${run.weekly ? L('주간 도전', 'Weekly') : L('모험 모드', 'Adventure')}</p><b>${CLS[run.cls].n}</b></div></div>
     <div class="hud-st">
       <span class="hs hs-hp" title="${L('체력', 'HP')}">${pxi('heart')}${pips('hp', run.hp, run.maxHp)}<b>${run.hp}<small>/${run.maxHp}</small></b></span>
       <span class="hs hs-gold" title="${L('금화', 'Gold')}">${GOLD}<b>${run.gold}</b></span>
@@ -12273,7 +12563,7 @@ function stSumHTML() {
   const where = ln ? L(`${run.act + 1}막 ${nodeN(ln.t)}에서 ${ln.foe ? CLS[ln.foe].n + '에게 ' : ''}쓰러졌습니다`, `Fell at Act ${run.act + 1} ${nodeN(ln.t)}${ln.foe ? ' to the ' + TR(CLS[ln.foe].n) : ''}`) : '';
   return `<div class="gate stmap ssum${won ? ' won' : ' lost'}">
     <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
-      <div><p class="cap">${L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
+      <div><p class="cap">${run.weekly ? L('주간 도전 · 도전 결과', 'Weekly · Run result') : L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? L('세 막을 모두 돌파했습니다!', 'All three acts cleared!') : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
     ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
     <div class="ss-body">
@@ -12285,7 +12575,8 @@ function stSumHTML() {
           <h4>${pxi('deck')}${L('더한 카드', 'Cards added')} <span>${(run.cards || []).length}</span></h4><p class="chipr">${chips(Object.keys(cnt), 'add') || `<span class="cap">${L('없음', 'None')}</span>`}</p>
           ${(run.cut || []).length ? `<h4>${L('뺀 카드', 'Cards removed')} <span>${run.cut.length}</span></h4><p class="chipr">${chips(run.cut, 'cut')}</p>` : ''}</div>
       </section></div>
-    <div class="ss-go"><button type="button" class="btn red big" data-a="strestart">${won ? L('다른 직업으로 다시 도전', 'Try another class') : L('처음부터 다시 도전', 'Start a new run')}</button><button type="button" class="btn ghost big" data-a="leave">${L('메뉴로', 'Main menu')}</button></div></div>`;
+    ${run.weekly ? `<p class="v-rw ss-rw wk-res">${won ? (run.wk && run.wk.rank ? L(`주간 순위 <b>${run.wk.rank}위</b> · 이번 주 최고 ${run.wk.best}점`, `Weekly rank <b>#${run.wk.rank}</b> · best ${run.wk.best} pts`) : run.wk && run.wk.busy ? L('순위표에 올리는 중…', 'Submitting…') : run.wk && run.wk.local ? L('로그인하면 순위표에 오릅니다', 'Log in to join the board') : L('순위표에 올리지 못했습니다', 'Could not submit')) : L('완주해야 순위표에 오릅니다', 'Clear the run to get on the board')}</p>` : ''}
+    <div class="ss-go"><button type="button" class="btn red big" data-a="strestart">${run.weekly ? L('주간 도전 다시 하기', 'Retry weekly') : won ? L('다른 직업으로 다시 도전', 'Try another class') : L('처음부터 다시 도전', 'Start a new run')}</button>${run.weekly ? `<button type="button" class="btn ghost big" data-a="wkboard">${L('순위표', 'Leaderboard')}</button>` : ''}<button type="button" class="btn ghost big" data-a="leave">${L('메뉴로', 'Main menu')}</button></div></div>`;
 }
 /* 지도 */
 const MX = [13, 28, 43, 58, 73, 90], MY = { 3: [19, 50, 81], 2: [34, 66], e: [19, 60], 1: [50] };
@@ -12399,9 +12690,13 @@ const ADMIN_LINE = [
 var adiOn = false;   /* tick()이 먼저 볼 수 있게 var */
 function adminIntro(next) {
   const ov = ovEl(); if (!ov || !stageOn() || !G || !seat || G.P[opp(seat)].cls !== 'admin' || G.turn !== 1) return false;
-  const a = Math.max(0, Math.min(2, run.act)), c = L(CLS[run.cls].n, TR(CLS[run.cls].n)), ver = adminVer(a);
   let seen = 0; try { seen = +localStorage.getItem('ssd-adi') || 0; } catch (e) { /* 저장소 없음 */ }
-  const fast = !!(seen & (1 << a)), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600];
+  const a = Math.max(0, Math.min(2, run.act));
+  return adminShow(ov, a, run.cls, !!(seen & (1 << a)), false, next);
+}
+/* 연출 본체. fast: 이미 본 막(빠르게, 넘기기 가능). free: 도감에서 다시 보기(보통 빠르기, 넘기기 가능) */
+function adminShow(ov, a, pc, fast, free, next) {
+  const c = L(CLS[pc].n, TR(CLS[pc].n)), ver = adminVer(a), DUR = fast ? [900, 900, 900, 1100] : [1900, 1900, 1700, 1600]; fast = fast || free;
   const win = (cls, x, y, w, title, body, d) => `<div class="win${cls}" style="left:${x};top:${y};width:${w};--d:${d || 0}s"><div class="tt">${title}<i>×</i></div><div class="bd">${body}</div></div>`;
   const ln = (t, i) => `<span style="--i:${i}">${t}</span>`;
   const s1 = [`<div class="crt" style="--ld:${fast ? 120 : 260}ms"><pre>${[
@@ -12432,8 +12727,8 @@ function adminIntro(next) {
       typ = setInterval(() => { const m = Math.min(toks.length, Math.floor((performance.now() - t0) / 1000 * cps)); if (m === n) return; if (Math.floor(m / 3) > Math.floor(n / 3)) SND.play('tick'); n = m; tx.innerHTML = say(n); if (n >= toks.length) endType(); }, 33); return; }
     timer = setTimeout(() => (s < 4 ? enter(s + 1) : close()), DUR[s - 1]); };
   const endType = () => { clearInterval(typ); typ = 0; n = toks.length; tx.innerHTML = say(n); tc.hidden = true; if (nx) nx.hidden = false; clearTimeout(timer); timer = setTimeout(() => enter(4), DUR[2]); };
-  const close = () => { if (done) return; done = true; adiOn = false; try { localStorage.setItem('ssd-adi', String((+localStorage.getItem('ssd-adi') || 0) | (1 << a))); } catch (e) { /* 저장소 없음 */ }   /* 끝까지 본 막만 본 것으로 친다 */ clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
-    root.classList.add('out'); setTimeout(() => { root.remove(); if (G && G.turn === 1) deadline = Date.now() + TURN_MS; next(); }, 300); };
+  const close = () => { if (done) return; done = true; adiOn = false; if (!free) try { localStorage.setItem('ssd-adi', String((+localStorage.getItem('ssd-adi') || 0) | (1 << a))); } catch (e) { /* 저장소 없음 */ }   /* 끝까지 본 막만 본 것으로 친다 */ clearTimeout(timer); clearInterval(typ); document.removeEventListener('keydown', key, true);
+    root.classList.add('out'); setTimeout(() => { root.remove(); if (!free && G && G.turn === 1) deadline = Date.now() + TURN_MS; if (next) next(); }, 300); };
   const adv = () => { if (done || !fast) return; if (step === 3 && typ) return endType(); if (step < 4) enter(step + 1); else close(); };
   const key = e => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); if (!fast) return; if (e.key === 'Escape') close(); else adv(); } };
   document.addEventListener('keydown', key, true);
