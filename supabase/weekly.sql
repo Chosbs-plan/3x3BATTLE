@@ -1,7 +1,7 @@
 -- 삼삼결투 주간 도전 순위표. Supabase SQL Editor에 붙여 넣고 Run. 여러 번 실행해도 된다. (economy.sql 다음에)
 -- 한 주는 한국 시간 월요일 0시에 시작한다. 주 이름은 'W' + 그 월요일 날짜(예: W2026-10-19). 게임(index.html의 wkId)과 같은 규칙.
 -- 점수는 브라우저가 계산해서 보내므로, 서버는 모험 시작 기록(plays)으로 최소한만 확인한다:
---   그 사람이 이번 주에 시작한 모험이어야 하고, 시작하고 6분 넘게 지나야 하며, 같은 모험으로는 한 번만 올릴 수 있다. 점수는 0~2000.
+--   그 사람이 이번 주에 시작한 모험이어야 하고, 시작하고 3분 넘게 지나야 하며, 같은 모험으로는 한 번만 올릴 수 있다. 점수는 0~2000.
 
 create table if not exists public.weekly_scores (
   week text not null, id uuid not null references auth.users on delete cascade,
@@ -24,7 +24,7 @@ declare p plays; nk text; best int; rk int; tot int;
 begin
   if auth.uid() is null or p_week is distinct from _wk_now() then return json_build_object('ok', false); end if;
   select * into p from plays where sid = p_sid and id = auth.uid() and kind = 'run';
-  if not found or now() - p.started < interval '6 minutes'
+  if not found or now() - p.started < interval '3 minutes'
      or to_char(date_trunc('week', p.started at time zone 'Asia/Seoul')::date, 'YYYY-MM-DD') <> substr(p_week, 2) then return json_build_object('ok', false); end if;
   insert into weekly_used (sid) values (p_sid) on conflict do nothing;
   if not found then return json_build_object('ok', false); end if;
