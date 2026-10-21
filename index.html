@@ -481,6 +481,9 @@ canvas.fxw { position: absolute; z-index: 8; left: calc(-18 / 32 * var(--cs)); t
 .emo { position: absolute; z-index: 13; left: 50%; top: calc(-10 * var(--u)); translate: -50% -100%; white-space: nowrap; background: var(--paper); color: var(--sil); font-weight: 700; font-size: 16px; padding: 6px 12px; border: 2px solid var(--sil); box-shadow: 3px 3px 0 var(--line); animation: emoIn 2.6s steps(26) forwards; pointer-events: none; }
 .emo::after { content: ''; position: absolute; left: 50%; bottom: -8px; width: 8px; height: 8px; margin-left: -4px; background: var(--paper); border-right: 2px solid var(--sil); border-bottom: 2px solid var(--sil); rotate: 45deg; }
 .emo.tn { border-color: var(--red); color: var(--red-d); box-shadow: 3px 3px 0 var(--red); } .emo.tn::after { border-color: var(--red); }
+.emo.adm { padding: 0 12px 7px; border-color: #1a1420; color: #1a1420; background: #fff; box-shadow: 3px 3px 0 rgba(26, 20, 32, .35); font-family: 'Galmuri11', inherit; font-size: 15px; white-space: normal; width: max-content; max-width: min(320px, 80vw); text-align: left; line-height: 1.5; }
+.emo.adm span { display: block; margin: 0 -12px 6px; padding: 2px 8px; background: #4b3f8f; color: #fff; font-size: 12px; }
+.emo.adm::after { border-color: #1a1420; }
 @keyframes emoIn { 0% { scale: .3; opacity: 0; } 6% { scale: 1.15; opacity: 1; } 10% { scale: 1; } 88% { opacity: 1; } 100% { opacity: 0; } }
 .intro { flex-direction: column; gap: 18px; }
 .in-row { display: flex; align-items: center; justify-content: center; gap: 24px; }
@@ -6506,7 +6509,20 @@ function showEmote(k, i) {
   SND.play(i >= 5 ? 'taunt' : 'emote');
   setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, 2650);
 }
-function emoHTML(k) { const e = emNow[k]; return e && e.until > Date.now() ? `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i]}</div>` : ''; }
+function emoHTML(k) { const e = emNow[k]; if (!e || e.until <= Date.now()) return ''; if (e.adm) return `<div class="emo adm" role="status"><span>${esc(e.adm)}</span>${esc(e.txt)}</div>`; return `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i]}</div>`; }
+/* 관리자 보스의 결투 중 대사: 이모트 말풍선 자리에 작은 창 모양으로 띄운다 */
+function adminSay(k, txt, ms) {
+  ms = ms || 3400; emNow[k] = { adm: `${L('관리자', 'Admin')} ${adminVer(run ? run.act : 0)}`, txt, until: Date.now() + ms };
+  const side = app.querySelector('.side.' + (k === seat ? 'me' : 'op'));
+  if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); }
+  SND.play('merr');
+  setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, ms + 50);
+}
+const ADMIN_TALK = {
+  rage: [['경고. 체력 50%. 냉각팬 최대 가동.', 'Warning. HP 50%. Cooling fans at max.'], ['오류, 오류… 재시작은 없다!', 'Error, error… no restarts!'], ['치명적 오류? 아니. 이건 최종 기능이다.', 'Fatal error? No. This is the final feature.']],
+  ko: [['프로세스 종료… 다음 버전에서 보자.', 'Process terminated… see you next version.'], ['업데이트… 실패… 롤백할 수 없다…', 'Update… failed… cannot roll back…'], ['시스템을 종료합니다. …수고하셨습니다.', 'Shutting down. …Good work.']],
+};
+const adminTalk = kind => { const a = Math.max(0, Math.min(2, run ? run.act : 0)); return L(...ADMIN_TALK[kind][a]); };
 function sendEmote(i) {
   if (!doc || !seat) return;
   if (Date.now() - emLast < 2500) return toast('이모트는 잠시 뒤에 다시 보낼 수 있습니다');
@@ -9437,6 +9453,7 @@ async function runReplay(old, neu) {
     if (r.undead) { fx(k, FX.sparkle(cell, K.steel), 900); say('불사! 체력 1', 'f-big f-warn', 'undead'); }
     if (r.stagger) say('경직', 'f-miss', 'fizz');
     if (r.enrage) { fx(k, FX.sparkle(cell, K.red), 900); say('분노! 다음 턴 피해 +1', 'f-big f-warn', 'cutin'); }
+    if (cls(k) === 'admin' && stageOn() && neu.P[k].hp > 0 && old.P[k].hp > hpMaxOf(neu.P[k]) / 2 && neu.P[k].hp <= hpMaxOf(neu.P[k]) / 2) later(() => adminSay(k, adminTalk('rage')), d + 200);
     if (r.rage) say('분노', 'f-sp', 'stance');
     if (r.col) { fx(k, FX.crumble(cell), 600); hurt(k); say('-1 붕괴', 'f-dmg', 'rumble'); }
     if (r.heal) { fx(k, FX.healFx(cell, true), 700); say('체력 +1', 'f-big f-heal', 'heal'); }
@@ -9694,6 +9711,7 @@ async function koScene(neu, cls, fin) {
   a.classList.add('ko-zoom', w === 'draw' || losers.length > 1 ? 'kz-c' : losers[0] === seat ? 'kz-me' : 'kz-op');
   const e = document.createElement('div'); e.className = 'kofx'; e.innerHTML = '<b>K.O.</b>'; a.appendChild(e);
   play('ko'); pulse(app.querySelector('.field'), 'quake', 520);
+  if (stageOn()) losers.filter(k => cls(k) === 'admin').forEach(k => setTimeout(() => adminSay(k, adminTalk('ko'), 3600), 500));
   await sleep(2100);
   if (SKIP) return;
   if (w && w !== 'draw') {
