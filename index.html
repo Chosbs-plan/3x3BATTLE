@@ -4215,6 +4215,134 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 @keyframes welWob { 25% { rotate: -4deg; } 75% { rotate: 4deg; } }
 @keyframes welLid { to { translate: 30px -70px; rotate: 35deg; opacity: 0; } }
 @keyframes welCoin { 0% { opacity: 1; translate: 0 0; } 60% { opacity: 1; } 100% { opacity: 0; translate: calc((var(--i) - 4.5) * 14px) calc(-80px - (var(--i) * 7px % 30px)); } }
+/* ===== PC 전투 화면: 책상 위 보드게임 말판(종이 + 잉크 테두리 + 딱딱한 그림자) =====
+   넓은 PC 화면에서만. 턴 기록판, 인물 카드(나: 왼쪽 아래, 상대: 오른쪽 위), 결투장 카드와 버림 더미, 메모지 계획, 도장 같은 계획 확정 */
+.trk, .tblk, .uf-tab, .play .arc, .play .disc, .a3-ntag { display: none; }
+@media (min-width: 1100px) and (min-height: 660px) {
+  html body #app > .play.v2 { --ink: #1d1413; --tbl: #2a1f24; grid-template-rows: 0 minmax(0, 1fr) 196px; background: var(--tbl); }
+  html body #app > .play.v2 .pp, html body #app > .play.v2 .stat.uf { box-sizing: border-box; }
+  /* 위: 진행 줄(왼쪽), 턴 기록판(가운데), 도구(오른쪽)를 결투장 위에 띄운다 */
+  html body #app > .play.v2 > .bar { position: absolute; z-index: 20; left: 0; right: var(--lwc, 0px); top: 0; height: 0; padding: 0; background: none; border: 0; box-shadow: none; overflow: visible; }
+  html body #app > .play.v2 > .bar .turn { display: none; }
+  html body #app > .play.v2 > .bar > span:nth-child(2) { position: absolute; left: 24px; top: 18px; flex: none; max-width: calc(50% - 300px); padding: 6px 12px; font-size: 14px; text-align: left; color: var(--sil); background: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  html body #app > .play.v2 > .bar > span:nth-child(2) .timer { color: var(--red); }
+  html body #app > .play.v2 > .bar .row { position: absolute; right: 24px; top: 18px; gap: 10px; }
+  html body #app > .play.v2 > .bar .row .btn { min-height: 0; padding: 6px 12px; font-size: 14px; color: var(--ink); background: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  html body #app > .play.v2 > .bar .row .btn:active { translate: 2px 2px; box-shadow: 2px 2px 0 var(--ink); }
+  .play.v2 .trk { position: absolute; left: 50%; top: 14px; translate: -50% 0; display: flex; }
+  .play.v2 .trk-l { display: grid; place-items: center; padding: 0 14px; font-size: 13px; font-weight: 700; color: #fff; background: var(--ink); border: 3px solid var(--ink); }
+  .play.v2 .trk-c { display: flex; background: var(--paper); border: 3px solid var(--ink); border-left: 0; box-shadow: 5px 5px 0 var(--ink); }
+  .play.v2 .trk-c i { width: 34px; height: 40px; display: grid; place-items: center; font-style: normal; font-size: 13px; color: var(--ash); border-right: 2px dashed var(--line); }
+  .play.v2 .trk-c i:last-child { border-right: 0; } .play.v2 .trk-c i.past { color: var(--line); } .play.v2 .trk-c i.bz { color: var(--amber-d); } .play.v2 .trk-c i.cr { background: repeating-linear-gradient(135deg, transparent 0 5px, rgba(90, 70, 68, .08) 5px 7px); }
+  .play.v2 .trk-c i.now { color: #fff; font-size: 20px; font-weight: 700; background: var(--red); border-right: 2px solid var(--ink); box-shadow: inset 0 -4px 0 var(--red-d); }
+  .play.v2 .tblk { position: absolute; left: 50%; top: 66px; translate: -50% 0; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; }
+  .play.v2 .tblk em { font-style: normal; text-shadow: 2px 2px 0 var(--ink); }
+  .play.v2 .tblk span { position: relative; width: 140px; height: 16px; background: #4a3a38; border: 3px solid var(--ink); }
+  .play.v2 .tblk span i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--tl, 1) * 100%); background: var(--amber); transition: width .5s linear; }
+  .play.v2 .tblk span::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 9px, var(--ink) 9px 11px); }
+  .play.v2.tlow .tblk span i { background: var(--red); }
+  .play.v2.over .tblk { display: none; }
+  /* 결투장: 위까지 꽉 */
+  html body #app > .play.v2 > .arena, html body.a3on #app > .play.v2 > .arena { grid-row: 1 / 3; }
+  /* 인물 카드 */
+  html body #app > .play.v2 .stat.uf { position: fixed; z-index: 15; width: 400px !important; max-width: none; min-height: 118px; padding: 0 !important; gap: 0 !important; display: grid !important; grid-template-columns: 96px minmax(0, 1fr); align-items: stretch;
+    color: var(--sil); background: var(--paper); border: 3px solid var(--ink) !important; border-radius: 0; box-shadow: 6px 6px 0 var(--ink) !important; text-align: left; }
+  html body #app > .play.v2 .side.me .stat.uf { left: 24px; bottom: 222px; top: auto; }
+  html body #app > .play.v2 .side.op .stat.uf { right: calc(24px + var(--lwc, 0px)); top: 116px; grid-template-columns: minmax(0, 1fr) 96px; flex-direction: row !important; }
+  html body #app > .play.v2 .uf-tab { position: absolute; top: -25px; left: -3px; display: block; padding: 2px 10px 3px; font-size: 12px; font-weight: 700; line-height: 1.3; white-space: nowrap; color: #fff; background: var(--red); border: 3px solid var(--ink); border-bottom: 0; }
+  html body #app > .play.v2 .side.op .uf-tab { left: auto; right: -3px; background: var(--blue); }
+  html body #app > .play.v2 .stat.uf .uf-por { position: relative; width: auto !important; height: auto !important; min-height: 112px; display: grid; place-items: end center; overflow: hidden; background: var(--wash); border: 0 !important; border-right: 3px solid var(--ink) !important; border-radius: 0; box-shadow: none; }
+  html body #app > .play.v2 .side.op .stat.uf .uf-por { order: 2; border-right: 0 !important; border-left: 3px solid var(--ink) !important; }
+  html body #app > .play.v2 .stat.uf .uf-por::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 26px; background: var(--line); }
+  html body #app > .play.v2 .stat.uf .uf-por > i.px { position: relative; width: 84px !important; height: 84px !important; margin-bottom: 6px; }
+  html body #app > .play.v2 .stat.uf .uf-main { display: grid; gap: 6px; align-content: start; min-width: 0; padding: 8px 12px 10px; }
+  html body #app > .play.v2 .stat.uf .uf-name { display: flex; align-items: baseline; gap: 8px; font-size: 19px; white-space: nowrap; }
+  html body #app > .play.v2 .stat.uf .uf-name b { order: 1; font-size: 19px; color: var(--ink); } html body #app > .play.v2 .stat.uf .uf-nick { order: 2; font-size: 13px; color: var(--ash); font-weight: 400; } html body #app > .play.v2 .stat.uf .uf-who { display: none; }
+  html body #app > .play.v2 .stat.uf .infob { order: 3; margin-left: auto; min-height: 0; padding: 1px 8px; font-size: 11px; color: var(--ink); background: var(--wash); border: 2px solid var(--ink); box-shadow: none; }
+  /* 체력은 도트 하트, 마나는 도트 다이아. 숫자는 늘 한 줄 */
+  html body #app > .play.v2 .stat.uf .uf-bar { display: flex; align-items: center; gap: 0; white-space: nowrap; }
+  html body #app > .play.v2 .stat.uf .uf-ic { display: none; }
+  html body #app > .play.v2 .stat.uf .pips { display: flex; flex: none; gap: 3px; width: auto; height: auto; background: none; border: 0; box-shadow: none; }
+  html body #app > .play.v2 .stat.uf .pips i { flex: none; width: 16px !important; height: 14px !important; min-width: 0; background: no-repeat center / 100% 100% var(--hx0) !important; box-shadow: none !important; border: 0 !important; }
+  html body #app > .play.v2 .stat.uf .pips.hp i { --hx0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 6' shape-rendering='crispEdges'%3E%3Cpath fill='%23c9c6c6' d='M1 0h2v1h1V0h2v1h1v2H6v1H5v1H4v1H3V5H2V4H1V3H0V1h1z'/%3E%3C/svg%3E"); }
+  html body #app > .play.v2 .stat.uf .pips.hp i.f { --hx0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 6' shape-rendering='crispEdges'%3E%3Cpath fill='%23d8475a' d='M1 0h2v1h1V0h2v1h1v2H6v1H5v1H4v1H3V5H2V4H1V3H0V1h1z'/%3E%3Cpath fill='%23ff9aa6' d='M1 1h1v1H1z'/%3E%3C/svg%3E"); }
+  html body #app > .play.v2 .stat.uf .pips.mp i { width: 13px !important; height: 16px !important; --hx0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 7' shape-rendering='crispEdges'%3E%3Cpath fill='%23c9c6c6' d='M2 0h1v1h1v2h1v1H4v2H3v1H2V6H1V4H0V3h1V1h1z'/%3E%3C/svg%3E"); }
+  html body #app > .play.v2 .stat.uf .pips.mp i.f { --hx0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 7' shape-rendering='crispEdges'%3E%3Cpath fill='%234f7fd0' d='M2 0h1v1h1v2h1v1H4v2H3v1H2V6H1V4H0V3h1V1h1z'/%3E%3Cpath fill='%23a9c6ff' d='M2 1h1v2H2z'/%3E%3C/svg%3E"); }
+  html body #app > .play.v2 .stat.uf .pips.mp i.s { --hx0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 7' shape-rendering='crispEdges'%3E%3Cpath fill='%23e3a33b' d='M2 0h1v1h1v2h1v1H4v2H3v1H2V6H1V4H0V3h1V1h1z'/%3E%3C/svg%3E"); }
+  html body #app > .play.v2 .stat.uf .uf-bar b { flex: none; min-width: 0; margin-left: 8px; font-size: 16px; color: var(--ink); white-space: nowrap; } html body #app > .play.v2 .stat.uf .uf-bar b small { font-size: 12px; color: var(--ash); font-weight: 400; }
+  html body #app > .play.v2 .stat.uf .uf-ks, html body #app > .play.v2 .stat.uf .chipr { justify-content: flex-start; }
+  html body #app > .play.v2 .side.op .stat.uf .uf-main, html body #app > .play.v2 .side.op .stat.uf .uf-bar, html body #app > .play.v2 .side.op .stat.uf .uf-name, html body #app > .play.v2 .side.op .stat.uf .uf-ks, html body #app > .play.v2 .side.op .stat.uf .chipr { flex-direction: row; justify-content: flex-start; text-align: left; }
+  html body #app > .play.v2 .side.op .stat.uf .pips { flex-direction: row; }
+  html body #app > .play.v2 .side.op .uf-tip { left: 0; right: auto; }
+  /* 화질·2D 전환: 도구 아래 */
+  html body #app > .play.v2 .a3-ui { top: 66px; right: calc(24px + var(--lwc, 0px)); left: auto; bottom: auto; }
+  html body #app > .play.v2 .a3-ui .btn { min-height: 0; padding: 3px 10px; font-size: 12px; color: var(--ink); background: var(--wash); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+  html body #app > .play.v2 .stat.uf .uf-k { font-size: 12px; background: var(--wash); border: 2px solid var(--line); }
+  /* 상대 손패(카드 뒷면)와 '계획 중' */
+  html body #app > .play.v2 .side-label { position: fixed; z-index: 15; left: calc(50% - var(--lwc, 0px) / 2); top: 102px; translate: -50% 0; display: flex; align-items: flex-end; gap: 6px; margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
+  html body #app > .play.v2 .side-label > .cap:first-child { display: none; }
+  html body #app > .play.v2 .side-label .backs { display: flex; gap: 6px; }
+  html body #app > .play.v2 .side-label .backs i { width: 26px; height: 36px; margin: 0; background: var(--wash) repeating-linear-gradient(45deg, transparent 0 3px, rgba(90, 70, 68, .18) 3px 5px); border: 3px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 var(--ink); }
+  html body #app > .play.v2 .side-label .backs span { padding: 3px 8px; font-size: 12px; color: var(--ink); background: var(--paper); border: 3px solid var(--ink); }
+  html body #app > .play.v2 .side-label .cap { margin-left: 8px; padding: 3px 8px; font-size: 12px; color: #fff; background: var(--ink); }
+  html body #app > .play.v2 .side-label .infob { padding: 3px 8px; font-size: 12px; color: var(--ink); background: var(--paper); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+  /* 상대 능력 설명 띠: 상대 인물 카드 아래 */
+  html body #app > .play.v2 > .arena .abar.foe { position: fixed; z-index: 14; left: auto; right: calc(24px + var(--lwc, 0px)); top: 248px; bottom: auto; width: 400px; max-width: none; box-sizing: border-box; padding: 6px 10px; font-size: 12px; color: var(--sil); background: var(--paper); border: 3px solid var(--ink); border-top: 2px dashed var(--line); box-shadow: 6px 6px 0 var(--ink); }
+  /* 머리 위 이름표 */
+  .a3-lab .a3-ntag { position: absolute; display: flex; align-items: center; translate: -50% -100%; padding: 3px 8px; font-size: 14px; font-weight: 700; white-space: nowrap; color: #1d1413; background: #fff; border: 3px solid #1d1413; box-shadow: 3px 3px 0 #1d1413; }
+  .a3-lab .a3-ntag i { margin-right: 6px; padding: 0 5px; font-style: normal; font-size: 11px; color: #fff; background: var(--red); } .a3-lab .a3-ntag.op i { background: var(--blue); }
+  .a3-lab .a3-ntag::after { content: ''; position: absolute; left: 50%; bottom: -12px; translate: -50% 0; border: 6px solid transparent; border-top-color: #1d1413; }
+  /* 안내 문구: 결투장 아래쪽 가운데 종이 띠 */
+  html body #app > .play.v2 > .hint2 { position: fixed; z-index: 16; left: calc(50% - var(--lwc, 0px) / 2); top: auto; bottom: 226px; translate: -50% 0; margin: 0; width: max-content; max-width: min(980px, calc(100% - 960px)); padding: 7px 16px; font-size: 16px; color: var(--ink); background: var(--paper); border: 3px solid var(--ink); border-bottom-width: 3px; box-shadow: 4px 4px 0 var(--ink); }
+  /* 아래: 어두운 테이블 가장자리 */
+  html body #app > .play.v2 > .ctrl { grid-row: 3; background: var(--tbl); border-top: 4px solid var(--ink); box-shadow: none; }
+  html body #app > .play.v2 > .ctrl::before { content: ''; position: absolute; left: 0; right: 0; top: 6px; border-top: 2px dashed rgba(255, 255, 255, .12); pointer-events: none; }
+  html body #app > .play.v2 .dock { grid-template-columns: 300px minmax(0, 1fr) 300px; padding: 0 24px; }
+  html body #app > .play.v2 .dk-l { position: static; align-self: end; display: flex; align-items: flex-end; gap: 30px; padding-bottom: 28px; }
+  html body #app > .play.v2 .dk-l .orb { display: none; }
+  /* 결투장 카드 */
+  .play.v2 .arc { position: relative; display: block; flex: none; width: 196px; padding: 10px 12px; color: var(--sil); background: var(--wash); border: 3px solid var(--ink); box-shadow: 5px 5px 0 #000; rotate: -2deg; }
+  .play.v2 .arc-h { position: absolute; top: -14px; left: 10px; padding: 1px 8px; font-size: 11px; font-weight: 700; color: #fff; background: var(--ink); }
+  .play.v2 .arc b { display: block; font-size: 22px; color: var(--ink); } .play.v2 .arc p { margin: 4px 0 0; font-size: 12px; line-height: 1.4; } .play.v2 .arc .arc-b { color: var(--amber-d); }
+  /* 버린 카드 더미와 덱 더미 */
+  .play.v2 .disc { position: relative; display: block; flex: none; width: 74px; height: 100px; padding: 0; font: inherit; cursor: pointer; background: none; border: 3px dashed rgba(255, 255, 255, .35); }
+  .play.v2 .disc span { position: absolute; left: -3px; top: -28px; font-size: 13px; color: #d9cbc7; } .play.v2 .disc i { display: none; }
+  .play.v2 .disc b { position: absolute; right: -14px; bottom: -12px; padding: 2px 8px; font-size: 16px; color: #fff; background: var(--ink); border: 3px solid var(--wash); }
+  .play.v2 .disc:hover { border-color: rgba(255, 255, 255, .7); }
+  html body #app > .play.v2 .dk-l .pile { position: absolute; right: 340px; bottom: 34px; width: 88px; height: 118px; }
+  html body #app > .play.v2 .dk-l .pile i { position: absolute; inset: 0; width: auto; height: auto; background: var(--wash) repeating-linear-gradient(45deg, transparent 0 4px, rgba(90, 70, 68, .16) 4px 7px); border: 3px solid var(--ink); border-radius: 0; box-shadow: none; }
+  html body #app > .play.v2 .dk-l .pile i:nth-child(2) { translate: -5px -5px; } html body #app > .play.v2 .dk-l .pile i:nth-child(3) { translate: -10px -10px; }
+  html body #app > .play.v2 .dk-l .pile b { position: absolute; right: -14px; bottom: -12px; left: auto; top: auto; padding: 2px 8px; font-size: 18px; color: #fff; background: var(--ink); border: 3px solid var(--wash); border-radius: 0; }
+  html body #app > .play.v2 .dk-l .pile::before { content: '덱'; position: absolute; left: -10px; top: -38px; font-size: 13px; color: #d9cbc7; }
+  /* 이번 턴 계획: 테이프로 붙인 메모지(계획 확정 위) */
+  html body #app > .play.v2 .dk-l .sum { position: absolute; right: 30px; bottom: 150px; width: 252px; padding: 14px 14px 10px; background: #fff7d6; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); rotate: -1.5deg; }
+  html body #app > .play.v2 .dk-l .sum::before { content: ''; position: absolute; left: 50%; top: -12px; translate: -50% 0; width: 70px; height: 18px; background: rgba(201, 198, 198, .85); border: 2px solid rgba(29, 20, 19, .25); }
+  html body #app > .play.v2 .dk-l .sum .sum-h { font-size: 13px; color: var(--ink); border-bottom: 0; }
+  html body #app > .play.v2 .dk-l .sum > span:not(.sum-h) { background: none; border-left: 0; border-bottom: 1px dashed var(--line); padding: 2px 0; }
+  /* 오른쪽: 능력 카드, 이모트, 도장 같은 계획 확정 */
+  html body #app > .play.v2 .dk-r { position: static; }
+  html body #app > .play.v2 .acts { position: static; display: block; width: auto; }
+  html body #app > .play.v2 .acts [data-a=lock], html body #app > .play.v2 .acts [data-a=unlock] { position: absolute; right: 30px; bottom: 34px; width: 252px; min-height: 0 !important; height: 96px; font-size: 30px !important; letter-spacing: 4px; color: #fff; text-shadow: 3px 3px 0 var(--ink); background: var(--red); border: 4px solid var(--ink); box-shadow: 6px 6px 0 #000, inset 0 -8px 0 var(--red-d) !important; }
+  html body #app > .play.v2 .acts [data-a=unlock] { font-size: 22px !important; background: var(--sil); box-shadow: 6px 6px 0 #000, inset 0 -8px 0 #3a2c2a !important; }
+  html body #app > .play.v2 .acts [data-a=lock]:active { translate: 3px 3px; box-shadow: 3px 3px 0 #000, inset 0 -8px 0 var(--red-d) !important; }
+  html body #app > .play.v2 .acts .abb { position: fixed; left: 448px; bottom: 222px; z-index: 15; width: 108px; height: 118px; min-height: 0; flex-direction: column; justify-content: center; gap: 6px; padding: 6px 4px; text-align: center; background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  html body #app > .play.v2 .acts .abb .abb-tx { justify-items: center; } html body #app > .play.v2 .acts .abb .abb-tx > span { display: none; }
+  html body #app > .play.v2 .acts .emb { position: fixed; left: 448px; bottom: 360px; z-index: 15; width: 108px; min-height: 0; padding: 4px; font-size: 13px; color: var(--ink); background: var(--wash) !important; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  html body #app > .play.v2 .acts.one { position: absolute; right: 30px; bottom: 60px; }
+  /* 손패 카드: 딱딱한 그림자 */
+  html body #app > .play.v2 .hand .card { box-shadow: 5px 5px 0 var(--ink); }
+}
+/* 1280~1600 폭, 낮은 화면: 말판 조각을 통째로 줄인다(위치값도 같은 비율로 줄어든다) */
+@media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
+  html body #app > .play.v2 { grid-template-rows: 0 minmax(0, 1fr) 160px; }
+  html body #app > .play.v2 .stat.uf, html body #app > .play.v2 > .arena .abar.foe, html body #app > .play.v2 .side-label, html body #app > .play.v2 .trk, html body #app > .play.v2 .tblk,
+  html body #app > .play.v2 > .bar > span:nth-child(2), html body #app > .play.v2 > .bar .row, html body #app > .play.v2 .a3-ui, html body #app > .play.v2 > .hint2,
+  html body #app > .play.v2 .arc, html body #app > .play.v2 .disc, html body #app > .play.v2 .dk-l .pile, html body #app > .play.v2 .dk-l .sum, html body #app > .play.v2 .acts { zoom: .72; }
+  .a3-lab .a3-ntag { font-size: 12px !important; padding: 2px 6px !important; }
+  html body #app > .play.v2 .dk-l { gap: 20px; padding-bottom: 20px; }
+  html body #app > .play.v2 .dock { grid-template-columns: 240px minmax(0, 1fr) 240px; padding: 0 16px; }
+  html body #app > .play.v2 > .hint2 { max-width: 620px; bottom: 286px; white-space: normal; text-align: center; }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -6899,7 +7027,8 @@ function pips(kind, n, max, spend) {
 function statHTML(k) {
   const p = G.P[k], mine = k === seat, pl = curPl(), c = CLS[p.cls], hp = Math.max(0, p.hp), hm = hpMaxOf(p), mm = manaMaxOf(p), sp = mine && doc.phase === 'play' && !replaying ? cost(pl) : 0;
   /* 출시 게임의 유닛 프레임처럼: 초상, 이름, 굵은 체력 막대, 마나 막대, 패시브와 능력(마우스를 대면 설명), 상태 칩 */
-  return `<div class="stat uf ${mine ? 'me' : 'op'} c-${p.cls}${hp <= 1 && doc.phase === 'play' ? ' low' : ''}">
+  const tab = (mine ? L('나', 'You') : L('상대', 'Foe')) + (nickOf(k) ? ' · ' + esc(nickOf(k)) : !mine && local ? ' · ' + L('봇', 'Bot') : '');
+  return `<div class="stat uf ${mine ? 'me' : 'op'} c-${p.cls}${hp <= 1 && doc.phase === 'play' ? ' low' : ''}"><span class="uf-tab" aria-hidden="true" data-notr>${tab}</span>
     <span class="uf-por" aria-hidden="true"><i class="px a-${p.cls}${skOf(k)}${mine ? '' : ' flip'}"></i></span>
     <span class="uf-main">
       <span class="uf-name"><span class="uf-who">${mine ? '나' : '상대'}</span>${nickOf(k) ? `<span class="uf-nick" data-notr>${esc(nickOf(k))}</span>` : ''}<b>${c.n}</b><button type="button" class="infob" data-a="peek" data-k="${k}" aria-label="${c.n} 설명 보기">설명</button></span>
@@ -7244,6 +7373,18 @@ function sideHTML(k) {
   }
   return `<div class="side ${mine ? 'me' : 'op'}">${emoHTML(k)}${statHTML(k)}${sub}<div class="plat">${boardHTML(k)}<i class="gl a-gline" aria-hidden="true"></i></div></div>`;
 }
+/* PC 전투 화면(보드게임 말판): 턴 기록판 1~10칸(10턴마다 축복의 칸 ★, 붕괴가 시작되는 턴부터 금), 계획 시간 막대 */
+function trackHTML() {
+  const t = G.turn, b0 = Math.floor((t - 1) / 10) * 10 + 1; let c = '';
+  for (let i = b0; i < b0 + 10; i++) c += `<i class="${i === t ? 'now' : i < t ? 'past' : ''}${i % 10 === 0 ? ' bz' : ''}${i >= COLLAPSE_FROM ? ' cr' : ''}">${i}${i % 10 === 0 && i !== t ? '★' : ''}</i>`;
+  return `<span class="trk" aria-hidden="true"><span class="trk-l">${L('턴', 'Turn')}</span><span class="trk-c">${c}</span></span><span class="tblk" aria-hidden="true"><em>${L('계획 시간', 'Plan time')}</em><span><i></i></span></span>`;
+}
+/* 손패 왼쪽: 결투장 규칙 카드와 버린 카드 더미 */
+function arcHTML() {
+  const a = ARENAS[G.arena] ? G.arena : 'castle', nb = Math.ceil(G.turn / 10) * 10;
+  return `<div class="arc"><span class="arc-h">${L('결투장', 'Arena')}</span><b>${ARENAS[a]}</b><p>${ARENA_RULE[a]}</p><p class="arc-b">${G.bless ? L(`★ 축복의 칸 ${G.bless.until - G.turn + 1}턴 남음`, `★ Blessing: ${G.bless.until - G.turn + 1} turn(s) left`) : L(`★ ${nb}턴에 축복의 칸`, `★ Blessing on turn ${nb}`)}</p></div>`;
+}
+function discHTML() { const n = myP().disc.length; return `<button type="button" class="disc" data-a="deck" aria-label="${L(`버린 카드 ${n}장 보기`, `View ${n} discarded card(s)`)}"><span>${L('버림', 'Discard')}</span><i></i><b>${n}</b></button>`; }
 function playHTML() {
   const o = opp(seat), p = myP(), pl = curPl(), over = doc.phase === 'over' && !RP;
   const ab = CLS[p.cls].act[0], abOn = !!pl.ab;
@@ -7265,7 +7406,7 @@ function playHTML() {
     <div class="bar"><span class="turn">${G.turn}턴</span>
       <span>${over || RP ? '' : `남은 시간 <b id="timer" class="timer">--</b>초 · `}방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` ${scoreOf()[seat]} : ${scoreOf()[o]}` : ''} · ${ARENAS[G.arena] || ARENAS.castle}${G.turn >= COLLAPSE_FROM - 1 ? ' · 바닥 붕괴 중' : ''}</span>
       <span class="row"><button type="button" class="btn ghost" data-a="snd" aria-pressed="${SND.on}">효과음 ${SND.on ? '켬' : '끔'}</button><button type="button" class="btn ghost" data-a="bgm" aria-pressed="${SND.bgm}">배경음 ${SND.bgm ? '켬' : '끔'}</button>
-        <label class="vol">음량<input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"></label><button type="button" class="btn ghost logb" data-a="logp">기록</button><button type="button" class="btn ghost optb" data-a="ov" data-o="settings">설정</button><button type="button" class="btn ghost" data-a="leave">나가기</button></span></div>
+        <label class="vol">음량<input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"></label><button type="button" class="btn ghost logb" data-a="logp">기록</button><button type="button" class="btn ghost optb" data-a="ov" data-o="settings">설정</button><button type="button" class="btn ghost" data-a="leave">나가기</button></span>${trackHTML()}</div>
     <div class="arena th-${ARENAS[G.arena] ? G.arena : 'castle'}${G.turn >= COLLAPSE_FROM - 1 ? ' dusk' : ''}"><div class="back" aria-hidden="true"><i class="bl a-bfar"></i>${G.arena === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i></div>
       <div class="field">${sideHTML(seat)}<span class="vs" aria-hidden="true">vs</span>${sideHTML(o)}</div>${abarHTML()}</div>
       <p class="hint2" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>    <div class="ctrl">
@@ -7273,7 +7414,7 @@ function playHTML() {
       ${tutOn() && !over && !RP ? tutHTML() : ''}
       <p class="hint" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>
       ${sd ? `<p class="seldesc"><b>${CARDS[sd].n}</b> ${hl(CARDS[sd].d)}</p>` : over || RP ? '' : '<p class="seldesc empty">카드를 누르면 설명이 여기에 나옵니다.</p>'}
-      <div class="dock"><div class="dk-l">${pileHTML()}${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
+      <div class="dock"><div class="dk-l">${arcHTML()}${discHTML()}${pileHTML()}${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
       ${handHTML()}
       <div class="dk-r">${over || RP ? '<div class="acts one"><button type="button" class="btn ghost" data-a="emt" aria-expanded="' + emOpen + '">이모트</button></div>' : `<div class="acts">
         <button type="button" class="btn ghost emb${emOpen ? ' on' : ''}" data-a="emt" aria-expanded="${emOpen}">이모트</button>
@@ -8306,7 +8447,10 @@ document.addEventListener('click', e => {
   if (typeof cry === 'function') cry(c, null, true); if (vibOn && navigator.vibrate) try { navigator.vibrate(30); } catch (x) { /* 무시 */ }
   setTimeout(() => { pkLock = false; if (!doc) return; if (ban) W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) } }); } }, 760);
 }, true);
-function render() { if (!replaying) renderNow(); { const f = document.querySelector('.pick2 .pk-roster .face.sel'); if (f && f.parentNode.scrollWidth > f.parentNode.clientWidth) { const r = f.parentNode; r.scrollLeft = f.offsetLeft - r.clientWidth / 2 + f.offsetWidth / 2; } } }
+/* PC 전투 화면: 상대 능력 띠를 상대 인물 카드 바로 아래에 붙인다(카드 높이가 상태 칩 수에 따라 달라서) */
+function pcHud() { const a = app.querySelector('.play.v2 > .arena .abar.foe'); if (!a) return; const c = app.querySelector('.play.v2 .side.op .stat.uf');
+  if (!c || !matchMedia('(min-width: 1100px) and (min-height: 660px)').matches) { a.style.top = ''; return; } const z = parseFloat(getComputedStyle(a).zoom) || 1; a.style.top = Math.round((c.getBoundingClientRect().bottom - 3) / z) + 'px'; }
+function render() { if (!replaying) renderNow(); pcHud(); { const f = document.querySelector('.pick2 .pk-roster .face.sel'); if (f && f.parentNode.scrollWidth > f.parentNode.clientWidth) { const r = f.parentNode; r.scrollLeft = f.offsetLeft - r.clientWidth / 2 + f.offsetWidth / 2; } } }
 function renderNow() {
   let h;
   if (!doc) h = gateHTML();
@@ -8334,6 +8478,7 @@ function tick() {
   const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)), el = document.getElementById('timer');
   if (!locked && left <= 5 && left > 0 && left !== lastTick) { lastTick = left; SND.play('tick'); }
   if (el) { el.textContent = locked ? '-' : left; el.classList.toggle('low', !locked && left <= 10); }
+  const pv = app.querySelector('.play.v2'); if (pv) { pv.style.setProperty('--tl', locked ? 0 : Math.min(1, left / (TURN_MS / 1000))); pv.classList.toggle('tlow', !locked && left <= 10); }
   if (!locked && left <= 0) doLock(true);
 }
 setInterval(tick, 500);
@@ -14451,6 +14596,15 @@ function stOverHTML(won) {
         const top = (u.vox ? u.vox.top : 1) * (u.sy || 1); const who = (/\ba-([a-z0-9]+)/.exec(el.className) || [])[1]; if (u.crownFor !== who) { u.crownFor = who; u.crownTop = 0; } u.crownTop = Math.max(u.crownTop || 0, top);
         u.crown.position.set(0, u.crownTop - 0.02, 0.04); u.crown.scale.setScalar(mid ? 0.82 : 1); u.crown.material.color.setHex(mid ? 0xb8b8c4 : 0xffffff); }
     } else u.crown.visible = false;
+    /* 머리 위 이름표: 모험·봇 연습은 내 닉네임만, 대전은 서로의 닉네임 */
+    if (cl.contains('main')) {
+      const sd = el.closest('.side'), mine = !!(sd && sd.classList.contains('me')), nk = sd && sd.querySelector('.uf-nick'), pvp = typeof local !== 'undefined' && !local && !(typeof stageOn === 'function' && stageOn());
+      const show = nk && nk.textContent && (mine || pvp) && op > 0.4;
+      if (show && !u.tag) { u.tag = document.createElement('div'); lab.appendChild(u.tag); }
+      if (u.tag) { u.tag.style.display = show ? '' : 'none';
+        if (show) { const txt = nk.textContent, cls = 'a3-ntag ' + (mine ? 'me' : 'op'); if (u.tag.className !== cls || u.tag.dataset.n !== txt) { u.tag.className = cls; u.tag.dataset.n = txt; u.tag.innerHTML = '<i>' + (mine ? L('나', 'You') : L('상대', 'Foe')) + '</i>' + esc(txt); }
+          const top = cl.contains('boss') && u.crownTop ? u.crownTop + 0.5 : (u.vox ? u.vox.top : 1) * (u.sy || 1) + 0.18; place(u.tag, x, TY + y + top, z); } }
+    }
   }
 
   /* --- 입력: 3D 타일을 누르면 숨겨 둔 DOM 칸을 대신 누른다 --- */
