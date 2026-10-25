@@ -3371,6 +3371,17 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .ps-tx { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; } .ps-tx b { font-size: 17px; } .ps-tx span { font-size: 13px; color: var(--ash); }
 .ps-it .pcb { min-height: 46px; } .ps-it .pcb.ghost { color: var(--sil); box-shadow: inset 0 0 0 2px var(--sil); } .ps-it .pcb .mdl { width: 18px; height: 18px; }
 .ps-it.own .ps-fig { filter: saturate(.85); }
+/* PC 상점의 에픽 스킨: 팝업 상점(.sh-it.sp)과 같은 보라 이중 테두리, 모서리 장식, 빛나는 창, 리본 */
+.ps-it { position: relative; }
+.ps-it.sp { --sk1: #8a4fd8; --sk2: #5a2d9c; background: linear-gradient(180deg, color-mix(in srgb, var(--sk1) 10%, #fff), #fff 60%); box-shadow: inset 0 0 0 3px var(--sk1), inset 0 0 0 5px #fff, inset 0 0 0 7px color-mix(in srgb, var(--sk1) 45%, #fff), 5px 5px 0 var(--sk2); }
+.ps-it.sp.hov { box-shadow: inset 0 0 0 3px var(--sk1), inset 0 0 0 5px #fff, inset 0 0 0 7px color-mix(in srgb, var(--sk1) 45%, #fff), 5px 5px 0 var(--sk2), 0 0 14px color-mix(in srgb, var(--sk1) 55%, transparent); }
+.ps-it.sp::before, .ps-it.sp::after { content: ""; position: absolute; z-index: 2; width: 12px; height: 12px; background: var(--sk1); box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+.ps-it.sp::before { left: -5px; top: -5px; } .ps-it.sp::after { right: -5px; bottom: -5px; }
+.ps-it.sp .ps-fig { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--sk1) 8%, transparent) 0 8px, transparent 8px 16px), linear-gradient(color-mix(in srgb, var(--sk1) 26%, #fff), #fff); box-shadow: inset 0 0 0 2px var(--sk1); }
+.ps-it.sp .ps-fig::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .55) 48%, transparent 56%) no-repeat; background-size: 250% 100%; background-position: 140% 0; }
+@media (prefers-reduced-motion: no-preference) { .ps-it.sp .ps-fig::after { animation: shGleam 2.6s steps(13) infinite; } }
+.ps-it.sp .sh-sp { top: 14px; left: auto; right: 14px; font-size: 12px; }
+.ps-it.sp .ps-tx b { color: var(--sk2); }
 .pcb .mdl-n { gap: 6px; }
 /* ===== 직업 선택 v2: 조명 무대 + 정보판 + 아래 명단 ===== */
 #app > .gate.pick2 { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; align-content: stretch; }
@@ -4166,6 +4177,24 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .mm-box.found .mm-ring i { background: var(--red); }
 @media (prefers-reduced-motion: no-preference) { .mm-box:not(.found) .mm-ring i { animation: mmBlink 1.8s steps(1) infinite; animation-delay: calc(var(--i) * .2s); } .mm-box.found .mm-ring { animation: shake .4s steps(8) 1; } }
 @keyframes mmBlink { 0%, 30% { background: var(--red); } }
+/* 붉은 랜덤 매칭 칸 안의 대기 상자: 칸과 같은 어두운 판, 로딩 칸을 크게 */
+:is(.pmr, .mu2-rand) .mm-box { --lit: #ffd75e; color: #fff; background: rgba(29, 20, 19, .32); border: 2px solid rgba(29, 20, 19, .65); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
+:is(.pmr, .mu2-rand) .mm-box h3 { color: #fff; text-shadow: 2px 2px 0 #1d1413; } :is(.pmr, .mu2-rand) .mm-t { color: #ffe8ec; } :is(.pmr, .mu2-rand) .mm-t b { color: #fff3c4; }
+:is(.pmr, .mu2-rand) .mm-ring i { background: rgba(255, 255, 255, .14); box-shadow: inset 0 0 0 2px rgba(29, 20, 19, .5); }
+:is(.pmr, .mu2-rand) .mm-box.found .mm-ring i { background: var(--lit); }
+@media (prefers-reduced-motion: no-preference) { :is(.pmr, .mu2-rand) .mm-box:not(.found) .mm-ring i { animation-name: mmBlinkY; } }
+@keyframes mmBlinkY { 0%, 30% { background: #ffd75e; box-shadow: inset 0 0 0 2px #1d1413, 0 0 10px rgba(255, 215, 94, .6); } }
+:is(.pmr, .mu2-rand) .mm-mdn { color: #1d1413; background: #ffd75e; }
+:is(.pmr, .mu2-rand) .mm-go .btn.ghost { color: #fff; border-color: rgba(255, 255, 255, .7); background: transparent; }
+/* PC: 세 열이 있던 자리를 대기 상자가 꽉 채운다 */
+.pmr .pmc-go { min-height: 0; padding: 8px 24px 24px; }
+.pmr .mm-box { height: 100%; box-sizing: border-box; justify-content: center; gap: 18px; padding: 24px; }
+.pmr .mm-ring { grid-template-columns: repeat(3, 44px); gap: 8px; } .pmr .mm-ring i { width: 44px; height: 44px; }
+.pmr .mm-box h3 { font-size: 32px; } .pmr .mm-mdn { font-size: 16px; padding: 2px 10px; } .pmr .mm-t { font-size: 18px; }
+.pmr .mm-go .btn { min-height: 48px !important; padding: 8px 26px !important; font-size: 16px !important; }
+/* 모바일 */
+.mu2-rand .mm-box { gap: 10px; padding: 16px 12px; } .mu2-rand .mm-ring { grid-template-columns: repeat(3, 24px); gap: 5px; } .mu2-rand .mm-ring i { width: 24px; height: 24px; }
+.mu2-rand .mm-box h3 { font-size: 20px; }
 /* 환영 선물 */
 .wel { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 16px; background: rgba(20, 14, 18, .72); }
 .wel-card { box-sizing: border-box; width: min(440px, 100%); display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 22px 22px 20px; background: var(--paper); border: 4px solid var(--sil); box-shadow: 6px 6px 0 #f2c230; text-align: center; }
@@ -4773,15 +4802,31 @@ async function buySkin(c, id) {
 /* 마우스를 올리면 떠오르는 버튼: :hover로 띄우면 가장자리에서 '떠오름 → 커서가 버튼 밖 → 내려앉음 → 다시 떠오름'이 되풀이된다.
    그래서 .hov 클래스로 띄우고, 처음 들어온 자리(떠오르기 전 상자)를 벗어날 때만 내린다. 터치는 건드리지 않는다 */
 const LIFT = '.perk, .mbtn, .ptag, .scopt, .abb.ok, .mi, .lb-prof, .lb-tile, .lb-quick, .lb-cont, .lb-dk, .lb-qst, .pmc, .pcl-c, .ps-it, .pk-sk, .pk-roster .face, .pick2 > .gate-top .btn, .pick2 .detail > .d-go .btn.big, .rm-m';
-let hovEl = null, hovBox = null;
+/* 마우스를 움직이는 동안에도 흔들리지 않게:
+   - 떠오른 버튼의 안쪽 요소나 바깥 상자(둘 다 LIFT)로 옮겨 가도, 처음 상자 안이면 지금 버튼을 그대로 둔다
+   - 화면이 다시 그려져 버튼이 새로 만들어지면, 커서 아래의 새 버튼을 애니메이션 없이 곧바로 띄운 상태로 둔다 */
+let hovEl = null, hovBox = null, hovXY = null;
 const hovOff = () => { if (hovEl) hovEl.classList.remove('hov'); hovEl = hovBox = null; };
+const hovIn = (x, y) => hovBox && x >= hovBox.l && x <= hovBox.r && y >= hovBox.t && y <= hovBox.b;
+function hovSet(t, instant) {
+  const keep = hovBox; hovOff(); const r = t.getBoundingClientRect(); hovEl = t; hovBox = instant && keep ? keep : { l: r.left - 1, r: r.right + 1, t: r.top - 1, b: r.bottom + 1 };
+  if (instant) { t.style.transition = 'none'; t.classList.add('hov'); void t.offsetWidth; requestAnimationFrame(() => { t.style.transition = ''; }); } else t.classList.add('hov');
+}
 document.addEventListener('pointermove', e => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
+  hovXY = [e.clientX, e.clientY];
   const t = e.target.closest && e.target.closest(LIFT);
-  if (t && t !== hovEl) { hovOff(); const r = t.getBoundingClientRect(); hovEl = t; hovBox = { l: r.left - 1, r: r.right + 1, t: r.top - 1, b: r.bottom + 1 }; t.classList.add('hov'); return; }
-  if (hovEl && !t && (!hovEl.isConnected || e.clientX < hovBox.l || e.clientX > hovBox.r || e.clientY < hovBox.t || e.clientY > hovBox.b)) hovOff();
+  if (t && t !== hovEl) {
+    if (hovEl && hovEl.isConnected && (hovEl.contains(t) || t.contains(hovEl)) && hovIn(e.clientX, e.clientY)) return;
+    hovSet(t, !!hovEl && !hovEl.isConnected && hovIn(e.clientX, e.clientY)); return;
+  }
+  if (hovEl && !t && (!hovEl.isConnected || !hovIn(e.clientX, e.clientY))) hovOff();
 }, { passive: true });
-document.addEventListener('pointerout', e => { if (!e.relatedTarget) hovOff(); });
+document.addEventListener('pointerout', e => { if (!e.relatedTarget) { hovOff(); hovXY = null; } });
+/* 다시 그리기로 떠 있던 버튼이 사라지면, 같은 자리의 새 버튼을 바로 띄운다(내려앉았다 다시 뜨는 깜빡임 방지) */
+new MutationObserver(() => { if (!hovEl || hovEl.isConnected || !hovXY || hovMO) return; hovMO = requestAnimationFrame(() => { hovMO = 0; if (!hovEl || hovEl.isConnected || !hovXY) return;
+  const el = document.elementFromPoint(hovXY[0], hovXY[1]), t = el && el.closest && el.closest(LIFT); if (t && hovIn(hovXY[0], hovXY[1])) hovSet(t, true); else hovOff(); }); }).observe(document.body, { childList: true, subtree: true });
+let hovMO = 0;
 /* ===== 일일 퀘스트: 하루 세 개(★1·★2·★3), 다시 뽑기 하루 2번. 퀘스트·진행·보상은 서버가 정한다(economy.sql) =====
    여기서는 받아 온 것을 보여 주고, 판이 끝날 때 판 기록(QS)을 finish_* 요청에 실어 보낸다 */
 const QDEF = {
@@ -8008,7 +8053,7 @@ function pcShopBody() {
   const items = all.filter(it => f === 'all' || (f === 'own') === it.owned), left = all.filter(it => !it.owned);
   const ft = left.length ? left[Math.floor(Date.now() / 864e5) % left.length] : null;
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    return `<div class="ps-it c-${c}${owned ? ' own' : ''}"><div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
+    return `<div class="ps-it c-${c}${owned ? ' own' : ''}${x.ac ? ' sp' : ''}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
       <div class="ps-tx"><b>${CLS[c].n}</b><span>${esc(mE(x.n, x.en))}</span></div>
       ${owned ? `<button type="button" class="pcb ${on ? 'dark' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 해제', 'Unequip') : mE('착용', 'Equip')}</button>` : `<button type="button" class="pcb gold" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
   return `<div class="psh">
@@ -13519,6 +13564,8 @@ function stOverHTML(won) {
     ['a', 'cmShiki gchopFx gcleaveFx tornado diceFx scry sand sunFx blink batMove rewindFx'], ['r', 'driveFx wwDrive slashH vine turretFire snowFx gazeFx pieFx waveFx'], ['r1', 'turretUp gsweepFx gbDice qnDice mfWave'], ['rows3', 'wolves gust'],
     ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx kickFx'], ['ground', 'mgCircle asConLine asCometCast gbRoulette qnRoulette cmBoard smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
   ].forEach(function (m) { m[1].split(' ').forEach(function (n) { MODE[n] = m[0]; }); });
+  /* 2D에서는 바닥 그림이지만 3D에서는 칸 위에 세워야 읽히는 것: 관리자의 오류 창 */
+  const UPRIGHT = { admPopup: 1 }; MODE.admPopup = 'c';
   const ANCH = {
     tornado: function (a) { const c = a[0] || []; let q = null; try { q = c.find(function (i) { return c.every(function (j) { return around(i).includes(j); }); }); } catch (e) { /* 무시 */ } return q != null ? q : c[0]; },
     cmShiki: function (a) { return cmCenter(a[0] || [4], !!a[1]); },
@@ -13547,7 +13594,7 @@ function stOverHTML(won) {
   }
   function subs(e) {
     if (e.a3s) return e.a3s;
-    const info = e.fn.a3, name = info ? info[0] : '', a = info ? info[1] : [], m = e.fn.ground ? 'ground' : MODE[name] || 'vol', S = [];   /* ground 표시가 붙은 이펙트는 타일 위에 한 장만 */
+    const info = e.fn.a3, name = info ? info[0] : '', a = info ? info[1] : [], m = e.fn.ground && !UPRIGHT[name] ? 'ground' : MODE[name] || 'vol', S = [];   /* ground 표시가 붙은 이펙트는 타일 위에 한 장만. 단 UPRIGHT는 칸 위에 세운다 */
     const make = function (list, off) { let fn = null; try { fn = FX0[name].apply(null, [list].concat(a.slice(1))); } catch (err) { /* 무시 */ } return fn; };
     if (m === 'c') (a[0] || []).forEach(function (c, n) { const fn = make(a[0].map(function (x, j) { return j === n ? x : 900 + j * 3; })); if (fn) S.push({ fn: fn, cell: c, s: 0.05, n: n }); });
     else if (m === 'c1') S.push({ fn: e.fn, cell: a[0], s: 0.05, n: 0 });
