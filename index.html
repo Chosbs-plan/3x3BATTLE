@@ -4448,6 +4448,34 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 @media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
   html body #app > .play.v2 > .arena .abar:not(.foe) { zoom: .72; }
 }
+
+/* ===== 그림 이모트, 이모트 판 위치, 패시브·능력 설명 위치 ===== */
+.emi { display: inline-block; width: 48px; height: 48px; background: center / 100% 100% no-repeat; image-rendering: pixelated; vertical-align: middle; }
+.emp-px { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; padding-top: 6px; border-top: 2px dashed var(--line); }
+.emp .btn.epx { min-height: 0; padding: 3px; line-height: 0; } .emp .btn.epx .emi { width: 40px; height: 40px; }
+.emo.pic { padding: 4px 6px; line-height: 0; } .emo.pic .emi { width: 64px; height: 64px; }
+@media (prefers-reduced-motion: no-preference) { .emo.pic .emi { animation: emiHop .5s steps(2) 3; } }
+@keyframes emiHop { 50% { translate: 0 -6px; } }
+.uf-tip { z-index: 80; }
+.stat.uf:has(.uf-k:hover), .stat.uf:has(.uf-k:focus) { z-index: 70 !important; }
+@media (min-width: 1100px) and (min-height: 660px) {
+  /* 내 카드(아래 테이블)의 설명은 위로 뜬다 */
+  html body #app > .play.v2 .mest .uf-tip { top: auto; bottom: calc(100% + 6px); }
+  html body #app > .play.v2 .mest .stat.uf { z-index: 20; }
+  /* 상대 카드 설명이 상대 능력 띠·손패 아래로 가려지지 않게 */
+  html body #app > .play.v2 .side.op { position: relative; z-index: 30; } html body #app > .play.v2 > .arena .abar.foe { z-index: 12; } html body #app > .play.v2 .side-label { z-index: 12; }
+  html body #app > .play.v2 .stat.uf { overflow: visible; }
+  /* 이모트 말풍선: 내 것은 내 카드 위, 상대 것은 상대 카드 왼쪽 */
+  html body #app > .play.v2 .side.me > .emo { position: fixed; z-index: 31; left: 120px; top: auto; bottom: 210px; translate: 0 0; }
+  html body #app > .play.v2 .side.op > .emo { position: fixed; z-index: 31; left: auto; right: calc(450px + var(--lwc, 0px)); top: 150px; translate: 0 0; }
+  html body #app > .play.v2 .side.me > .emo::after { left: 30px; top: auto; bottom: -8px; rotate: 45deg; }
+  html body #app > .play.v2 .side.op > .emo::after { left: auto; right: -6px; top: 50%; bottom: auto; margin-top: -4px; rotate: -45deg; }
+  /* 이모트 판: 이모트 버튼 바로 위 */
+  html body #app > .play.v2 > .ctrl > .emp, html body #app > .play.v2.over > .ctrl > .emp { position: fixed; left: 448px; right: auto; bottom: 192px; z-index: 40; width: 460px; max-width: none; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+}
+@media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
+  html body #app > .play.v2 > .ctrl > .emp { left: 403px; bottom: 180px; zoom: .8; }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -6483,6 +6511,25 @@ const MODES = { single: ['단판', '한 판으로 승부를 냅니다.'], bo3: [
 const ARENAS = { castle: '성채', snow: '설원', forest: '숲', desert: '사막' };
 /* 이모트: 앞 다섯은 인사, 뒤 다섯은 도발 */
 const EMOTES = ['잘 부탁해!', '좋은 수!', '아깝다…', '생각 중…', '좋은 승부!', '어딜 보고 쏴?', '느려, 느려~', '다 읽혔어!', '그게 전부야?', '항복해도 돼~'];
+/* 그림 이모트(상대 놀리기, 16x16 도트). 번호는 10부터 이어 붙인다(문구 이모트 번호는 그대로) */
+const EMO_PX = [['메롱', 'Bleh'], ['하품', 'Yawn'], ['깔깔', 'LOL'], ['빗나감', 'Missed'], ['달팽이', 'Slowpoke'], ['여유', 'Too cool']];
+const EMO_URL = [];
+function emoPx(j) {
+  if (EMO_URL[j]) return EMO_URL[j];
+  const c = document.createElement('canvas'); c.width = c.height = 16; const g = c.getContext('2d'), P = (x, y, col, w, h) => { g.fillStyle = col; g.fillRect(x, y, w || 1, h || 1); };
+  const K = '#1d1413', Y = '#ffd75e', O = '#e3a33b', R = '#d8475a', PK = '#ff9aa6', W = '#fff', B = '#4f7fd0', C = '#8fd3ff', GR = '#5b9a4a', BR = '#8a5a2b';
+  const face = () => { for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const d = (x - 7.5) ** 2 + (y - 8) ** 2; if (d < 52) P(x, y, d > 36 ? K : y > 11 && d > 22 ? O : Y); } P(5, 3, '#fff3c4', 2, 1); };
+  if (j === 0) { face(); P(4, 6, K, 2, 1); P(6, 7, K); P(4, 8, K, 2, 1); P(10, 6, K, 2, 1); P(10, 7, K); P(10, 8, K, 2, 1); P(5, 10, K, 6, 1); P(6, 11, R, 4, 1); P(6, 12, PK, 4, 2); P(7, 14, PK, 2, 1); P(7, 12, R, 1, 2); }   /* 메롱 */
+  else if (j === 1) { face(); P(4, 7, K, 3, 1); P(9, 7, K, 3, 1); P(4, 6, O, 3, 1); P(9, 6, O, 3, 1); P(6, 9, K, 4, 1); P(5, 10, K); P(10, 10, K); P(6, 10, R, 4, 3); P(5, 11, K, 1, 2); P(10, 11, K, 1, 2); P(6, 13, K, 4, 1); P(12, 0, B, 3, 1); P(13, 1, B); P(12, 2, B, 3, 1); P(14, 3, C, 2, 1); P(15, 4, C); P(14, 5, C, 2, 1); }   /* 하품 z */
+  else if (j === 2) { face(); P(4, 7, K); P(5, 6, K); P(6, 7, K); P(9, 7, K); P(10, 6, K); P(11, 7, K); P(4, 9, K, 8, 1); P(4, 10, K); P(11, 10, K); P(5, 10, W, 6, 1); P(5, 11, R, 6, 1); P(6, 12, K, 4, 1); P(5, 12, K); P(10, 12, K); P(1, 8, C, 1, 2); P(14, 8, C, 1, 2); P(0, 10, C); P(15, 10, C); }   /* 깔깔 */
+  else if (j === 3) { for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const d = Math.hypot(x - 6.5, y - 8.5); if (d < 6.6) P(x, y, d > 5.8 ? K : d > 4.4 ? R : d > 3 ? W : d > 1.6 ? R : W); } for (let k = 0; k < 6; k++) P(9 + k, 1 + k, K, 1, 1); P(14, 0, BR, 2, 1); P(15, 1, BR); P(9, 6, K, 1, 1); P(12, 13, K, 3, 1); P(13, 12, K); P(13, 14, K); }   /* 빗나간 과녁: 화살이 과녁 밖으로 */
+  else if (j === 4) { for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const d = Math.hypot(x - 9.5, y - 7.5); if (d < 5.6) P(x, y, d > 4.8 ? K : d > 3.2 ? BR : d > 2 ? '#c79a5b' : BR); } P(1, 12, K, 14, 1); P(1, 13, GR, 14, 2); P(1, 15, K, 14, 1); P(0, 13, K, 1, 2); P(15, 13, K, 1, 2); P(2, 8, K, 1, 4); P(3, 9, GR, 2, 3); P(2, 6, K); P(4, 6, K); P(2, 7, K); P(4, 7, K); P(1, 5, K); P(5, 5, K); }   /* 달팽이 */
+  else { face(); P(3, 6, K, 10, 1); P(3, 7, K, 4, 2); P(9, 7, K, 4, 2); P(7, 7, K, 2, 1); P(4, 7, '#6a6a7a'); P(10, 7, '#6a6a7a'); P(6, 11, K, 5, 1); P(10, 10, K); }   /* 선글라스 */
+  return (EMO_URL[j] = c.toDataURL());
+}
+const emoPic = (j, cls) => `<i class="emi${cls ? ' ' + cls : ''}" style="background-image:url(${emoPx(j)})" aria-hidden="true"></i>`;
+/* 이모트 고르기 판: 문구 + 그림 */
+const empHTML = () => `<div class="emp" role="group" aria-label="이모트">${EMOTES.map((t, i) => `<button type="button" class="btn ghost${i >= 5 ? ' tn' : ''}" data-a="emo" data-i="${i}">${t}</button>`).join('')}<span class="emp-px">${EMO_PX.map((n, j) => `<button type="button" class="btn ghost epx" data-a="emo" data-i="${10 + j}" title="${L(n[0], n[1])}" aria-label="${L(n[0], n[1])}">${emoPic(j)}</button>`).join('')}</span></div>`;
 const modeOf = () => (doc && MODES[doc.mode] ? doc.mode : 'single');
 const scoreOf = () => (doc && doc.score) || { a: 0, b: 0 };
 const bansOf = () => (doc && modeOf() === 'ban' && doc.ban ? [doc.ban.a, doc.ban.b].filter(Boolean) : []);
@@ -6945,14 +6992,14 @@ function showIntro() {
   SND.play('cutin'); const e = ov.firstChild; setTimeout(() => { if (e.parentNode) e.remove(); }, 1900);
 }
 function showEmote(k, i) {
-  if (!EMOTES[i]) return;
+  if (!EMOTES[i] && !EMO_PX[i - 10]) return;
   emNow[k] = { i, until: Date.now() + 2600 };
   const side = app.querySelector('.side.' + (k === seat ? 'me' : 'op'));
   if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); }
   SND.play(i >= 5 ? 'taunt' : 'emote');
   setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, 2650);
 }
-function emoHTML(k) { const e = emNow[k]; if (!e || e.until <= Date.now()) return ''; if (e.adm) return `<div class="emo adm" role="status"><span>${esc(e.adm)}</span>${esc(e.txt)}</div>`; return `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i]}</div>`; }
+function emoHTML(k) { const e = emNow[k]; if (!e || e.until <= Date.now()) return ''; if (e.adm) return `<div class="emo adm" role="status"><span>${esc(e.adm)}</span>${esc(e.txt)}</div>`; if (e.i >= 10) return EMO_PX[e.i - 10] ? `<div class="emo tn pic" role="status" aria-label="${L(...EMO_PX[e.i - 10])}">${emoPic(e.i - 10)}</div>` : ''; return `<div class="emo${e.i >= 5 ? ' tn' : ''}" role="status">${EMOTES[e.i] || ''}</div>`; }
 /* 관리자 보스의 결투 중 대사: 이모트 말풍선 자리에 작은 창 모양으로 띄운다 */
 function adminSay(k, txt, ms) {
   ms = ms || 3400; emNow[k] = { adm: `${L('관리자', 'Admin')} ${adminVer(stTier())}`, txt, until: Date.now() + ms };
@@ -7560,7 +7607,7 @@ function playHTML() {
         <button type="button" class="btn ghost emb${emOpen ? ' on' : ''}" data-a="emt" aria-expanded="${emOpen}">이모트</button>
         ${abBtnHTML(p, abOn)}
         ${locked ? `<button type="button" class="btn" data-a="unlock" ${doc.lock[o] === curTag ? 'disabled' : ''}>${doc.lock[o] === curTag ? '확정됨' : '확정 취소'}</button>` : '<button type="button" class="btn red" data-a="lock">계획 확정</button>'}</div>`}</div></div>
-      ${emOpen ? `<div class="emp" role="group" aria-label="이모트">${EMOTES.map((t, i) => `<button type="button" class="btn ghost${i >= 5 ? ' tn' : ''}" data-a="emo" data-i="${i}">${t}</button>`).join('')}</div>` : ''}
+      ${emOpen ? empHTML() : ''}
       </div><div class="panel logp"><button type="button" class="logtab" data-a="logp" aria-label="${L('전투 기록 열고 닫기', 'Open or close the battle log')}">기록</button><div class="lg-in"><button type="button" class="btn ghost logx" data-a="logx">닫기</button><p class="cap">결투장 · ${ARENAS[G.arena] || ARENAS.castle}</p><p class="arule">${ARENA_RULE[G.arena] || ARENA_RULE.castle}${G.bless ? ` <b>축복의 칸(${BLESS[G.bless.t][1]})이 ${G.bless.until - G.turn + 1}턴 남았습니다.</b>` : ''}</p><p class="cap">최근 3턴에 낸 카드</p>${histHTML() || '<div class="log"><div>아직 기록이 없습니다.</div></div>'}
         <p class="cap">지난 턴 · 붉은 점선은 공격이 지나간 칸</p>
         <div class="log">${G.ev.length ? G.ev.map(e => `<div><b class="${e[0] === seat ? 'me' : ''}">${e[0] === seat ? '나' : '상대'}</b> ${esc(e[1])}</div>`).join('') : '<div>아직 기록이 없습니다.</div>'}</div></div></div>
@@ -8644,7 +8691,7 @@ app.addEventListener('click', e => {
   if (a === 'mtab') { menuTab = b.dataset.m; tabAnim = true; SND.play('pop'); return render(); }
   if (a === 'mback') { menuTab = null; tabAnim = true; SND.play('tap'); return render(); }
   if (a === 'ov') { SND.play('tap'); return openOv(b.dataset.o); }
-  if (a === 'emt') { emOpen = !emOpen; SND.play('tap'); if (replaying) { const h = app.querySelector('.hint'); const old = app.querySelector('.emp'); if (old) old.remove(); else if (h) h.insertAdjacentHTML('afterend', `<div class="emp" role="group" aria-label="이모트">${EMOTES.map((t, i) => `<button type="button" class="btn ghost${i >= 5 ? ' tn' : ''}" data-a="emo" data-i="${i}">${t}</button>`).join('')}</div>`); return; } return render(); }
+  if (a === 'emt') { emOpen = !emOpen; SND.play('tap'); if (replaying) { const h = app.querySelector('.hint'); const old = app.querySelector('.emp'); if (old) old.remove(); else if (h) h.insertAdjacentHTML('afterend', empHTML()); return; } return render(); }
   if (a === 'emo') return sendEmote(+b.dataset.i);
   if (a === 'mode') { if (seat === 'a' && doc.phase === 'lobby') { SND.play('tap'); W({ mode: b.dataset.m }); } return; }
   if (a === 'bot') { if (BOTS[b.dataset.l]) { botLv = b.dataset.l; ls('ssd-bot', botLv); SND.play('tap'); } return render(); }
@@ -12737,6 +12784,14 @@ function stInit() {
     const rows = [['fight', 'fight', 'fight'].map(mk), shuffle(['fight', 'event', pick(['treasure', 'event'])]).map(mk), ['elite', pick(['rest', 'shop'])].map(mk),
       shuffle(['fight', 'event', pick(['treasure', 'shop', 'event'])]).map(mk), shuffle(['rest', 'shop']).map(mk), [{ t: 'boss', foe: boss }]];
     rows.forEach((r, i) => { if (i < rows.length - 1) link(r, rows[i + 1].length); });
+    /* 어느 길로 가도 보스 전에 결투(정예 포함)를 2번 이상 하게 한다. 모자란 길이 있으면 그 길의 2·4번째 줄 사건·보물 칸 하나를 결투로 바꾼다 */
+    const isF = n => n.t === 'fight' || n.t === 'elite';
+    for (let guard = 0; guard < 12; guard++) {
+      let short = null; const walk = (r, c, path) => { if (short) return; const n = rows[r][c], P = path.concat([[r, c]]); if (n.t === 'boss') { if (P.filter(q => isF(rows[q[0]][q[1]])).length < 2) short = P; return; } n.to.forEach(t => walk(r + 1, t, P)); };
+      [0, 1, 2].forEach(c => walk(0, c, [])); if (!short) break;
+      const cand = short.filter(q => (q[0] === 1 || q[0] === 3) && ['event', 'treasure'].includes(rows[q[0]][q[1]].t)), q = cand.length ? pick(cand) : short.find(q => !isF(rows[q[0]][q[1]]) && rows[q[0]][q[1]].t !== 'boss');
+      if (!q) break; const to = rows[q[0]][q[1]].to; rows[q[0]][q[1]] = mk('fight'); rows[q[0]][q[1]].to = to;
+    }
     return { ar: ars[a], rows };
   });
   run.act = 0; run.row = -1; run.col = 0; run.path = []; run.seenK = {}; stSave();
