@@ -4343,6 +4343,79 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
   html body #app > .play.v2 .dock { grid-template-columns: 240px minmax(0, 1fr) 240px; padding: 0 16px; }
   html body #app > .play.v2 > .hint2 { max-width: 620px; bottom: 286px; white-space: normal; text-align: center; }
 }
+
+/* ===== PC 결과 무대 ===== */
+.vstage { display: none; }
+@media (min-width: 1100px) and (min-height: 660px) {
+  html body #app > .play.v2 > .ctrl > .verdict { display: none; }
+  .play.v2 .vstage { position: fixed; inset: 0; z-index: 60; display: block; overflow: hidden; font-family: inherit; color: var(--sil); --ink: #1d1413; }
+  .vs-dim { position: absolute; inset: 0; background: rgba(29, 20, 19, .66); }
+  .r-lose .vs-dim { background: rgba(20, 22, 32, .8); backdrop-filter: grayscale(.85); }
+  /* 빛살: 화면보다 훨씬 크게 그려 끝이 보이지 않는다. 캐릭터 받침에서 퍼지고 천천히 돈다 */
+  .vs-rays { position: absolute; left: 50%; top: 58%; width: 300vmax; height: 300vmax; margin: -150vmax 0 0 -150vmax; background: repeating-conic-gradient(from 0deg, rgba(255, 215, 94, .16) 0 6deg, transparent 6deg 16deg); pointer-events: none; }
+  .vs-fall { position: absolute; inset: 0; pointer-events: none; }
+  .vs-fall i { position: absolute; top: -20px; width: 14px; height: 10px; background: var(--c); border: 2px solid var(--ink); rotate: var(--r); }
+  .r-lose .vs-fall i { width: 8px; height: 8px; background: #8a8792; border: 0; }
+  /* 제목 */
+  .vs-top { position: absolute; left: 50%; top: 5vh; translate: -50% 0; text-align: center; white-space: nowrap; }
+  .vs-h { margin: 0; font-size: clamp(120px, 17vh, 210px); line-height: 1; letter-spacing: 10px; color: var(--red); rotate: -4deg;
+    text-shadow: 4px 0 0 var(--ink), -4px 0 0 var(--ink), 0 4px 0 var(--ink), 0 -4px 0 var(--ink), 4px 4px 0 var(--ink), -4px -4px 0 var(--ink), 4px -4px 0 var(--ink), -4px 4px 0 var(--ink), 14px 14px 0 var(--ink), 10px 10px 0 #ffd75e; }
+  .vs-h span { display: inline-block; } .vs-h .ex { color: #ffd75e; rotate: 12deg; translate: 0 -10px; }
+  .r-draw .vs-h { color: #f6efe9; }
+  .vs-lt { position: relative; width: 820px; height: clamp(170px, 24vh, 270px); }
+  .vs-lt .w { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(150px, 20vh, 220px); font-weight: 700; letter-spacing: 16px; line-height: 1; color: #d9d6dc; rotate: -4deg;
+    text-shadow: 4px 0 0 var(--ink), -4px 0 0 var(--ink), 0 4px 0 var(--ink), 0 -4px 0 var(--ink), 12px 12px 0 var(--ink); }
+  .vs-lt .a { clip-path: polygon(0 0, 100% 0, 100% 44%, 64% 52%, 36% 46%, 0 57%); } .vs-lt .b { clip-path: polygon(0 57%, 36% 46%, 64% 52%, 100% 44%, 100% 100%, 0 100%); translate: 10px 12px; color: #c4c0cb; }
+  .vs-sub { margin: 6px 0 0; font-size: 26px; font-weight: 700; letter-spacing: 3px; color: #fff; text-shadow: 3px 3px 0 var(--ink); } .vs-sub b { color: #ffd75e; } .r-lose .vs-sub { color: #cfd8f0; }
+  /* 가운데 캐릭터 */
+  .vs-hero { position: absolute; left: 50%; top: 58%; width: 0; height: 0; }
+  .vs-hero > i.px { position: absolute; left: 0; bottom: -14px; width: 128px; height: 128px; translate: -50% 0; }
+  .vs-ped { position: absolute; left: 0; top: -40px; width: 300px; height: 64px; translate: -50% 0; border-radius: 50%; background: var(--wash); border: 4px solid var(--ink); box-shadow: 0 10px 0 var(--ink), inset 0 0 0 60px var(--wash), inset 0 -12px 0 rgba(29, 20, 19, .12); }
+  .vs-who { position: absolute; left: 0; top: 44px; translate: -50% 0; display: flex; gap: 8px; white-space: nowrap; }
+  .vs-who span { padding: 3px 10px; font-size: 15px; font-weight: 700; color: #fff; background: var(--red); border: 3px solid var(--ink); } .r-lose .vs-who span { background: var(--sil); }
+  .vs-who b { padding: 3px 10px; font-size: 15px; color: var(--ink); background: #fff; border: 3px solid var(--ink); }
+  .vs-q { position: absolute; left: 0; bottom: 140px; translate: -50% 0; width: max-content; max-width: 420px; margin: 0; padding: 10px 14px; text-align: center; font-size: 17px; line-height: 1.45; color: var(--ink); background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  .vs-q::after { content: ''; position: absolute; left: 50%; margin-left: -8px; bottom: -16px; border: 8px solid transparent; border-top-color: var(--ink); border-left-color: var(--ink); }
+  .vs-q small { display: block; margin-top: 4px; font-size: 12px; color: var(--ash); }
+  /* 좌우 판 */
+  .vs-pan { position: absolute; top: 40%; width: min(470px, 27vw); padding: 18px 20px; background: #fff; border: 4px solid var(--ink); box-shadow: 8px 8px 0 #000; }
+  .vs-pan.l { right: calc(50% + 230px); rotate: -1.5deg; } .vs-pan.r { left: calc(50% + 230px); rotate: 1.5deg; }
+  .vs-pan h3 { margin: 0 0 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 15px; letter-spacing: 2px; color: var(--ash); }
+  .vs-pan h3 b { font-size: 18px; letter-spacing: 0; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vs-led { display: grid; grid-template-columns: 1fr auto auto; border: 3px solid var(--ink); }
+  .vs-led > * { padding: 8px 12px; font-size: 15px; border-bottom: 2px dashed var(--line); white-space: nowrap; } .vs-led > *:nth-last-child(-n+3) { border-bottom: 0; }
+  .vs-led .h { font-size: 12px; color: #fff; background: var(--ink); border-bottom: 0; } .vs-led .h.me { background: var(--red); } .vs-led .h.op { background: var(--blue); }
+  .vs-led b { text-align: center; color: var(--ink); } .vs-led b.hi { background: #fff3c4; }
+  .vs-rw { display: grid; gap: 10px; }
+  .vs-rw > div { position: relative; display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 12px; padding: 8px 12px; background: var(--wash); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  .vs-rw i { width: 44px; height: 44px; display: grid; place-items: center; font-style: normal; font-size: 22px; font-weight: 700; border: 3px solid var(--ink); }
+  .vs-rw .m i { color: #fff; background: var(--red); } .vs-rw .g i { color: var(--ink); background: var(--amber); } .vs-rw .tip { background: #fff7d6; } .vs-rw .tip i { color: #fff; background: var(--amber-d); }
+  .vs-rw b { font-size: 19px; color: var(--ink); } .vs-rw small { display: block; font-size: 12px; color: var(--ash); } .vs-rw .tip > span > span { display: block; font-size: 13px; line-height: 1.45; } .vs-rw .tip > span > span b { font-size: 13px; }
+  /* 버튼 */
+  .vs-go { position: absolute; left: 50%; bottom: 6vh; translate: -50% 0; display: flex; gap: 16px; align-items: stretch; }
+  .vs-go .btn { min-height: 80px; padding: 0 30px; font-size: 20px; color: var(--ink); background: var(--wash); border: 4px solid var(--ink); box-shadow: 6px 6px 0 #000; }
+  .vs-go .btn.red { min-width: 340px; font-size: 30px; letter-spacing: 4px; color: #fff; text-shadow: 3px 3px 0 var(--ink); background: var(--red); box-shadow: 6px 6px 0 #000, inset 0 -8px 0 var(--red-d); }
+  .r-lose .vs-go .btn.red { background: var(--blue); box-shadow: 6px 6px 0 #000, inset 0 -8px 0 var(--blue-d); }
+  .vs-go .btn:active { translate: 3px 3px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .vs-rays { animation: vsSpin 60s linear infinite, vsIn .6s .3s backwards; }
+    .vs-h span { animation: vsStamp .5s cubic-bezier(.2, 1.6, .4, 1) calc(.15s + var(--i) * .14s) backwards; }
+    .vs-top { animation: vsShake .3s steps(3) .5s; }
+    .vs-lt .a { animation: vsDropA .5s ease-out .1s backwards; } .vs-lt .b { animation: vsDropB .7s cubic-bezier(.3, 1.4, .5, 1) .35s backwards; }
+    .vs-sub { animation: vsIn .4s .7s backwards; }
+    .vs-pan, .vs-go { animation: vsUp .4s steps(5) .8s backwards; } .vs-pan.r { animation-delay: .9s; } .vs-go { animation-delay: 1s; }
+    .vs-hero { animation: vsIn .3s .2s backwards; }
+    .vs-fall i { animation: vsFall var(--t) linear var(--d) infinite; }
+  }
+  @keyframes vsSpin { to { rotate: 360deg; } }
+  @keyframes vsStamp { 0% { opacity: 0; scale: 3.2; } 60% { opacity: 1; scale: .88; } 100% { scale: 1; } }
+  @keyframes vsShake { 33% { translate: calc(-50% - 8px) 6px; } 66% { translate: calc(-50% + 6px) -4px; } }
+  @keyframes vsDropA { from { opacity: 0; translate: 0 -60px; } }
+  @keyframes vsDropB { from { opacity: 0; translate: 0 -120px; rotate: 6deg; } }
+  @keyframes vsIn { from { opacity: 0; } }
+  @keyframes vsUp { from { opacity: 0; translate: 0 30px; } }
+  @keyframes vsFall { from { transform: translateY(0) rotate(0); } to { transform: translateY(115vh) rotate(540deg); } }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -7385,6 +7458,41 @@ function arcHTML() {
   return `<div class="arc"><span class="arc-h">${L('결투장', 'Arena')}</span><b>${ARENAS[a]}</b><p>${ARENA_RULE[a]}</p><p class="arc-b">${G.bless ? L(`★ 축복의 칸 ${G.bless.until - G.turn + 1}턴 남음`, `★ Blessing: ${G.bless.until - G.turn + 1} turn(s) left`) : L(`★ ${nb}턴에 축복의 칸`, `★ Blessing on turn ${nb}`)}</p></div>`;
 }
 function discHTML() { const n = myP().disc.length; return `<button type="button" class="disc" data-a="deck" aria-label="${L(`버린 카드 ${n}장 보기`, `View ${n} discarded card(s)`)}"><span>${L('버림', 'Discard')}</span><i></i><b>${n}</b></button>`; }
+/* PC 결과 무대: 캐릭터를 화면 한가운데 받침 위에 세우고, 위에 큰 제목(쾅 찍힘), 왼쪽 경기 기록, 오른쪽 결과·보상, 아래 버튼.
+   승리는 화면 끝까지 퍼지는 빛살(천천히 돈다)과 종이 꽃가루, 패배는 찢어진 잉크 글자와 재 */
+function vStageHTML() {
+  const o = opp(seat), p = myP(), w = G.winner, res = w === 'draw' ? 'draw' : w === seat ? 'win' : 'lose', S = G.st, turns = G.turn - 1;
+  const rate = k => (S && S[k].atk ? Math.round(S[k].hit / S[k].atk * 100) + '%' : '-');
+  const row = (k, a, b, hiMe) => `<span>${k}</span><b class="${hiMe === 1 ? 'hi' : ''}">${a}</b><b class="${hiMe === -1 ? 'hi' : ''}">${b}</b>`, cmp = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
+  const led = S ? `<div class="vs-led"><span class="h"></span><span class="h me">${L('나', 'You')} · ${CLS[p.cls].n}</span><span class="h op">${L('상대', 'Foe')} · ${CLS[G.P[o].cls].n}</span>
+    ${row(L('준 피해', 'Damage dealt'), S[o].lost, S[seat].lost, cmp(S[o].lost, S[seat].lost))}${row(L('즉발 공격 적중', 'Instant hits'), `${S[seat].hit}/${S[seat].atk}`, `${S[o].hit}/${S[o].atk}`, cmp(S[seat].atk ? S[seat].hit / S[seat].atk : 0, S[o].atk ? S[o].hit / S[o].atk : 0))}${row(L('가장 큰 한 방', 'Biggest hit'), S[seat].best, S[o].best, cmp(S[seat].best, S[o].best))}${row(L('남은 체력', 'HP left'), Math.max(0, p.hp), Math.max(0, G.P[o].hp), cmp(p.hp, G.P[o].hp))}</div>` : '';
+  /* 버튼과 결과 문구: 기존 판정 화면과 같은 동작 */
+  let acts = stageOn() ? stOverHTML(w === seat) : tutOn() ? `<button type="button" class="btn red" data-a="leave">${L('메뉴로 돌아가기', 'Back to menu')}</button>`
+    : seat === 'a' ? `<button type="button" class="btn red" data-a="again">${matchDone() ? (modeOf() === 'ban' ? '재대결 (금지부터 다시)' : modeOf() === 'bo3' ? '새 매치 시작' : '재대결') : '다음 판'}</button>` : `<p class="vscore">방장이 ${matchDone() ? '재대결' : '다음 판'}을 누르면 넘어갑니다.</p>`;
+  const notes = []; acts = acts.replace(/<p class="vscore">([\s\S]*?)<\/p>/g, (m, t) => { notes.push(t); return ''; });
+  if (!tutOn()) acts += `<button type="button" class="btn ghost shareb" data-a="share">${L('결과 공유', 'Share')}</button>`;
+  const rw = lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? lastRw : null;
+  const items = [];
+  if (rw) items.push(`<div class="m"><i>M</i><span><b>${rw.n == null ? '…' : '+' + rw.n}</b><small>${L('메달', 'Medals')} · ${rw.why}</small></span></div>`);
+  if (modeOf() === 'bo3' && !stageOn()) items.push(`<div class="g"><i>3</i><span><b>${scoreOf()[seat]} : ${scoreOf()[o]}</b><small>${matchDone() ? (scoreOf()[seat] >= 2 ? L('매치 승리', 'Match won') : L('매치 패배', 'Match lost')) : L('3판 2선승', 'Best of 3')}</small></span></div>`);
+  notes.forEach(t => items.push(`<div class="g"><i>★</i><span><b>${t}</b></span></div>`));
+  if (res === 'lose') { const oc = CLS[G.P[o].cls]; items.unshift(`<div class="tip"><i>!</i><span><b>${L('다음엔 이렇게', 'Next time')}</b><span>${oc.n} · ${L('패시브', 'Passive')} <b>${oc.pas[0]}</b>: ${hl(oc.pas[1])}</span></span></div>`); }
+  const foe = G.P[o], foeN = CLS[foe.cls].n + (foe.boss ? (foe.cls === 'admin' && typeof adminVer === 'function' ? ' ' + adminVer(stTier()) : '') : '');
+  const sub = res === 'win' ? `${foeN} ${L('격파', 'defeated')} <b>★</b> ${L(`${turns}턴 만에`, `in ${turns} turns`)}` : res === 'lose' ? `${foeN}${L('에게 졌습니다', ' won')} · ${L(`${turns}턴 버팀`, `${turns} turns`)}` : L(`${turns}턴 · 둘 다 쓰러졌습니다`, `${turns} turns · both fell`);
+  const ttl = res === 'win' ? L('승리!', 'VICTORY!') : res === 'lose' ? L('패배', 'DEFEAT') : L('무승부', 'DRAW');
+  const big = res === 'lose' ? `<div class="vs-lt"><div class="w a">${ttl}</div><div class="w b">${ttl}</div></div>` : `<h1 class="vs-h">${[...ttl].map((c, i) => `<span style="--i:${i}"${c === '!' ? ' class="ex"' : ''}>${c}</span>`).join('')}</h1>`;
+  const hk = res === 'win' ? w : seat, wcls = w === 'draw' ? p.cls : G.P[w].cls, quote = w !== 'draw' && typeof WINL === 'object' && WINL[wcls] ? `<p class="vs-q">“${WINL[wcls]}”<small>— ${CLS[wcls].n}</small></p>` : '';
+  let sp = ''; { let z = 9 + G.turn * 7; const r = () => (z = (z * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+    if (res === 'win') for (let i = 0; i < 70; i++) sp += `<i style="left:${(r() * 100).toFixed(1)}%;--d:${(r() * 6).toFixed(2)}s;--t:${(5 + r() * 4).toFixed(2)}s;--r:${Math.round(r() * 720 - 360)}deg;--c:${['#d8475a', '#4f7fd0', '#e3a33b', '#5b9a4a', '#fff', '#8a6fd0'][i % 6]}"></i>`;
+    else for (let i = 0; i < 36; i++) sp += `<i style="left:${(r() * 100).toFixed(1)}%;--d:${(r() * 8).toFixed(2)}s;--t:${(8 + r() * 6).toFixed(2)}s;opacity:${(.3 + r() * .5).toFixed(2)}"></i>`; }
+  return `<div class="vstage r-${res}" role="dialog" aria-label="${ttl}"><div class="vs-dim"></div>${res === 'win' ? '<div class="vs-rays"></div>' : ''}<div class="vs-fall">${sp}</div>
+    <div class="vs-top">${big}<p class="vs-sub">${sub}</p></div>
+    <div class="vs-pan l"><h3>${L('경기 기록', 'Match stats')}<b>${stageOn() ? stLab() : MODES[modeOf()][0]}</b></h3>${led}</div>
+    <div class="vs-pan r"><h3>${res === 'lose' ? L('결과', 'Result') : L('보상', 'Rewards')}<b>${L('이번 판', 'This game')}</b></h3><div class="vs-rw">${items.join('') || `<p class="cap">${L('보상은 다음 화면에서 받습니다', 'Rewards on the next screen')}</p>`}</div></div>
+    <div class="vs-hero">${quote}<span class="vs-ped"></span><i class="px ${res === 'lose' ? `a-${p.cls}-ko` : `spa a-${G.P[hk].cls}-act`}${skOf(hk)}" aria-hidden="true"></i>
+      <span class="vs-who"><span>${L('나', 'You')}${nickOf(hk) ? ' · ' + esc(nickOf(hk)) : ''}</span><b>${CLS[G.P[hk].cls].n}</b></span></div>
+    <div class="vs-go">${acts}</div></div>`;
+}
 function playHTML() {
   const o = opp(seat), p = myP(), pl = curPl(), over = doc.phase === 'over' && !RP;
   const ab = CLS[p.cls].act[0], abOn = !!pl.ab;
@@ -7402,7 +7510,7 @@ function playHTML() {
       : seat === 'a' ? `<button type="button" class="btn red" data-a="again">${matchDone() ? (modeOf() === 'ban' ? '재대결 (금지부터 다시)' : modeOf() === 'bo3' ? '새 매치 시작' : '재대결 (직업 다시 선택)') : '다음 판 (직업 다시 선택)'}</button>` : `<p class="cap">방장이 ${matchDone() ? '재대결' : '다음 판'}을 누르면 넘어갑니다.</p>`}${tutOn() ? '' : '<button type="button" class="btn ghost shareb" data-a="share">결과 공유</button>'}</div>`;
   }
   const sd = !over && !RP ? actId(pl) || mvId(pl) : null;
-  return `<div class="play v2${SPD === 2 ? ' x2' : ''}${over ? ' over' : ''}">
+  return `<div class="play v2${SPD === 2 ? ' x2' : ''}${over ? ' over' : ''}">${over ? vStageHTML() : ''}
     <div class="bar"><span class="turn">${G.turn}턴</span>
       <span>${over || RP ? '' : `남은 시간 <b id="timer" class="timer">--</b>초 · `}방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` ${scoreOf()[seat]} : ${scoreOf()[o]}` : ''} · ${ARENAS[G.arena] || ARENAS.castle}${G.turn >= COLLAPSE_FROM - 1 ? ' · 바닥 붕괴 중' : ''}</span>
       <span class="row"><button type="button" class="btn ghost" data-a="snd" aria-pressed="${SND.on}">효과음 ${SND.on ? '켬' : '끔'}</button><button type="button" class="btn ghost" data-a="bgm" aria-pressed="${SND.bgm}">배경음 ${SND.bgm ? '켬' : '끔'}</button>
