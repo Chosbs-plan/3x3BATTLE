@@ -4416,6 +4416,38 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
   @keyframes vsUp { from { opacity: 0; translate: 0 30px; } }
   @keyframes vsFall { from { transform: translateY(0) rotate(0); } to { transform: translateY(115vh) rotate(540deg); } }
 }
+
+/* ===== PC 전투 화면 배치 다듬기: 안내 문구는 위, 상대 손패는 상대 카드 밑, 내 카드·능력은 아래 테이블, 지난 턴·결투장은 왼쪽 위 ===== */
+.mest { display: none; }
+@media (min-width: 1100px) and (min-height: 660px) {
+  /* 안내 문구: 위 가운데(턴 기록판 아래). 손패와 결투장을 가리지 않는다 */
+  html body #app > .play.v2 > .hint2 { top: 98px !important; bottom: auto !important; max-width: 760px; border-bottom: 4px solid var(--red) !important; }
+  /* 상대 손패·계획 중·투시: 상대 인물 카드 아래 */
+  html body #app > .play.v2 .side-label { left: auto !important; right: calc(24px + var(--lwc, 0px)) !important; top: 262px !important; translate: none !important; }
+  /* 내 인물 카드와 능력: 아래 테이블 안으로 */
+  html body #app > .play.v2 .side.me .stat.uf { display: none !important; }
+  html body #app > .play.v2 .mest { display: block; } html body #app > .play.v2 .mest .stat.uf { position: absolute !important; left: 24px; bottom: 22px; top: auto; }
+  html body #app > .play.v2 .acts .abb { bottom: 22px !important; }
+  /* 이모트: 내 인물 카드 오른쪽 위 탭 */
+  html body #app > .play.v2 .acts .emb { left: 448px !important; bottom: 150px !important; width: 108px !important; padding: 3px 4px !important; font-size: 12px !important; }
+  /* 결투장 카드와 지난 턴: 왼쪽 위(진행 줄 아래) */
+  html body #app > .play.v2 .dk-l .arc { position: fixed; left: 24px; top: 70px; width: 300px; rotate: 0deg; padding: 6px 10px 8px; box-shadow: 4px 4px 0 var(--ink); }
+  html body #app > .play.v2 .dk-l .arc b { display: inline; font-size: 16px; margin-right: 6px; } html body #app > .play.v2 .dk-l .arc p { font-size: 11px; margin-top: 2px; }
+  html body #app > .play.v2 .dk-l .arc-h { top: -12px; }
+  html body #app > .play.v2 > .arena .abar:not(.foe) { position: fixed; z-index: 14; left: 24px !important; top: 168px !important; bottom: auto !important; width: 300px; max-width: none; box-sizing: border-box; color: var(--sil); background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  /* 버림 더미는 덱 옆으로 */
+  html body #app > .play.v2 .dk-l .disc { position: absolute; right: 450px; bottom: 34px; }
+  html body #app > .play.v2 .dk-l .pile { right: 320px !important; }
+  /* 계획 요약: 계획 확정 버튼 위 한 줄 띠(결투장을 가리지 않는다) */
+  html body #app > .play.v2 .dk-l .sum { right: 30px !important; bottom: 112px !important; width: 252px !important; display: flex !important; flex-wrap: wrap; gap: 2px 10px !important; padding: 6px 10px !important; rotate: 0deg !important; }
+  html body #app > .play.v2 .dk-l .sum::before, html body #app > .play.v2 .dk-l .sum .sum-h { display: none !important; }
+  html body #app > .play.v2 .dk-l .sum > span:not(.sum-h) { border: 0 !important; padding: 0 !important; font-size: 13px !important; }
+  html body #app > .play.v2 .dk-l .sum > span > b { width: auto !important; margin-right: 4px !important; }
+  html body #app > .play.v2 .acts [data-a=lock], html body #app > .play.v2 .acts [data-a=unlock] { bottom: 22px !important; height: 82px !important; }
+}
+@media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
+  html body #app > .play.v2 > .arena .abar:not(.foe) { zoom: .72; }
+}
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -7522,7 +7554,7 @@ function playHTML() {
       ${tutOn() && !over && !RP ? tutHTML() : ''}
       <p class="hint" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>
       ${sd ? `<p class="seldesc"><b>${CARDS[sd].n}</b> ${hl(CARDS[sd].d)}</p>` : over || RP ? '' : '<p class="seldesc empty">카드를 누르면 설명이 여기에 나옵니다.</p>'}
-      <div class="dock"><div class="dk-l">${arcHTML()}${discHTML()}${pileHTML()}${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
+      <div class="dock"><div class="dk-l"><div class="mest">${statHTML(seat)}</div>${arcHTML()}${discHTML()}${pileHTML()}${over || RP ? '' : orbHTML(pl) + sumHTML(pl)}</div>
       ${handHTML()}
       <div class="dk-r">${over || RP ? '<div class="acts one"><button type="button" class="btn ghost" data-a="emt" aria-expanded="' + emOpen + '">이모트</button></div>' : `<div class="acts">
         <button type="button" class="btn ghost emb${emOpen ? ' on' : ''}" data-a="emt" aria-expanded="${emOpen}">이모트</button>
