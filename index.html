@@ -13545,7 +13545,7 @@ function stOverHTML(won) {
   function mkUnit(b) {
     const mat = sprMat(), mesh = new T.Mesh(EMPTY, mat), g = new T.Group();
     const sh = new T.Mesh(ovGeo, new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); sh.renderOrder = 3;
-    const crown = new T.Mesh(EMPTY, sprMat()); crown.visible = false;
+    const crown = new T.Mesh(EMPTY, sprMat()); crown.visible = false; crown.renderOrder = 2;
     /* 뒷판: 같은 그림을 어둡게 해 살짝 뒤에 겹친다. 비스듬히 보면 종이 인형처럼 두께가 보인다 */
     const back = new T.Mesh(EMPTY, sprMat()); back.material.color.setHex(0x1d1413); back.position.set(0.012, -0.004, -0.045);
     g.add(back, mesh, crown); boardG[b].add(g, sh);
@@ -14445,7 +14445,11 @@ function stOverHTML(won) {
     if (cl.contains('boss')) {
       if (!u.crownUrl) { u.crownUrl = urlOf(getComputedStyle(el, '::after').backgroundImage) || 'x'; if (u.crownUrl !== 'x') u.cv = voxOf(u.crownUrl); }
       if (useVox(u.crown, u.cv)) { const mid = cl.contains('b-mid');
-        u.crown.visible = true; u.crown.position.set(0, (u.vox ? u.vox.top : 1) * (u.sy || 1) - 0.06, 0); u.crown.scale.setScalar(mid ? 0.82 : 1); u.crown.material.color.setHex(mid ? 0xb8b8c4 : 0xffffff); }
+        u.crown.visible = true;
+        /* 왕관 높이: 동작 그림마다 머리 꼭대기가 달라(관리자는 머리 칸이 떠다닌다) 매 프레임 따라가면 위아래로 튀며 머리와 겹쳐 깜빡인다.
+           지금까지 본 가장 높은 꼭대기에 고정하고, 캐릭터 그림과 같은 면이 되지 않게 살짝 앞에 둔다 */
+        const top = (u.vox ? u.vox.top : 1) * (u.sy || 1); const who = (/\ba-([a-z0-9]+)/.exec(el.className) || [])[1]; if (u.crownFor !== who) { u.crownFor = who; u.crownTop = 0; } u.crownTop = Math.max(u.crownTop || 0, top);
+        u.crown.position.set(0, u.crownTop - 0.02, 0.04); u.crown.scale.setScalar(mid ? 0.82 : 1); u.crown.material.color.setHex(mid ? 0xb8b8c4 : 0xffffff); }
     } else u.crown.visible = false;
   }
 
