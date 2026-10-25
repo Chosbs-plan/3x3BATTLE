@@ -12737,6 +12737,14 @@ function stInit() {
     const rows = [['fight', 'fight', 'fight'].map(mk), shuffle(['fight', 'event', pick(['treasure', 'event'])]).map(mk), ['elite', pick(['rest', 'shop'])].map(mk),
       shuffle(['fight', 'event', pick(['treasure', 'shop', 'event'])]).map(mk), shuffle(['rest', 'shop']).map(mk), [{ t: 'boss', foe: boss }]];
     rows.forEach((r, i) => { if (i < rows.length - 1) link(r, rows[i + 1].length); });
+    /* 어느 길로 가도 보스 전에 결투(정예 포함)를 2번 이상 하게 한다. 모자란 길이 있으면 그 길의 2·4번째 줄 사건·보물 칸 하나를 결투로 바꾼다 */
+    const isF = n => n.t === 'fight' || n.t === 'elite';
+    for (let guard = 0; guard < 12; guard++) {
+      let short = null; const walk = (r, c, path) => { if (short) return; const n = rows[r][c], P = path.concat([[r, c]]); if (n.t === 'boss') { if (P.filter(q => isF(rows[q[0]][q[1]])).length < 2) short = P; return; } n.to.forEach(t => walk(r + 1, t, P)); };
+      [0, 1, 2].forEach(c => walk(0, c, [])); if (!short) break;
+      const cand = short.filter(q => (q[0] === 1 || q[0] === 3) && ['event', 'treasure'].includes(rows[q[0]][q[1]].t)), q = cand.length ? pick(cand) : short.find(q => !isF(rows[q[0]][q[1]]) && rows[q[0]][q[1]].t !== 'boss');
+      if (!q) break; const to = rows[q[0]][q[1]].to; rows[q[0]][q[1]] = mk('fight'); rows[q[0]][q[1]].to = to;
+    }
     return { ar: ars[a], rows };
   });
   run.act = 0; run.row = -1; run.col = 0; run.path = []; run.seenK = {}; stSave();
