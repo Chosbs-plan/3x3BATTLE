@@ -4287,7 +4287,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
   html body #app > .play.v2 .side-label .cap { margin-left: 8px; padding: 3px 8px; font-size: 12px; color: #fff; background: var(--ink); }
   html body #app > .play.v2 .side-label .infob { padding: 3px 8px; font-size: 12px; color: var(--ink); background: var(--paper); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
   /* 상대 능력 설명 띠: 상대 인물 카드 아래 */
-  html body #app > .play.v2 > .arena .abar.foe { position: fixed; z-index: 14; left: auto; right: calc(24px + var(--lwc, 0px)); top: 248px; bottom: auto; width: 400px; max-width: none; box-sizing: border-box; padding: 6px 10px; font-size: 12px; color: var(--sil); background: var(--paper); border: 3px solid var(--ink); border-top: 2px dashed var(--line); box-shadow: 6px 6px 0 var(--ink); }
+  html body #app > .play.v2 > .arena .abar.foe { position: fixed; z-index: 14; left: auto; right: calc(24px + var(--lwc, 0px)); top: 248px; bottom: auto; width: 400px; max-width: none; box-sizing: border-box; padding: 6px 10px; font-size: 12px; color: var(--sil); background: var(--paper); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); }
   /* 머리 위 이름표 */
   .a3-lab .a3-ntag { position: absolute; display: flex; align-items: center; translate: -50% -100%; padding: 3px 8px; font-size: 14px; font-weight: 700; white-space: nowrap; color: #1d1413; background: #fff; border: 3px solid #1d1413; box-shadow: 3px 3px 0 #1d1413; }
   .a3-lab .a3-ntag i { margin-right: 6px; padding: 0 5px; font-style: normal; font-size: 11px; color: #fff; background: var(--red); } .a3-lab .a3-ntag.op i { background: var(--blue); }
@@ -4423,7 +4423,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
   /* 안내 문구: 위 가운데(턴 기록판 아래). 손패와 결투장을 가리지 않는다 */
   html body #app > .play.v2 > .hint2 { top: 98px !important; bottom: auto !important; max-width: 760px; border-bottom: 4px solid var(--red) !important; }
   /* 상대 손패·계획 중·투시: 상대 인물 카드 아래 */
-  html body #app > .play.v2 .side-label { left: auto !important; right: calc(24px + var(--lwc, 0px)) !important; top: 262px !important; translate: none !important; }
+  html body #app > .play.v2 .side-label { left: auto !important; right: calc(24px + var(--lwc, 0px)) !important; top: 262px; translate: none !important; width: max-content; max-width: 400px; flex-wrap: wrap; justify-content: flex-end; align-items: center; row-gap: 6px; }
   /* 내 인물 카드와 능력: 아래 테이블 안으로 */
   html body #app > .play.v2 .side.me .stat.uf { display: none !important; }
   html body #app > .play.v2 .mest { display: block; } html body #app > .play.v2 .mest .stat.uf { position: absolute !important; left: 24px; bottom: 22px; top: auto; }
@@ -4434,7 +4434,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
   html body #app > .play.v2 .dk-l .arc { position: fixed; left: 24px; top: 70px; width: 300px; rotate: 0deg; padding: 6px 10px 8px; box-shadow: 4px 4px 0 var(--ink); }
   html body #app > .play.v2 .dk-l .arc b { display: inline; font-size: 16px; margin-right: 6px; } html body #app > .play.v2 .dk-l .arc p { font-size: 11px; margin-top: 2px; }
   html body #app > .play.v2 .dk-l .arc-h { top: -12px; }
-  html body #app > .play.v2 > .arena .abar:not(.foe) { position: fixed; z-index: 14; left: 24px !important; top: 168px !important; bottom: auto !important; width: 300px; max-width: none; box-sizing: border-box; color: var(--sil); background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  html body #app > .play.v2 > .arena .abar:not(.foe) { position: fixed; z-index: 14; left: 24px !important; top: 168px; bottom: auto !important; width: 300px; max-width: none; box-sizing: border-box; color: var(--sil); background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
   /* 버림 더미는 덱 옆으로 */
   html body #app > .play.v2 .dk-l .disc { position: absolute; right: 450px; bottom: 34px; }
   html body #app > .play.v2 .dk-l .pile { right: 320px !important; }
@@ -4475,6 +4475,24 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 }
 @media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
   html body #app > .play.v2 > .ctrl > .emp { left: 403px; bottom: 180px; zoom: .8; }
+}
+
+/* ===== PC 전투 화면: 손패가 왼쪽(내 카드·능력)과 오른쪽(버림·덱·계획·확정) 자리를 넘지 않게, 안내 문구가 양쪽 카드에 닿지 않게 ===== */
+@media (min-width: 1100px) and (min-height: 660px) {
+  html body #app > .play.v2 { --dzL: 590px; --dzR: 550px; --cwt: clamp(116px, min(10vw, 16.5vh), 170px); }
+  html body #app > .play.v2 .dock { grid-template-columns: var(--dzL) minmax(0, 1fr) var(--dzR); padding: 0; column-gap: 0; }
+  html body #app > .play.v2 .hand { --cw2: min(var(--cwt), calc((100vw - var(--lwc, 0px) - var(--dzL) - var(--dzR) - 24px) / (var(--hn, 4) * .9 + .2))); --ch2: calc(var(--cw2) * 1.42); min-width: 0; }
+  html body #app > .play.v2 > .hint2 { max-width: min(760px, calc(100vw - var(--lwc, 0px) - 900px)) !important; }
+}
+@media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
+  html body #app > .play.v2 { --dzL: 366px; --dzR: 372px; --cwt: clamp(100px, min(9.5vw, 17vh), 140px); }
+  /* 좁은 PC: 내 카드를 줄이고 능력·이모트를 바짝 붙이고, 버림 더미를 덱 쪽으로. 기록 창은 화면을 밀지 않고 위에 덮는다 */
+  html body #app > .play.v2 .mest .stat.uf { width: 330px !important; }
+  html body #app > .play.v2 .acts .abb { left: 368px !important; } html body #app > .play.v2 .acts .emb { left: 368px !important; }
+  html body #app > .play.v2 .dk-l .disc { right: 420px !important; }
+  html body #app > .play.v2 > .ctrl > .emp, html body #app > .play.v2.over > .ctrl > .emp { left: 333px !important; }
+  body.logopen #app > .play.v2 { --lwc: 0px !important; }
+  html body #app > .play.v2 > .hint2 { max-width: min(620px, calc((100vw - var(--lwc, 0px) - 680px) / .72)) !important; }
 }
 </style>
 <main id="app"></main>
@@ -6995,7 +7013,7 @@ function showEmote(k, i) {
   if (!EMOTES[i] && !EMO_PX[i - 10]) return;
   emNow[k] = { i, until: Date.now() + 2600 };
   const side = app.querySelector('.side.' + (k === seat ? 'me' : 'op'));
-  if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); }
+  if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); pcHud(); }
   SND.play(i >= 5 ? 'taunt' : 'emote');
   setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, 2650);
 }
@@ -7004,7 +7022,7 @@ function emoHTML(k) { const e = emNow[k]; if (!e || e.until <= Date.now()) retur
 function adminSay(k, txt, ms) {
   ms = ms || 3400; emNow[k] = { adm: `${L('관리자', 'Admin')} ${adminVer(stTier())}`, txt, until: Date.now() + ms };
   const side = app.querySelector('.side.' + (k === seat ? 'me' : 'op'));
-  if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); }
+  if (side) { side.querySelectorAll('.emo').forEach(e => e.remove()); side.insertAdjacentHTML('beforeend', emoHTML(k)); pcHud(); }
   SND.play('merr');
   setTimeout(() => { if (emNow[k] && emNow[k].until <= Date.now() + 50) { emNow[k] = null; app.querySelectorAll('.side.' + (k === seat ? 'me' : 'op') + ' .emo').forEach(e => e.remove()); } }, ms + 50);
 }
@@ -8635,9 +8653,26 @@ document.addEventListener('click', e => {
   setTimeout(() => { pkLock = false; if (!doc) return; if (ban) W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) } }); } }, 760);
 }, true);
 /* PC 전투 화면: 상대 능력 띠를 상대 인물 카드 바로 아래에 붙인다(카드 높이가 상태 칩 수에 따라 달라서) */
-function pcHud() { const a = app.querySelector('.play.v2 > .arena .abar.foe'); if (!a) return; const c = app.querySelector('.play.v2 .side.op .stat.uf');
-  if (!c || !matchMedia('(min-width: 1100px) and (min-height: 660px)').matches) { a.style.top = ''; return; } const z = parseFloat(getComputedStyle(a).zoom) || 1; a.style.top = Math.round((c.getBoundingClientRect().bottom - 3) / z) + 'px'; }
-function render() { if (!replaying) renderNow(); pcHud(); { const f = document.querySelector('.pick2 .pk-roster .face.sel'); if (f && f.parentNode.scrollWidth > f.parentNode.clientWidth) { const r = f.parentNode; r.scrollLeft = f.offsetLeft - r.clientWidth / 2 + f.offsetWidth / 2; } } }
+/* PC 전투 화면 쌓기: 높이가 바뀌는 조각(상태 칩 줄, 투시로 보이는 손패 이름, 긴 지난 턴 요약)이 서로 겹치지 않게
+   오른쪽은 상대 카드 → 상대 손패 → 상대 능력 띠, 왼쪽은 결투장 카드 → 지난 턴 순서로 바로 아래에 붙인다.
+   zoom을 쓰는 화면 크기에서는 화면 좌표를 그 조각의 zoom으로 나눠 적는다 */
+const PC_HUD = '(min-width: 1100px) and (min-height: 660px)';
+function pcHud() {
+  const pv = app.querySelector('.play.v2'); if (!pv) return;
+  const on = matchMedia(PC_HUD).matches, zOf = e => parseFloat(getComputedStyle(e).zoom) || 1, GAP = 10;
+  const stack = (anchor, list) => { let y = anchor ? anchor.getBoundingClientRect().bottom : null;
+    list.forEach(e => { if (!e) return; if (!on || y == null) { e.style.top = ''; return; } if (getComputedStyle(e).display === 'none') return; e.style.top = Math.round((y + GAP) / zOf(e)) + 'px'; y = e.getBoundingClientRect().bottom; }); };
+  stack(pv.querySelector('.side.op .stat.uf'), [pv.querySelector('.side.op .side-label'), pv.querySelector(':scope > .arena .abar.foe')]);
+  stack(pv.querySelector('.dk-l .arc'), [pv.querySelector(':scope > .arena .abar:not(.foe)')]);
+  /* 내 이모트 말풍선: 내 카드(위로 자라는) 꼭대기 위 */
+  const me = pv.querySelector('.mest .stat.uf'), em = pv.querySelector('.side.me > .emo');
+  if (em) em.style.bottom = on && me ? Math.round((innerHeight - me.getBoundingClientRect().top + 34) / zOf(em)) + 'px' : '';
+  /* 상대 이모트: 상대 카드 왼쪽, 카드 세로 가운데 */
+  const op = pv.querySelector('.side.op .stat.uf'), eo = pv.querySelector('.side.op > .emo');
+  if (eo) { if (on && op) { const r = op.getBoundingClientRect(); eo.style.top = Math.round((r.top + 12) / zOf(eo)) + 'px'; eo.style.right = Math.round((innerWidth - r.left + 16) / zOf(eo)) + 'px'; } else eo.style.top = eo.style.right = ''; }
+}
+addEventListener('resize', () => pcHud());
+function render() { if (!replaying) renderNow(); pcHud(); requestAnimationFrame(pcHud); { const f = document.querySelector('.pick2 .pk-roster .face.sel'); if (f && f.parentNode.scrollWidth > f.parentNode.clientWidth) { const r = f.parentNode; r.scrollLeft = f.offsetLeft - r.clientWidth / 2 + f.offsetWidth / 2; } } }
 function renderNow() {
   let h;
   if (!doc) h = gateHTML();
