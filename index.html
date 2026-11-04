@@ -4129,6 +4129,39 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 /* 메달 */
 .mdl-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
 .mdl { display: inline-block; width: 14px; height: 14px; flex: none; background: radial-gradient(circle at 50% 50%, #fff2b0 0 22%, #f2c230 23% 58%, #b08014 59% 70%, transparent 71%); box-shadow: 0 -5px 0 -3px #d8475a; }
+/* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
+.dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
+.dia { display: inline-block; width: 14px; height: 14px; flex: none; background: linear-gradient(135deg, #e6fbff 0 26%, #6fd3f5 27% 52%, #2a9bd6 53% 76%, #1c6ea6 77%); clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
+.sh-bal .dia-n { font-size: 22px; color: #1c6ea6; margin-left: 10px; } .sh-bal .dia { width: 20px; height: 20px; }
+.pc-cur .dia-n { margin-left: 10px; color: #bfeeff; } .pc-cur .dia { width: 22px; height: 22px; }
+.psh-wal .psh-dia { color: #bfeeff; } .psh-wal .dia { width: 30px; height: 30px; }
+.psh-cat button.dia-t em { color: #bfeeff; }
+.cl-s em .dia { width: 9px; height: 9px; }
+.sh-buy { display: flex; gap: 4px; width: 100%; } .sh-buy > * { flex: 1 1 0; min-width: 0; padding-left: 4px; padding-right: 4px; }
+.btn.dia-b { color: #fff; background: #2a7fb8; } .btn.dia-b:hover:not(:disabled) { background: #1c6ea6; } .btn.dia-b:disabled { background: var(--wash); }
+.pcb.dia-b { --bg: linear-gradient(#5cc4ec, #2a9bd6 48%, #2288c4 52%, #1c6ea6); } .ps-it .pcb .dia { width: 18px; height: 18px; } .pcb .dia-n { gap: 6px; }
+.ps-it .sh-buy .pcb { padding: 0 8px; font-size: 16px; }
+/* 전설 스킨: 에픽(.sp) 테두리를 주황·금색으로 */
+.sh-it.sp.lg, .ps-it.sp.lg { --sk1: #e0861a; --sk2: #9c4a0e; }
+/* 다이아 충전 칸 */
+.dsh { display: grid; gap: 12px; }
+.dsh-bal { margin: 0; display: flex; align-items: baseline; gap: 10px; font-size: 22px; color: #1c6ea6; } .dsh-bal .dia { width: 22px; height: 22px; } .dsh-bal small { font-size: 13px; color: var(--sil); }
+.dsh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.dsh-it { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 10px 12px; background: linear-gradient(180deg, #eaf8ff, #fff 55%); border: 3px solid var(--line); box-shadow: 3px 3px 0 #2a7fb8; }
+.dsh-it.first { background: linear-gradient(180deg, #fff3d6, #fff 55%); box-shadow: 3px 3px 0 var(--amber-d); }
+.dsh-it > b { font-size: 22px; color: #1c6ea6; } .dsh-it > b .dia { width: 18px; height: 18px; }
+.dsh-it .btn, .dsh-it .pcb { width: 100%; }
+.dsh-ic { display: flex; align-items: flex-end; justify-content: center; height: 40px; } .dsh-ic .dia { width: 24px; height: 30px; margin: 0 -4px; } .dsh-ic .dia:nth-child(even) { width: 20px; height: 24px; }
+.dsh-tag { position: absolute; top: 6px; left: 6px; padding: 1px 7px; font-style: normal; font-size: 11px; font-weight: 700; color: #fff; background: #2a7fb8; box-shadow: 2px 2px 0 #174f78; }
+.dsh-it.first .dsh-tag { background: var(--red); box-shadow: 2px 2px 0 var(--red-d); }
+.dsh-note { margin: 0; line-height: 1.5; }
+.dsh.pc .dsh-bal { font-size: 30px; } .dsh.pc .dsh-bal small { font-size: 15px; } .dsh.pc .dsh-bal .dia { width: 30px; height: 30px; }
+.dsh.pc .dsh-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.dsh.pc .dsh-it { padding: 30px 14px 16px; gap: 10px; border: 0; box-shadow: inset 0 0 0 2px var(--sil), 5px 5px 0 #2a7fb8; } .dsh.pc .dsh-it.first { box-shadow: inset 0 0 0 2px var(--amber), 5px 5px 0 var(--amber-d); }
+.dsh.pc .dsh-it > b { font-size: 28px; } .dsh.pc .dsh-ic { height: 56px; } .dsh.pc .dsh-ic .dia { width: 34px; height: 42px; } .dsh.pc .dsh-ic .dia:nth-child(even) { width: 28px; height: 34px; }
+.dsh.pc .dsh-tag { top: 10px; left: 10px; font-size: 13px; } .dsh.pc .dsh-it .cap { color: var(--sil); }
+.dsh.pc .dsh-note { font-size: 14px; max-width: 900px; color: #6f5f5c; }
+.pc-ph-r .dia-n { margin-left: 14px; color: #1c6ea6; } .pc-ph-r .dia { width: 22px; height: 22px; }
 .qk-m { margin-left: 4px; padding-left: 6px; border-left: 1px solid currentColor; }
 .v-rw { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0 0; padding: 6px 10px; background: #fff6d8; border: 2px solid #f2c230; font-size: 15px; }
 .v-rw .mdl-n { font-size: 18px; color: #9a7212; }
@@ -5073,8 +5106,20 @@ const medals = () => (typeof AUTH !== 'undefined' && AUTH.wallet != null ? AUTH.
 const ownedSkins = () => (typeof AUTH !== 'undefined' && AUTH.owned ? AUTH.owned : []);
 const skinOwned = (c, id) => !id || ownedSkins().includes(c + ':' + id);
 const MDL = n => `<span class="mdl-n"><i class="mdl" aria-hidden="true"></i>${n}</span>`;
+/* 다이아: 스팀 결제로 충전하는 유료 재화(supabase/diamonds.sql). 모든 스킨을 살 수 있고, 전설 스킨은 다이아로만 판다.
+   유료분(paid)과 보너스·지급분(free)을 서버가 따로 세고, 쓸 때는 free부터 쓴다 */
+const skinLegend = (c, id) => { const x = id && skinList(c).find(s => s.id === id); return !!(x && x.lg); };
+/* 다이아 가격: 표에 있으면 그 값, 전설 1200, 나머지는 메달 가격 ÷ 3을 10단위로 올림. supabase/skin_prices.sql의 _skin_dia와 같아야 한다 */
+const skinDia = (c, id) => { const x = id && skinList(c).find(s => s.id === id); return (x && x.dp) || (x && x.lg ? 1200 : Math.ceil(skinPrice(c, id) / 30) * 10); };
+const dias = () => (typeof AUTH !== 'undefined' && AUTH.dia ? Math.max(0, AUTH.dia.paid) + AUTH.dia.free : 0);
+const DIA = n => `<span class="dia-n"><i class="dia" aria-hidden="true"></i>${n}</span>`;
+async function buySkinDia(c, id) {
+  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (dias() < skinDia(c, id)) return 'poor';
+  try { AUTH.dia = await rpc('buy_skin_dia', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
+  catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
+}
 async function buySkin(c, id) {
-  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (medals() < skinPrice(c, id)) return 'poor';
+  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (skinLegend(c, id)) return 'dia'; if (medals() < skinPrice(c, id)) return 'poor';
   try { AUTH.wallet = await rpc('buy_skin', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
   catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
 }
@@ -8158,7 +8203,7 @@ function collBody() {
   const card = c => { const cur = skinOf(c), list = [{ id: '', n: '기본', en: 'Default' }, ...skinList(c)];
     return `<div class="cl-it c-${c}"><div class="cl-fig"><i class="px a-${c}${skc(c, cur)}" aria-hidden="true"></i></div><b>${CLS[c].n}</b>
       <div class="cl-sks">${list.map(x => { const ok = skinOwned(c, x.id);
-        return `<button type="button" class="cl-s${x.id === cur ? ' on' : ''}${ok ? '' : ' lock'}" data-a="${ok ? 'collwear' : 'shopgo'}" data-c="${c}" data-id="${x.id}" aria-pressed="${x.id === cur}" title="${esc(mE(x.n, x.en))}${ok ? '' : ' · ' + mE('상점에서 구매', 'buy in shop')}">${faceOf(c, x.id)}${ok ? '' : `<em>${MDL(skinPrice(c, x.id))}</em>`}</button>`; }).join('')}</div></div>`; };
+        return `<button type="button" class="cl-s${x.id === cur ? ' on' : ''}${ok ? '' : ' lock'}" data-a="${ok ? 'collwear' : 'shopgo'}" data-c="${c}" data-id="${x.id}" aria-pressed="${x.id === cur}" title="${esc(mE(x.n, x.en))}${ok ? '' : ' · ' + mE('상점에서 구매', 'buy in shop')}">${faceOf(c, x.id)}${ok ? '' : `<em>${x.lg ? DIA(skinDia(c, x.id)) : MDL(skinPrice(c, x.id))}</em>`}</button>`; }).join('')}</div></div>`; };
   return `<div class="cl-head"><div class="cl-prog"><span class="cap">${mE('수집', 'Collected')}</span><b>${own.length} / ${tot}</b><span class="pf-bar"><i style="width:${tot ? own.length / tot * 100 : 0}%"></i></span></div>
       <div class="sh-tabs">${[['all', '전체', 'All'], ['own', '보유', 'Owned'], ['new', '미보유', 'Not owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-a="colltab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
     <p class="cap">${mE('얼굴을 눌러 스킨을 바꿉니다. 자물쇠가 걸린 스킨은 상점에서 살 수 있습니다.', 'Tap a face to equip. Locked skins are in the shop.')}</p>
@@ -8170,14 +8215,36 @@ function shopBody() {
   const own = ownedSkins(), m = medals(), f = shopTab;
   const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    const sp = x.ac ? ' sp' : '';   /* 에픽 등급(800메달) */
-    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+    const sp = x.lg ? ' sp lg' : x.ac ? ' sp' : '';   /* 에픽 등급(800메달), 전설(다이아 전용) */
+    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.lg || x.ac ? `<em class="sh-sp">${x.lg ? mE('전설', 'Legend') : mE('에픽', 'Epic')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
       <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
-      ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
-  return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p>
-      <div class="sh-tabs">${[['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
-    <p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
-    <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`;
+      ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : buyBtns(c, x, 'btn', 'red')}</div>`; };
+  const tabs = [['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned'], ...(AUTH.dia ? [['dia', '다이아 충전', 'Diamonds']] : [])];
+  return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}${AUTH.dia ? ' ' + DIA(dias()) : ''}</p>
+      <div class="sh-tabs">${tabs.map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
+    ${f === 'dia' ? diaShopHTML(false) : `<p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
+    <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`}`;
+}
+/* 스킨 구매 버튼: 전설은 다이아만, 나머지는 메달과 다이아 둘 다(다이아 표가 있을 때) */
+function buyBtns(c, x, cls, main) {
+  const dp = skinDia(c, x.id), dBtn = `<button type="button" class="${cls} dia-b" data-shop="buydia" data-c="${c}" data-id="${x.id}" ${dias() < dp ? 'disabled' : ''}>${DIA(dp)}</button>`;
+  if (x.lg) return AUTH.dia ? dBtn : `<button type="button" class="${cls}" disabled>${mE('준비 중', 'Soon')}</button>`;
+  const mBtn = `<button type="button" class="${cls} ${main}" data-shop="buy" data-c="${c}" data-id="${x.id}" ${medals() < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`;
+  return AUTH.dia ? `<span class="sh-buy">${mBtn}${dBtn}</span>` : mBtn;
+}
+/* 다이아 충전 칸: 묶음은 서버 표(dia_packs)에서 읽는다. 실제 금액은 스팀 결제 창에 나온다 */
+const packPrice = k => LANG === 'en' ? '$' + (k.usd / 100).toFixed(2) : k.krw.toLocaleString('ko-KR') + mE('원', ' KRW');
+function diaShopHTML(pc) {
+  const packs = (AUTH.packs || []).filter(k => !(k.once && (AUTH.bought || []).includes(k.id))), d = AUTH.dia || { paid: 0, free: 0 };
+  const cls = pc ? 'pcb' : 'btn';
+  return `<div class="dsh${pc ? ' pc' : ''}">
+    <p class="dsh-bal">${DIA(dias())}<small>${mE(`유료 ${Math.max(0, d.paid)} · 보너스 ${d.free}`, `Paid ${Math.max(0, d.paid)} · Bonus ${d.free}`)}</small></p>
+    <div class="dsh-grid">${packs.map(k => `<div class="dsh-it${k.once ? ' first' : ''}">
+        ${k.once ? `<em class="dsh-tag">${mE('첫 결제 한 번', 'First purchase')}</em>` : k.bonus ? `<em class="dsh-tag">+${Math.round(k.bonus / k.dia * 100)}%</em>` : ''}
+        <span class="dsh-ic" aria-hidden="true">${'<i class="dia"></i>'.repeat(Math.min(5, 1 + (k.dia >= 600) + (k.dia >= 1200) + (k.dia >= 3000) + (k.once ? 1 : 0)))}</span>
+        <b>${DIA(k.dia)}</b><span class="cap">${k.bonus ? mE(`보너스 +${k.bonus}`, `Bonus +${k.bonus}`) : '&nbsp;'}</span>
+        <button type="button" class="${cls} gold red" data-shop="charge" data-k="${k.id}">${packPrice(k)}</button></div>`).join('') || `<p class="cap">${mE('지금 살 수 있는 묶음이 없습니다', 'No packs right now')}</p>`}</div>
+    <p class="cap dsh-note">${mE('결제는 스팀 지갑으로 합니다. 실제 금액은 스팀 결제 창에 표시됩니다. 다이아는 스킨을 사는 데만 쓰이고 대전 실력에는 영향이 없습니다. 환불은 스팀 환불 절차로 요청하며, 이미 쓴 다이아와 보너스 다이아는 환불되지 않습니다.', 'Paid with your Steam Wallet; the final price is shown in the Steam window. Diamonds only buy skins and never affect play. Refunds go through Steam; spent and bonus diamonds are not refundable.')}</p></div>`;
 }
 
 function multiBody(off) {
@@ -8237,7 +8304,7 @@ pcZoom(); addEventListener('resize', pcZoom);
 let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
 const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
   coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['도감', 'Codex', '직업의 패시브·능력·전용 카드와 모험에서 찾은 유물', 'Classes, abilities and cards, plus relics found in Adventure'],
-  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'],
+  shop: ['스킨 상점', 'Skin Shop', '메달과 다이아로 스킨을 삽니다', 'Spend medals or diamonds on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'],
   ach: ['업적', 'Achievements', '업적을 달성하고 칭호를 답니다', 'Unlock achievements and wear titles'],
   weekly: ['주간 도전', 'Weekly Challenge', '이번 주 모두가 같은 지도·직업·규칙으로 겨룹니다', 'Same map, class and rule for everyone this week'],
   mail: ['메일함', 'Mailbox', '개발자 선물, 이벤트 보상, 주간 도전 보상을 받습니다', 'Developer gifts, event and weekly rewards'] };
@@ -8249,7 +8316,7 @@ function pcHTML(scene, logo, off, ta, anim) {
       ${logo}
       <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
       <div class="pc-tr">
-        <button type="button" class="pc-cur" data-a="mtab" data-m="shop" aria-label="${mE('메달, 상점 열기', 'Medals, open shop')}">${MDL(medals())}<i aria-hidden="true">+</i></button>
+        <button type="button" class="pc-cur" data-a="mtab" data-m="shop" aria-label="${mE('메달, 상점 열기', 'Medals, open shop')}">${MDL(medals())}${AUTH.dia ? DIA(dias()) : ''}<i aria-hidden="true">+</i></button>
         <span class="pc-ics">
           ${mailBtn('pc-ic')}
           <button type="button" class="pc-ic" data-a="ov" data-o="rules" title="${mE('규칙', 'Rules')}" aria-label="${mE('규칙', 'Rules')}">${lbIc('rules')}</button>
@@ -8262,7 +8329,7 @@ function pcHTML(scene, logo, off, ta, anim) {
   const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
   const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
-        ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
+        ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}${kind === 'shop' && AUTH.dia ? DIA(dias()) : ''}</span>` : ''}</header>
       <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'ach' ? achBody() : kind === 'weekly' ? wkBody() : kind === 'mail' ? mailBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
   return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
 }
@@ -8399,20 +8466,20 @@ function pcShopBody() {
   const items = all.filter(it => f === 'all' || (f === 'own') === it.owned), left = all.filter(it => !it.owned);
   const ft = left.length ? left[Math.floor(Date.now() / 864e5) % left.length] : null;
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    return `<div class="ps-it c-${c}${owned ? ' own' : ''}${x.ac ? ' sp' : ''}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
+    return `<div class="ps-it c-${c}${owned ? ' own' : ''}${x.lg ? ' sp lg' : x.ac ? ' sp' : ''}">${x.lg || x.ac ? `<em class="sh-sp">${x.lg ? mE('전설', 'Legend') : mE('에픽', 'Epic')}</em>` : ''}<div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
       <div class="ps-tx"><b>${CLS[c].n}</b><span>${esc(mE(x.n, x.en))}</span></div>
-      ${owned ? `<button type="button" class="pcb ${on ? 'dark' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 해제', 'Unequip') : mE('착용', 'Equip')}</button>` : `<button type="button" class="pcb gold" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
+      ${owned ? `<button type="button" class="pcb ${on ? 'dark' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 해제', 'Unequip') : mE('착용', 'Equip')}</button>` : buyBtns(c, x, 'pcb', 'gold')}</div>`; };
   return `<div class="psh">
     <aside class="psh-side">
-      <div class="psh-wal"><span>${mE('내 지갑', 'Wallet')}</span><b>${MDL(m)}</b><small>${mE(`스킨 ${Math.floor(m / SKIN_PRICE)}개를 살 수 있습니다`, `Enough for ${Math.floor(m / SKIN_PRICE)} skin(s)`)}</small></div>
-      <nav class="psh-cat">${[['all', '전체', 'All', all.length], ['new', '미보유', 'Not owned', left.length], ['own', '보유', 'Owned', all.length - left.length]].map(([k, a, b, n]) => `<button type="button" class="${f === k ? 'on' : ''}" data-shop="tab" data-t="${k}"><span>${mE(a, b)}</span><em>${n}</em></button>`).join('')}</nav>
+      <div class="psh-wal"><span>${mE('내 지갑', 'Wallet')}</span><b>${MDL(m)}</b>${AUTH.dia ? `<b class="psh-dia">${DIA(dias())}</b>` : ''}<small>${mE(`메달로 스킨 ${Math.floor(m / SKIN_PRICE)}개를 살 수 있습니다`, `Medals for ${Math.floor(m / SKIN_PRICE)} skin(s)`)}</small></div>
+      <nav class="psh-cat">${[['all', '전체', 'All', all.length], ['new', '미보유', 'Not owned', left.length], ['own', '보유', 'Owned', all.length - left.length], ...(AUTH.dia ? [['dia', '다이아 충전', 'Diamonds', '+']] : [])].map(([k, a, b, n]) => `<button type="button" class="${f === k ? 'on' : ''}${k === 'dia' ? ' dia-t' : ''}" data-shop="tab" data-t="${k}"><span>${mE(a, b)}</span><em>${n}</em></button>`).join('')}</nav>
       <div class="psh-earn"><p>${mE('메달 모으는 법', 'How to earn')}</p><ul><li><span>${mE('모험', 'Adventure')}</span><b>~300</b></li><li><span>${mE('대전 승리', 'PvP win')}</span><b>30</b></li><li><span>${mE('대전 무승부·패배', 'PvP draw · loss')}</span><b>15 · 10</b></li><li><span>${mE('봇 연습 승리', 'Bot win')}</span><b>5~12</b></li></ul></div>
     </aside>
-    <div class="psh-main">
+    <div class="psh-main">${f === 'dia' ? diaShopHTML(true) : `
       ${ft && f !== 'own' ? `<section class="psh-ft c-${ft.c}"><div class="psh-ftf"><i class="px a-${ft.c}-act${skc(ft.c, ft.x.id)}" aria-hidden="true"></i></div>
         <div class="psh-ftt"><p class="pmc-k">${mE('오늘의 추천', "Today's pick")}</p><h3>${CLS[ft.c].n} · ${esc(mE(ft.x.n, ft.x.en))}</h3><p>${CLS[ft.c].tag || ''}</p>
-          <button type="button" class="pcb gold big" data-shop="buy" data-c="${ft.c}" data-id="${ft.x.id}" ${m < skinPrice(ft.c, ft.x.id) ? 'disabled' : ''}>${MDL(skinPrice(ft.c, ft.x.id))} ${mE('구매', 'Buy')}</button></div></section>` : ''}
-      <div class="ps-grid">${items.map(card).join('') || `<p class="pmc-note">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>
+          ${ft.x.lg ? buyBtns(ft.c, ft.x, 'pcb big', 'gold') : `<button type="button" class="pcb gold big" data-shop="buy" data-c="${ft.c}" data-id="${ft.x.id}" ${m < skinPrice(ft.c, ft.x.id) ? 'disabled' : ''}>${MDL(skinPrice(ft.c, ft.x.id))} ${mE('구매', 'Buy')}</button>`}</div></section>` : ''}
+      <div class="ps-grid">${items.map(card).join('') || `<p class="pmc-note">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`}
     </div></div>`;
 }
 function pcHomeHTML(on) {
@@ -8803,6 +8870,9 @@ async function walletPull() {
   if (!AUTH.user || !AUTH.tok) return; await authFresh();
   const [w] = await sb('/rest/v1/wallet?select=medals') || []; AUTH.wallet = w ? w.medals : 0;
   AUTH.owned = (await sb('/rest/v1/owned_skins?select=cls,skin') || []).map(r => r.cls + ':' + r.skin);
+  try { const [d] = await sb('/rest/v1/dia_wallet?select=paid,free') || []; AUTH.dia = d || { paid: 0, free: 0 };
+    AUTH.packs = await sb('/rest/v1/dia_packs?select=id,dia,bonus,krw,usd,once&order=ord') || []; } catch (e) { AUTH.dia = null; AUTH.packs = []; }   /* 다이아 표가 아직 없으면 충전 칸을 숨긴다 */
+  try { AUTH.bought = (await sb('/rest/v1/dia_orders?select=pack&status=in.(done,refund)') || []).map(r => r.pack); } catch (e) { AUTH.bought = []; }
   try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
   if (AUTH.gift) setTimeout(welcomeShow, 600);
   questPull(); mailPull(true);
@@ -8912,14 +8982,39 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   if (k === 'tab') shopTab = b.dataset.t;
   else if (k === 'wear') { setSkin(c, id); SND.play('tap'); }
   else if (k === 'buy') { if (b.disabled) return; b.disabled = true; buySkin(c, id).then(r => { if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, 'Bought and equipped')); } else toast({ poor: mE('메달이 모자랍니다', 'Not enough medals'), own: mE('이미 가진 스킨입니다', 'Already owned'), login: mE('로그인해야 살 수 있습니다', 'Log in to buy'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('사지 못했습니다', 'Purchase failed'));
-    if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; } render(); }); return; }
-  if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; }
-  render(); }, true);
+    shopRefresh(); }); return; }
+  else if (k === 'buydia') { if (b.disabled) return; b.disabled = true; buySkinDia(c, id).then(r => { if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, 'Bought and equipped')); } else toast({ poor: mE('다이아가 모자랍니다', 'Not enough diamonds'), own: mE('이미 가진 스킨입니다', 'Already owned'), login: mE('로그인해야 살 수 있습니다', 'Log in to buy'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('사지 못했습니다', 'Purchase failed'));
+    shopRefresh(); }); return; }
+  else if (k === 'charge') { if (b.disabled) return; b.disabled = true; chargeDia(b.dataset.k).then(r => { if (r === 'ok') { SND.play('relicGood'); setTimeout(() => SND.play('coin'), 300); toast(mE('다이아를 충전했습니다', 'Diamonds added')); }
+      else if (r !== 'cancel') toast({ nosteam: mE('스팀으로 실행한 게임에서 충전할 수 있습니다', 'Top up from the Steam version'), once: mE('이미 받은 묶음입니다', 'Already purchased'), busy: mE('결제가 진행 중입니다', 'A payment is in progress'), login: mE('로그인해야 충전할 수 있습니다', 'Log in to top up'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('충전하지 못했습니다. 결제되지 않았습니다', 'Top-up failed. You were not charged'));
+    shopRefresh(); }); return; }
+  shopRefresh(); }, true);
+function shopRefresh() { if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; } render(); }
+/* 다이아 충전: 스팀판(Electron)이 window.SSD_STEAM.txn(orderid)을 넣어 준다. 스팀 결제 승인 창의 결과(승인 true, 거절 false)를 돌려주는 약속(Promise).
+   주문 만들기와 결제 확정은 서버(supabase/functions/steam-dia)가 스팀에 직접 확인하고, 지급도 서버가 한다 */
+const diaFn = async body => { await authFresh(); return sb('/functions/v1/steam-dia', { method: 'POST', body }); };
+let diaBusy = false;
+async function chargeDia(pack) {
+  if (!AUTH.user) return 'login';
+  const st = window.SSD_STEAM; if (!st || typeof st.txn !== 'function') return 'nosteam';
+  if (diaBusy) return 'busy'; diaBusy = true;
+  try {
+    const { orderid } = await diaFn({ op: 'init', pack, lang: LANG === 'en' ? 'en' : 'ko' });
+    if (!await st.txn(orderid)) { await diaFn({ op: 'cancel', orderid }).catch(() => {}); return 'cancel'; }
+    const w = await diaFn({ op: 'finalize', orderid }); AUTH.dia = { paid: w.paid, free: w.free };
+    await walletPull().catch(() => {}); return 'ok';
+  } catch (e) { return e.net ? 'net' : /nosteam/.test(e.message) ? 'nosteam' : /once/.test(e.message) ? 'once' : 'err'; }
+  finally { diaBusy = false; }
+}
 /* 관리자 메달: 메인 화면 로고의 3×3 무늬 가운데 칸을 3초 안에 5번 누르면 지급 창. 서버가 관리자 계정인지 확인하고, 아니면 아무 일도 없다 */
 (function () { let n = 0, t0 = 0;
   document.addEventListener('click', e => { if (doc || !AUTH.user) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
     const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
-    const v = parseInt(window.prompt('', '1000') || '', 10); if (!(v > 0)) return;
+    const q = (window.prompt('', '1000') || '').trim(), v = parseInt(q.replace(/^d/, ''), 10);
+    /* d500: 무료 다이아 지급, t:m: 스팀 없이 m 묶음 충전 흐름 시험(실제 결제 없음) */
+    if (/^t:/.test(q)) { rpc('admin_dia_test', { p_pack: q.slice(2) }).then(w => { AUTH.dia = w; walletPull().catch(() => {}); SND.play('relicGood'); toast('test ' + q.slice(2)); render(); }).catch(e => toast(String(e.message))); return; }
+    if (!(v > 0)) return;
+    if (/^d/.test(q)) { rpc('admin_dia', { p_amt: v }).then(w => { AUTH.dia = w; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); return; }
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
 /* ===== 랜덤 매칭: 서버 줄(mm_queue)에서 짝을 찾고, 먼저 기다린 쪽이 방을 연다 ===== */
 const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0, mode: 'single' };
