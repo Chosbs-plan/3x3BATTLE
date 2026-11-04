@@ -4140,15 +4140,19 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .ex-word small { font-size: .32em; letter-spacing: .3em; color: #ffd75e; text-shadow: 2px 2px 0 var(--ink); }
 @keyframes exStamp { 0% { opacity: 0; scale: 2.6; } 60% { opacity: 1; scale: .92; } 100% { opacity: 1; scale: 1; } }
 /* 체크메이트 */
-.ex-chk { position: absolute; left: var(--x); top: calc(var(--y) + 74px * var(--s)); width: calc(240px * var(--s)); height: calc(240px * var(--s)); translate: -50% -50%; transform: perspective(calc(900px * var(--s))) rotateX(62deg); background: repeating-conic-gradient(#1b1216 0 25%, #f4ecd8 0 50%) 0 0 / calc(60px * var(--s)) calc(60px * var(--s)); box-shadow: 0 0 0 calc(6px * var(--s)) #6b4a2f; animation: exChk .35s steps(5) both; }
+.ex-chk { position: absolute; left: var(--x); top: calc(var(--y) + 74px * var(--s)); width: calc(240px * var(--s)); height: calc(240px * var(--s)); translate: -50% -50%; transform: perspective(calc(900px * var(--s))) rotateX(62deg); background: repeating-conic-gradient(#3f3c69 0 25%, #ece8f6 0 50%) 0 0 / calc(60px * var(--s)) calc(60px * var(--s)); box-shadow: 0 0 0 calc(5px * var(--s)) #6d74e0, 0 0 0 calc(9px * var(--s)) #464ca8; animation: exChk .35s steps(5) both; }
 @keyframes exChk { from { opacity: 0; scale: .4; } }
-.ex-pc { position: absolute; left: var(--x); top: var(--y); width: calc(84px * var(--s)); height: calc(112px * var(--s)); translate: -50% -62%; transform-origin: 50% 100%; filter: drop-shadow(0 calc(6px * var(--s)) 0 rgba(0, 0, 0, .45)); }
-.ex-pc svg { display: block; width: 100%; height: 100%; }
-.ex-king { width: calc(110px * var(--s)); height: calc(146px * var(--s)); animation: exDrop .42s cubic-bezier(.55, 0, 1, .45) both, exTopple .4s 1.13s cubic-bezier(.3, 0, .6, 1) forwards; }
+.ex-pc { position: absolute; left: var(--x); top: var(--y); width: calc(91px * var(--s)); height: calc(105px * var(--s)); translate: -50% -62%; transform-origin: 50% 100%; filter: drop-shadow(0 calc(6px * var(--s)) 0 rgba(24, 23, 47, .45)); }
+.ex-pc img { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.ex-king { width: calc(104px * var(--s)); height: calc(136px * var(--s)); animation: exDrop .42s cubic-bezier(.55, 0, 1, .45) both, exTopple .4s 1.13s cubic-bezier(.3, 0, .6, 1) forwards; }
 @keyframes exDrop { from { transform: translateY(-120cqh); } }
 @keyframes exTopple { to { transform: translate(calc(var(--d) * 36px * var(--s)), calc(6px * var(--s))) rotate(calc(var(--d) * 84deg)); } }
 .ex-knight { opacity: 0; animation: exKnight .38s .75s cubic-bezier(.3, .2, .5, 1) forwards; }
-.ex-knight svg { transform: scaleX(-1); } .exe.rv .ex-knight svg { transform: none; }
+.exe.rv .ex-knight img { transform: scaleX(-1); }
+.ex-shard { position: absolute; left: var(--x); top: calc(var(--y) + 40px * var(--s)); }
+.ex-shard i { position: absolute; width: calc(9px * var(--s)); height: calc(9px * var(--s)); background: var(--c); box-shadow: 0 0 0 calc(2px * var(--s)) #6d74e0; opacity: 0; }
+.exe.hit .ex-shard i { animation: exShard .55s cubic-bezier(.2, .7, .4, 1) forwards; }
+@keyframes exShard { 0% { opacity: 1; transform: rotate(var(--a)) translateX(0); } 100% { opacity: 0; transform: rotate(var(--a)) translateX(calc(var(--v) * 1px * var(--s))) rotate(200deg); } }
 @keyframes exKnight { 0% { opacity: 1; transform: translate(calc(var(--d) * -330px * var(--s)), 0); } 45% { opacity: 1; transform: translate(calc(var(--d) * -240px * var(--s)), calc(-190px * var(--s))); }
   80% { opacity: 1; transform: translate(calc(var(--d) * -120px * var(--s)), calc(-50px * var(--s))); } 100% { opacity: 1; transform: translate(calc(var(--d) * -96px * var(--s)), 0); } }
 .ex-cm { animation: exStamp .36s 1.3s cubic-bezier(.2, .9, .3, 1) forwards; }
@@ -4169,7 +4173,9 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .exe.hit .ex-reel b { animation: exSeven .3s steps(2) 3; } @keyframes exSeven { 50% { color: #f2c230; } }
 .ex-coins { position: absolute; left: var(--x); top: calc(var(--sy) + 50px * var(--s)); }
 .ex-coin { position: absolute; left: calc(-9px * var(--s)); top: 0; width: calc(18px * var(--s)); height: calc(18px * var(--s)); background: radial-gradient(circle at 50% 50%, #fff2b0 0 22%, #f2c230 23% 58%, #b08014 59% 70%, transparent 71%); opacity: 0; }
-.exe.hit .ex-coin { animation: exCoin .62s var(--dl) cubic-bezier(.45, 0, 1, .6) forwards; }
+.exe.hit .ex-coin { animation: exCoin .62s var(--dl) cubic-bezier(.45, 0, 1, .6) forwards, exFlip .26s var(--dl) steps(4) infinite; }
+@keyframes exFlip { 50% { scale: .2 1; filter: brightness(.75); } }
+.exe.d3 .ex-coins, .exe.d3 .ex-heap { display: none; }
 @keyframes exCoin { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 1; transform: translate(calc(var(--dx) * 1px * var(--s)), var(--fall)) rotate(var(--rt)); } }
 .ex-heap { position: absolute; left: var(--x); top: calc(var(--y) + 80px * var(--s)); width: calc(240px * var(--s)); height: calc(124px * var(--s)); translate: -50% -100%; transform-origin: 50% 100%; transform: scaleY(0); border-radius: 50% 50% 0 0 / 100% 100% 0 0;
   background: radial-gradient(circle, #fff2b0 0 18%, #f2c230 20% 52%, #b08014 54% 64%, transparent 66%) 0 0 / calc(20px * var(--s)) calc(16px * var(--s)), #c89a22; box-shadow: inset 0 calc(-4px * var(--s)) 0 #8a6510; }
@@ -4206,8 +4212,8 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .exb-it > b { font-size: 16px; } .exb-it > .cap { min-height: 2.6em; margin: 0; }
 .exb-bt { display: flex; gap: 6px; } .exb-bt > * { flex: 1 1 0; min-width: 0; padding-left: 6px; padding-right: 6px; }
 .exb-art { position: relative; display: grid; place-items: center; height: 104px; overflow: hidden; background: #2a1e22; }
-.ex-a-check .exb-art { background: repeating-conic-gradient(#3a2d33 0 25%, #574549 0 50%) 0 0 / 26px 26px; }
-.exa-pcs { display: flex; align-items: flex-end; gap: 4px; } .exa-pcs svg { width: 42px; height: 56px; } .exa-pcs svg + svg { width: 34px; height: 46px; transform: scaleX(-1); }
+.ex-a-check .exb-art { background: repeating-conic-gradient(#3f3c69 0 25%, #57549a 0 50%) 0 0 / 26px 26px; }
+.exa-pcs { display: flex; align-items: flex-end; gap: 6px; } .exa-pcs img { width: 52px; height: 68px; image-rendering: pixelated; } .exa-pcs img + img { width: 48px; height: 56px; }
 .exa-slot { display: flex; gap: 4px; padding: 6px; background: #d8475a; border: 3px solid #f2c230; box-shadow: 3px 3px 0 #000; } .exa-slot b { display: grid; place-items: center; width: 26px; height: 34px; font-size: 22px; color: #d8475a; background: #fff; }
 .ex-a-bsod .exb-art { background: #1f62c6; } .exa-bs { display: grid; justify-items: start; gap: 6px; width: 70%; color: #fff; } .exa-bs b { font-size: 34px; font-weight: 400; line-height: 1; } .exa-bs i { width: 100%; height: 5px; background: rgba(255, 255, 255, .8); } .exa-bs i + i { width: 60%; }
 .exa-ko { font-size: 40px; color: var(--red); text-shadow: 3px 3px 0 #000; }
@@ -4215,7 +4221,7 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .exb.pc .exb-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
 .exb.pc .exb-it { padding: 12px 12px 14px; gap: 10px; border: 0; box-shadow: inset 0 0 0 2px var(--sil), 5px 5px 0 var(--line); } .exb.pc .exb-it.on { box-shadow: inset 0 0 0 3px var(--red), 5px 5px 0 var(--red-d); }
 .exb.pc .exb-art { height: 170px; } .exb.pc .exb-it > b { font-size: 22px; } .exb.pc .exb-it > .cap { font-size: 15px; } .exb.pc .exb-bt .pcb { min-height: 46px; font-size: 16px; padding: 0 10px; }
-.exb.pc .exa-pcs svg { width: 66px; height: 88px; } .exb.pc .exa-pcs svg + svg { width: 54px; height: 72px; } .exb.pc .exa-slot b { width: 40px; height: 52px; font-size: 34px; } .exb.pc .exa-bs b { font-size: 52px; } .exb.pc .exa-ko { font-size: 64px; }
+.exb.pc .exa-pcs img { width: 78px; height: 102px; } .exb.pc .exa-pcs img + img { width: 72px; height: 84px; } .exb.pc .exa-slot b { width: 40px; height: 52px; font-size: 34px; } .exb.pc .exa-bs b { font-size: 52px; } .exb.pc .exa-ko { font-size: 64px; }
 @media (prefers-reduced-motion: reduce) { .ex-glitch i, .exe.hit .ex-lamp, .exe.hit .ex-jp { animation-iteration-count: 1; } }
 /* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
 .dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
@@ -10844,21 +10850,20 @@ const EXE = {
 };
 const exeOf = () => { const v = ls('ssd-exe'); return v && EXE[v] ? v : ''; };
 const exeName = id => EXE[id] ? mE(EXE[id][0], EXE[id][1]) : mE('기본 K.O.', 'Default K.O.');
-/* 도트 말: 글자 한 칸이 픽셀 하나. k 테두리, w 몸통, g 금색, r 빨강 */
-const PXPAL = { k: '#1b1216', w: '#f4ecd8', d: '#3a2d33', g: '#f2c230', r: '#d8475a', s: '#9a8f94' };
-function pxSvg(rows, pal) { const h = rows.length, w = rows[0].length; let r = '';
-  rows.forEach((row, y) => { for (let x = 0; x < w; x++) { const c = row[x], f = (pal && pal[c]) || PXPAL[c]; if (f) r += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`; } });
-  return `<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`; }
-const PX_KING = ['.....kk.....', '....kggk....', '.....kk.....', '...kkkkkk...', '..kwwwwwwk..', '..kwwwwwwk..', '...kwwwwk...', '....kwwk....', '....kwwk....', '...kwwwwk...', '...kwwwwk...', '..kwwwwwwk..', '..kkkkkkkk..', '.kwwwwwwwwk.', 'kwwwwwwwwwwk', 'kkkkkkkkkkkk'];
-const PX_KNIGHT = ['....kkk.....', '...kwwwk....', '..kwwkwwk...', '.kwwwwwwwk..', 'kwwwwwwwwk..', 'kwwkkwwwwk..', '.kk..kwwwk..', '....kwwwwk..', '...kwwwwwk..', '..kwwwwwwk..', '..kwwwwwwk..', '...kwwwwk...', '..kkkkkkkk..', '.kwwwwwwwwk.', 'kwwwwwwwwwwk', 'kkkkkkkkkkkk'];
+/* 체크메이트의 말: 체스기사 스킨 이펙트(CMP 모양, CMW·CMB 색과 음영)를 그대로 써서 한 장짜리 그림으로 굽는다. 킹은 같은 규칙으로 더했다 */
+const CM_URL = {}, CM_KING = ['.....#.....', '....###....', '.....#.....', '...#####...', '.#########.', '.#########.', '..#######..', '...#####...', '....###....', '....###....', '...#####...', '....###....', '...#####...', '..#######..', '.#########.', '###########'];
+function cmURL(k, blk) { const key = k + (blk ? 'b' : 'w'); if (CM_URL[key]) return CM_URL[key]; if (!CMP.K) CMP.K = CM_KING;
+  const P = CMP[k], w = P[0].length, h = P.length, c = document.createElement('canvas'); c.width = w + 2; c.height = h + 1; const g = c.getContext('2d'), sv = SC;
+  SC = 1; try { cmPiece(g, k, (w + 2) / 2, h + 1, blk, 1, false, false); } finally { SC = sv; } return (CM_URL[key] = c.toDataURL()); }
+const cmImg = (k, blk, cls) => `<img class="${cls || ''}" src="${cmURL(k, blk)}" alt="" draggable="false">`;
 const exeWait = ms => new Promise(r => setTimeout(r, ms));
 /* 재생: host 위에 덮개를 깔고, pt(덮개 기준 좌표)에 쓰러질 쪽이 있다. dir 1이면 이긴 쪽이 왼쪽. kill()은 쓰러짐을 시작한다 */
 const EXE_RUN = {
   async check(L, o) {
-    L.insertAdjacentHTML('beforeend', `<i class="ex-dim"></i><i class="ex-chk"></i><span class="ex-pc ex-king">${pxSvg(PX_KING, { w: PXPAL.d, k: '#0c0709' })}</span><span class="ex-pc ex-knight">${pxSvg(PX_KNIGHT)}</span>
+    L.insertAdjacentHTML('beforeend', `<i class="ex-dim"></i><i class="ex-chk"></i><span class="ex-pc ex-king">${cmImg('K', true)}</span><span class="ex-pc ex-knight">${cmImg('N', false)}</span><span class="ex-shard">${Array.from({ length: 16 }, (_, i) => `<i style="--a:${Math.round(-170 + i * 11 + Math.random() * 8)}deg;--v:${Math.round(60 + Math.random() * 90)};--c:${i % 2 ? CMW.base : CMB.base}"></i>`).join('')}</span>
       <b class="ex-word ex-cm"><small>${mE('체크메이트', 'CHECK')}</small>CHECKMATE</b>`);
     o.snd('stamp'); await exeWait(420); o.snd('slam'); o.shake(); await exeWait(330);
-    o.snd('dashmv'); await exeWait(380); o.snd('impact'); o.kill(); o.shake(); await exeWait(220);
+    o.snd('dashmv'); await exeWait(380); o.snd('impact'); L.classList.add('hit'); o.kill(); o.shake(); await exeWait(220);
     o.snd('reveal'); await exeWait(900);
   },
   async jackpot(L, o) {
@@ -10869,7 +10874,8 @@ const EXE_RUN = {
     const sy = Math.max(o.pt.y - 200 * o.s, 78 * o.s + 8); L.style.setProperty('--sy', Math.round(sy) + 'px'); L.style.setProperty('--fall', Math.round(o.pt.y + 72 * o.s - sy - 50 * o.s) + 'px');
     o.snd('dice'); await exeWait(260);
     for (let n = 0; n < 3; n++) { await exeWait(n ? 240 : 200); const r = L.querySelectorAll('.ex-reel')[n]; if (r) r.classList.add('stop'); o.snd('tick'); }
-    await exeWait(120); L.classList.add('hit'); o.snd('relicGood'); o.snd('coin'); await exeWait(380); o.kill(); o.snd('coin'); await exeWait(1000);
+    await exeWait(120); if (o.ctx.coins3d && o.ctx.coins3d()) L.classList.add('d3');   /* 3D 결투면 동전은 3D로 쏟아진다 */
+    L.classList.add('hit'); o.snd('relicGood'); o.snd('coin'); setTimeout(() => o.snd('coin'), 260); await exeWait(420); o.kill(); o.snd('coin'); await exeWait(1100);
   },
   async bsod(L, o) {
     const bits = Array.from({ length: 14 }, (_, i) => `<i style="--gx:${Math.round((Math.random() - 0.5) * 150)};--gy:${Math.round((Math.random() - 0.7) * 180)};--gw:${8 + Math.round(Math.random() * 40)};--gh:${4 + Math.round(Math.random() * 14)};--gc:${['#ff2d6f', '#18e4ff', '#ffffff', '#2b6bff'][i % 4]};--dl:${i * 23}ms"></i>`).join('');
@@ -10883,12 +10889,12 @@ const EXE_RUN = {
   },
 };
 /* host: 덮개를 깔 요소(없으면 화면 전체), pt: host 기준 좌표, sc: 크기 배율 */
-async function exeRun(id, host, pt, sc, dir, loser, kill) {
+async function exeRun(id, host, pt, sc, dir, loser, kill, ctx) {
   const run = EXE_RUN[id]; if (!run) return false;
   const L = document.createElement('div'); L.className = 'exe ex-' + id + (host ? '' : ' fixed') + (dir < 0 ? ' rv' : ''); L.setAttribute('aria-hidden', 'true');
   L.style.setProperty('--x', Math.round(pt.x) + 'px'); L.style.setProperty('--y', Math.round(pt.y) + 'px'); L.style.setProperty('--s', sc.toFixed(3));
   (host || document.body).appendChild(L); let killed = false;
-  const o = { loser, pt, s: sc, snd: n => SND.play(n), kill: () => { if (!killed) { killed = true; kill(); } }, shake: () => { L.classList.remove('shk'); void L.offsetWidth; L.classList.add('shk'); } };
+  const o = { loser, pt, s: sc, ctx: ctx || {}, snd: n => SND.play(n), kill: () => { if (!killed) { killed = true; kill(); } }, shake: () => { L.classList.remove('shk'); void L.offsetWidth; L.classList.add('shk'); } };
   try { await run(L, o); } finally { o.kill(); L.classList.add('out'); setTimeout(() => L.remove(), 300); }
   return true;
 }
@@ -10899,7 +10905,7 @@ async function exeInDuel(id, w, l, cls, fin, kill) {
   if (!pt) { const u = uEl(l), r = u && u.getBoundingClientRect(); if (r && r.width) { pt = { x: r.left + r.width / 2, y: r.top + r.height * 0.55 }; sc = r.height / 170; } }
   if (!pt) { const ar = app.querySelector('.arena'), r = ar && ar.getBoundingClientRect(); if (!r) return false; pt = { x: r.left + r.width * (l === seat ? 0.3 : 0.7), y: r.top + r.height * 0.55 }; }
   sc = Math.max(0.6, Math.min(1.8, sc || 1));
-  return exeRun(id, null, pt, sc, l === seat ? -1 : 1, CLS[cls(l)].n, kill);
+  return exeRun(id, null, pt, sc, l === seat ? -1 : 1, CLS[cls(l)].n, kill, { coins3d: () => !!(window.A3COINS && bd && document.documentElement.classList.contains('a3on') && A3COINS(bd, cell)) });
 }
 /* 미리 보기: 작은 무대에서 내 대표 캐릭터가 허수아비에게 재생 */
 async function exePreview(id) {
@@ -10918,7 +10924,7 @@ async function exePreview(id) {
 /* 컬렉션의 처형 이펙트 칸 */
 function exeBody(pc) {
   const cur = exeOf(), ids = ['', ...Object.keys(EXE)];
-  const art = id => id === 'check' ? `<span class="exa-pcs">${pxSvg(PX_KING, { w: PXPAL.d, k: '#0c0709' })}${pxSvg(PX_KNIGHT)}</span>` : id === 'jackpot' ? '<span class="exa-slot"><b>7</b><b>7</b><b>7</b></span>' : id === 'bsod' ? '<span class="exa-bs"><b>:(</b><i></i><i></i></span>' : '<span class="exa-ko">K.O.</span>';
+  const art = id => id === 'check' ? `<span class="exa-pcs">${cmImg('K', true)}${cmImg('N', false)}</span>` : id === 'jackpot' ? '<span class="exa-slot"><b>7</b><b>7</b><b>7</b></span>' : id === 'bsod' ? '<span class="exa-bs"><b>:(</b><i></i><i></i></span>' : '<span class="exa-ko">K.O.</span>';
   return `<div class="exb${pc ? ' pc' : ''}"><p class="cap">${mE('결투에서 이기면 마지막에 장착한 처형 이펙트가 재생됩니다. 대전 상대에게도 같은 연출이 보입니다.', 'When you win, your execution effect plays at the end. Your opponent sees it too.')}</p>
     <div class="exb-grid">${ids.map(id => { const on = id === cur;
       return `<div class="exb-it ex-a-${id || 'ko'}${on ? ' on' : ''}"><div class="exb-art">${art(id)}${on ? `<span class="exb-tag">${mE('장착 중', 'Equipped')}</span>` : ''}</div>
@@ -14303,6 +14309,31 @@ function stOverHTML(won) {
       _o.position.set(pD[o], pD[o + 1], pD[o + 2]); _o.scale.setScalar(k); _o.rotation.set(pD[o] * 7, pD[o + 1] * 9, 0); _o.updateMatrix(); pMesh.setMatrixAt(i, _o.matrix); }
     pMesh.instanceMatrix.needsUpdate = true; pLive = any;
   }
+  /* 잭팟 처형의 동전: 머리 위에서 쏟아져 튀고 구르다가, 쓰러진 쪽 칸에 동전 더미로 쌓인다 */
+  const CN = 120, cMat = [new T.MeshLambertMaterial({ color: 0xc8901c, emissive: 0x2a1800 }), new T.MeshLambertMaterial({ color: 0xffd23a, emissive: 0x4a3200 }), new T.MeshLambertMaterial({ color: 0xe0a92a, emissive: 0x2a1800 })];
+  const cMesh = new T.InstancedMesh(new T.CylinderGeometry(0.11, 0.11, 0.032, 10), cMat, CN), cD = new Float32Array(CN * 12); let cOn = 0, cT = 0, cX = 0, cZ = 0, cLand = 0;
+  cMesh.frustumCulled = false; cMesh.visible = false; fg.add(cMesh);
+  function coinsGo(b, cell) {
+    cX = cellX(b, cell % 3) + boardG[b].position.x; cZ = cellZ(Math.floor(cell / 3)) + 0.1; cT = 0; cLand = 0; cOn = 1; cMesh.visible = true;
+    for (let i = 0; i < CN; i++) { const o = i * 12, a = Math.random() * PI * 2, r = Math.random() * 0.25;
+      cD[o] = cX + Math.cos(a) * r; cD[o + 1] = TY + 3.1 + Math.random() * 0.4; cD[o + 2] = cZ + Math.sin(a) * r;
+      cD[o + 3] = (Math.random() - 0.5) * 1.6; cD[o + 4] = -Math.random() * 1.2; cD[o + 5] = (Math.random() - 0.5) * 1.2;
+      cD[o + 6] = Math.random() * PI; cD[o + 7] = Math.random() * PI; cD[o + 8] = (Math.random() - 0.5) * 22; cD[o + 9] = (Math.random() - 0.5) * 22;
+      cD[o + 10] = (i / CN) * 0.7 + Math.random() * 0.08; cD[o + 11] = 0; }
+  }
+  function stepCoins(dt) {
+    if (!cOn) return; cT += dt; const out = cT > 5.2 ? Math.max(0, 1 - (cT - 5.2) / 0.4) : 1, H = 0.75 * Math.min(1, cLand / (CN * 0.8)), R2 = 0.62 * 0.62;
+    for (let i = 0; i < CN; i++) { const o = i * 12;
+      if (cT < cD[o + 10]) { _o.scale.setScalar(0); _o.updateMatrix(); cMesh.setMatrixAt(i, _o.matrix); continue; }
+      if (!cD[o + 11]) {
+        cD[o + 4] -= 11 * dt; cD[o] += cD[o + 3] * dt; cD[o + 1] += cD[o + 4] * dt; cD[o + 2] += cD[o + 5] * dt; cD[o + 6] += cD[o + 8] * dt; cD[o + 7] += cD[o + 9] * dt;
+        const dx = cD[o] - cX, dz = cD[o + 2] - cZ, fl = TY + 0.02 + H * Math.max(0, 1 - (dx * dx + dz * dz) / R2);
+        if (cD[o + 1] < fl) { cD[o + 1] = fl;
+          if (cD[o + 4] < -2.2) { cD[o + 4] *= -0.32; cD[o + 3] *= 0.5; cD[o + 5] *= 0.5; cD[o + 8] *= 0.5; cD[o + 9] *= 0.5; }
+          else { cD[o + 11] = 1; cLand++; cD[o + 6] = (Math.random() - 0.5) * 0.7; cD[o + 7] = (Math.random() - 0.5) * 0.7; } } }
+      _o.position.set(cD[o], cD[o + 1], cD[o + 2]); _o.rotation.set(cD[o + 6], 0, cD[o + 7]); _o.scale.setScalar(out); _o.updateMatrix(); cMesh.setMatrixAt(i, _o.matrix); }
+    cMesh.instanceMatrix.needsUpdate = true; if (out <= 0) { cOn = 0; cMesh.visible = false; }
+  }
   /* 이름 → [시작 시점, 개수, 색(문자는 K의 색 이름, 숫자는 인자 번호), 퍼지는 속도, 솟는 속도, 중력] */
   const PT = { mgFire: [0.34, 12, ['org', 'yel', 'red'], 3.2, 3.6], drBurst: [0.22, 7, ['grn', 'lime'], 1.6, 2.2, -0.6], clBoxPop: [0.1, 10, ['mag', 'yel', 'blue'], 2.8, 3.4], asConStar: [0.52, 7, ['star', 'wht', 'yel'], 2.4, 2.8], asStar: [0.36, 6, ['star', 'wht'], 2, 2.6], asNova: [0.38, 16, ['star', 'wht', 'org'], 3.6, 3.4], asNovaArm: [0.42, 5, ['star', 'wht'], 2, 2.6], asComet: [0.4, 16, ['lblue', 'wht', 'star'], 3.6, 3.6], asCometR: [0.44, 6, ['lblue', 'wht'], 2.2, 2.6], asHoleBurst: [0.16, 16, ['nebl', 'wht', 'star'], 3.4, 4.2], blPop: [0.02, 4, ['coral', 'wht', 'yel'], 3, 3], blBang: [0, 12, ['coral', 'wht'], 3.2, 3], blJet: [0.25, 5, ['wht', 'gray'], 2.2, 1.6], mfProng: [0.2, 6, ['mint', 'lblue', 'foam'], 2, 2.6], mfHarpoon: [0.3, 6, ['mint', 'lblue', 'foam'], 2, 2.8], mfSurf: [0.1, 12, ['mint', 'lblue', 'foam'], 2.4, 4.2], mfWave: [0.36, 12, ['mint', 'lblue', 'foam'], 3, 3], mfDive: [0.1, 8, ['mint', 'foam'], 2, 3], gbChips: [0.24, 8, ['lime', 'gold', 'red', 'card'], 2.8, 3.4], gbCoin: [0.4, 10, ['gold', 'goldd', 'wht'], 3, 3.4], gbAllin: [0.5, 22, ['lime', 'gold', 'red', 'card'], 4.2, 4.2], smHammer: [0.2, 7, ['molt', 'yel', 'wht'], 2.8, 3.4], smSkewer: [0.08, 6, ['gray', 'ember', 'molt'], 2, 3], smErupt: [0.1, 10, ['molt', 'yel', 'red'], 2.8, 4.2], smOpus: [0.3, 22, ['wht', 'yel', 'molt', 'ember'], 4.4, 4.4], smAnvil: [0.24, 8, ['molt', 'yel', 'wht'], 2.4, 3], gdebris: [0.04, 9, ['gray', 'ash', 'steel'], 2.8, 3.4], gsweepFx: [0.4, 12, ['gray', 'steel', 'edge'], 3.6, 2.6], gplungeFx: [0.26, 14, ['gray', 'steel', 'edge'], 3.6, 3.4], gblockFx: [0.07, 7, ['gray', 'ash'], 1.8, 2], gstomp: [0, 4, ['gray', 'ash'], 1.2, 1.2], surgeFx: [0.1, 16, ['blue', 'lblue', 'wht'], 3.4, 3.8], surgeRing: [0.25, 6, ['lblue', 'wht'], 2, 2.4], surgeCharge: [0.5, 5, ['lblue', 'wht'], 0.6, 1.6, -1.2], shardFx: [0.3, 10, ['glass', 'glassl', 'wht'], 2.6, 2.8], twinFx: [0.15, 7, ['glass', 'wht'], 1.4, 3.2, -0.6], kaleidoFx: [0.18, 14, ['glass', 'mag', 'yel', 'vio'], 3, 3.2], flipFx: [0, 6, ['glass', 'wht'], 1.2, 1.8, -1],
     tickFx: [0.2, 7, ['brass', 'brassl', 'wht'], 2.2, 2.6], punchFx: [0.22, 7, ['brw', 'brwl', 'wht'], 2.6, 2.4], upperFx: [0.28, 16, ['brw', 'brwd', 'brwl', 'wht'], 2.4, 5], grabFx: [0.5, 12, ['ash', 'sil', 'brw'], 3, 2.2], kickFx: [0.4, 6, ['sil', 'brwl'], 2, 2.2],
@@ -15183,7 +15214,7 @@ function stOverHTML(won) {
     _zt.lerpVectors(camTgt, _zt, zoomK * (zx === 0 && zOn ? 0.45 : 1)); camB.lookAt(_zt); camB.updateMatrixWorld();
     const ft = Math.floor(tSec * 7);
     flags.forEach(function (f, i) { const p = f.geometry.attributes.position; for (let k = 0; k < p.count; k++) { const x = p.getX(k) + 0.425; p.setZ(k, Math.sin(ft * 0.9 + x * 6 + i) * 0.07 * x * 2); } p.needsUpdate = true; f.geometry.computeVertexNormals(); });
-    syncBoard(0, boards[0], now, dt); syncBoard(1, boards[1], now, dt); stepParts(dt);
+    syncBoard(0, boards[0], now, dt); syncBoard(1, boards[1], now, dt); stepParts(dt); stepCoins(dt);
     for (const e of lab.children) { const c = e.classList, b = +e.dataset.b || 0;
       if (c.contains('float')) place(e, BX[b] + (+e.style.getPropertyValue('--x') || 0) - 1, TY + 1.35, (+e.style.getPropertyValue('--y') || 0) - 1);
       else if (c.contains('reveal')) place(e, BX[b], TY + 1.5, -1.75);
@@ -15196,6 +15227,8 @@ function stOverHTML(won) {
   /* 피격 불꽃: 2D 쪽 진영 요소와 칸 번호로 부른다 */
   window.A3BURST = function (boardEl, cell, tier) { if (!boards || !GM || mode !== 'duel') return; const b = [].indexOf.call(boards, boardEl); if (b < 0) return;
     burst(b, cell, 8 + tier * 8, [GM.K.wht, '#ffe08a', '#ffb347', '#ff5a4e'], 1.8 + tier * 0.7, 1.5 + tier * 0.3, 11); if (tier >= 2) burst(b, cell, 6 + tier * 3, [GM.K.ash, GM.K.gray], 0.9, 0.7, 9); };
+  /* 잭팟 처형: 3D 동전을 쏟는다. 3D가 아니면 false */
+  window.A3COINS = function (boardEl, cell) { if (!active || !boards || mode !== 'duel') return false; const b = [].indexOf.call(boards, boardEl); if (b < 0) return false; coinsGo(b, cell); return true; };
   /* 처형 이펙트용: 판 칸 위 높이 h(월드 단위) 지점의 화면 좌표. 3D가 아니면 null */
   window.A3POS = function (boardEl, cell, h) { if (!active || !boards || mode !== 'duel') return null; const b = [].indexOf.call(boards, boardEl); if (b < 0) return null;
     ndc(cellX(b, cell % 3) + boardG[b].position.x, TY + (h || 0), cellZ(Math.floor(cell / 3)) + 0.1); const r = host.getBoundingClientRect();
