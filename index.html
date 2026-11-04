@@ -4129,6 +4129,127 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 /* 메달 */
 .mdl-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
 .mdl { display: inline-block; width: 14px; height: 14px; flex: none; background: radial-gradient(circle at 50% 50%, #fff2b0 0 22%, #f2c230 23% 58%, #b08014 59% 70%, transparent 71%); box-shadow: 0 -5px 0 -3px #d8475a; }
+/* ===== 처형 이펙트 (EXE_RUN). --x --y: 쓰러질 쪽 위치, --s: 캐릭터 크기 배율, --d: 이긴 쪽이 왼쪽이면 1 ===== */
+.exe { position: absolute; inset: 0; z-index: 9000; overflow: hidden; pointer-events: none; container-type: size; --d: 1; transition: opacity .25s; }
+.exe.fixed { position: fixed; } .exe.rv { --d: -1; } .exe.out { opacity: 0; }
+.exe.shk { animation: exShk .32s steps(6); }
+@keyframes exShk { 20% { translate: -6px 3px; } 40% { translate: 5px -3px; } 60% { translate: -4px 0; } 80% { translate: 3px 2px; } }
+.ex-dim { position: absolute; inset: 0; background: rgba(14, 8, 16, .55); animation: exFade .18s both; }
+@keyframes exFade { from { opacity: 0; } }
+.ex-word { position: absolute; left: 50%; top: 24%; translate: -50% -50%; display: grid; justify-items: center; font-size: clamp(30px, 11cqh, 120px); line-height: 1; letter-spacing: .04em; color: #fff; white-space: nowrap; text-shadow: 4px 4px 0 var(--ink), -2px -2px 0 var(--ink), 2px -2px 0 var(--ink), -2px 2px 0 var(--ink); opacity: 0; }
+.ex-word small { font-size: .32em; letter-spacing: .3em; color: #ffd75e; text-shadow: 2px 2px 0 var(--ink); }
+@keyframes exStamp { 0% { opacity: 0; scale: 2.6; } 60% { opacity: 1; scale: .92; } 100% { opacity: 1; scale: 1; } }
+/* 체크메이트 */
+.ex-chk { position: absolute; left: var(--x); top: calc(var(--y) + 74px * var(--s)); width: calc(240px * var(--s)); height: calc(240px * var(--s)); translate: -50% -50%; transform: perspective(calc(900px * var(--s))) rotateX(62deg); background: repeating-conic-gradient(#1b1216 0 25%, #f4ecd8 0 50%) 0 0 / calc(60px * var(--s)) calc(60px * var(--s)); box-shadow: 0 0 0 calc(6px * var(--s)) #6b4a2f; animation: exChk .35s steps(5) both; }
+@keyframes exChk { from { opacity: 0; scale: .4; } }
+.ex-pc { position: absolute; left: var(--x); top: var(--y); width: calc(84px * var(--s)); height: calc(112px * var(--s)); translate: -50% -62%; transform-origin: 50% 100%; filter: drop-shadow(0 calc(6px * var(--s)) 0 rgba(0, 0, 0, .45)); }
+.ex-pc svg { display: block; width: 100%; height: 100%; }
+.ex-king { width: calc(110px * var(--s)); height: calc(146px * var(--s)); animation: exDrop .42s cubic-bezier(.55, 0, 1, .45) both, exTopple .4s 1.13s cubic-bezier(.3, 0, .6, 1) forwards; }
+@keyframes exDrop { from { transform: translateY(-120cqh); } }
+@keyframes exTopple { to { transform: translate(calc(var(--d) * 36px * var(--s)), calc(6px * var(--s))) rotate(calc(var(--d) * 84deg)); } }
+.ex-knight { opacity: 0; animation: exKnight .38s .75s cubic-bezier(.3, .2, .5, 1) forwards; }
+.ex-knight svg { transform: scaleX(-1); } .exe.rv .ex-knight svg { transform: none; }
+@keyframes exKnight { 0% { opacity: 1; transform: translate(calc(var(--d) * -330px * var(--s)), 0); } 45% { opacity: 1; transform: translate(calc(var(--d) * -240px * var(--s)), calc(-190px * var(--s))); }
+  80% { opacity: 1; transform: translate(calc(var(--d) * -120px * var(--s)), calc(-50px * var(--s))); } 100% { opacity: 1; transform: translate(calc(var(--d) * -96px * var(--s)), 0); } }
+.ex-cm { animation: exStamp .36s 1.3s cubic-bezier(.2, .9, .3, 1) forwards; }
+/* 잭팟 */
+.ex-slot { position: absolute; left: var(--x); top: var(--sy); translate: -50% -50%; display: grid; gap: calc(6px * var(--s)); padding: calc(10px * var(--s)); background: #d8475a; border: calc(5px * var(--s)) solid #f2c230; box-shadow: calc(6px * var(--s)) calc(6px * var(--s)) 0 var(--ink), inset 0 0 0 calc(3px * var(--s)) #7a1d2a; animation: exPop .26s cubic-bezier(.2, 1.4, .5, 1) both; }
+@keyframes exPop { from { scale: 0; } }
+.ex-lamp { height: calc(10px * var(--s)); background: radial-gradient(circle, #fff3b0 0 40%, transparent 45%) 0 0 / calc(16px * var(--s)) 100% repeat-x; }
+.exe.hit .ex-lamp { animation: exLamp .12s steps(2) infinite; } @keyframes exLamp { 50% { filter: brightness(.4); } }
+.ex-reels { display: flex; gap: calc(6px * var(--s)); }
+.ex-reel { position: relative; width: calc(58px * var(--s)); height: calc(72px * var(--s)); overflow: hidden; background: #fff; box-shadow: inset 0 0 0 calc(3px * var(--s)) var(--ink); }
+.ex-strip { display: flex; flex-direction: column; animation: exSpin .2s linear infinite; animation-delay: calc(var(--n) * -60ms); }
+.ex-strip i, .ex-reel b { display: flex; align-items: center; justify-content: center; flex: none; height: calc(72px * var(--s)); font-style: normal; font-size: calc(30px * var(--s)); font-weight: 900; color: var(--ink); }
+.ex-strip i.r7, .ex-reel b { color: #d8475a; font-size: calc(46px * var(--s)); }
+@keyframes exSpin { to { transform: translateY(-50%); } }
+.ex-reel b { display: none; }
+.ex-reel.stop .ex-strip { display: none; } .ex-reel.stop b { display: flex; animation: exReel .22s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes exReel { from { transform: translateY(-40%); } }
+.exe.hit .ex-reel b { animation: exSeven .3s steps(2) 3; } @keyframes exSeven { 50% { color: #f2c230; } }
+.ex-coins { position: absolute; left: var(--x); top: calc(var(--sy) + 50px * var(--s)); }
+.ex-coin { position: absolute; left: calc(-9px * var(--s)); top: 0; width: calc(18px * var(--s)); height: calc(18px * var(--s)); background: radial-gradient(circle at 50% 50%, #fff2b0 0 22%, #f2c230 23% 58%, #b08014 59% 70%, transparent 71%); opacity: 0; }
+.exe.hit .ex-coin { animation: exCoin .62s var(--dl) cubic-bezier(.45, 0, 1, .6) forwards; }
+@keyframes exCoin { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 1; transform: translate(calc(var(--dx) * 1px * var(--s)), var(--fall)) rotate(var(--rt)); } }
+.ex-heap { position: absolute; left: var(--x); top: calc(var(--y) + 80px * var(--s)); width: calc(240px * var(--s)); height: calc(124px * var(--s)); translate: -50% -100%; transform-origin: 50% 100%; transform: scaleY(0); border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(circle, #fff2b0 0 18%, #f2c230 20% 52%, #b08014 54% 64%, transparent 66%) 0 0 / calc(20px * var(--s)) calc(16px * var(--s)), #c89a22; box-shadow: inset 0 calc(-4px * var(--s)) 0 #8a6510; }
+.exe.hit .ex-heap { animation: exHeap .75s .32s steps(6) forwards; } @keyframes exHeap { to { transform: scaleY(1); } }
+.ex-jp { top: 70%; color: #ffd75e; } .exe.hit .ex-jp { animation: exStamp .34s cubic-bezier(.2, .9, .3, 1) forwards, exJp .16s .34s steps(2) 6; }
+@keyframes exJp { 50% { color: #fff; } }
+/* 블루스크린 */
+.ex-glitch i { position: absolute; left: calc(var(--x) + var(--gx) * 1px * var(--s)); top: calc(var(--y) + var(--gy) * 1px * var(--s)); width: calc(var(--gw) * 1px * var(--s)); height: calc(var(--gh) * 1px * var(--s)); background: var(--gc); opacity: 0; animation: exGl .1s var(--dl) steps(1) 5 both; }
+@keyframes exGl { 0% { opacity: .95; transform: translateX(0); } 50% { opacity: .7; transform: translateX(calc(var(--gw) * .6px * var(--s))); } 100% { opacity: 0; } }
+.ex-bs { position: absolute; inset: 0; display: none; padding: 9cqh 10cqw; background: #1f62c6; color: #fff; text-align: left; }
+.ex-bs b { display: block; font-size: 24cqh; line-height: 1; font-weight: 400; margin-bottom: 4cqh; } .ex-bs p { margin: 0 0 2.6cqh; max-width: 76cqw; font-size: 5cqh; line-height: 1.3; } .ex-bs p.sm { font-size: 3cqh; opacity: .9; } .ex-bs p.pc { font-size: 4.4cqh; }
+.ex-qr { display: block; width: 14cqh; height: 14cqh; margin: 3cqh 0; background: repeating-conic-gradient(#fff 0 25%, #1f62c6 0 50%) 0 0 / 3.5cqh 3.5cqh, #fff; box-shadow: 0 0 0 1cqh #fff; }
+.exe.blue .ex-bs { display: block; animation: exBlue .12s steps(2); } .exe.blue .ex-glitch { display: none; }
+@keyframes exBlue { 0% { filter: brightness(2.2); } }
+.exe.off .ex-bs { animation: exCrt .34s cubic-bezier(.6, 0, .9, .4) forwards; }
+@keyframes exCrt { 0% { transform: scale(1, 1); } 55% { transform: scale(1, .008); filter: brightness(4); } 100% { transform: scale(0, .008); filter: brightness(4); } }
+/* 미리 보기 창 */
+.exepv { position: fixed; inset: 0; z-index: 9500; display: grid; place-content: center; justify-items: center; gap: 10px; background: rgba(20, 12, 16, .72); cursor: pointer; animation: exFade .18s both; }
+.exepv > .cap { color: #d9cbc7; margin: 0; }
+.exepv-st { position: relative; width: min(760px, 92vw); aspect-ratio: 16 / 9; overflow: hidden; container-type: size; background: linear-gradient(#f8ecd9, #efdcc2 62%, #d9c2a4 62%, #cdb393); border: 4px solid var(--ink); box-shadow: 8px 8px 0 rgba(0, 0, 0, .4); }
+.exepv-fl { position: absolute; left: 0; right: 0; top: 62%; height: 3px; background: rgba(42, 31, 36, .25); }
+.exepv-me, .exepv-foe { position: absolute; bottom: 30%; width: 44cqh; height: 44cqh; } .exepv-me { left: 16%; } .exepv-foe { right: 16%; transition: opacity .5s steps(5), filter .5s steps(5); }
+.exepv-foe.gone { opacity: 0; filter: brightness(3); }
+.exepv-n { position: absolute; left: 12px; top: 10px; padding: 2px 10px; font-size: 15px; color: #fff; background: var(--ink); }
+.exepv-ko { position: absolute; left: 50%; top: 26%; translate: -50% -50%; font-size: 15cqh; color: var(--red); text-shadow: 4px 4px 0 var(--ink); animation: exStamp .34s cubic-bezier(.2, .9, .3, 1) both; }
+/* 컬렉션: 처형 이펙트 칸 */
+.cl-kind { margin: 0 0 10px; } .cl-kind.pc { flex: none; margin: 0 0 16px; width: max-content; }
+.pg-coll .pc-pb { flex-direction: column; }
+.exb .pcb.ghost, .exb .btn.ghost { color: var(--ink); outline: 2px solid var(--ink); outline-offset: -2px; }
+.exb { display: grid; gap: 10px; }
+.exb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.exb-it { display: grid; gap: 6px; align-content: start; padding: 8px 8px 10px; background: #fff; border: 3px solid var(--line); box-shadow: 3px 3px 0 var(--sil); }
+.exb-it.on { border-color: var(--red); box-shadow: 3px 3px 0 var(--red-d); }
+.exb-it > b { font-size: 16px; } .exb-it > .cap { min-height: 2.6em; margin: 0; }
+.exb-bt { display: flex; gap: 6px; } .exb-bt > * { flex: 1 1 0; min-width: 0; padding-left: 6px; padding-right: 6px; }
+.exb-art { position: relative; display: grid; place-items: center; height: 104px; overflow: hidden; background: #2a1e22; }
+.ex-a-check .exb-art { background: repeating-conic-gradient(#3a2d33 0 25%, #574549 0 50%) 0 0 / 26px 26px; }
+.exa-pcs { display: flex; align-items: flex-end; gap: 4px; } .exa-pcs svg { width: 42px; height: 56px; } .exa-pcs svg + svg { width: 34px; height: 46px; transform: scaleX(-1); }
+.exa-slot { display: flex; gap: 4px; padding: 6px; background: #d8475a; border: 3px solid #f2c230; box-shadow: 3px 3px 0 #000; } .exa-slot b { display: grid; place-items: center; width: 26px; height: 34px; font-size: 22px; color: #d8475a; background: #fff; }
+.ex-a-bsod .exb-art { background: #1f62c6; } .exa-bs { display: grid; justify-items: start; gap: 6px; width: 70%; color: #fff; } .exa-bs b { font-size: 34px; font-weight: 400; line-height: 1; } .exa-bs i { width: 100%; height: 5px; background: rgba(255, 255, 255, .8); } .exa-bs i + i { width: 60%; }
+.exa-ko { font-size: 40px; color: var(--red); text-shadow: 3px 3px 0 #000; }
+.exb-tag { position: absolute; top: 6px; right: 6px; padding: 1px 7px; font-size: 11px; font-weight: 700; color: #fff; background: var(--red); }
+.exb.pc .exb-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.exb.pc .exb-it { padding: 12px 12px 14px; gap: 10px; border: 0; box-shadow: inset 0 0 0 2px var(--sil), 5px 5px 0 var(--line); } .exb.pc .exb-it.on { box-shadow: inset 0 0 0 3px var(--red), 5px 5px 0 var(--red-d); }
+.exb.pc .exb-art { height: 170px; } .exb.pc .exb-it > b { font-size: 22px; } .exb.pc .exb-it > .cap { font-size: 15px; } .exb.pc .exb-bt .pcb { min-height: 46px; font-size: 16px; padding: 0 10px; }
+.exb.pc .exa-pcs svg { width: 66px; height: 88px; } .exb.pc .exa-pcs svg + svg { width: 54px; height: 72px; } .exb.pc .exa-slot b { width: 40px; height: 52px; font-size: 34px; } .exb.pc .exa-bs b { font-size: 52px; } .exb.pc .exa-ko { font-size: 64px; }
+@media (prefers-reduced-motion: reduce) { .ex-glitch i, .exe.hit .ex-lamp, .exe.hit .ex-jp { animation-iteration-count: 1; } }
+/* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
+.dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
+.dia { display: inline-block; width: 14px; height: 14px; flex: none; background: linear-gradient(135deg, #e6fbff 0 26%, #6fd3f5 27% 52%, #2a9bd6 53% 76%, #1c6ea6 77%); clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
+.sh-bal .dia-n { font-size: 22px; color: #1c6ea6; margin-left: 10px; } .sh-bal .dia { width: 20px; height: 20px; }
+.pc-cur .dia-n { margin-left: 10px; color: #bfeeff; } .pc-cur .dia { width: 22px; height: 22px; }
+.psh-wal .psh-dia { color: #bfeeff; } .psh-wal .dia { width: 30px; height: 30px; }
+.psh-cat button.dia-t em { color: #bfeeff; }
+.cl-s em .dia { width: 9px; height: 9px; }
+.sh-buy { display: flex; gap: 4px; width: 100%; } .sh-buy > * { flex: 1 1 0; min-width: 0; padding-left: 4px; padding-right: 4px; }
+.btn.dia-b { color: #fff; background: #2a7fb8; } .btn.dia-b:hover:not(:disabled) { background: #1c6ea6; } .btn.dia-b:disabled { background: var(--wash); }
+.pcb.dia-b { --bg: linear-gradient(#5cc4ec, #2a9bd6 48%, #2288c4 52%, #1c6ea6); } .ps-it .pcb .dia { width: 18px; height: 18px; } .pcb .dia-n { gap: 6px; }
+.ps-it .sh-buy .pcb { padding: 0 8px; font-size: 16px; }
+/* 전설 스킨: 에픽(.sp) 테두리를 주황·금색으로 */
+.sh-it.sp.lg, .ps-it.sp.lg { --sk1: #e0861a; --sk2: #9c4a0e; }
+/* 다이아 충전 칸 */
+.dsh { display: grid; gap: 12px; }
+.dsh-bal { margin: 0; display: flex; align-items: baseline; gap: 10px; font-size: 22px; color: #1c6ea6; } .dsh-bal .dia { width: 22px; height: 22px; } .dsh-bal small { font-size: 13px; color: var(--sil); }
+.dsh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.dsh-it { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 10px 12px; background: linear-gradient(180deg, #eaf8ff, #fff 55%); border: 3px solid var(--line); box-shadow: 3px 3px 0 #2a7fb8; }
+.dsh-it.first { background: linear-gradient(180deg, #fff3d6, #fff 55%); box-shadow: 3px 3px 0 var(--amber-d); }
+.dsh-it > b { font-size: 22px; color: #1c6ea6; } .dsh-it > b .dia { width: 18px; height: 18px; }
+.dsh-it .btn, .dsh-it .pcb { width: 100%; }
+.dsh-ic { display: flex; align-items: flex-end; justify-content: center; height: 40px; } .dsh-ic .dia { width: 24px; height: 30px; margin: 0 -4px; } .dsh-ic .dia:nth-child(even) { width: 20px; height: 24px; }
+.dsh-tag { position: absolute; top: 6px; left: 6px; padding: 1px 7px; font-style: normal; font-size: 11px; font-weight: 700; color: #fff; background: #2a7fb8; box-shadow: 2px 2px 0 #174f78; }
+.dsh-it.first .dsh-tag { background: var(--red); box-shadow: 2px 2px 0 var(--red-d); }
+.dsh-note { margin: 0; line-height: 1.5; }
+.dsh.pc .dsh-bal { font-size: 30px; } .dsh.pc .dsh-bal small { font-size: 15px; } .dsh.pc .dsh-bal .dia { width: 30px; height: 30px; }
+.dsh.pc .dsh-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.dsh.pc .dsh-it { padding: 30px 14px 16px; gap: 10px; border: 0; box-shadow: inset 0 0 0 2px var(--sil), 5px 5px 0 #2a7fb8; } .dsh.pc .dsh-it.first { box-shadow: inset 0 0 0 2px var(--amber), 5px 5px 0 var(--amber-d); }
+.dsh.pc .dsh-it > b { font-size: 28px; } .dsh.pc .dsh-ic { height: 56px; } .dsh.pc .dsh-ic .dia { width: 34px; height: 42px; } .dsh.pc .dsh-ic .dia:nth-child(even) { width: 28px; height: 34px; }
+.dsh.pc .dsh-tag { top: 10px; left: 10px; font-size: 13px; } .dsh.pc .dsh-it .cap { color: var(--sil); }
+.dsh.pc .dsh-note { font-size: 14px; max-width: 900px; color: #6f5f5c; }
+.pc-ph-r .dia-n { margin-left: 14px; color: #1c6ea6; } .pc-ph-r .dia { width: 22px; height: 22px; }
 .qk-m { margin-left: 4px; padding-left: 6px; border-left: 1px solid currentColor; }
 .v-rw { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0 0; padding: 6px 10px; background: #fff6d8; border: 2px solid #f2c230; font-size: 15px; }
 .v-rw .mdl-n { font-size: 18px; color: #9a7212; }
@@ -5073,8 +5194,20 @@ const medals = () => (typeof AUTH !== 'undefined' && AUTH.wallet != null ? AUTH.
 const ownedSkins = () => (typeof AUTH !== 'undefined' && AUTH.owned ? AUTH.owned : []);
 const skinOwned = (c, id) => !id || ownedSkins().includes(c + ':' + id);
 const MDL = n => `<span class="mdl-n"><i class="mdl" aria-hidden="true"></i>${n}</span>`;
+/* 다이아: 스팀 결제로 충전하는 유료 재화(supabase/diamonds.sql). 모든 스킨을 살 수 있고, 전설 스킨은 다이아로만 판다.
+   유료분(paid)과 보너스·지급분(free)을 서버가 따로 세고, 쓸 때는 free부터 쓴다 */
+const skinLegend = (c, id) => { const x = id && skinList(c).find(s => s.id === id); return !!(x && x.lg); };
+/* 다이아 가격: 표에 있으면 그 값, 전설 1200, 나머지는 메달 가격 ÷ 3을 10단위로 올림. supabase/skin_prices.sql의 _skin_dia와 같아야 한다 */
+const skinDia = (c, id) => { const x = id && skinList(c).find(s => s.id === id); return (x && x.dp) || (x && x.lg ? 1200 : Math.ceil(skinPrice(c, id) / 30) * 10); };
+const dias = () => (typeof AUTH !== 'undefined' && AUTH.dia ? Math.max(0, AUTH.dia.paid) + AUTH.dia.free : 0);
+const DIA = n => `<span class="dia-n"><i class="dia" aria-hidden="true"></i>${n}</span>`;
+async function buySkinDia(c, id) {
+  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (dias() < skinDia(c, id)) return 'poor';
+  try { AUTH.dia = await rpc('buy_skin_dia', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
+  catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
+}
 async function buySkin(c, id) {
-  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (medals() < skinPrice(c, id)) return 'poor';
+  if (!AUTH.user) return 'login'; if (skinOwned(c, id)) return 'own'; if (skinLegend(c, id)) return 'dia'; if (medals() < skinPrice(c, id)) return 'poor';
   try { AUTH.wallet = await rpc('buy_skin', { p_cls: c, p_skin: id }); AUTH.owned = [...ownedSkins(), c + ':' + id]; return 'ok'; }
   catch (e) { await walletPull().catch(() => {}); return /poor/.test(e.message) ? 'poor' : /owned/.test(e.message) ? 'own' : e.net ? 'net' : 'err'; }
 }
@@ -7747,7 +7880,7 @@ const LB_IC = {
 };
 const lbIc = k => `<svg class="pxi" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">${LB_IC[k].map((r, y) => r.replace(/#+/g, (m, x) => `<rect x="${x}" y="${y}" width="${m.length}" height="1"/>`).replace(/\./g, '')).join('')}</svg>`;
 const HUB = { acct: ['프로필', 'Profile', 'prof'], ach: ['업적', 'Achievements', 'rec'], codex: ['도감', 'Codex', 'codex'], coll: ['컬렉션', 'Collection', 'coll'], shop: ['스킨 상점', 'Skin Shop', 'shop'], single: ['싱글 플레이', 'Single Player'], multi: ['멀티 플레이', 'Multiplayer'], quest: ['일일 퀘스트', 'Daily Quests'], weekly: ['주간 도전', 'Weekly Challenge'], mail: ['메일함', 'Mailbox'] };
-let repOpen = false, collTab = 'all';
+let repOpen = false, collTab = 'all', collKind = 'skin';   /* 컬렉션: 스킨 / 처형 이펙트 */
 
 function lobbyHTML(logo) {
   const rep = repCls(), sv = typeof stLoad === 'function' ? stLoad() : null, on = netReady && db, m = medals();
@@ -8152,14 +8285,16 @@ function codexBody() {
     <div class="cx2-main">${detailHTML(v, strip)}</div></div>`);
 }
 
+const collKindSeg = pc => `<div class="${pc ? 'pc-seg cl-kind pc' : 'sh-tabs cl-kind'}">${[['skin', '스킨', 'Skins'], ['exe', '처형 이펙트', 'Executions']].map(([k, a, b]) => `<button type="button" class="${pc ? (collKind === k ? 'on' : '') : 'btn ' + (collKind === k ? 'on' : 'ghost')}" data-a="collkind" data-k="${k}" aria-pressed="${collKind === k}">${mE(a, b)}</button>`).join('')}</div>`;
 function collBody() {
+  if (collKind === 'exe') return collKindSeg(false) + exeBody(false);
   const own = ownedSkins(), tot = skinTotal(), f = collTab;
   const rows = CLASS_IDS.filter(c => f === 'all' || (f === 'own') === skinList(c).some(x => own.includes(c + ':' + x.id)));
   const card = c => { const cur = skinOf(c), list = [{ id: '', n: '기본', en: 'Default' }, ...skinList(c)];
     return `<div class="cl-it c-${c}"><div class="cl-fig"><i class="px a-${c}${skc(c, cur)}" aria-hidden="true"></i></div><b>${CLS[c].n}</b>
       <div class="cl-sks">${list.map(x => { const ok = skinOwned(c, x.id);
-        return `<button type="button" class="cl-s${x.id === cur ? ' on' : ''}${ok ? '' : ' lock'}" data-a="${ok ? 'collwear' : 'shopgo'}" data-c="${c}" data-id="${x.id}" aria-pressed="${x.id === cur}" title="${esc(mE(x.n, x.en))}${ok ? '' : ' · ' + mE('상점에서 구매', 'buy in shop')}">${faceOf(c, x.id)}${ok ? '' : `<em>${MDL(skinPrice(c, x.id))}</em>`}</button>`; }).join('')}</div></div>`; };
-  return `<div class="cl-head"><div class="cl-prog"><span class="cap">${mE('수집', 'Collected')}</span><b>${own.length} / ${tot}</b><span class="pf-bar"><i style="width:${tot ? own.length / tot * 100 : 0}%"></i></span></div>
+        return `<button type="button" class="cl-s${x.id === cur ? ' on' : ''}${ok ? '' : ' lock'}" data-a="${ok ? 'collwear' : 'shopgo'}" data-c="${c}" data-id="${x.id}" aria-pressed="${x.id === cur}" title="${esc(mE(x.n, x.en))}${ok ? '' : ' · ' + mE('상점에서 구매', 'buy in shop')}">${faceOf(c, x.id)}${ok ? '' : `<em>${x.lg ? DIA(skinDia(c, x.id)) : MDL(skinPrice(c, x.id))}</em>`}</button>`; }).join('')}</div></div>`; };
+  return `${collKindSeg(false)}<div class="cl-head"><div class="cl-prog"><span class="cap">${mE('수집', 'Collected')}</span><b>${own.length} / ${tot}</b><span class="pf-bar"><i style="width:${tot ? own.length / tot * 100 : 0}%"></i></span></div>
       <div class="sh-tabs">${[['all', '전체', 'All'], ['own', '보유', 'Owned'], ['new', '미보유', 'Not owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-a="colltab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
     <p class="cap">${mE('얼굴을 눌러 스킨을 바꿉니다. 자물쇠가 걸린 스킨은 상점에서 살 수 있습니다.', 'Tap a face to equip. Locked skins are in the shop.')}</p>
     <div class="cl-grid">${rows.map(card).join('') || `<p class="cap">${mE('여기에 보일 직업이 없습니다', 'Nothing here')}</p>`}</div>`;
@@ -8170,14 +8305,36 @@ function shopBody() {
   const own = ownedSkins(), m = medals(), f = shopTab;
   const items = CLASS_IDS.flatMap(c => skinList(c).map(x => ({ c, x, owned: own.includes(c + ':' + x.id) }))).filter(it => f === 'all' || (f === 'own') === it.owned);
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    const sp = x.ac ? ' sp' : '';   /* 에픽 등급(800메달) */
-    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
+    const sp = x.lg ? ' sp lg' : x.ac ? ' sp' : '';   /* 에픽 등급(800메달), 전설(다이아 전용) */
+    return `<div class="sh-it c-${c}${owned ? ' own' : ''}${sp}">${x.lg || x.ac ? `<em class="sh-sp">${x.lg ? mE('전설', 'Legend') : mE('에픽', 'Epic')}</em>` : ''}<div class="sh-fig"><i class="px a-${c}${skc(c, x.id)} sh-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} sh-a" aria-hidden="true"></i></div>
       <b>${CLS[c].n}</b><span class="cap">${esc(mE(x.n, x.en))}</span>
-      ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : `<button type="button" class="btn red" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
-  return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}</p>
-      <div class="sh-tabs">${[['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned']].map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
-    <p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
-    <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`;
+      ${owned ? `<button type="button" class="btn ${on ? 'on' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 중', 'Equipped') : mE('착용', 'Equip')}</button>` : buyBtns(c, x, 'btn', 'red')}</div>`; };
+  const tabs = [['all', '전체', 'All'], ['new', '미보유', 'Not owned'], ['own', '보유', 'Owned'], ...(AUTH.dia ? [['dia', '다이아 충전', 'Diamonds']] : [])];
+  return `<div class="sh-head"><p class="sh-bal">${mE('보유', 'You have')} ${MDL(m)}${AUTH.dia ? ' ' + DIA(dias()) : ''}</p>
+      <div class="sh-tabs">${tabs.map(([k, a, b]) => `<button type="button" class="btn ${f === k ? 'on' : 'ghost'}" data-shop="tab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
+    ${f === 'dia' ? diaShopHTML(false) : `<p class="cap">${mE('메달은 모험(클리어율만큼, 완주하면 +100), 봇 연습(승리 5~12), 대전(승리 30 · 무승부 15 · 패배 10)으로 모읍니다.', 'Earn medals from Adventure (by clear rate, +100 for a full clear), bot practice (5–12 per win) and PvP (win 30 · draw 15 · loss 10).')}</p>
+    <div class="sh-grid">${items.map(card).join('') || `<p class="cap">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`}`;
+}
+/* 스킨 구매 버튼: 전설은 다이아만, 나머지는 메달과 다이아 둘 다(다이아 표가 있을 때) */
+function buyBtns(c, x, cls, main) {
+  const dp = skinDia(c, x.id), dBtn = `<button type="button" class="${cls} dia-b" data-shop="buydia" data-c="${c}" data-id="${x.id}" ${dias() < dp ? 'disabled' : ''}>${DIA(dp)}</button>`;
+  if (x.lg) return AUTH.dia ? dBtn : `<button type="button" class="${cls}" disabled>${mE('준비 중', 'Soon')}</button>`;
+  const mBtn = `<button type="button" class="${cls} ${main}" data-shop="buy" data-c="${c}" data-id="${x.id}" ${medals() < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`;
+  return AUTH.dia ? `<span class="sh-buy">${mBtn}${dBtn}</span>` : mBtn;
+}
+/* 다이아 충전 칸: 묶음은 서버 표(dia_packs)에서 읽는다. 실제 금액은 스팀 결제 창에 나온다 */
+const packPrice = k => LANG === 'en' ? '$' + (k.usd / 100).toFixed(2) : k.krw.toLocaleString('ko-KR') + mE('원', ' KRW');
+function diaShopHTML(pc) {
+  const packs = (AUTH.packs || []).filter(k => !(k.once && (AUTH.bought || []).includes(k.id))), d = AUTH.dia || { paid: 0, free: 0 };
+  const cls = pc ? 'pcb' : 'btn';
+  return `<div class="dsh${pc ? ' pc' : ''}">
+    <p class="dsh-bal">${DIA(dias())}<small>${mE(`유료 ${Math.max(0, d.paid)} · 보너스 ${d.free}`, `Paid ${Math.max(0, d.paid)} · Bonus ${d.free}`)}</small></p>
+    <div class="dsh-grid">${packs.map(k => `<div class="dsh-it${k.once ? ' first' : ''}">
+        ${k.once ? `<em class="dsh-tag">${mE('첫 결제 한 번', 'First purchase')}</em>` : k.bonus ? `<em class="dsh-tag">+${Math.round(k.bonus / k.dia * 100)}%</em>` : ''}
+        <span class="dsh-ic" aria-hidden="true">${'<i class="dia"></i>'.repeat(Math.min(5, 1 + (k.dia >= 600) + (k.dia >= 1200) + (k.dia >= 3000) + (k.once ? 1 : 0)))}</span>
+        <b>${DIA(k.dia)}</b><span class="cap">${k.bonus ? mE(`보너스 +${k.bonus}`, `Bonus +${k.bonus}`) : '&nbsp;'}</span>
+        <button type="button" class="${cls} gold red" data-shop="charge" data-k="${k.id}">${packPrice(k)}</button></div>`).join('') || `<p class="cap">${mE('지금 살 수 있는 묶음이 없습니다', 'No packs right now')}</p>`}</div>
+    <p class="cap dsh-note">${mE('결제는 스팀 지갑으로 합니다. 실제 금액은 스팀 결제 창에 표시됩니다. 다이아는 스킨을 사는 데만 쓰이고 대전 실력에는 영향이 없습니다. 환불은 스팀 환불 절차로 요청하며, 이미 쓴 다이아와 보너스 다이아는 환불되지 않습니다.', 'Paid with your Steam Wallet; the final price is shown in the Steam window. Diamonds only buy skins and never affect play. Refunds go through Steam; spent and bonus diamonds are not refundable.')}</p></div>`;
 }
 
 function multiBody(off) {
@@ -8210,7 +8367,7 @@ function multiBody(off) {
     </div></div>`;
 }
 /* 로비 버튼들 */
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="bsv"],[data-a="bsplay"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"]'); if (!b || doc) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="bsv"],[data-a="bsplay"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"],[data-a="collkind"],[data-a="exewear"],[data-a="exeprev"]'); if (!b || doc) return;
   e.stopPropagation(); const a = b.dataset.a; SND.unlock();
   if (a === 'reppick') repOpen = !repOpen;
   else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
@@ -8222,6 +8379,9 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   else if (a === 'collwear') { if (skinOf(b.dataset.c) === b.dataset.id) return; setSkin(b.dataset.c, b.dataset.id); SND.play('relicGood'); return render(); }
   else if (a === 'shopgo') { shopTab = 'new'; menuTab = 'shop'; tabAnim = true; }
   else if (a === 'colltab') collTab = b.dataset.t;
+  else if (a === 'collkind') collKind = b.dataset.k === 'exe' ? 'exe' : 'skin';
+  else if (a === 'exewear') { ls('ssd-exe', b.dataset.k || ''); SND.play('relicGood'); return render(); }
+  else if (a === 'exeprev') { exePreview(b.dataset.k || ''); return; }
   else if (a === 'pcsel') { collSel = b.dataset.k; collPrev = null; }
   else if (a === 'pcprev') { collSel = b.dataset.c; collPrev = b.dataset.id; }
   else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); return render(); }   /* 매칭 화면에서 대전 방식을 골라 시작 */
@@ -8236,8 +8396,8 @@ function pcZoom() { const z = Math.max(0.5, Math.min(2, innerWidth / 1920, inner
 pcZoom(); addEventListener('resize', pcZoom);
 let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
 const PC_PAGES = { single: ['싱글 플레이', 'Single Player', '모험 모드, 봇과 연습, 튜토리얼', 'Adventure, bot practice and tutorial'], multi: ['멀티 플레이', 'Multiplayer', '랜덤 매칭과 친구 대전', 'Random match and friendly duels'],
-  coll: ['컬렉션', 'Collection', '모은 스킨을 보고 착용합니다', 'View and equip your skins'], codex: ['도감', 'Codex', '직업의 패시브·능력·전용 카드와 모험에서 찾은 유물', 'Classes, abilities and cards, plus relics found in Adventure'],
-  shop: ['스킨 상점', 'Skin Shop', '메달로 스킨을 삽니다', 'Spend medals on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'],
+  coll: ['컬렉션', 'Collection', '스킨과 처형 이펙트를 고르고 착용합니다', 'Equip skins and execution effects'], codex: ['도감', 'Codex', '직업의 패시브·능력·전용 카드와 모험에서 찾은 유물', 'Classes, abilities and cards, plus relics found in Adventure'],
+  shop: ['스킨 상점', 'Skin Shop', '메달과 다이아로 스킨을 삽니다', 'Spend medals or diamonds on skins'], acct: ['프로필', 'Profile', '대표 캐릭터와 전적', 'Main character and records'],
   ach: ['업적', 'Achievements', '업적을 달성하고 칭호를 답니다', 'Unlock achievements and wear titles'],
   weekly: ['주간 도전', 'Weekly Challenge', '이번 주 모두가 같은 지도·직업·규칙으로 겨룹니다', 'Same map, class and rule for everyone this week'],
   mail: ['메일함', 'Mailbox', '개발자 선물, 이벤트 보상, 주간 도전 보상을 받습니다', 'Developer gifts, event and weekly rewards'] };
@@ -8249,7 +8409,7 @@ function pcHTML(scene, logo, off, ta, anim) {
       ${logo}
       <nav class="pc-nav" aria-label="${mE('메인 메뉴', 'Main menu')}">${nav.map(([k, a, b]) => `<button type="button" class="pc-nv${kind === k ? ' on' : ''}" ${k ? `data-a="mtab" data-m="${k}"` : 'data-a="mback"'} aria-current="${kind === k ? 'page' : 'false'}">${mE(a, b)}</button>`).join('')}</nav>
       <div class="pc-tr">
-        <button type="button" class="pc-cur" data-a="mtab" data-m="shop" aria-label="${mE('메달, 상점 열기', 'Medals, open shop')}">${MDL(medals())}<i aria-hidden="true">+</i></button>
+        <button type="button" class="pc-cur" data-a="mtab" data-m="shop" aria-label="${mE('메달, 상점 열기', 'Medals, open shop')}">${MDL(medals())}${AUTH.dia ? DIA(dias()) : ''}<i aria-hidden="true">+</i></button>
         <span class="pc-ics">
           ${mailBtn('pc-ic')}
           <button type="button" class="pc-ic" data-a="ov" data-o="rules" title="${mE('규칙', 'Rules')}" aria-label="${mE('규칙', 'Rules')}">${lbIc('rules')}</button>
@@ -8262,7 +8422,7 @@ function pcHTML(scene, logo, off, ta, anim) {
   const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
   const main = kind ? `<section class="pc-page pg-${kind}${ta ? ' pop' : ''}"><header class="pc-ph"><h2>${mE(PC_PAGES[kind][0], PC_PAGES[kind][1])}</h2><p>${mE(PC_PAGES[kind][2], PC_PAGES[kind][3])}</p>
-        ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}</span>` : ''}</header>
+        ${['acct', 'coll', 'shop'].includes(kind) ? `<span class="pc-ph-r">${MDL(medals())}${kind === 'shop' && AUTH.dia ? DIA(dias()) : ''}</span>` : ''}</header>
       <div class="pc-pb" data-keep="pc-${kind}">${kind === 'acct' ? pcProfBody() : kind === 'ach' ? achBody() : kind === 'weekly' ? wkBody() : kind === 'mail' ? mailBody() : kind === 'codex' ? pcCodexBody() : kind === 'coll' ? pcCollBody() : kind === 'shop' ? pcShopBody() : kind === 'single' ? pcSingleBody() : pcMultiBody(off)}</div></section>` : pcHomeHTML(on);
   return `<div class="menu t2 pcm${kind ? ' pg' : ' home'}${anim ? ' anim' : ''}">${scene}<div class="pc-ui">${top}<main class="pc-main">${main}</main>${foot}</div></div>`;
 }
@@ -8360,12 +8520,13 @@ function pcProfBody() {
 }
 
 function pcCollBody() {
+  if (collKind === 'exe') return collKindSeg(true) + exeBody(true);
   const own = ownedSkins(), tot = skinTotal(), f = collTab;
   const ownsAny = c => skinList(c).some(x => own.includes(c + ':' + x.id));
   const list = CLASS_IDS.filter(c => f === 'all' || (f === 'own') === ownsAny(c));
   const c = CLS[collSel] ? collSel : repCls(), cur = skinOf(c), opts = [{ id: '', n: '기본', en: 'Default' }, ...skinList(c)];
   const pv = opts.some(x => x.id === collPrev) && collSel === c ? collPrev : cur, ok = skinOwned(c, pv), on = pv === cur;
-  return `<div class="pcl">
+  return `${collKindSeg(true)}<div class="pcl">
     <div class="pcl-left">
       <div class="pcl-top"><div class="pcl-prog"><span>${mE('수집', 'Collected')}</span><b>${own.length}<i> / ${tot}</i></b><span class="pp-bar"><i style="width:${tot ? own.length / tot * 100 : 0}%"></i></span></div>
         <div class="pc-seg">${[['all', '전체', 'All'], ['own', '보유', 'Owned'], ['new', '미보유', 'Not owned']].map(([k, a, b]) => `<button type="button" class="${f === k ? 'on' : ''}" data-a="colltab" data-t="${k}">${mE(a, b)}</button>`).join('')}</div></div>
@@ -8399,20 +8560,20 @@ function pcShopBody() {
   const items = all.filter(it => f === 'all' || (f === 'own') === it.owned), left = all.filter(it => !it.owned);
   const ft = left.length ? left[Math.floor(Date.now() / 864e5) % left.length] : null;
   const card = ({ c, x, owned }) => { const on = skinOf(c) === x.id;
-    return `<div class="ps-it c-${c}${owned ? ' own' : ''}${x.ac ? ' sp' : ''}">${x.ac ? `<em class="sh-sp">${mE('에픽', 'Epic')}</em>` : ''}<div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
+    return `<div class="ps-it c-${c}${owned ? ' own' : ''}${x.lg ? ' sp lg' : x.ac ? ' sp' : ''}">${x.lg || x.ac ? `<em class="sh-sp">${x.lg ? mE('전설', 'Legend') : mE('에픽', 'Epic')}</em>` : ''}<div class="ps-fig"><i class="px a-${c}${skc(c, x.id)} ps-s" aria-hidden="true"></i><i class="px a-${c}-act${skc(c, x.id)} ps-a" aria-hidden="true"></i>${owned ? `<span class="ps-tag">${on ? mE('착용 중', 'Equipped') : mE('보유', 'Owned')}</span>` : ''}</div>
       <div class="ps-tx"><b>${CLS[c].n}</b><span>${esc(mE(x.n, x.en))}</span></div>
-      ${owned ? `<button type="button" class="pcb ${on ? 'dark' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 해제', 'Unequip') : mE('착용', 'Equip')}</button>` : `<button type="button" class="pcb gold" data-shop="buy" data-c="${c}" data-id="${x.id}" ${m < skinPrice(c, x.id) ? 'disabled' : ''}>${MDL(skinPrice(c, x.id))}</button>`}</div>`; };
+      ${owned ? `<button type="button" class="pcb ${on ? 'dark' : 'ghost'}" data-shop="wear" data-c="${c}" data-id="${on ? '' : x.id}">${on ? mE('착용 해제', 'Unequip') : mE('착용', 'Equip')}</button>` : buyBtns(c, x, 'pcb', 'gold')}</div>`; };
   return `<div class="psh">
     <aside class="psh-side">
-      <div class="psh-wal"><span>${mE('내 지갑', 'Wallet')}</span><b>${MDL(m)}</b><small>${mE(`스킨 ${Math.floor(m / SKIN_PRICE)}개를 살 수 있습니다`, `Enough for ${Math.floor(m / SKIN_PRICE)} skin(s)`)}</small></div>
-      <nav class="psh-cat">${[['all', '전체', 'All', all.length], ['new', '미보유', 'Not owned', left.length], ['own', '보유', 'Owned', all.length - left.length]].map(([k, a, b, n]) => `<button type="button" class="${f === k ? 'on' : ''}" data-shop="tab" data-t="${k}"><span>${mE(a, b)}</span><em>${n}</em></button>`).join('')}</nav>
+      <div class="psh-wal"><span>${mE('내 지갑', 'Wallet')}</span><b>${MDL(m)}</b>${AUTH.dia ? `<b class="psh-dia">${DIA(dias())}</b>` : ''}<small>${mE(`메달로 스킨 ${Math.floor(m / SKIN_PRICE)}개를 살 수 있습니다`, `Medals for ${Math.floor(m / SKIN_PRICE)} skin(s)`)}</small></div>
+      <nav class="psh-cat">${[['all', '전체', 'All', all.length], ['new', '미보유', 'Not owned', left.length], ['own', '보유', 'Owned', all.length - left.length], ...(AUTH.dia ? [['dia', '다이아 충전', 'Diamonds', '+']] : [])].map(([k, a, b, n]) => `<button type="button" class="${f === k ? 'on' : ''}${k === 'dia' ? ' dia-t' : ''}" data-shop="tab" data-t="${k}"><span>${mE(a, b)}</span><em>${n}</em></button>`).join('')}</nav>
       <div class="psh-earn"><p>${mE('메달 모으는 법', 'How to earn')}</p><ul><li><span>${mE('모험', 'Adventure')}</span><b>~300</b></li><li><span>${mE('대전 승리', 'PvP win')}</span><b>30</b></li><li><span>${mE('대전 무승부·패배', 'PvP draw · loss')}</span><b>15 · 10</b></li><li><span>${mE('봇 연습 승리', 'Bot win')}</span><b>5~12</b></li></ul></div>
     </aside>
-    <div class="psh-main">
+    <div class="psh-main">${f === 'dia' ? diaShopHTML(true) : `
       ${ft && f !== 'own' ? `<section class="psh-ft c-${ft.c}"><div class="psh-ftf"><i class="px a-${ft.c}-act${skc(ft.c, ft.x.id)}" aria-hidden="true"></i></div>
         <div class="psh-ftt"><p class="pmc-k">${mE('오늘의 추천', "Today's pick")}</p><h3>${CLS[ft.c].n} · ${esc(mE(ft.x.n, ft.x.en))}</h3><p>${CLS[ft.c].tag || ''}</p>
-          <button type="button" class="pcb gold big" data-shop="buy" data-c="${ft.c}" data-id="${ft.x.id}" ${m < skinPrice(ft.c, ft.x.id) ? 'disabled' : ''}>${MDL(skinPrice(ft.c, ft.x.id))} ${mE('구매', 'Buy')}</button></div></section>` : ''}
-      <div class="ps-grid">${items.map(card).join('') || `<p class="pmc-note">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>
+          ${ft.x.lg ? buyBtns(ft.c, ft.x, 'pcb big', 'gold') : `<button type="button" class="pcb gold big" data-shop="buy" data-c="${ft.c}" data-id="${ft.x.id}" ${m < skinPrice(ft.c, ft.x.id) ? 'disabled' : ''}>${MDL(skinPrice(ft.c, ft.x.id))} ${mE('구매', 'Buy')}</button>`}</div></section>` : ''}
+      <div class="ps-grid">${items.map(card).join('') || `<p class="pmc-note">${mE('여기에 보일 스킨이 없습니다', 'Nothing here')}</p>`}</div>`}
     </div></div>`;
 }
 function pcHomeHTML(on) {
@@ -8650,7 +8811,7 @@ document.addEventListener('click', e => {
   const c = b.dataset.k, ban = doc.phase === 'ban';
   sh.classList.remove('enter'); sh.classList.add('lock'); sh.insertAdjacentHTML('beforeend', `<span class="pk-stamp">${ban ? mE('금지', 'BANNED') : mE('결정', 'LOCKED')}</span>`);
   if (typeof cry === 'function') cry(c, null, true); if (vibOn && navigator.vibrate) try { navigator.vibrate(30); } catch (x) { /* 무시 */ }
-  setTimeout(() => { pkLock = false; if (!doc) return; if (ban) W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) } }); } }, 760);
+  setTimeout(() => { pkLock = false; if (!doc) return; if (ban) W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) }, exe: { [seat]: exeOf() } }); } }, 760);
 }, true);
 /* PC 전투 화면: 상대 능력 띠를 상대 인물 카드 바로 아래에 붙인다(카드 높이가 상태 칩 수에 따라 달라서) */
 /* PC 전투 화면 쌓기: 높이가 바뀌는 조각(상태 칩 줄, 투시로 보이는 손패 이름, 긴 지난 턴 요약)이 서로 겹치지 않게
@@ -8759,7 +8920,7 @@ app.addEventListener('click', e => {
   else if (a === 'last') { const l = ls('ssd-last'); if (CLS[l]) { selCls = l; SND.play('tap'); render(); } }
   else if (a === 'unlock') unLock();
   else if (a === 'skin') { const c = b.dataset.k; if (!skinOwned(c, b.dataset.id)) { shopTab = 'new'; SND.play('tap'); return openOv('shop'); } if (skinOf(c) === b.dataset.id) return; setSkin(c, b.dataset.id); pkSeen = ''; SND.play('tap'); render(); }
-  else if (a === 'pickok') { const c = b.dataset.k; if (doc.phase === 'ban') W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) } }); } }
+  else if (a === 'pickok') { const c = b.dataset.k; if (doc.phase === 'ban') W({ ban: { [seat]: c } }); else { ls('ssd-last', c); W({ pick: { [seat]: c }, skin: { [seat]: skinOf(c) }, exe: { [seat]: exeOf() } }); } }
   else if (a === 'card') clickCard(+b.dataset.i);
   else if (a === 'ab') clickAbility();
   else if (a === 'cell') clickCell(b.dataset.k, +b.dataset.i);
@@ -8803,6 +8964,9 @@ async function walletPull() {
   if (!AUTH.user || !AUTH.tok) return; await authFresh();
   const [w] = await sb('/rest/v1/wallet?select=medals') || []; AUTH.wallet = w ? w.medals : 0;
   AUTH.owned = (await sb('/rest/v1/owned_skins?select=cls,skin') || []).map(r => r.cls + ':' + r.skin);
+  try { const [d] = await sb('/rest/v1/dia_wallet?select=paid,free') || []; AUTH.dia = d || { paid: 0, free: 0 };
+    AUTH.packs = await sb('/rest/v1/dia_packs?select=id,dia,bonus,krw,usd,once&order=ord') || []; } catch (e) { AUTH.dia = null; AUTH.packs = []; }   /* 다이아 표가 아직 없으면 충전 칸을 숨긴다 */
+  try { AUTH.bought = (await sb('/rest/v1/dia_orders?select=pack&status=in.(done,refund)') || []).map(r => r.pack); } catch (e) { AUTH.bought = []; }
   try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
   if (AUTH.gift) setTimeout(welcomeShow, 600);
   questPull(); mailPull(true);
@@ -8912,14 +9076,39 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   if (k === 'tab') shopTab = b.dataset.t;
   else if (k === 'wear') { setSkin(c, id); SND.play('tap'); }
   else if (k === 'buy') { if (b.disabled) return; b.disabled = true; buySkin(c, id).then(r => { if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, 'Bought and equipped')); } else toast({ poor: mE('메달이 모자랍니다', 'Not enough medals'), own: mE('이미 가진 스킨입니다', 'Already owned'), login: mE('로그인해야 살 수 있습니다', 'Log in to buy'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('사지 못했습니다', 'Purchase failed'));
-    if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; } render(); }); return; }
-  if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; }
-  render(); }, true);
+    shopRefresh(); }); return; }
+  else if (k === 'buydia') { if (b.disabled) return; b.disabled = true; buySkinDia(c, id).then(r => { if (r === 'ok') { setSkin(c, id); SND.play('relicGood'); toast(mE(`${CLS[c].n} 스킨을 샀습니다. 바로 착용했습니다`, 'Bought and equipped')); } else toast({ poor: mE('다이아가 모자랍니다', 'Not enough diamonds'), own: mE('이미 가진 스킨입니다', 'Already owned'), login: mE('로그인해야 살 수 있습니다', 'Log in to buy'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('사지 못했습니다', 'Purchase failed'));
+    shopRefresh(); }); return; }
+  else if (k === 'charge') { if (b.disabled) return; b.disabled = true; chargeDia(b.dataset.k).then(r => { if (r === 'ok') { SND.play('relicGood'); setTimeout(() => SND.play('coin'), 300); toast(mE('다이아를 충전했습니다', 'Diamonds added')); }
+      else if (r !== 'cancel') toast({ nosteam: mE('스팀으로 실행한 게임에서 충전할 수 있습니다', 'Top up from the Steam version'), once: mE('이미 받은 묶음입니다', 'Already purchased'), busy: mE('결제가 진행 중입니다', 'A payment is in progress'), login: mE('로그인해야 충전할 수 있습니다', 'Log in to top up'), net: mE('서버에 연결하지 못했습니다', 'Could not reach the server') }[r] || mE('충전하지 못했습니다. 결제되지 않았습니다', 'Top-up failed. You were not charged'));
+    shopRefresh(); }); return; }
+  shopRefresh(); }, true);
+function shopRefresh() { if (ovKind === 'shop') { const sc = infoEl.querySelector('.sh-grid'), y = sc ? sc.scrollTop : 0; infoEl.innerHTML = ovHTML(); const n = infoEl.querySelector('.sh-grid'); if (n) n.scrollTop = y; } render(); }
+/* 다이아 충전: 스팀판(Electron)이 window.SSD_STEAM.txn(orderid)을 넣어 준다. 스팀 결제 승인 창의 결과(승인 true, 거절 false)를 돌려주는 약속(Promise).
+   주문 만들기와 결제 확정은 서버(supabase/functions/steam-dia)가 스팀에 직접 확인하고, 지급도 서버가 한다 */
+const diaFn = async body => { await authFresh(); return sb('/functions/v1/steam-dia', { method: 'POST', body }); };
+let diaBusy = false;
+async function chargeDia(pack) {
+  if (!AUTH.user) return 'login';
+  const st = window.SSD_STEAM; if (!st || typeof st.txn !== 'function') return 'nosteam';
+  if (diaBusy) return 'busy'; diaBusy = true;
+  try {
+    const { orderid } = await diaFn({ op: 'init', pack, lang: LANG === 'en' ? 'en' : 'ko' });
+    if (!await st.txn(orderid)) { await diaFn({ op: 'cancel', orderid }).catch(() => {}); return 'cancel'; }
+    const w = await diaFn({ op: 'finalize', orderid }); AUTH.dia = { paid: w.paid, free: w.free };
+    await walletPull().catch(() => {}); return 'ok';
+  } catch (e) { return e.net ? 'net' : /nosteam/.test(e.message) ? 'nosteam' : /once/.test(e.message) ? 'once' : 'err'; }
+  finally { diaBusy = false; }
+}
 /* 관리자 메달: 메인 화면 로고의 3×3 무늬 가운데 칸을 3초 안에 5번 누르면 지급 창. 서버가 관리자 계정인지 확인하고, 아니면 아무 일도 없다 */
 (function () { let n = 0, t0 = 0;
   document.addEventListener('click', e => { if (doc || !AUTH.user) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
     const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
-    const v = parseInt(window.prompt('', '1000') || '', 10); if (!(v > 0)) return;
+    const q = (window.prompt('', '1000') || '').trim(), v = parseInt(q.replace(/^d/, ''), 10);
+    /* d500: 무료 다이아 지급, t:m: 스팀 없이 m 묶음 충전 흐름 시험(실제 결제 없음) */
+    if (/^t:/.test(q)) { rpc('admin_dia_test', { p_pack: q.slice(2) }).then(w => { AUTH.dia = w; walletPull().catch(() => {}); SND.play('relicGood'); toast('test ' + q.slice(2)); render(); }).catch(e => toast(String(e.message))); return; }
+    if (!(v > 0)) return;
+    if (/^d/.test(q)) { rpc('admin_dia', { p_amt: v }).then(w => { AUTH.dia = w; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); return; }
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
 /* ===== 랜덤 매칭: 서버 줄(mm_queue)에서 짝을 찾고, 먼저 기다린 쪽이 방을 연다 ===== */
 const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0, mode: 'single' };
@@ -10623,13 +10812,18 @@ async function koScene(neu, cls, fin) {
   const fall = k => { const u = uEl(k); if (u) { setPose(k, cls(k), 'hit'); u.classList.add('ko', 'dust'); } };
   if (SKIP || noMotion || !a) { losers.forEach(fall); if (!SKIP) { play('ko'); await sleep(800); } return; }
   await hitStop(280);
+  /* 처형 이펙트: 한쪽만 쓰러졌고 이긴 쪽이 장착했으면 그 연출 안에서 쓰러진다. 화면 흔들림을 줄인 설정이면 기본 K.O.로 */
+  const exW = w && w !== 'draw' && doc ? (doc.exe && doc.exe[w]) || (local && w === seat ? exeOf() : '') : '';   /* 봇·모험은 내 장착값을 바로 쓴다 */
+  const exId = losers.length === 1 && !calmMotion() && EXE[exW] ? exW : '';
+  const down = k => { fall(k); fx(k, FX.dust(fin(k)), 500); fx(k, FX.hit(fin(k), 3), 600); pulse(bEl(k), 'shake', 500); };
+  if (exId) { a.classList.add('ko-zoom', losers[0] === seat ? 'kz-me' : 'kz-op'); window.A3SLOMO = { until: performance.now() + 2600, k: 0.5 }; await exeInDuel(exId, w, losers[0], cls, fin, () => down(losers[0])); if (SKIP) return; }
   window.A3SLOMO = { until: performance.now() + 1600, k: 0.38 };   /* 가루가 천천히 흩어진다 */
-  losers.forEach(k => { fall(k); fx(k, FX.dust(fin(k)), 500); fx(k, FX.hit(fin(k), 3), 600); pulse(bEl(k), 'shake', 500); });
+  if (!exId) losers.forEach(down);
   a.classList.add('ko-zoom', w === 'draw' || losers.length > 1 ? 'kz-c' : losers[0] === seat ? 'kz-me' : 'kz-op');
   const e = document.createElement('div'); e.className = 'kofx'; e.innerHTML = '<b>K.O.</b>'; a.appendChild(e);
-  play('ko'); pulse(app.querySelector('.field'), 'quake', 520);
+  play('ko'); if (!exId) pulse(app.querySelector('.field'), 'quake', 520);
   if (stageOn()) losers.filter(k => cls(k) === 'admin').forEach(k => setTimeout(() => adminSay(k, adminTalk('ko'), 3600), 500));
-  await sleep(2100);
+  await sleep(exId ? 1100 : 2100);
   if (SKIP) return;
   if (w && w !== 'draw') {
     const u = uEl(w); if (u) { setPose(w, cls(w), true); u.classList.add('win'); } a.classList.remove('fin');
@@ -10638,6 +10832,99 @@ async function koScene(neu, cls, fin) {
     fx(w, FX.sparkle(fin(w), K.amb), 1400); play('relicGood');
   } else { e.className = 'kofx lose'; e.innerHTML = '<b>무승부</b>'; }
   await sleep(1700);
+}
+
+/* ===== 처형 이펙트: 스킨과 따로 장착하는 마무리 연출 =====
+   이긴 쪽이 장착한 이펙트가 K.O. 순간에 재생된다. 고른 것은 이 기기(ssd-exe, 계정에도 저장)에 두고, 결투에서는 doc.exe[자리]로 상대에게도 같은 연출이 보인다.
+   새 이펙트는 EXE에 [이름, 영어 이름, 설명, 영어 설명]과 EXE_RUN에 재생 함수를 더하면 된다. 지금은 모두 무료 */
+const EXE = {
+  check: ['체크메이트', 'Checkmate', '판이 체스판으로 바뀌고, 떨어진 킹을 기사가 쓰러뜨린다', 'The board turns to a chessboard and a knight topples the fallen king'],
+  jackpot: ['잭팟', 'Jackpot', '머리 위 슬롯머신이 7-7-7에 멈추고 쏟아진 동전에 파묻힌다', 'A slot machine hits 7-7-7 and buries the foe in coins'],
+  bsod: ['블루스크린', 'Blue Screen', '상대가 깨져 흩어지고 화면이 파랗게 멈춘다', 'The foe glitches apart and the screen freezes blue'],
+};
+const exeOf = () => { const v = ls('ssd-exe'); return v && EXE[v] ? v : ''; };
+const exeName = id => EXE[id] ? mE(EXE[id][0], EXE[id][1]) : mE('기본 K.O.', 'Default K.O.');
+/* 도트 말: 글자 한 칸이 픽셀 하나. k 테두리, w 몸통, g 금색, r 빨강 */
+const PXPAL = { k: '#1b1216', w: '#f4ecd8', d: '#3a2d33', g: '#f2c230', r: '#d8475a', s: '#9a8f94' };
+function pxSvg(rows, pal) { const h = rows.length, w = rows[0].length; let r = '';
+  rows.forEach((row, y) => { for (let x = 0; x < w; x++) { const c = row[x], f = (pal && pal[c]) || PXPAL[c]; if (f) r += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`; } });
+  return `<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`; }
+const PX_KING = ['.....kk.....', '....kggk....', '.....kk.....', '...kkkkkk...', '..kwwwwwwk..', '..kwwwwwwk..', '...kwwwwk...', '....kwwk....', '....kwwk....', '...kwwwwk...', '...kwwwwk...', '..kwwwwwwk..', '..kkkkkkkk..', '.kwwwwwwwwk.', 'kwwwwwwwwwwk', 'kkkkkkkkkkkk'];
+const PX_KNIGHT = ['....kkk.....', '...kwwwk....', '..kwwkwwk...', '.kwwwwwwwk..', 'kwwwwwwwwk..', 'kwwkkwwwwk..', '.kk..kwwwk..', '....kwwwwk..', '...kwwwwwk..', '..kwwwwwwk..', '..kwwwwwwk..', '...kwwwwk...', '..kkkkkkkk..', '.kwwwwwwwwk.', 'kwwwwwwwwwwk', 'kkkkkkkkkkkk'];
+const exeWait = ms => new Promise(r => setTimeout(r, ms));
+/* 재생: host 위에 덮개를 깔고, pt(덮개 기준 좌표)에 쓰러질 쪽이 있다. dir 1이면 이긴 쪽이 왼쪽. kill()은 쓰러짐을 시작한다 */
+const EXE_RUN = {
+  async check(L, o) {
+    L.insertAdjacentHTML('beforeend', `<i class="ex-dim"></i><i class="ex-chk"></i><span class="ex-pc ex-king">${pxSvg(PX_KING, { w: PXPAL.d, k: '#0c0709' })}</span><span class="ex-pc ex-knight">${pxSvg(PX_KNIGHT)}</span>
+      <b class="ex-word ex-cm"><small>${mE('체크메이트', 'CHECK')}</small>CHECKMATE</b>`);
+    o.snd('stamp'); await exeWait(420); o.snd('slam'); o.shake(); await exeWait(330);
+    o.snd('dashmv'); await exeWait(380); o.snd('impact'); o.kill(); o.shake(); await exeWait(220);
+    o.snd('reveal'); await exeWait(900);
+  },
+  async jackpot(L, o) {
+    const sym = ['7', '★', 'BAR', '◆', '♣', '7', '♥', '★'], strip = [...sym, ...sym].map(x => `<i class="${x === '7' ? 'r7' : ''}">${x}</i>`).join('');
+    const coins = Array.from({ length: 28 }, (_, i) => `<i class="ex-coin" style="--dx:${Math.round((Math.random() - 0.5) * 220)};--dl:${Math.round(i * 22 + Math.random() * 60)}ms;--rt:${Math.round(Math.random() * 720 - 360)}deg"></i>`).join('');
+    L.insertAdjacentHTML('beforeend', `<i class="ex-dim"></i><div class="ex-slot"><span class="ex-lamp"></span><div class="ex-reels">${[0, 1, 2].map(n => `<span class="ex-reel" style="--n:${n}"><span class="ex-strip">${strip}</span><b>7</b></span>`).join('')}</div></div>
+      <span class="ex-coins">${coins}</span><span class="ex-heap"></span><b class="ex-word ex-jp">JACKPOT!</b>`);
+    const sy = Math.max(o.pt.y - 200 * o.s, 78 * o.s + 8); L.style.setProperty('--sy', Math.round(sy) + 'px'); L.style.setProperty('--fall', Math.round(o.pt.y + 72 * o.s - sy - 50 * o.s) + 'px');
+    o.snd('dice'); await exeWait(260);
+    for (let n = 0; n < 3; n++) { await exeWait(n ? 240 : 200); const r = L.querySelectorAll('.ex-reel')[n]; if (r) r.classList.add('stop'); o.snd('tick'); }
+    await exeWait(120); L.classList.add('hit'); o.snd('relicGood'); o.snd('coin'); await exeWait(380); o.kill(); o.snd('coin'); await exeWait(1000);
+  },
+  async bsod(L, o) {
+    const bits = Array.from({ length: 14 }, (_, i) => `<i style="--gx:${Math.round((Math.random() - 0.5) * 150)};--gy:${Math.round((Math.random() - 0.7) * 180)};--gw:${8 + Math.round(Math.random() * 40)};--gh:${4 + Math.round(Math.random() * 14)};--gc:${['#ff2d6f', '#18e4ff', '#ffffff', '#2b6bff'][i % 4]};--dl:${i * 23}ms"></i>`).join('');
+    L.insertAdjacentHTML('beforeend', `<span class="ex-glitch">${bits}</span><div class="ex-bs"><b>:(</b><p>${esc(o.loser)}.exe${mE('이(가) 응답하지 않습니다.', ' has stopped responding.')}</p>
+      <p class="sm">${mE('문제가 발생하여 결투를 끝내야 합니다. 오류 정보를 모으는 중입니다.', 'Your opponent ran into a problem and needs to restart. We are collecting some error info.')}</p><p class="pc"><span>0</span>% ${mE('완료', 'complete')}</p>
+      <i class="ex-qr" aria-hidden="true"></i><p class="sm">${mE('중지 코드: OPPONENT_NOT_FOUND', 'Stop code: OPPONENT_NOT_FOUND')}</p></div>`);
+    o.snd('bsod'); await exeWait(380); o.kill(); await exeWait(100);
+    L.classList.add('blue'); o.snd('boom'); const pc = L.querySelector('.ex-bs .pc span'), t0 = performance.now();
+    await new Promise(r => { const f = () => { const k = Math.min(1, (performance.now() - t0) / 700); if (pc) pc.textContent = Math.round(k * k * 100); if (k < 1) requestAnimationFrame(f); else r(); }; requestAnimationFrame(f); });
+    await exeWait(380); L.classList.add('off'); o.snd('fizz'); await exeWait(360);
+  },
+};
+/* host: 덮개를 깔 요소(없으면 화면 전체), pt: host 기준 좌표, sc: 크기 배율 */
+async function exeRun(id, host, pt, sc, dir, loser, kill) {
+  const run = EXE_RUN[id]; if (!run) return false;
+  const L = document.createElement('div'); L.className = 'exe ex-' + id + (host ? '' : ' fixed') + (dir < 0 ? ' rv' : ''); L.setAttribute('aria-hidden', 'true');
+  L.style.setProperty('--x', Math.round(pt.x) + 'px'); L.style.setProperty('--y', Math.round(pt.y) + 'px'); L.style.setProperty('--s', sc.toFixed(3));
+  (host || document.body).appendChild(L); let killed = false;
+  const o = { loser, pt, s: sc, snd: n => SND.play(n), kill: () => { if (!killed) { killed = true; kill(); } }, shake: () => { L.classList.remove('shk'); void L.offsetWidth; L.classList.add('shk'); } };
+  try { await run(L, o); } finally { o.kill(); L.classList.add('out'); setTimeout(() => L.remove(), 300); }
+  return true;
+}
+/* 결투 안: 쓰러질 쪽의 화면 위치(3D면 3D 좌표, 아니면 캐릭터 상자)와 크기를 잡아 재생 */
+async function exeInDuel(id, w, l, cls, fin, kill) {
+  let pt = null, sc = 1; const bd = bEl(l), cell = fin(l);
+  if (document.documentElement.classList.contains('a3on') && window.A3POS && bd) { const a = A3POS(bd, cell, 0.9), b = A3POS(bd, cell, 0), c = A3POS(bd, cell, 1.8); if (a && b && c) { pt = a; sc = (b.y - c.y) / 180; } }
+  if (!pt) { const u = uEl(l), r = u && u.getBoundingClientRect(); if (r && r.width) { pt = { x: r.left + r.width / 2, y: r.top + r.height * 0.55 }; sc = r.height / 170; } }
+  if (!pt) { const ar = app.querySelector('.arena'), r = ar && ar.getBoundingClientRect(); if (!r) return false; pt = { x: r.left + r.width * (l === seat ? 0.3 : 0.7), y: r.top + r.height * 0.55 }; }
+  sc = Math.max(0.6, Math.min(1.8, sc || 1));
+  return exeRun(id, null, pt, sc, l === seat ? -1 : 1, CLS[cls(l)].n, kill);
+}
+/* 미리 보기: 작은 무대에서 내 대표 캐릭터가 허수아비에게 재생 */
+async function exePreview(id) {
+  document.querySelectorAll('.exepv').forEach(e => e.remove());
+  const rep = repCls(), foe = rep === 'scarecrow' ? 'statue' : 'scarecrow', m = document.createElement('div'); m.className = 'exepv'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', exeName(id));
+  m.innerHTML = `<div class="exepv-st"><i class="exepv-fl"></i><i class="px exepv-me a-${rep}${skc(rep, skinOf(rep))}"></i><i class="px exepv-foe flip a-${foe}"></i><b class="exepv-n">${exeName(id)}</b></div><p class="cap">${mE('누르면 닫습니다', 'Click to close')}</p>`;
+  document.body.appendChild(m); const st = m.querySelector('.exepv-st'), f = m.querySelector('.exepv-foe');
+  m.addEventListener('click', () => m.remove());
+  await exeWait(350); if (!m.isConnected) return;
+  const sr = st.getBoundingClientRect(), fr = f.getBoundingClientRect();
+  const pt = { x: fr.left - sr.left + fr.width / 2, y: fr.top - sr.top + fr.height * 0.55 };
+  if (EXE_RUN[id]) await exeRun(id, st, pt, fr.height / 170, 1, CLS[foe].n, () => f.classList.add('gone'));
+  else { SND.play('ko'); f.classList.add('gone'); st.insertAdjacentHTML('beforeend', '<b class="exepv-ko">K.O.</b>'); await exeWait(1200); }
+  await exeWait(500); if (m.isConnected) { const n = m.querySelector('.exepv-foe'); if (n) n.classList.remove('gone'); const k = m.querySelector('.exepv-ko'); if (k) k.remove(); }
+}
+/* 컬렉션의 처형 이펙트 칸 */
+function exeBody(pc) {
+  const cur = exeOf(), ids = ['', ...Object.keys(EXE)];
+  const art = id => id === 'check' ? `<span class="exa-pcs">${pxSvg(PX_KING, { w: PXPAL.d, k: '#0c0709' })}${pxSvg(PX_KNIGHT)}</span>` : id === 'jackpot' ? '<span class="exa-slot"><b>7</b><b>7</b><b>7</b></span>' : id === 'bsod' ? '<span class="exa-bs"><b>:(</b><i></i><i></i></span>' : '<span class="exa-ko">K.O.</span>';
+  return `<div class="exb${pc ? ' pc' : ''}"><p class="cap">${mE('결투에서 이기면 마지막에 장착한 처형 이펙트가 재생됩니다. 대전 상대에게도 같은 연출이 보입니다.', 'When you win, your execution effect plays at the end. Your opponent sees it too.')}</p>
+    <div class="exb-grid">${ids.map(id => { const on = id === cur;
+      return `<div class="exb-it ex-a-${id || 'ko'}${on ? ' on' : ''}"><div class="exb-art">${art(id)}${on ? `<span class="exb-tag">${mE('장착 중', 'Equipped')}</span>` : ''}</div>
+        <b>${exeName(id)}</b><span class="cap">${id ? mE(EXE[id][2], EXE[id][3]) : mE('K.O. 글자와 함께 가루가 되어 흩어진다', 'The plain K.O. and dust')}</span>
+        <span class="exb-bt"><button type="button" class="${pc ? 'pcb ghost' : 'btn ghost'}" data-a="exeprev" data-k="${id}">${mE('미리 보기', 'Preview')}</button>
+        <button type="button" class="${pc ? 'pcb ' + (on ? 'dark' : 'red') : 'btn ' + (on ? 'on' : 'red')}" data-a="exewear" data-k="${id}" ${on ? 'disabled' : ''}>${on ? mE('장착 중', 'Equipped') : mE('장착', 'Equip')}</button></span></div>`; }).join('')}</div></div>`;
 }
 
 /* ===== 한 화면 맞춤: 스크롤 없이 어떤 화면도 창 안에 들어오게 한다 =====
@@ -14909,6 +15196,10 @@ function stOverHTML(won) {
   /* 피격 불꽃: 2D 쪽 진영 요소와 칸 번호로 부른다 */
   window.A3BURST = function (boardEl, cell, tier) { if (!boards || !GM || mode !== 'duel') return; const b = [].indexOf.call(boards, boardEl); if (b < 0) return;
     burst(b, cell, 8 + tier * 8, [GM.K.wht, '#ffe08a', '#ffb347', '#ff5a4e'], 1.8 + tier * 0.7, 1.5 + tier * 0.3, 11); if (tier >= 2) burst(b, cell, 6 + tier * 3, [GM.K.ash, GM.K.gray], 0.9, 0.7, 9); };
+  /* 처형 이펙트용: 판 칸 위 높이 h(월드 단위) 지점의 화면 좌표. 3D가 아니면 null */
+  window.A3POS = function (boardEl, cell, h) { if (!active || !boards || mode !== 'duel') return null; const b = [].indexOf.call(boards, boardEl); if (b < 0) return null;
+    ndc(cellX(b, cell % 3) + boardG[b].position.x, TY + (h || 0), cellZ(Math.floor(cell / 3)) + 0.1); const r = host.getBoundingClientRect();
+    return { x: r.left + (_p.x * 0.5 + 0.5) * vw, y: r.top + (-_p.y * 0.5 + 0.5) * vh }; };
   attach(); requestAnimationFrame(frame);
 })();
 
