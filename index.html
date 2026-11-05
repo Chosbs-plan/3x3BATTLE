@@ -9908,6 +9908,17 @@ const planAim = cells => gnd(hi((g, t) => {
     g.globalAlpha = 0.85 * ein * out * pul; D(g, bx, by, K.red, 28, 2); D(g, bx, by + 26, K.red, 28, 2); D(g, bx, by, K.red, 2, 28); D(g, bx + 26, by, K.red, 2, 28); });
   g.globalAlpha = 1;
 }));
+Object.assign(K, { stone: '#9a948c', stoned: '#625c58', stonel: '#cfc8bc', gzl: '#ffe3ef', gz: '#f08ab0', gzd: '#a8496f', helm: '#59647e', helmd: '#2c3247', helml: '#a6b2cc', soul: '#7ff5d2', soull: '#e2fff4', sould: '#2e9e82' });
+/* 듀라한의 투구 머리: rot만큼 돌아간다 */
+const headG = (g, x, y, rot, f) => {
+  const c = Math.cos(rot), s = Math.sin(rot);
+  disc(g, x, y, 8, K.helmd); disc(g, x, y, 7, K.helm); D(g, x - 5, y - 6, K.helml, 4, 2);
+  /* 투구 깃: 회전 방향으로 */
+  for (let k = 0; k < 6; k++) D(g, x - s * (9 + k) - 1, y - c * (9 + k) - 1, k < 3 ? K.red : K.redd, 2 + (k < 2), 2);
+  /* 바이저 틈과 눈빛 */
+  const vx = c * 2, vy = -s * 2; seg(g, x - c * 6 + vx * 0.3, y + s * 6 + 1, x + c * 6 + vx * 0.3, y - s * 6 + 1, K.helmd, 2);
+  if (Math.abs(c) > 0.3 || true) { D(g, x - c * 3 - 1, y + s * 3, K.soul, 2, 2); D(g, x + c * 3 - 1, y - s * 3, K.soul, 2, 2); if (f % 2) { D(g, x - c * 3 - 1, y + s * 3, K.soull); D(g, x + c * 3 - 1, y - s * 3, K.soull); } }
+};
 const mid2 = i => [C(i) * 32 + 16, R(i) * 32 + 16];
 function disc(g, cx, cy, r, c) { r = Math.round(r); if (r < 0) return; for (let dy = -r; dy <= r; dy++) { const w = Math.floor(Math.sqrt(r * r - dy * dy) + 0.4); D(g, cx - w, cy + dy, c, w * 2 + 1, 1); } }
 function circ(g, cx, cy, r, c, th) { const n = Math.max(16, Math.round(r * 5)); for (let a = 0; a < n; a++) D(g, cx + Math.cos(a / n * 6.283) * r, cy + Math.sin(a / n * 6.283) * r, c, th || 1, th || 1); }
@@ -10219,10 +10230,20 @@ Object.assign(FX, {
     for (let j = 0; j < 9; j++) { const y = 6 + j * 10, head = t * 170 - j * 11, x = rev ? head : 95 - head; for (let s = 0; s < 26; s++) { const xx = rev ? x - s : x + s; if (xx >= 0 && xx < 96) D(g, xx, y + Math.round(Math.sin(s / 5 + j) * 2), s < 5 ? K.ice : K.teal, 1, s < 10 ? 2 : 1); } }
   }),
   /* 듀라한 */
+  /* 머리 던지기: 투구 쓴 머리가 혼불 꼬리를 끌고 돌며 날아와 박히고, 혼불이 솟는다 */
   headFx: (cell, rev) => hi((g, t, f) => {
-    const [cx, cy] = mid2(cell), sx = rev ? 95 : 0;
-    if (t < 0.55) { const u = t / 0.55, x = sx + (cx - sx) * u, y = cy - Math.sin(u * Math.PI) * 26; for (let j = 1; j < 5; j++) disc(g, x - (cx - sx) * 0.04 * j, y - j * 3 - Math.sin(f + j) * 1, 3 - j * 0.5, j % 2 ? K.steel : K.lblue); disc(g, x, y, 6, K.sil); disc(g, x, y, 5, K.steel); D(g, x - 3, y - 1, K.ice, 2, 2); D(g, x + 1, y - 1, K.ice, 2, 2); }
-    else { const u = (t - 0.55) / 0.45; circ(g, cx, cy, 5 + u * 14, K.steel, 2); for (let j = 0; j < 8; j++) { const a = j / 8 * 6.283; D(g, cx + Math.cos(a) * (6 + u * 12), cy + Math.sin(a) * (6 + u * 12), j % 2 ? K.lblue : K.steel, 3, 3); } disc(g, cx, cy - u * 10, 5 * (1 - u), K.steel); }
+    const [cx, cy] = m3(cell), sx = rev ? 100 : -4, sy = cy - 6, T1 = 0.5;
+    if (t < T1) { const u = t / T1, x = sx + (cx - sx) * u, y = sy + (cy - sy) * u - Math.sin(u * Math.PI) * 30;
+      for (let j = 9; j >= 1; j--) { const uu = Math.max(0, u - j * 0.035), px = sx + (cx - sx) * uu, py = sy + (cy - sy) * uu - Math.sin(uu * Math.PI) * 30 + Math.sin(f + j) * 1.5; g.globalAlpha = 0.85 - j * 0.08; disc(g, px, py, Math.max(1, 6 - j * 0.6), j < 3 ? K.soull : j < 6 ? K.soul : K.sould); }
+      g.globalAlpha = 1; headG(g, x, y, (rev ? -1 : 1) * u * 12, f); return; }
+    const v = (t - T1) / (1 - T1), gy = cy + 8, bounce = v < 0.35 ? -Math.sin(v / 0.35 * Math.PI) * 7 : 0;
+    if (v < 0.18) { ell(g, cx, gy, 16, 5, K.soull); twk(g, cx, cy, 13, K.wht); }
+    if (v < 0.75) { gring(g, cx, gy, 6 + v * 34, K.soul, 2); gring(g, cx, gy, 3 + v * 22, K.sould, 1); }
+    for (let j = 0; j < 8; j++) { const a = j / 8 * 6.283 + 0.3, L = 6 + Math.min(1, v * 3) * (7 + (j % 3) * 3); seg(g, cx + Math.cos(a) * 4, gy + Math.sin(a) * 1.5, cx + Math.cos(a) * L, gy + Math.sin(a) * L * 0.35, K.sil, 1); }
+    /* 혼불 */
+    for (let j = 0; j < 6; j++) { const w = (v * 1.3 - j * 0.08); if (w <= 0 || w > 1) continue; const x = cx - 14 + rnd(cell, j) * 28 + Math.sin(w * 8 + j) * 2, y = gy - 4 - w * 30;
+      g.globalAlpha = 1 - w; disc(g, x, y, 3 - w * 2, K.soul); D(g, x - 1, y - 4, K.soull, 2, 3); D(g, x, y - 1, K.soull); g.globalAlpha = 1; }
+    if (v < 0.85) { g.globalAlpha = v > 0.6 ? 1 - (v - 0.6) / 0.25 : 1; headG(g, cx, cy + bounce, (rev ? -1 : 1) * (0.2 + v * 0.4), f); g.globalAlpha = 1; }
   }),
   heavy: cells => hi((g, t, f) => {
     if (t < 0.5 && f % 2 === 0) cells.forEach(i => tint(g, i, K.steel, 0.35));
@@ -10240,10 +10261,27 @@ Object.assign(FX, {
     D(g, x0 + 5, y0 + 25 - h, K.ash, 22, 4); D(g, x0 + 6, y0 + 24 - h, K.gray, 20, 1); D(g, x0 + 5, y0 + 28, K.ash, 22, 3);
     if (t < 0.65) for (let j = 0; j < 7; j++) disc(g, x0 + 3 + j * 4.5, y0 + 29 - rnd(j, cell) * 5 * t, 2, K.gray);
   }),
+  /* 석화의 시선: 돌 눈이 떠지고 분홍 시선이 줄을 훑은 뒤, 맞은 줄이 아래부터 돌로 굳어 금이 간다 */
   gazeFx: (rows, rev) => hi((g, t, f) => rows.forEach(r => {
-    const y0 = r * 32 + 16, head = Math.min(96, t / 0.5 * 104); if (t > 0.82 && f % 2) return;
-    const ox = rev ? 91 : 4; ell(g, ox, y0, 5, 4, K.sil); ell(g, ox, y0, 3, 2, K.rose); D(g, ox, y0, K.pale);
-    for (let s = 8; s < head; s++) { const x = rev ? 95 - s : s, w = 3 + Math.round(s / 18); D(g, x, y0 - w, K.rose, 1, 1); D(g, x, y0 + w, K.rose, 1, 1); if ((s + f * 2) % 6 < 3) { g.globalAlpha = 0.45; D(g, x, y0 - w + 1, K.rose, 1, w * 2 - 1); g.globalAlpha = 1; } if ((s * 7 + f) % 13 === 0) D(g, x, y0 - w + 1 + ((s * 5) % (w * 2)), K.gray, 2, 2); }
+    const y0 = r * 32 + 16, ex = rev ? 89 : 7, dir = rev ? -1 : 1, open = Math.min(1, t / 0.18);
+    /* 눈 */
+    ell(g, ex, y0, 8, 6, K.stoned); ell(g, ex, y0, 7, 5, K.stone); const lid = Math.round(5 * open);
+    if (lid > 0) { ell(g, ex, y0, 6, lid, K.gzl); disc(g, ex + dir, y0, Math.min(3, lid), K.gz); disc(g, ex + dir, y0, Math.min(1, lid), K.gzd); D(g, ex + dir - 1, y0 - 2, K.wht); }
+    D(g, ex - 8, y0 - 6 + (5 - lid), K.stoned, 17, 1);
+    if (t < 0.18) return;
+    const u = (t - 0.18) / 0.82, head = Math.min(96, u / 0.35 * 100), beam = u < 0.7 ? 1 : 1 - (u - 0.7) / 0.3;
+    /* 시선 빔: 가운데 밝고 가장자리 진한, 끝으로 갈수록 넓어지는 원뿔 */
+    g.globalAlpha = beam;
+    for (let s = 10; s < head; s++) { const x = ex + dir * s, w = 2 + s * 0.09 + Math.sin(s * 0.5 - f * 1.3) * 0.8; D(g, x, y0 - w, K.gzd, 1, 1); D(g, x, y0 + w, K.gzd, 1, 1); g.globalAlpha = beam * 0.55; D(g, x, y0 - w + 1, K.gz, 1, Math.max(1, w * 2 - 1)); g.globalAlpha = beam; D(g, x, y0 - 1, K.gzl, 1, 2); }
+    for (let j = 0; j < 8; j++) { const s = ((j * 13 + f * 5) % 86) + 10; if (s < head) twk(g, ex + dir * s, y0 + (rnd(j, r) - 0.5) * 8, 1, K.wht); }
+    g.globalAlpha = 1;
+    /* 석화: 빔이 지나간 칸이 아래부터 회색으로 차오른다 */
+    for (let c = 0; c < 3; c++) { const cxl = c * 32, rch = (rev ? 95 - (cxl + 16) : cxl + 16) - 6; if (head < rch) continue;
+      const v = Math.min(1, (u - rch / 100 * 0.35) / 0.4); if (v <= 0) continue; const hh = Math.round(30 * Math.min(1, v * 1.3)), out = u > 0.85 ? 1 - (u - 0.85) / 0.15 : 1;
+      g.globalAlpha = 0.55 * out; D(g, cxl + 1, r * 32 + 31 - hh, K.stone, 30, hh); g.globalAlpha = 0.8 * out; D(g, cxl + 1, r * 32 + 31 - hh, K.stonel, 30, 1);
+      if (v > 0.7) { const k = (v - 0.7) / 0.3; seg(g, cxl + 16, r * 32 + 8, cxl + 16 - 6 * k, r * 32 + 16, K.stoned, 1); seg(g, cxl + 16 - 6 * k, r * 32 + 16, cxl + 10, r * 32 + 24 * k + 2, K.stoned, 1); seg(g, cxl + 16, r * 32 + 8, cxl + 23 * k + 4 * (1 - k), r * 32 + 14, K.stoned, 1); }
+      g.globalAlpha = 1;
+      if (v > 0.85 && u < 0.95) for (let j = 0; j < 4; j++) D(g, cxl + 6 + rnd(c, j, r) * 20, r * 32 + 20 + (v - 0.85) * 60 * rnd(j, c), K.stoned, 2, 2); }
   })),
   rubble: cells => hi((g, t) => cells.forEach((i, n) => {
     const x0 = C(i) * 32, y0 = R(i) * 32;
@@ -10326,10 +10364,22 @@ Object.assign(FX, {
       else { const L = Math.round(15 * u); if (hz) { D(g, cx - L, cy - 2, col, L * 2, 5); D(g, cx - L, cy, K.pale, L * 2, 1); } else { D(g, cx - 2, cy - L, col, 5, L * 2); D(g, cx, cy - L, K.pale, 1, L * 2); } }
     } else { const v = (u - 1) / 0.7; tint(g, i, col, 0.4 * (1 - v)); for (let j = 0; j < 5; j++) D(g, cx - 11 + rnd(i, j) * 22, cy - 9 + rnd(j, i) * 14 + v * 10, j % 2 ? K.pale : col, 3, 1); if (i === corner) twk(g, cx, cy, 5 + v * 8, K.pale); }
   })),
+  /* 쪼기: 부리가 두 번 내리찍는다(0.2, 0.5). 3D에서는 부리를 3D 모형으로 따로 띄우므로(A3DRAW) 여기서는 땅 균열·먼지·깃털만 그린다 */
   peckFx: cells => hi((g, t, f) => cells.forEach(i => {
-    const [cx, cy] = mid2(i);
-    if (t < 0.3) { const y = cy - 28 + t / 0.3 * 26; for (let q = 0; q < 10; q++) D(g, cx - Math.floor(q / 2), y - q, q < 3 ? K.pale : K.yolk, q + 1, 1); }
-    else { const v = (t - 0.3) / 0.7; disc(g, cx, cy + 2, 3 + v * 2, K.sil); for (let j = 0; j < 8; j++) { const a = j / 8 * 6.283, r = 5 + v * 13; D(g, cx + Math.cos(a) * r, cy + 2 + Math.sin(a) * r * 0.7, j % 2 ? K.yolk : K.pale, 3, 2); } for (let j = 0; j < 3; j++) ell(g, cx - 9 + j * 9 + Math.sin(f * 0.7 + j) * 2, cy - 10 + v * 16 + j * 2, 3, 1, K.gray); }
+    const [cx, cy] = mid2(i), gy = cy + 8, HIT = [0.2, 0.5];
+    if (!window.A3DRAW && t < 0.72) {
+      const k = t < 0.2 ? t / 0.2 : t < 0.35 ? 1 - (t - 0.2) / 0.15 * 0.7 : t < 0.5 ? 0.3 + (t - 0.35) / 0.15 * 0.7 : 1 - (t - 0.5) / 0.22, tip = gy - 1 - (1 - k) * 34, op = t < 0.35 || (t > 0.5 && t < 0.62) ? 0 : 2;
+      if (t < 0.2 || (t > 0.35 && t < 0.5)) for (let j = 0; j < 3; j++) D(g, cx - 7 + j * 7, tip - 30 - j * 2, K.gray, 1, 8);
+      for (let q = 0; q < 16; q++) { const w = Math.max(1, Math.round(q * 0.62)); D(g, cx - w + 1 - op, tip - q, q < 3 ? K.pale : q % 5 === 4 ? '#d98a1a' : K.yolk, w, 1); D(g, cx - w + 1 - op, tip - q, '#b5650f'); }
+      for (let q = 0; q < 12; q++) { const w = Math.max(1, Math.round(q * 0.5)); D(g, cx + 1 + op, tip - 2 - q, '#d9821a', w, 1); D(g, cx + w + op, tip - 2 - q, '#b5650f'); }
+      D(g, cx - 4 - op, tip - 12, '#7a3d0c', 2, 1);
+    }
+    HIT.forEach((h, n) => { if (t < h) return; const v = Math.min(1, (t - h) / 0.4), big = n ? 1.5 : 1;
+      for (let j = 0; j < 7; j++) { const a = j / 7 * 6.283 + n * 0.4, L = (5 + rnd(i, j, n) * 5) * big * Math.min(1, v * 4); seg(g, cx, gy, cx + Math.cos(a) * L, gy + Math.sin(a) * L * 0.45, K.sil, 1); }
+      g.globalAlpha = 1 - v; ell(g, cx, gy, 5 + v * 14 * big, 2 + v * 3, K.ash); g.globalAlpha = 1;
+      if (v < 0.3) { twk(g, cx, gy - 2, Math.round(5 * big), K.wht); for (let j = 0; j < 8; j++) { const a = j / 8 * 6.283, r = 6 + v * 26 * big; D(g, cx + Math.cos(a) * r, gy - 3 + Math.sin(a) * r * 0.5, j % 2 ? K.yolk : K.pale, 2, 2); } } });
+    if (t > 0.22) { const v = (t - 0.22) / 0.78; for (let j = 0; j < 6; j++) { const x = cx - 14 + rnd(i, j) * 28 + Math.sin(v * 7 + j) * 5, y = gy - 24 + rnd(j, i) * 10 + v * 24, tl = Math.sin(v * 9 + j) > 0;
+      g.globalAlpha = v > 0.7 ? 1 - (v - 0.7) / 0.3 : 1; D(g, x - 2, y, K.wht, 5, 2); D(g, x - 2 + (tl ? 3 : 0), y - 1, K.wht, 2, 1); D(g, x - 2, y + 1, K.gray, 5, 1); g.globalAlpha = 1; } }
   })),
   crowFx: () => hi((g, t, f) => { for (let k = 0; k < 4; k++) { const r = t * 84 - k * 13; if (r > 2 && r < 72) circ(g, 48, 48, r, k % 2 ? K.yolk : K.org, 2); } if (f % 2 === 0 && t < 0.7) for (const i of ALL) tint(g, i, K.yolk, 0.22); for (let j = 0; j < 10; j++) ell(g, rnd(j, 3) * 92, (rnd(3, j) * 96 + t * 60) % 96, 3, 1, K.gray); }),
   eggBreak: cells => hi((g, t) => cells.forEach(i => { const [cx, cy] = mid2(i); for (let j = 0; j < 9; j++) { const a = rnd(i, j) * 6.283, r = 3 + t * 15; D(g, cx + Math.cos(a) * r, cy + 6 + Math.sin(a) * r * 0.6 + t * t * 8, j % 3 ? K.pale : K.yolk, 3, 2); } if (t < 0.5) ell(g, cx, cy + 9, 8, 3, K.yolk); })),
@@ -10779,9 +10829,9 @@ async function runReplay(old, neu) {
     else if (id === 'format') { fx(o, FX.admFormat(), 1100); later(() => pulse(bEl(o), 'shake', 450), WIND + 700); }
     else if (id === 'bolt') fx(o, FX.bolt(p.tg), 650);
     else if (id === 'burst') fx(o, FX.burst(), 650);
-    else if (id === 'hslash' || id === 'dash') fx(o, FX.slashH(rows, rev), 650);
-    else if (id === 'vslash') fx(o, FX.slashV(cols), 650);
-    else if (id === 'thrust') fx(o, FX.thrust(p.cells, rev), 600);
+    else if (id === 'hslash' || id === 'dash') { rows.forEach((r, n) => { fx(o, FX.kSweep(r, rev), 800, n * 90); fx(o, FX.kCut(r, true, rev), 700, 230 + n * 90); }); fx(o, FX.kNicks(p.cells, rev), 650, 250); later(() => pulse(bEl(o), 'shake1', 300), WIND + 240); }
+    else if (id === 'vslash') { cols.forEach((c, n) => { fx(o, FX.kChop(c, rev), 800, n * 90); fx(o, FX.kCut(c, false), 700, 300 + n * 90); }); fx(o, FX.kNicks(p.cells, rev), 650, 320); later(() => pulse(bEl(o), 'shake1', 300), WIND + 310); }
+    else if (id === 'thrust') fx(o, FX.kThrust(p.cells, rev), 650);
     else if (id === 'rail') fx(o, FX.rail(p.tg), 700);
     else if (id === 'ring') fx(o, FX.ring(), 650);
     else if (id === 'vine') fx(o, FX.vine(rows, rev), 700);
@@ -10947,7 +10997,7 @@ async function runReplay(old, neu) {
       const fr = rp.P[k].from, near = fr != null && fr !== cell && aimed(k).includes(fr);
       if (rp.P[k].dive) { floatText(k, 4, '물속 · 닿지 않음', 'f-big f-mint'); play('miss'); } else { play(mine(k) ? 'dodge' : 'miss'); play('whiff'); pulse(uEl(k), 'dodge', 500); if (near) nearFx(k, fr); floatText(k, cell, near ? (mine(k) ? '간발 회피!' : '간발로 빗나감!') : mine(k) ? '회피!' : '빗나감!', near ? 'f-big f-near' : mine(k) ? 'f-big f-move' : 'f-big f-miss'); } any = true;
     }
-    if (r.refl) { later(() => play('counter'), 300); fx(k, FX.slashH([R(cell)], mine(k)), 500, 300); later(() => { hurt(k); fx(k, FX.hit(cell), 450); }, 450); floatText(k, cell, '-' + r.refl + ' 반격', 'f-dmg', 450); any = true; }
+    if (r.refl) { later(() => play('counter'), 300); fx(k, FX.kSweep(R(cell), mine(k)), 650, 250); fx(k, FX.kCut(R(cell), true, mine(k)), 600, 430); later(() => { hurt(k); fx(k, FX.hit(cell), 450); }, 450); floatText(k, cell, '-' + r.refl + ' 반격', 'f-dmg', 450); any = true; }
     if (r.dmg > 0 || r.refl || r.pOk || r.gOk) later(() => refreshStat(k), 250);
   }
   const fatal = hits.find(h => neu.P[h[0]].hp <= 0);
@@ -12329,6 +12379,86 @@ Object.assign(FX, {
   /* 휘두르기 전: 발밑에서 먼지가 인다 */
   gstomp: cell => HI((g, t, f) => { const [cx, cy] = m3(cell), gy = cy + 10; gring(g, cx, gy, 6 + t * 16, K.gray, 1); gdust(g, cx, gy, t, 10); for (let j = 0; j < 4; j++) D(g, cx - 10 + j * 7, gy - 6 - t * 22 - rnd(j, cell) * 8, j % 2 ? K.lblue : K.steel, 1, 4); }),
 });
+/* --- 사무라이: 일본도. 대검(gsword)처럼 칼 자체가 움직이고, 지나간 자리에 칼빛 잔상과 베인 선이 남는다 --- */
+Object.assign(K, { kat: '#dfe9f5', katd: '#8796b3', katm: '#b9c6dc', tsu: '#d4a93c', tsud: '#8a6420', ito: '#2a1f3a', same: '#efe6d0', cut: '#ff5d73', cutl: '#ffd0d6' });
+/* 일본도 한 자루. (tx, ty)가 칼끝이고 ang 방향으로 칼몸이 뻗는다. 날(j<0 쪽)이 바깥으로 볼록하게 휜다(소리). side(±1)로 날이 향하는 쪽을 고른다: 휘두르는 방향 쪽이 날. glow면 날이 빛난다 */
+function katana(g, tx, ty, ang, len, glow, side) {
+  const sd = side || 1, dx = Math.cos(ang), dy = Math.sin(ang), px = -dy * sd, py = dx * sd, P = (s, j) => { const o = Math.sin(Math.PI * Math.min(1, s / len)) * len * 0.05; return [tx + dx * s + px * (j - o), ty + dy * s + py * (j - o)]; };
+  for (let s = 0; s <= len; s++) {
+    const hw = s < 5 ? s * 0.4 : 2;
+    for (let j = -hw; j <= hw; j += 0.5) { const [x, y] = P(s, j), c = j <= -hw + 0.6 ? (glow ? K.wht : K.kat) : j < -0.5 ? ((s >> 2) % 2 ? K.wht : K.kat) : j > hw - 0.6 ? K.katd : K.katm; D(g, x, y, c, 1, 1); }
+  }
+  for (let j = -2.5; j <= 2.5; j += 0.5) { const [x, y] = P(len + 1, j); D(g, x, y, K.tsu, 2, 2); }
+  for (let j = -5; j <= 5; j += 0.5) { const [x, y] = P(len + 3.5, j); D(g, x, y, Math.abs(j) > 4 ? K.tsud : K.iron, 2, 2); }
+  for (let s = len + 5; s <= len + 19; s++) for (let j = -1.5; j <= 1.5; j += 0.5) { const [x, y] = P(s, j), d = (s + Math.round(j * 2)) % 4; D(g, x, y, d < 2 ? K.ito : K.same, 1, 1); }
+  const [kx, ky] = P(len + 20, 0); D(g, kx - 1, ky - 1, K.tsu, 3, 3);
+}
+/* 베인 자국: 가늘고 밝은 선이 벌어졌다 닫힌다 (a에서 b로 head만큼) */
+function kCutLine(g, ax, ay, bx, by, head, gap, fade) {
+  const n = Math.max(1, Math.round(Math.hypot(bx - ax, by - ay))), nx = -(by - ay) / n, ny = (bx - ax) / n; g.globalAlpha = fade;
+  for (let s = 0; s <= n * head; s++) { const x = ax + (bx - ax) * s / n, y = ay + (by - ay) * s / n; D(g, x + nx * gap, y + ny * gap, K.red, 1, 1); D(g, x - nx * gap, y - ny * gap, K.redd, 1, 1); if (gap < 1.2 || s % 2) D(g, x, y, gap > 0.8 ? K.cutl : K.wht, 1, 1); }
+  g.globalAlpha = 1;
+}
+Object.assign(FX, {
+  /* 가로베기: 진영 바깥에서 뽑아 든 일본도가 가로줄을 한 번에 가른다. 칼이 지나간 자리는 잔상이 남고, 0.42에 줄 전체가 갈라진다 */
+  kSweep: (r, rev) => HI((g, t, f) => {
+    const y0 = r * 32 + 20, px0 = rev ? 108 : -12, sg = rev ? -1 : 1, L = 104, A0 = -1.25, A1 = 0.18;
+    let ph; if (t < 0.14) ph = A0 - 0.1 * Math.sin(t / 0.14 * 1.57); else if (t < 0.36) { const u = (t - 0.14) / 0.22; ph = A0 - 0.1 + (A1 - A0 + 0.1) * (1 - Math.pow(1 - u, 3)); } else ph = A1 + Math.min(1, (t - 0.36) / 0.3) * 0.08;
+    const tipOf = a => [px0 + sg * L * Math.cos(a), y0 + L * 0.4 * Math.sin(a)];
+    if (t > 0.15 && t < 0.6) { const out = t > 0.36 ? 1 - (t - 0.36) / 0.24 : 1, span = Math.min(0.9, ph - A0 + 0.1);
+      for (let a = ph - span; a <= ph; a += 0.012) { const k = (ph - a) / span, p = tipOf(a), q = [px0 + (p[0] - px0) * (0.5 + k * 0.3), y0 + (p[1] - y0) * (0.5 + k * 0.3)];
+        g.globalAlpha = (1 - k) * 0.85 * out; seg(g, q[0], q[1], p[0], p[1], k < 0.15 ? K.wht : k < 0.45 ? K.cutl : K.cut, 1); D(g, p[0], p[1], k < 0.5 ? K.wht : K.cut, 2, 2); } }
+    g.globalAlpha = t > 0.6 ? Math.max(0, 1 - (t - 0.6) / 0.25) : 1;
+    const tp = tipOf(ph), ang = Math.atan2(y0 - tp[1], px0 - tp[0]), len = Math.hypot(px0 - tp[0], y0 - tp[1]) * 0.72;
+    katana(g, tp[0], tp[1], ang, len, t > 0.14 && t < 0.4, sg);
+    if (t > 0.15 && t < 0.38) twk(g, tp[0], tp[1], 3 + (f % 2) * 2, K.wht);
+    g.globalAlpha = 1;
+  }),
+  /* 내려베기: 머리 위로 치켜든 일본도가 세로줄을 따라 내리그어진다 */
+  kChop: (c, rev) => HI((g, t, f) => {
+    const cx = c * 32 + 16, hy = -4, sx = rev ? 1 : -1;
+    let back; if (t < 0.3) back = (1.45 + Math.sin(t / 0.3 * 1.57) * 0.12) * -sx; else if (t < 0.46) { const u = (t - 0.3) / 0.16; back = (1.57 - 1.67 * (1 - Math.pow(1 - u, 3))) * -sx; } else back = 0.1 * sx;
+    const len = 74, at = b => [cx + Math.sin(b) * len, hy + Math.cos(b) * len];
+    if (t > 0.3 && t < 0.62) { const out = t > 0.46 ? 1 - (t - 0.46) / 0.16 : 1, b0 = 1.57 * -sx, span = Math.abs(back - b0);
+      for (let d = 0; d <= Math.min(1.3, span); d += 0.012) { const b = back + d * -sx, k = d / Math.min(1.3, span || 1), p = at(b), q = [cx + (p[0] - cx) * (0.45 + k * 0.3), hy + (p[1] - hy) * (0.45 + k * 0.3)];
+        g.globalAlpha = (1 - k) * 0.85 * out; seg(g, q[0], q[1], p[0], p[1], k < 0.15 ? K.wht : k < 0.45 ? K.cutl : K.cut, 1); D(g, p[0], p[1], k < 0.5 ? K.wht : K.cut, 2, 2); } }
+    g.globalAlpha = t > 0.66 ? Math.max(0, 1 - (t - 0.66) / 0.25) : Math.min(1, t * 8);
+    const p = at(back);
+    katana(g, p[0], p[1], Math.atan2(hy - p[1], cx - p[0]), len - 22, t > 0.3 && t < 0.5, -sx);
+    if (t < 0.3 && f % 3 === 0) twk(g, p[0], p[1], 3, K.wht);
+    g.globalAlpha = 1;
+  }),
+  /* 칼이 지나간 줄(가로 horiz, 세로)이 바닥에서 갈라진다 */
+  kCut: (n, horiz, rev) => HI((g, t, f) => {
+    const u = Math.min(1, t / 0.18), gap = t < 0.18 ? 0.6 : Math.sin(Math.min(1, (t - 0.18) / 0.5) * Math.PI) * 2.2 + 0.4, fade = t > 0.7 ? Math.max(0, 1 - (t - 0.7) / 0.3) : 1, m = n * 32 + 16;
+    if (t < 0.12 && f % 2 === 0) [0, 1, 2].forEach(k => tint(g, horiz ? n * 3 + k : k * 3 + n, K.wht, 0.45));
+    if (horiz) kCutLine(g, rev ? 95 : 0, m + 4, rev ? 0 : 95, m - 2, u, gap, fade); else kCutLine(g, m - 3, 0, m + 2, 95, u, gap, fade);
+  }),
+  /* 칸마다 X자 칼자국과 불티 */
+  kNicks: (cells, rev) => HI((g, t, f) => cells.forEach((i, n) => {
+    if (i > 8) return; const [cx, cy] = m3(i), v = (t - n * 0.04) / 0.8; if (v < 0 || v > 1) return; const s = Math.min(1, v * 5), fade = v > 0.6 ? 1 - (v - 0.6) / 0.4 : 1, d = rev ? -1 : 1;
+    if (v < 0.14) { g.globalAlpha = 0.8; disc(g, cx, cy - 6, 6, K.wht); g.globalAlpha = 1; }
+    g.globalAlpha = fade; seg(g, cx - 9 * s * d, cy - 14 * s, cx + 9 * s * d, cy + 2 * s, K.cut, 2); seg(g, cx - 8 * s * d, cy - 13 * s, cx + 8 * s * d, cy + 1 * s, K.wht, 1); g.globalAlpha = 1;
+    for (let j = 0; j < 9; j++) { const a = -Math.PI / 2 + (rnd(i, j) - 0.5) * 2.6, r = v * (10 + rnd(j, i) * 18); D(g, cx + Math.cos(a) * r * d, cy - 6 + Math.sin(a) * r + v * v * 18, j % 3 === 0 ? K.wht : j % 3 === 1 ? K.yel : K.cutl, j % 2 ? 2 : 1, j % 2 ? 2 : 1); }
+  })),
+  /* 찌르기: 옆에서 일본도가 꽂히고, 관통한 칼바람이 뒤로 뚫고 나간다 */
+  kThrust: (cells, rev) => HI((g, t, f) => cells.forEach(i => {
+    if (i > 8) return; const [cx, cy0] = m3(i), cy = cy0 - 8, dir = rev ? -1 : 1, T1 = 0.24, ang = dir > 0 ? Math.PI : 0;
+    if (t < T1) { const u = Math.pow(t / T1, 2.2), tip = cx + dir * 6 - dir * (54 * (1 - u));
+      for (let k = 0; k < 6; k++) { const ly = cy - 9 + rnd(k, 3, i) * 18, lx = tip - dir * (14 + rnd(k, 7) * 26); g.globalAlpha = 0.55; D(g, Math.min(lx, lx - dir * 16), ly, K.gray, 16, 1); }
+      g.globalAlpha = 1; katana(g, tip, cy, ang, 40, true, dir); return; }
+    const v = (t - T1) / (1 - T1), back = v < 0.2 ? 0 : Math.min(1, (v - 0.2) / 0.5) * 22;
+    if (v < 0.75) { g.globalAlpha = 1 - Math.max(0, v - 0.45) / 0.3; katana(g, cx + dir * 6 - dir * back, cy, ang, 40, v < 0.2, dir); g.globalAlpha = 1; }
+    if (v < 0.16) { disc(g, cx + dir * 6, cy, 8, K.wht); twk(g, cx + dir * 6, cy, 15, K.wht); }
+    if (v < 0.7) { const w = v / 0.7, L = 12 + w * 36; g.globalAlpha = 1 - w;
+      for (let s = 0; s < L; s++) { const h = 2 + s * 0.33, x = cx + dir * (8 + s); D(g, x, cy - h, K.cut, 1, 1); D(g, x, cy + h, K.cut, 1, 1); if (s % 3 === f % 3) D(g, x, cy - h * 0.5, K.cutl, 1, Math.max(1, h)); }
+      for (let k = 0; k < 3; k++) { const ox = cx + dir * (14 + k * 11 + w * 18), rr = 3 + k * 2 + w * 4; for (let a = -8; a <= 8; a++) D(g, ox - dir * Math.abs(a) * 0.3, cy + a / 8 * rr, k % 2 ? K.cutl : K.wht, 1, 1); }
+      g.globalAlpha = 1; }
+    if (v > 0.1) { const s2 = Math.min(1, (v - 0.1) / 0.25), fade = v > 0.7 ? 1 - (v - 0.7) / 0.3 : 1; g.globalAlpha = fade;
+      seg(g, cx - 6 * s2, cy - 6 * s2, cx + 6 * s2, cy + 6 * s2, K.cut, 2); seg(g, cx - 6 * s2, cy + 6 * s2, cx + 6 * s2, cy - 6 * s2, K.redd, 2); D(g, cx - 1, cy - 1, K.cutl, 3, 3); g.globalAlpha = 1; }
+    if (v > 0.12) for (let j = 0; j < 12; j++) { const a = (rnd(i, j) - 0.5) * 1.5 + (dir > 0 ? 0 : Math.PI), r = (v - 0.12) * (18 + rnd(j, i) * 32); D(g, cx + Math.cos(a) * r, cy + Math.sin(a) * r + v * v * 12, j % 3 ? K.cut : K.wht, 2, j % 2 ? 1 : 2); }
+  })),
+});
 /* ===== 대장장이의 대장간 이펙트: 망치, 달군 쇠, 불티. lv(담금질 + 달군 쇠)가 오를수록 쇠가 더 하얗게 달아오른다 ===== */
 Object.assign(K, { molt: '#ff9b3d', glow: '#ffe7a8', cinder: '#7a2f1c' });
 const smHeatCol = h => h > 0.8 ? K.wht : h > 0.6 ? K.glow : h > 0.42 ? K.yel : h > 0.26 ? K.molt : h > 0.12 ? K.ember : K.cinder;
@@ -13341,7 +13471,7 @@ const PVSET = {
   painter: () => [['brush', [FX.brushFx([4])], 800], ['roller', [FX.rollerFx([3, 4, 5])], 900], ['magnum', [FX.magnumFx([0, 2, 4, 6, 8])], 1100]],
   alch: () => [['acid', [FX.acidFx(4, false)], 900], ['flask', [FX.flaskFx([0, 1, 3, 4], false, true)], 950], ['philo', [FX.philoFx([1, 3, 4, 5, 7], 4, 3)], 1200]],
   bunny: () => [['tray', [FX.trayFx(4, false, true)], 850], ['heel', [FX.heelFx([1, 3, 4, 5, 7], 4, true)], 800], ['show', [FX.showFx([1, 3, 4, 5, 7])], 1100]],
-  mage: () => [['meteor', [FX.meteor([1, 3, 4, 5, 7])], 1000], ['bolt', [FX.bolt(1)], 650]], samurai: () => [['hslash', [FX.slashH([1], false)], 650], ['vslash', [FX.slashV([1])], 650]],
+  mage: () => [['meteor', [FX.meteor([1, 3, 4, 5, 7])], 1000], ['bolt', [FX.bolt(1)], 650]], samurai: () => [['hslash', [FX.kSweep(1, false)], 800], ['vslash', [FX.kChop(1, false)], 800], ['thrust', [FX.kThrust([4], false)], 650]],
   mechanic: () => [['rail', [FX.rail(1)], 700], ['mine', [FX.boom([4])], 700]], druid: () => [['vine', [FX.vine([1], false)], 700], ['spore', [FX.spore([3, 4, 5], true)], 700]],
   slime: () => [['slam', [FX.splat([3, 4, 5], K.vio)], 650], ['engulf', [FX.engulf([4])], 650]], archaeologist: () => [['shovel', [FX.shovelFx([4], false)], 650]],
   shaman: () => [['storm', [FX.bolt(1)], 650], ['tornado', [FX.tornado([1, 3, 4, 5, 7])], 800]],
@@ -14689,10 +14819,10 @@ function stOverHTML(won) {
      칸을 물들이는 색(tint)은 항상 바닥으로 보내고, 타격과 폭발에는 복셀 파편을 더한다. */
   const GM = (function () { try { return { FX: FX, FXQ: FXQ, K: K, FXM: FXM }; } catch (e) { return null; } })();
   const FX0 = {}, MODE = {};
-  [['c', 'hawkHopFx staffFx encircleFx stoopFx brushFx splashFx rollerFx magnumFx bingoFx footFx flaskFx philoFx trayBreakFx punchFx upperFx bladeFx pebbleFx clumpFx heelFx showFx mgMotes mgFire mgSky drSeed drBurst asConStar asNovaArm asCometR asConstel blJet blPop blHelium mfProng mfHarpoon gbChips qnChips wwArrow wwVolley cmTalis cmTaiji smHammer smSkewer smErupt gdebris surgeRing shardFx twinFx kaleidoCast kaleidoFx tickFx clockCast clockBoom bellFx echoFx biteFx bspearFx batsFx feastFx arrowFx volleyFx pickFx wispCast wispFx ghandFx boom fireCast meteor markPop thrust whiff spore splat engulf shovelFx heavy rubble balls notes sparks talisFx sickleFx peckFx eggBreak prongFx'],
+  [['c', 'kNicks kThrust hawkHopFx staffFx encircleFx stoopFx brushFx splashFx rollerFx magnumFx bingoFx footFx flaskFx philoFx trayBreakFx punchFx upperFx bladeFx pebbleFx clumpFx heelFx showFx mgMotes mgFire mgSky drSeed drBurst asConStar asNovaArm asCometR asConstel blJet blPop blHelium mfProng mfHarpoon gbChips qnChips wwArrow wwVolley cmTalis cmTaiji smHammer smSkewer smErupt gdebris surgeRing shardFx twinFx kaleidoCast kaleidoFx tickFx clockCast clockBoom bellFx echoFx biteFx bspearFx batsFx feastFx arrowFx volleyFx pickFx wispCast wispFx ghandFx boom fireCast meteor markPop thrust whiff spore splat engulf shovelFx heavy rubble balls notes sparks talisFx sickleFx peckFx eggBreak prongFx'],
     ['c1', 'hawkSwoopFx whistleFx talonFx treatFx sketchFx dyeFx acidPoolFx acidFx antiFx catFx tmFx grabFx counterFx tuneFx trayFx cupFx winkFx castRing clBoxPop asStar asNova asComet asLens asHole asHoleBurst blInflate blBang blKnot mfBubble mfDive mfSurf gbWheel gbCoin gbAllin gbBluff gbPot qnWheel qnCoin qnAllin qnBluff qnPot wwTag wwPrey wwNoose wwSnap wwAmbush cmWard smOpus smAnvil smStoke gplungeFx gblockFx gstomp surgeCharge surgeFx copyFx flipFx haltFx mistFx drainFx bloodPay tagFx preyFx nooseFx nooseSnap ambushFx coffinFx quakeFx parryReady clash guard guardOk dust sparkle hit crumble place hookFx bramble thornHit healFx dirt pillarFx headFx starFx splash'],
-    ['a', 'cmShiki gchopFx gcleaveFx tornado diceFx scry sand sunFx blink batMove rewindFx'], ['r', 'driveFx wwDrive slashH vine turretFire snowFx gazeFx pieFx waveFx'], ['r1', 'turretUp gsweepFx gbDice qnDice mfWave'], ['rows3', 'wolves gust'],
-    ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx kickFx'], ['ground', 'mgCircle asConLine asCometCast gbRoulette qnRoulette cmBoard smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
+    ['a', 'kChop cmShiki gchopFx gcleaveFx tornado diceFx scry sand sunFx blink batMove rewindFx'], ['r', 'driveFx wwDrive slashH vine turretFire snowFx gazeFx pieFx waveFx'], ['r1', 'kSweep turretUp gsweepFx gbDice qnDice mfWave'], ['rows3', 'wolves gust'],
+    ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx kickFx'], ['ground', 'kCut mgCircle asConLine asCometCast gbRoulette qnRoulette cmBoard smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
   ].forEach(function (m) { m[1].split(' ').forEach(function (n) { MODE[n] = m[0]; }); });
   /* 2D에서는 바닥 그림이지만 3D에서는 칸 위에 세워야 읽히는 것: 관리자의 오류 창 */
   const UPRIGHT = { admPopup: 1 }; MODE.admPopup = 'c';
@@ -14700,7 +14830,7 @@ function stOverHTML(won) {
     tornado: function (a) { const c = a[0] || []; let q = null; try { q = c.find(function (i) { return c.every(function (j) { return around(i).includes(j); }); }); } catch (e) { /* 무시 */ } return q != null ? q : c[0]; },
     cmShiki: function (a) { return cmCenter(a[0] || [4], !!a[1]); },
     diceFx: function (a) { const c = a[0] || []; return c.length ? c[Math.floor(c.length / 2)] : 4; },
-    gcleaveFx: function (a) { return 3 + a[0]; }, gchopFx: function (a) { return a[0]; }, scry: function () { return 4; }, sand: function () { return 4; }, sunFx: function () { return 7; }, blink: function (a, t) { return t < 0.5 ? a[0] : a[1]; }, batMove: function (a, t) { return t < 0.5 ? a[0] : a[1]; }, rewindFx: function (a, t) { return t < 0.5 ? a[0] : a[1]; }
+    gcleaveFx: function (a) { return 3 + a[0]; }, kChop: function (a) { return 3 + a[0]; }, gchopFx: function (a) { return a[0]; }, scry: function () { return 4; }, sand: function () { return 4; }, sunFx: function () { return 7; }, blink: function (a, t) { return t < 0.5 ? a[0] : a[1]; }, batMove: function (a, t) { return t < 0.5 ? a[0] : a[1]; }, rewindFx: function (a, t) { return t < 0.5 ? a[0] : a[1]; }
   };
   if (GM) Object.keys(GM.FX).forEach(function (k) { const o = GM.FX[k]; if (typeof o !== 'function') return; FX0[k] = o;
     GM.FX[k] = function () { const f = o.apply(this, arguments); if (typeof f === 'function') f.a3 = [k, [].slice.call(arguments)]; return f; }; });
@@ -14853,6 +14983,26 @@ function stOverHTML(won) {
       const out = t > 5 ? clamp01((t - 5) / 0.4) : 0; g.scale.setScalar(Math.max(0.001, 1 - out));
       g.position.set(x + px, TY + py, z); body.rotation.z = rz; return t < 5.4; }, sc);
   }
+  /* 닭 쪼기 부리: 2D 이펙트(peckFx)의 시간 t를 그대로 받아 움직인다. st.t는 매 프레임 syncFx가 넣고, 끊기면 사라진다 */
+  function beakGo(x, z, st) {
+    const g = new T.Group(), up = new T.MeshLambertMaterial({ color: 0xf2a516, emissive: 0x3a1c00, flatShading: true }), lo = new T.MeshLambertMaterial({ color: 0xd9821a, emissive: 0x2a1000, flatShading: true }),
+      dk = new T.MeshLambertMaterial({ color: 0x7a3d0c }), body = new T.Group();
+    /* 옆모습이 카메라를 보게: 위 부리는 끝이 살짝 휜 갈고리, 아래 부리는 경첩(hinge)에서 벌어진다. 두께를 주고 모서리를 깎아 면이 보이게 */
+    const ex = function (sh, d) { const q = new T.ExtrudeGeometry(sh, { depth: d, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.035, bevelSegments: 1, curveSegments: 5 }); q.translate(0, 0, -d / 2); return q; };
+    const us = new T.Shape(); us.moveTo(-0.14, 0.8); us.lineTo(0.05, 0.8); us.quadraticCurveTo(0.07, 0.3, 0.11, 0.0); us.quadraticCurveTo(0.0, 0.1, -0.06, 0.3); us.quadraticCurveTo(-0.14, 0.55, -0.14, 0.8);
+    body.add(new T.Mesh(ex(us, 0.22), up));
+    const rs = new T.Shape(); rs.moveTo(-0.13, 0.76); rs.lineTo(-0.09, 0.76); rs.quadraticCurveTo(-0.08, 0.45, -0.02, 0.2); rs.lineTo(-0.05, 0.26); rs.quadraticCurveTo(-0.13, 0.5, -0.13, 0.76);
+    const ridge = new T.Mesh(ex(rs, 0.26), new T.MeshLambertMaterial({ color: 0xffd36a, emissive: 0x3a2400, flatShading: true })); body.add(ridge);
+    xBox(body, 0.05, 0.03, 0.33, dk, -0.07, 0.66, 0);
+    const hinge = new T.Group(); hinge.position.set(0.05, 0.74, 0);
+    const ls = new T.Shape(); ls.moveTo(0, 0); ls.lineTo(0.1, 0); ls.quadraticCurveTo(0.1, -0.35, 0.03, -0.6); ls.quadraticCurveTo(-0.01, -0.3, 0, 0);
+    hinge.add(new T.Mesh(ex(ls, 0.17), lo)); body.add(hinge); g.add(body);
+    const tipY = function (t) { if (t < 0.2) { const k = t / 0.2; return 1.9 * (1 - k * k); } if (t < 0.35) return Math.sin((t - 0.2) / 0.15 * PI / 2) * 0.75; if (t < 0.5) { const k = (t - 0.35) / 0.15; return 0.75 * (1 - k * k); } return Math.pow(Math.max(0, t - 0.5) / 0.3, 1.5) * 2.2; };
+    xAdd(g, function () { const t = st.t; if (t == null || performance.now() - st.at > 160 || t > 0.8) return false;
+      const near = Math.min(Math.abs(t - 0.2), Math.abs(t - 0.5)), sq = near < 0.04 ? 1 - (0.04 - near) * 5 : 1;
+      g.position.set(x, TY + 0.06 + tipY(t), z); g.rotation.set(-0.25, -0.35, 0.12); body.scale.set((2 - sq) * 0.95, sq * 0.95, (2 - sq) * 0.95);
+      hinge.rotation.z = (t > 0.22 && t < 0.42) || t > 0.55 ? 0.42 : 0.03; g.scale.setScalar(t > 0.65 ? Math.max(0.001, 1 - (t - 0.65) / 0.15) : 1); return true; });
+  }
   /* 처형 이펙트: 3D가 아니면 false */
   window.A3EXE = function (kind, boardEl, cell, dir) { if (!active || !boards || mode !== 'duel') return false; const b = [].indexOf.call(boards, boardEl); if (b < 0) return false;
     const x = cellX(b, cell % 3) + boardG[b].position.x, z = cellZ(Math.floor(cell / 3)) + 0.1;
@@ -14925,7 +15075,7 @@ function stOverHTML(won) {
     pickFx: [0.28, 10, ['gray', 'ash', 'sil'], 2.8, 3.2], wispFx: [0.1, 12, ['wisp', 'wispd', 'wht'], 1.2, 2.4, -1.6], ghandFx: [0.2, 5, ['sil', 'bone'], 1.6, 2.2], quakeFx: [0.02, 16, ['gray', 'sil', 'ash'], 3.2, 3.8], coffinFx: [0.02, 6, ['ash', 'sil'], 1.6, 1.4], hit: [0, 12, ['red', 'org', 'wht'], 3.2, 2.8], boom: [0.12, 12, ['org', 'yel', 'red'], 3.4, 3.4], meteor: [0.4, 18, ['org', 'red', 'sil', 'yel'], 4.2, 4], sparks: [0, 10, ['ember', 'yel'], 3, 3.2],
     clash: [0, 9, ['amb', 'wht'], 3, 2.6], rubble: [0.5, 6, ['gray', 'ash'], 1.6, 1.4], dirt: [0.05, 9, ['sand', 'sandd'], 2, 3.2], crumble: [0, 9, ['ash', 'sil'], 1.4, 1.2], eggBreak: [0, 7, ['wht', 'yolk'], 2.2, 2.6],
     splat: [0.4, 9, [1], 2.4, 2.2], splash: [0.1, 10, ['lblue', 'wht', 'mint'], 2, 3.8], thornHit: [0.3, 5, ['red'], 1.6, 2.6], guardOk: [0, 8, [1, 'wht'], 2.6, 2.4], markPop: [0.3, 8, ['red', 'yel'], 3, 2.8],
-    frost: [0.3, 6, ['ice', 'lblue'], 1.4, 2], peckFx: [0.3, 6, ['yolk', 'pale'], 2.2, 2.4], fireCast: [0.62, 6, ['org', 'red', 'yel'], 2, 2.4], starFx: [0.45, 8, ['star', 'yel', 'pale'], 2.6, 2.8],
+    frost: [0.3, 6, ['ice', 'lblue'], 1.4, 2], peckFx: [0.2, 6, ['yolk', 'pale'], 2.2, 2.4], kNicks: [0.05, 6, ['wht', 'yel', 'cutl'], 2.6, 2.6], kThrust: [0.26, 8, ['cut', 'wht', 'cutl'], 2.4, 2.4], fireCast: [0.62, 6, ['org', 'red', 'yel'], 2, 2.4], starFx: [0.45, 8, ['star', 'yel', 'pale'], 2.6, 2.8],
     talisFx: [0.4, 5, ['ind', 'pale'], 1.8, 2.2], cmTalis: [0.4, 7, ['cmW', 'cmB', 'cmA'], 2, 2.4], cmShiki: [0.3, 6, ['cmW', 'cmB', 'cmA'], 1.8, 2.2], cmTaiji: [0.35, 8, ['cmW', 'cmB'], 2.4, 2.6], balls: [0.55, 6, ['mag', 'yel', 'blue'], 2.4, 2.4], headFx: [0.55, 8, ['steel', 'lblue'], 2.6, 2.4], prongFx: [0.3, 5, ['mint', 'lblue'], 2, 2],
     healFx: [0, 6, ['grn', 'lime'], 0.5, 1.5, -1.2], sparkle: [0, 6, [1], 0.5, 1.4, -1.2], bolt: [0.05, 8, ['yel', 'pale', 'amb'], 3, 3] };
   function emit(b, S, t) {
@@ -14942,7 +15092,7 @@ function stOverHTML(won) {
     if (list && list.length) {
       L.gg.setTransform(1, 0, 0, 1, 0, 0); L.gg.globalAlpha = 1; L.gg.clearRect(0, 0, 96, 96); L.vg.setTransform(1, 0, 0, 1, 0, 0); L.vg.globalAlpha = 1; L.vg.clearRect(0, 0, 96, 96);
       L.wg.setTransform(1, 0, 0, 1, 0, 0); L.wg.globalAlpha = 1; L.wg.clearRect(0, 0, L.WS, L.WS); L.wg.setTransform(1, 0, 0, 1, L.WM, L.WM);
-      RED = L.gg;
+      RED = L.gg; window.A3DRAW = 1;
       for (const e of list) {
         const el = Math.floor((tn - e.t0) / 66) * 66; if (el < 0 || el >= e.dur) continue;
         const t = el / e.dur, f = Math.floor(el / 66), S = subs(e); act = true;
@@ -14958,9 +15108,12 @@ function stOverHTML(won) {
         }
         if (S.mode === 'ground' && e.fn.wide) { L.wg.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; try { e.fn(L.wg, t, f); } catch (err) { /* 무시 */ } L.wg.globalAlpha = 1; wide = true; }
         else if (S.mode === 'vol' || S.mode === 'ground') { const g = S.mode === 'vol' ? L.vg : L.gg; g.globalAlpha = 1; SC = e.fn.hi ? 1 : 2; try { e.fn(g, t, f); } catch (err) { /* 무시 */ } g.globalAlpha = 1; if (S.mode === 'vol') vol = true; }
+        if (S.name === 'peckFx') S.forEach(function (s) { if (s.cell == null || s.cell < 0 || s.cell > 8) return;
+          if (!s.bk) { s.bk = { t: t, at: performance.now() }; beakGo(cellX(b, s.cell % 3) + boardG[b].position.x, cellZ(Math.floor(s.cell / 3)) + 0.34, s.bk); }
+          s.bk.t = t; s.bk.at = performance.now(); if (t >= 0.5 && !s.h2) { s.h2 = 1; burst(b, s.cell, 8, [GM.K.yolk, GM.K.pale, GM.K.wht], 2.6, 2.6, 11); } });
         emit(b, S, t);
       }
-      RED = null;
+      RED = null; window.A3DRAW = 0;
     }
     for (let k = np; k < L.ps.length; k++) L.ps[k].grp.visible = false;
     if (act || L.live) { if (!act) { L.gg.clearRect(0, 0, 96, 96); L.vg.clearRect(0, 0, 96, 96); } L.gt.needsUpdate = true; L.vt.needsUpdate = true; }
