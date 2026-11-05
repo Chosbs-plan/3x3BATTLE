@@ -4232,6 +4232,8 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .exa-cb i + i { position: absolute; right: 8px; top: 8px; width: 16px; height: 16px; border-top: 3px solid rgba(255, 255, 255, .7); border-right: 3px solid rgba(255, 255, 255, .7); }
 .exb.pc .exa-cb { width: 96px; height: 96px; } .exb.pc .exa-cb i:first-child { width: 34px; height: 34px; }
 /* 미리 보기 창 */
+.exepv-3d { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+.exepv-st.d3 .exepv-me, .exepv-st.d3 .exepv-foe { visibility: hidden; } .exepv-st.d3 .exepv-fl { display: none; } .exepv-st.d3 .exepv-n { z-index: 1; }
 .exepv { position: fixed; inset: 0; z-index: 9500; display: grid; place-content: center; justify-items: center; gap: 10px; background: rgba(20, 12, 16, .72); cursor: pointer; animation: exFade .18s both; }
 .exepv > .cap { color: #d9cbc7; margin: 0; }
 .exepv-st { position: relative; width: min(760px, 92vw); aspect-ratio: 16 / 9; overflow: hidden; container-type: size; background: linear-gradient(#f8ecd9, #efdcc2 62%, #d9c2a4 62%, #cdb393); border: 4px solid var(--ink); box-shadow: 8px 8px 0 rgba(0, 0, 0, .4); }
@@ -10974,10 +10976,13 @@ async function exePreview(id) {
   m.innerHTML = `<div class="exepv-st"><i class="exepv-fl"></i><i class="px exepv-me a-${rep}${skc(rep, skinOf(rep))}"></i><i class="px exepv-foe flip a-${foe}"></i><b class="exepv-n">${exeName(id)}</b></div><p class="cap">${mE('누르면 닫습니다', 'Click to close')}</p>`;
   document.body.appendChild(m); const st = m.querySelector('.exepv-st'), f = m.querySelector('.exepv-foe');
   m.addEventListener('click', () => m.remove());
+  /* 3D가 켜져 있으면 결투와 같은 3D 무대에서 재생한다(동전·단두대·큐브도 3D) */
+  let ctl = null; try { ctl = window.A3PV ? A3PV(st, m.querySelector('.exepv-me'), f) : null; } catch (e) { ctl = null; }
+  if (ctl) st.classList.add('d3');
   await exeWait(350); if (!m.isConnected) return;
   const sr = st.getBoundingClientRect(), fr = f.getBoundingClientRect();
-  const pt = { x: fr.left - sr.left + fr.width / 2, y: fr.top - sr.top + fr.height * 0.55 };
-  if (EXE_RUN[id]) await exeRun(id, st, pt, fr.height / 170, 1, CLS[foe].n, () => f.classList.add('gone'), { el: f });
+  const pt = ctl ? ctl.pt() : { x: fr.left - sr.left + fr.width / 2, y: fr.top - sr.top + fr.height * 0.55 }, sc = ctl ? ctl.scale() : fr.height / 170;
+  if (EXE_RUN[id]) await exeRun(id, st, pt, sc, 1, CLS[foe].n, () => f.classList.add('gone'), { el: f, a3: ctl ? kind => ctl.exe(kind) : null, coins3d: ctl ? () => ctl.coins() : null });
   else { SND.play('ko'); f.classList.add('gone'); st.insertAdjacentHTML('beforeend', '<b class="exepv-ko">K.O.</b>'); await exeWait(1200); }
   await exeWait(500); if (m.isConnected) { const n = m.querySelector('.exepv-foe'); if (n) { n.classList.remove('gone'); n.style.scale = n.style.opacity = ''; } const k = m.querySelector('.exepv-ko'); if (k) k.remove(); }
 }
@@ -14370,39 +14375,45 @@ function stOverHTML(won) {
     pMesh.instanceMatrix.needsUpdate = true; pLive = any;
   }
   /* 잭팟 처형의 동전: 머리 위에서 쏟아져 튀고 구르다가, 쓰러진 쪽 칸에 동전 더미로 쌓인다 */
-  const CN = 120, cMat = [new T.MeshLambertMaterial({ color: 0xc8901c, emissive: 0x2a1800 }), new T.MeshLambertMaterial({ color: 0xffd23a, emissive: 0x4a3200 }), new T.MeshLambertMaterial({ color: 0xe0a92a, emissive: 0x2a1800 })];
-  const cMesh = new T.InstancedMesh(new T.CylinderGeometry(0.11, 0.11, 0.032, 10), cMat, CN), cD = new Float32Array(CN * 12); let cOn = 0, cT = 0, cX = 0, cZ = 0, cLand = 0;
-  cMesh.frustumCulled = false; cMesh.visible = false; fg.add(cMesh);
-  function coinsGo(b, cell) {
-    cX = cellX(b, cell % 3) + boardG[b].position.x; cZ = cellZ(Math.floor(cell / 3)) + 0.1; cT = 0; cLand = 0; cOn = 1; cMesh.visible = true;
-    for (let i = 0; i < CN; i++) { const o = i * 12, a = Math.random() * PI * 2, r = Math.random() * 0.25;
-      cD[o] = cX + Math.cos(a) * r; cD[o + 1] = TY + 3.1 + Math.random() * 0.4; cD[o + 2] = cZ + Math.sin(a) * r;
-      cD[o + 3] = (Math.random() - 0.5) * 1.6; cD[o + 4] = -Math.random() * 1.2; cD[o + 5] = (Math.random() - 0.5) * 1.2;
-      cD[o + 6] = Math.random() * PI; cD[o + 7] = Math.random() * PI; cD[o + 8] = (Math.random() - 0.5) * 22; cD[o + 9] = (Math.random() - 0.5) * 22;
-      cD[o + 10] = (i / CN) * 0.7 + Math.random() * 0.08; cD[o + 11] = 0; }
+  function mkCoins(scene) {
+    const CN = 120, cMat = [new T.MeshLambertMaterial({ color: 0xc8901c, emissive: 0x2a1800 }), new T.MeshLambertMaterial({ color: 0xffd23a, emissive: 0x4a3200 }), new T.MeshLambertMaterial({ color: 0xe0a92a, emissive: 0x2a1800 })];
+    const cMesh = new T.InstancedMesh(new T.CylinderGeometry(0.11, 0.11, 0.032, 10), cMat, CN), cD = new Float32Array(CN * 12), o3 = new T.Object3D(); let cOn = 0, cT = 0, cX = 0, cZ = 0, cLand = 0;
+    cMesh.frustumCulled = false; cMesh.visible = false; scene.add(cMesh);
+    function go(x, z) {
+      cX = x; cZ = z; cT = 0; cLand = 0; cOn = 1; cMesh.visible = true;
+      for (let i = 0; i < CN; i++) { const o = i * 12, a = Math.random() * PI * 2, r = Math.random() * 0.25;
+        cD[o] = cX + Math.cos(a) * r; cD[o + 1] = TY + 3.1 + Math.random() * 0.4; cD[o + 2] = cZ + Math.sin(a) * r;
+        cD[o + 3] = (Math.random() - 0.5) * 1.6; cD[o + 4] = -Math.random() * 1.2; cD[o + 5] = (Math.random() - 0.5) * 1.2;
+        cD[o + 6] = Math.random() * PI; cD[o + 7] = Math.random() * PI; cD[o + 8] = (Math.random() - 0.5) * 22; cD[o + 9] = (Math.random() - 0.5) * 22;
+        cD[o + 10] = (i / CN) * 0.7 + Math.random() * 0.08; cD[o + 11] = 0; }
+    }
+    function step(dt) {
+      if (!cOn) return; cT += dt; const out = cT > 5.2 ? Math.max(0, 1 - (cT - 5.2) / 0.4) : 1, H = 0.75 * Math.min(1, cLand / (CN * 0.8)), R2 = 0.62 * 0.62;
+      for (let i = 0; i < CN; i++) { const o = i * 12;
+        if (cT < cD[o + 10]) { o3.scale.setScalar(0); o3.updateMatrix(); cMesh.setMatrixAt(i, o3.matrix); continue; }
+        if (!cD[o + 11]) {
+          cD[o + 4] -= 11 * dt; cD[o] += cD[o + 3] * dt; cD[o + 1] += cD[o + 4] * dt; cD[o + 2] += cD[o + 5] * dt; cD[o + 6] += cD[o + 8] * dt; cD[o + 7] += cD[o + 9] * dt;
+          const dx = cD[o] - cX, dz = cD[o + 2] - cZ, fl = TY + 0.02 + H * Math.max(0, 1 - (dx * dx + dz * dz) / R2);
+          if (cD[o + 1] < fl) { cD[o + 1] = fl;
+            if (cD[o + 4] < -2.2) { cD[o + 4] *= -0.32; cD[o + 3] *= 0.5; cD[o + 5] *= 0.5; cD[o + 8] *= 0.5; cD[o + 9] *= 0.5; }
+            else { cD[o + 11] = 1; cLand++; cD[o + 6] = (Math.random() - 0.5) * 0.7; cD[o + 7] = (Math.random() - 0.5) * 0.7; } } }
+        o3.position.set(cD[o], cD[o + 1], cD[o + 2]); o3.rotation.set(cD[o + 6], 0, cD[o + 7]); o3.scale.setScalar(out); o3.updateMatrix(); cMesh.setMatrixAt(i, o3.matrix); }
+      cMesh.instanceMatrix.needsUpdate = true; if (out <= 0) { cOn = 0; cMesh.visible = false; }
+    }
+    return { go: go, step: step };
   }
-  function stepCoins(dt) {
-    if (!cOn) return; cT += dt; const out = cT > 5.2 ? Math.max(0, 1 - (cT - 5.2) / 0.4) : 1, H = 0.75 * Math.min(1, cLand / (CN * 0.8)), R2 = 0.62 * 0.62;
-    for (let i = 0; i < CN; i++) { const o = i * 12;
-      if (cT < cD[o + 10]) { _o.scale.setScalar(0); _o.updateMatrix(); cMesh.setMatrixAt(i, _o.matrix); continue; }
-      if (!cD[o + 11]) {
-        cD[o + 4] -= 11 * dt; cD[o] += cD[o + 3] * dt; cD[o + 1] += cD[o + 4] * dt; cD[o + 2] += cD[o + 5] * dt; cD[o + 6] += cD[o + 8] * dt; cD[o + 7] += cD[o + 9] * dt;
-        const dx = cD[o] - cX, dz = cD[o + 2] - cZ, fl = TY + 0.02 + H * Math.max(0, 1 - (dx * dx + dz * dz) / R2);
-        if (cD[o + 1] < fl) { cD[o + 1] = fl;
-          if (cD[o + 4] < -2.2) { cD[o + 4] *= -0.32; cD[o + 3] *= 0.5; cD[o + 5] *= 0.5; cD[o + 8] *= 0.5; cD[o + 9] *= 0.5; }
-          else { cD[o + 11] = 1; cLand++; cD[o + 6] = (Math.random() - 0.5) * 0.7; cD[o + 7] = (Math.random() - 0.5) * 0.7; } } }
-      _o.position.set(cD[o], cD[o + 1], cD[o + 2]); _o.rotation.set(cD[o + 6], 0, cD[o + 7]); _o.scale.setScalar(out); _o.updateMatrix(); cMesh.setMatrixAt(i, _o.matrix); }
-    cMesh.instanceMatrix.needsUpdate = true; if (out <= 0) { cOn = 0; cMesh.visible = false; }
-  }
+  const duelCoins = mkCoins(fg);
+  function coinsGo(b, cell) { duelCoins.go(cellX(b, cell % 3) + boardG[b].position.x, cellZ(Math.floor(cell / 3)) + 0.1); }
+  function stepCoins(dt) { duelCoins.step(dt); }
   /* 처형 이펙트의 3D 소품(단두대, 압축 큐브). DOM 연출과 박자를 맞추려고 실제 시간(초)으로 움직인다 */
   const xObjs = [], nowS = () => performance.now() / 1000;
-  function xAdd(g, upd) { fg.add(g); xObjs.push({ g, upd, t0: nowS() }); }
+  function xAdd(g, upd, sc) { sc = sc || fg; sc.add(g); xObjs.push({ g, upd, sc, t0: nowS() }); }
   function stepX() { for (let i = xObjs.length - 1; i >= 0; i--) { const o = xObjs[i]; if (o.upd(nowS() - o.t0) !== false) continue;
-    fg.remove(o.g); o.g.traverse(function (m) { if (m.geometry) m.geometry.dispose(); if (m.material) [].concat(m.material).forEach(function (q) { q.dispose(); }); }); xObjs.splice(i, 1); } }
+    o.sc.remove(o.g); o.g.traverse(function (m) { if (m.geometry) m.geometry.dispose(); if (m.material) [].concat(m.material).forEach(function (q) { q.dispose(); }); }); xObjs.splice(i, 1); } }
   const xBox = (g, w, h, d, m, x, y, z) => { const me = new T.Mesh(new T.BoxGeometry(w, h, d), m); me.position.set(x, y, z); g.add(me); return me; };
   const ease2 = k => k * k, clamp01 = k => Math.max(0, Math.min(1, k));
   /* 단두대: 하늘에서 떨어져 상대를 가두고, 0.9초에 날이 떨어져 1.0초에 목칼 높이에 닿는다 */
-  function guilloGo(x, z, neck) {
+  function guilloGo(x, z, neck, sc, tilt) {
     /* 높이는 쓰러질 캐릭터의 목(머리 꼭대기에서 조금 아래)에 맞춘다: 목칼이 목에, 들보는 그 위 1.5 */
     const g = new T.Group(), W = new T.MeshLambertMaterial({ color: 0x8a5634 }), Wd = new T.MeshLambertMaterial({ color: 0x5a3420 }), Fe = new T.MeshLambertMaterial({ color: 0x3b3540 }),
       St = new T.MeshLambertMaterial({ color: 0xe6ebf2, emissive: 0x2a3140 }), Sd = new T.MeshLambertMaterial({ color: 0x9aa4b4 }), Rp = new T.MeshLambertMaterial({ color: 0xcbb489 });
@@ -14416,16 +14427,16 @@ function stOverHTML(won) {
     const sh = new T.Shape(); sh.moveTo(-0.4, 0.08); sh.lineTo(0.4, 0.08); sh.lineTo(0.4, -0.1); sh.lineTo(-0.4, -0.3); sh.lineTo(-0.4, 0.08);
     const bg = new T.ExtrudeGeometry(sh, { depth: 0.045, bevelEnabled: false }); bg.translate(0, 0, -0.022); bl.add(new T.Mesh(bg, [St, Sd])); g.add(bl);
     const rope = xBox(g, 0.035, 1, 0.035, Rp, 0, 0, 0), TOP = LY + 0.92, LOW = LY + 0.28;
-    g.rotation.x = -0.55;
+    g.rotation.x = tilt == null ? -0.55 : tilt;
     xAdd(g, function (t) {
       const drop = t < 0.35 ? (1 - ease2(t / 0.35)) * 7 : 0, out = t > 1.9 ? clamp01((t - 1.9) / 0.45) : 0;
       g.position.set(x, TY + drop, z); g.scale.set(1, Math.max(0.001, 1 - out), 1);
       let by = TOP; if (t > 0.55 && t < 0.9) by += Math.sin(t * 90) * 0.012; if (t >= 0.9) by = TOP + (LOW - TOP) * ease2(clamp01((t - 0.9) / 0.1));
       bl.position.y = by; const top = BEAM - 0.1, bot = by + 0.32; rope.position.y = (top + bot) / 2; rope.scale.y = Math.max(0.01, top - bot);
-      return t < 2.35; });
+      return t < 2.35; }, sc);
   }
   /* 압축 큐브: 떨어져 씌워지고(0.3초), 0.5~1.3초에 네 번 끊어 조여 작은 큐브가 된 뒤 굴러간다 */
-  function cubeGo(x, z, dir) {
+  function cubeGo(x, z, dir, sc) {
     const g = new T.Group(), body = new T.Group(), face = new T.MeshLambertMaterial({ color: 0x9fe8ff, emissive: 0x1d4a66, transparent: true, opacity: 0.28, depthWrite: false }),
       edge = new T.MeshBasicMaterial({ color: 0xbff6ff }), core = new T.MeshLambertMaterial({ color: 0x3a2d55, emissive: 0x120a22 });
     const fm = xBox(body, 1, 1, 1, face, 0, 0.5, 0), cm = xBox(body, 0.9, 0.9, 0.9, core, 0, 0.5, 0); cm.visible = false;
@@ -14443,13 +14454,69 @@ function stOverHTML(won) {
       let px = 0, py = drop, rz = 0;
       if (t >= 1.5) { const r = (t - 1.5) / 0.32, n = Math.min(2, Math.floor(r)), f = Math.min(1, r - n), s = 0.36; if (r < 2) { rz = -dir * (Math.PI / 2) * ease2(f); py += Math.sin(Math.PI * f) * 0.12; } px = dir * s * (n + (r < 2 ? f : 0)); }
       const out = t > 5 ? clamp01((t - 5) / 0.4) : 0; g.scale.setScalar(Math.max(0.001, 1 - out));
-      g.position.set(x + px, TY + py, z); body.rotation.z = rz; return t < 5.4; });
+      g.position.set(x + px, TY + py, z); body.rotation.z = rz; return t < 5.4; }, sc);
   }
   /* 처형 이펙트: 3D가 아니면 false */
   window.A3EXE = function (kind, boardEl, cell, dir) { if (!active || !boards || mode !== 'duel') return false; const b = [].indexOf.call(boards, boardEl); if (b < 0) return false;
     const x = cellX(b, cell % 3) + boardG[b].position.x, z = cellZ(Math.floor(cell / 3)) + 0.1;
     const u = (units[b] || []).find(function (q) { return q.el && q.el.classList.contains('main'); }) || (units[b] || [])[0], top = u && u.vox ? u.vox.top : 1.5;
     if (kind === 'guillo') guilloGo(x, z, Math.max(0.55, top - 0.42)); else if (kind === 'cube') cubeGo(x, z, dir || 1); else return false; return true; };
+  /* 처형 이펙트 미리 보기: 창 안에 작은 3D 무대(판 두 줄, 내 대표 캐릭터, 허수아비)를 따로 그린다. 3D를 껐거나 WebGL이 안 되면 null.
+     허수아비의 상태는 미리 보기의 DOM 그림(foeEl)을 매 프레임 읽는다: style.scale 크기, style.opacity '0'이면 숨김, 'gone'이면 가루로 흩어짐 */
+  window.A3PV = function (host, meEl, foeEl) {
+    if (!on) return null; let r2;
+    try { r2 = new T.WebGLRenderer({ antialias: false }); } catch (e) { return null; }
+    const cv = r2.domElement; cv.className = 'exepv-3d'; host.prepend(cv);
+    const pvs = new T.Scene(); pvs.background = new T.Color(0xe7d6bc);
+    const amb = new T.AmbientLight(0xffffff, 0.8), sun = new T.DirectionalLight(0xffffff, 0.62); sun.position.set(-4, 9, 7); pvs.add(amb, sun);
+    const cam = new T.PerspectiveCamera(32, 16 / 9, 0.3, 80); cam.position.set(0, 2.65, 7.1); cam.lookAt(0, 1.3, 0);
+    const ftex = tileTex(64, 16, 16, [200, 184, 160], 18); ftex.repeat.set(5, 2);
+    const floor = new T.Mesh(new T.BoxGeometry(11, 0.3, 4.2), new T.MeshLambertMaterial({ map: ftex })); floor.position.set(0, TY - 0.2, 0); pvs.add(floor);
+    const tMat = new T.MeshLambertMaterial({ color: 0xf1ebe2 });
+    [-1, 1].forEach(function (sd) { for (let r = 0; r < 2; r++) for (let i = 0; i < 3; i++) { const t = new T.Mesh(tileGeo, tMat); t.position.set(sd * 2.1 + (i - 1) * 0.98, TY - 0.07, (r - 0.5) * 0.98); pvs.add(t); } });
+    function unit(el, x, flip) {
+      const g = new T.Group(), mesh = new T.Mesh(EMPTY, sprMat()), back = new T.Mesh(EMPTY, sprMat()); back.material.color.setHex(0x1d1413); back.position.set(0.012, -0.004, -0.045); g.add(back, mesh);
+      const shd = new T.Mesh(ovGeo, new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); shd.position.set(x, TY + 0.01, 0.25); shd.renderOrder = 3; pvs.add(g, shd);
+      g.position.set(x, TY, 0.25); g.rotation.x = -0.18;
+      return { g: g, mesh: mesh, back: back, shd: shd, el: el, flip: flip, x: x, v: voxOf(urlOf(getComputedStyle(el).backgroundImage), spdOf(el)), dusted: false, ph: Math.random() * 6 };
+    }
+    const me = unit(meEl, -2.1, false), foe = unit(foeEl, 2.1, true), coins = mkCoins(pvs);
+    /* 가루: 그림의 칠해진 픽셀 중 일부를 작은 정육면체로 흩뿌린다 */
+    const PN2 = 90, pm = new T.InstancedMesh(new T.BoxGeometry(1, 1, 1), new T.MeshBasicMaterial(), PN2), pd = new Float32Array(PN2 * 8), o3 = new T.Object3D(), col = new T.Color(); let pOn = 0;
+    pm.frustumCulled = false; o3.scale.setScalar(0); o3.updateMatrix(); for (let i = 0; i < PN2; i++) { pm.setMatrixAt(i, o3.matrix); pm.setColorAt(i, col.set(0xffffff)); } pvs.add(pm);
+    function dust(u) { const px = (u.v && u.v.px) || []; if (!px.length) return;
+      for (let i = 0; i < PN2; i++) { const q = px[Math.floor(Math.random() * px.length)], o = i * 8, a = Math.random() * PI * 2;
+        pd[o] = u.x + q[0] * (u.flip ? -1 : 1); pd[o + 1] = TY + q[1]; pd[o + 2] = 0.3; pd[o + 3] = Math.cos(a) * (0.6 + Math.random()); pd[o + 4] = 0.8 + Math.random() * 2.2; pd[o + 5] = Math.sin(a) * 0.8; pd[o + 6] = 0.9 + Math.random() * 0.6; pd[o + 7] = 0.05 + Math.random() * 0.05;
+        pm.setColorAt(i, col.setRGB(q[2], q[3], q[4])); }
+      pm.instanceColor.needsUpdate = true; pOn = 1; }
+    function stepDust(dt) { if (!pOn) return; let any = 0;
+      for (let i = 0; i < PN2; i++) { const o = i * 8; if (pd[o + 6] <= 0) { o3.scale.setScalar(0); o3.updateMatrix(); pm.setMatrixAt(i, o3.matrix); continue; } any = 1;
+        pd[o + 6] -= dt; pd[o + 4] -= 6 * dt; pd[o] += pd[o + 3] * dt; pd[o + 1] += pd[o + 4] * dt; pd[o + 2] += pd[o + 5] * dt; if (pd[o + 1] < TY + 0.03) { pd[o + 1] = TY + 0.03; pd[o + 4] *= -0.3; pd[o + 3] *= 0.6; }
+        o3.position.set(pd[o], pd[o + 1], pd[o + 2]); o3.rotation.set(pd[o] * 5, pd[o + 1] * 7, 0); o3.scale.setScalar(pd[o + 7] * Math.min(1, pd[o + 6] * 2)); o3.updateMatrix(); pm.setMatrixAt(i, o3.matrix); }
+      pm.instanceMatrix.needsUpdate = true; pOn = any; }
+    function sync(u, t) {
+      const ok = useVox(u.mesh, u.v); useVox(u.back, u.v); const st = u.el.style, gone = u.el.classList.contains('gone'), hid = st.opacity === '0', k = parseFloat(st.scale) || 1;
+      if (gone && !hid && !u.dusted) { u.dusted = true; dust(u); } if (!gone) u.dusted = false;
+      const show = ok && !gone && !hid, br = Math.sin(t * 2.6 + u.ph);
+      u.g.visible = show; u.shd.visible = show; u.g.scale.set((u.flip ? -1 : 1) * k, k, k); u.mesh.scale.set(1 - br * 0.014, 1 + br * 0.028, 1); u.back.scale.copy(u.mesh.scale); u.shd.scale.setScalar(k);
+    }
+    function fit() { const w = Math.max(64, host.clientWidth), h = Math.max(36, host.clientHeight); r2.setPixelRatio(1); r2.setSize(Math.round(w / 2), Math.round(h / 2), false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+    fit(); let last = performance.now();
+    function loop(now) {
+      if (!host.isConnected) { pvs.clear(); r2.dispose(); try { r2.forceContextLoss(); } catch (e) { /* 무시 */ } return; }
+      requestAnimationFrame(loop); const dt = Math.min(0.1, (now - last) / 1000), t = now / 1000; last = now;
+      sync(me, t); sync(foe, t); stepDust(dt); coins.step(dt); stepX(); r2.render(pvs, cam);
+    }
+    requestAnimationFrame(loop);
+    const scr = function (x, y, z) { const p = new V3(x, y, z).project(cam); return { x: (p.x * 0.5 + 0.5) * host.clientWidth, y: (-p.y * 0.5 + 0.5) * host.clientHeight }; };
+    const top = function () { return (foe.v && foe.v.top) || 1.5; };
+    return {
+      pt: function () { return scr(foe.x, TY + top() * 0.55, 0.25); },
+      scale: function () { const a = scr(foe.x, TY, 0.25), b = scr(foe.x, TY + 1.6, 0.25); return (a.y - b.y) / 170; },
+      exe: function (kind) { if (kind === 'guillo') guilloGo(foe.x, 0.25, Math.max(0.55, top() - 0.42), pvs, -0.18); else if (kind === 'cube') cubeGo(foe.x, 0.25, 1, pvs); else return false; return true; },
+      coins: function () { coins.go(foe.x, 0.25); return true; }
+    };
+  };
   /* 이름 → [시작 시점, 개수, 색(문자는 K의 색 이름, 숫자는 인자 번호), 퍼지는 속도, 솟는 속도, 중력] */
   const PT = { mgFire: [0.34, 12, ['org', 'yel', 'red'], 3.2, 3.6], drBurst: [0.22, 7, ['grn', 'lime'], 1.6, 2.2, -0.6], clBoxPop: [0.1, 10, ['mag', 'yel', 'blue'], 2.8, 3.4], asConStar: [0.52, 7, ['star', 'wht', 'yel'], 2.4, 2.8], asStar: [0.36, 6, ['star', 'wht'], 2, 2.6], asNova: [0.38, 16, ['star', 'wht', 'org'], 3.6, 3.4], asNovaArm: [0.42, 5, ['star', 'wht'], 2, 2.6], asComet: [0.4, 16, ['lblue', 'wht', 'star'], 3.6, 3.6], asCometR: [0.44, 6, ['lblue', 'wht'], 2.2, 2.6], asHoleBurst: [0.16, 16, ['nebl', 'wht', 'star'], 3.4, 4.2], blPop: [0.02, 4, ['coral', 'wht', 'yel'], 3, 3], blBang: [0, 12, ['coral', 'wht'], 3.2, 3], blJet: [0.25, 5, ['wht', 'gray'], 2.2, 1.6], mfProng: [0.2, 6, ['mint', 'lblue', 'foam'], 2, 2.6], mfHarpoon: [0.3, 6, ['mint', 'lblue', 'foam'], 2, 2.8], mfSurf: [0.1, 12, ['mint', 'lblue', 'foam'], 2.4, 4.2], mfWave: [0.36, 12, ['mint', 'lblue', 'foam'], 3, 3], mfDive: [0.1, 8, ['mint', 'foam'], 2, 3], gbChips: [0.24, 8, ['lime', 'gold', 'red', 'card'], 2.8, 3.4], gbCoin: [0.4, 10, ['gold', 'goldd', 'wht'], 3, 3.4], gbAllin: [0.5, 22, ['lime', 'gold', 'red', 'card'], 4.2, 4.2], smHammer: [0.2, 7, ['molt', 'yel', 'wht'], 2.8, 3.4], smSkewer: [0.08, 6, ['gray', 'ember', 'molt'], 2, 3], smErupt: [0.1, 10, ['molt', 'yel', 'red'], 2.8, 4.2], smOpus: [0.3, 22, ['wht', 'yel', 'molt', 'ember'], 4.4, 4.4], smAnvil: [0.24, 8, ['molt', 'yel', 'wht'], 2.4, 3], gdebris: [0.04, 9, ['gray', 'ash', 'steel'], 2.8, 3.4], gsweepFx: [0.4, 12, ['gray', 'steel', 'edge'], 3.6, 2.6], gplungeFx: [0.26, 14, ['gray', 'steel', 'edge'], 3.6, 3.4], gblockFx: [0.07, 7, ['gray', 'ash'], 1.8, 2], gstomp: [0, 4, ['gray', 'ash'], 1.2, 1.2], surgeFx: [0.1, 16, ['blue', 'lblue', 'wht'], 3.4, 3.8], surgeRing: [0.25, 6, ['lblue', 'wht'], 2, 2.4], surgeCharge: [0.5, 5, ['lblue', 'wht'], 0.6, 1.6, -1.2], shardFx: [0.3, 10, ['glass', 'glassl', 'wht'], 2.6, 2.8], twinFx: [0.15, 7, ['glass', 'wht'], 1.4, 3.2, -0.6], kaleidoFx: [0.18, 14, ['glass', 'mag', 'yel', 'vio'], 3, 3.2], flipFx: [0, 6, ['glass', 'wht'], 1.2, 1.8, -1],
     tickFx: [0.2, 7, ['brass', 'brassl', 'wht'], 2.2, 2.6], punchFx: [0.22, 7, ['brw', 'brwl', 'wht'], 2.6, 2.4], upperFx: [0.28, 16, ['brw', 'brwd', 'brwl', 'wht'], 2.4, 5], grabFx: [0.5, 12, ['ash', 'sil', 'brw'], 3, 2.2], kickFx: [0.4, 6, ['sil', 'brwl'], 2, 2.2],
