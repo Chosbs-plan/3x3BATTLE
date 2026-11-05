@@ -4523,6 +4523,7 @@ html .pc-ui { font-size: 15px; } html .pc-ui .pc-tipc p { font-size: 15px !impor
   html body #app > .play.v2 .side.op .stat.uf .uf-main, html body #app > .play.v2 .side.op .stat.uf .uf-bar, html body #app > .play.v2 .side.op .stat.uf .uf-name, html body #app > .play.v2 .side.op .stat.uf .uf-ks, html body #app > .play.v2 .side.op .stat.uf .chipr { flex-direction: row; justify-content: flex-start; text-align: left; }
   html body #app > .play.v2 .side.op .stat.uf .pips { flex-direction: row; }
   html body #app > .play.v2 .side.op .uf-tip { left: 0; right: auto; }
+  html body #app > .play.v2 .side.op .uf-k.act .uf-tip { left: auto; right: 0; }   /* 오른쪽 끝 칩은 왼쪽으로 펼친다(화면 밖으로 나가지 않게) */
   /* 화질·2D 전환: 도구 아래 */
   html body #app > .play.v2 .a3-ui { top: 66px; right: calc(24px + var(--lwc, 0px)); left: auto; bottom: auto; }
   html body #app > .play.v2 .a3-ui .btn { min-height: 0; padding: 3px 10px; font-size: 12px; color: var(--ink); background: var(--wash); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
@@ -4586,7 +4587,7 @@ html .pc-ui { font-size: 15px; } html .pc-ui .pc-tipc p { font-size: 15px !impor
   html body #app > .play.v2 { grid-template-rows: 0 minmax(0, 1fr) 160px; }
   html body #app > .play.v2 .stat.uf, html body #app > .play.v2 > .arena .abar.foe, html body #app > .play.v2 .side-label, html body #app > .play.v2 .trk, html body #app > .play.v2 .tblk,
   html body #app > .play.v2 > .bar > span:nth-child(2), html body #app > .play.v2 > .bar .row, html body #app > .play.v2 .a3-ui, html body #app > .play.v2 > .hint2,
-  html body #app > .play.v2 .arc, html body #app > .play.v2 .disc, html body #app > .play.v2 .dk-l .pile, html body #app > .play.v2 .dk-l .sum, html body #app > .play.v2 .acts { zoom: .72; }
+  html body #app > .play.v2 .arc, html body #app > .play.v2 .disc, html body #app > .play.v2 .dk-l .pile, html body #app > .play.v2 .dk-l .sum, html body #app > .play.v2 .acts { zoom: .8; }
   .a3-lab .a3-ntag { font-size: 12px !important; padding: 2px 6px !important; }
   html body #app > .play.v2 .dk-l { gap: 20px; padding-bottom: 20px; }
   html body #app > .play.v2 .dock { grid-template-columns: 240px minmax(0, 1fr) 240px; padding: 0 16px; }
@@ -4695,7 +4696,7 @@ html .pc-ui { font-size: 15px; } html .pc-ui .pc-tipc p { font-size: 15px !impor
   html body #app > .play.v2 .acts [data-a=lock], html body #app > .play.v2 .acts [data-a=unlock] { bottom: 22px !important; height: 82px !important; }
 }
 @media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
-  html body #app > .play.v2 > .arena .abar:not(.foe) { zoom: .72; }
+  html body #app > .play.v2 > .arena .abar:not(.foe) { zoom: .8; }
 }
 
 /* ===== 그림 이모트, 이모트 판 위치, 패시브·능력 설명 위치 ===== */
@@ -4734,14 +4735,44 @@ html .pc-ui { font-size: 15px; } html .pc-ui .pc-tipc p { font-size: 15px !impor
   html body #app > .play.v2 > .hint2 { max-width: min(760px, calc(100vw - var(--lwc, 0px) - 900px)) !important; }
 }
 @media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
-  html body #app > .play.v2 { --dzL: 366px; --dzR: 372px; --cwt: clamp(100px, min(9.5vw, 17vh), 140px); }
+  html body #app > .play.v2 { --dzL: 410px; --dzR: 414px; --cwt: clamp(100px, min(9.5vw, 17vh), 140px); }
   /* 좁은 PC: 내 카드를 줄이고 능력·이모트를 바짝 붙이고, 버림 더미를 덱 쪽으로. 기록 창은 화면을 밀지 않고 위에 덮는다 */
   html body #app > .play.v2 .mest .stat.uf { width: 330px !important; }
   html body #app > .play.v2 .acts .abb { left: 368px !important; } html body #app > .play.v2 .acts .emb { left: 368px !important; }
   html body #app > .play.v2 .dk-l .disc { right: 420px !important; }
   html body #app > .play.v2 > .ctrl > .emp, html body #app > .play.v2.over > .ctrl > .emp { left: 333px !important; }
   body.logopen #app > .play.v2 { --lwc: 0px !important; }
-  html body #app > .play.v2 > .hint2 { max-width: min(620px, calc((100vw - var(--lwc, 0px) - 680px) / .72)) !important; }
+  html body #app > .play.v2 > .hint2 { max-width: min(620px, calc((100vw - var(--lwc, 0px) - 760px) / .8)) !important; }
+}
+/* ===== PC 전투 화면 글자 최소 크기: HUD 글자는 15px(1280×800의 0.8배에서도 12px). 카드 안 글자는 카드 크기를 따르고, 마우스를 올리면 커진다 ===== */
+@media (min-width: 1100px) and (min-height: 660px) {
+  html body #app > .play.v2 .stat.uf .infob { font-size: 15px; }
+  html body #app > .play.v2 :is(.abar.foe i) { font-size: 15px; }
+  html body #app > .play.v2 :is(.play.v2 .arc-h) { font-size: 15px; }
+  html body #app > .play.v2 .dk-l .arc p { font-size: 15px; }
+  html body #app > .play.v2 :is(.abb-tx em) { font-size: 15px; }
+  html body #app > .play.v2 > .bar > span:nth-child(2) { font-size: 15px; }
+  html body #app > .play.v2 > .bar .row .btn { font-size: 15px; }
+  html body #app > .play.v2 :is(.play.v2 .trk-l) { font-size: 15px; }
+  html body #app > .play.v2 :is(.play.v2 .trk-c i) { font-size: 15px; }
+  html body #app > .play.v2 :is(.play.v2 .tblk) { font-size: 15px; }
+  html body #app > .play.v2 .uf-tab { font-size: 15px; }
+  html body #app > .play.v2 .stat.uf .uf-nick { font-size: 15px; }
+  html body #app > .play.v2 .stat.uf .uf-bar b small { font-size: 15px; }
+  html body #app > .play.v2 .stat.uf .uf-k { font-size: 15px; }
+  html body #app > .play.v2 :is(.chip) { font-size: 15px; }
+  html body #app > .play.v2 .side-label .cap { font-size: 15px; }
+  html body #app > .play.v2 .side-label .infob { font-size: 15px; }
+  html body #app > .play.v2 > .arena .abar.foe { font-size: 15px; }
+  html body #app > .play.v2 :is(.play.v2 .disc span) { font-size: 15px; }
+  #app > .play.v2 .dk-l .sum > span > b { font-size: 15px; }
+  html body #app > .play.v2 .dk-l .sum > span:not(.sum-h) { font-size: 15px !important; }
+  html body #app > .play.v2 .acts .emb { font-size: 15px !important; }
+  /* 손패 카드: 마우스를 올리면 크게 키워 카드 글을 읽게 한다(작은 창일수록 더 크게) */
+  @media (hover: hover) { html body #app > .play.v2 .hand .card:is(:hover, :focus-visible) { --sc: 1.45; --lift: calc(var(--ch2) * -.42); } }
+}
+@media (min-width: 1100px) and (min-height: 660px) and (max-width: 1599px), (min-width: 1100px) and (min-height: 660px) and (max-height: 959px) {
+  @media (hover: hover) { html body #app > .play.v2 .hand .card:is(:hover, :focus-visible) { --sc: 1.6; --lift: calc(var(--ch2) * -.5); } }
 }
 </style>
 <main id="app"></main>
