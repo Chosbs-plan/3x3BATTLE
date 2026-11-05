@@ -8122,8 +8122,9 @@ setInterval(() => { const c = document.querySelector('.pc-tipc'); if (!c) { HTIP
   const g = c.querySelector('.tip-gg'); if (g) g.innerHTML = '<i></i>'; }, HTIP.ms);
 /* 타이틀 음악: 고를 수 있다. 결전(기본)·진군은 전투곡, 고요는 예전 타이틀 곡 */
 const TITLE_BGM = { clash: ['결전', 'Clash'], march: ['진군', 'March'], calm: ['고요', 'Calm'] };
-let titleBgm = (() => { const v = ls('ssd-title'); return TITLE_BGM[v] ? v : 'clash'; })();
-function setTitleBgm(v) { if (!TITLE_BGM[v]) return; titleBgm = v; ls('ssd-title', v); }
+/* 타이틀 음악은 ssd-tbgm. 예전에는 칭호와 같은 ssd-title을 써서 서로 지웠으므로, 거기 남은 음악 이름은 옮기고 칭호 칸을 비운다 */
+let titleBgm = (() => { let v = ls('ssd-tbgm'); const old = ls('ssd-title'); if (TITLE_BGM[old]) { if (!TITLE_BGM[v]) { v = old; ls('ssd-tbgm', old); } try { localStorage.removeItem('ssd-title'); } catch (e) { /* 저장소 없음 */ } } return TITLE_BGM[v] ? v : 'clash'; })();
+function setTitleBgm(v) { if (!TITLE_BGM[v]) return; titleBgm = v; ls('ssd-tbgm', v); }
 const mE = (ko, en) => (typeof LANG === 'string' && LANG === 'en' ? en : ko);
 function gateHTML() {
   const off = netReady && !db, anim = menuAnim, ta = tabAnim; menuAnim = false; tabAnim = false;
