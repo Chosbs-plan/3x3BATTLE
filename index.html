@@ -10275,10 +10275,13 @@ Object.assign(FX, {
     for (let s = 10; s < head; s++) { const x = ex + dir * s, w = 2 + s * 0.09 + Math.sin(s * 0.5 - f * 1.3) * 0.8; D(g, x, y0 - w, K.gzd, 1, 1); D(g, x, y0 + w, K.gzd, 1, 1); g.globalAlpha = beam * 0.55; D(g, x, y0 - w + 1, K.gz, 1, Math.max(1, w * 2 - 1)); g.globalAlpha = beam; D(g, x, y0 - 1, K.gzl, 1, 2); }
     for (let j = 0; j < 8; j++) { const s = ((j * 13 + f * 5) % 86) + 10; if (s < head) twk(g, ex + dir * s, y0 + (rnd(j, r) - 0.5) * 8, 1, K.wht); }
     g.globalAlpha = 1;
-    /* 석화: 빔이 지나간 칸이 아래부터 회색으로 차오른다 */
+  })),
+  /* 석화의 시선 2: 시선이 지나간 칸의 바닥이 돌판으로 굳어 금이 간다(3D에서는 바닥에 깐다). 시간은 gazeFx와 같다 */
+  gazeStone: (rows, rev) => hi((g, t, f) => rows.forEach(r => {
+    if (t < 0.18) return; const u = (t - 0.18) / 0.82, head = Math.min(96, u / 0.35 * 100);
     for (let c = 0; c < 3; c++) { const cxl = c * 32, rch = (rev ? 95 - (cxl + 16) : cxl + 16) - 6; if (head < rch) continue;
       const v = Math.min(1, (u - rch / 100 * 0.35) / 0.4); if (v <= 0) continue; const hh = Math.round(30 * Math.min(1, v * 1.3)), out = u > 0.85 ? 1 - (u - 0.85) / 0.15 : 1;
-      g.globalAlpha = 0.55 * out; D(g, cxl + 1, r * 32 + 31 - hh, K.stone, 30, hh); g.globalAlpha = 0.8 * out; D(g, cxl + 1, r * 32 + 31 - hh, K.stonel, 30, 1);
+      g.globalAlpha = 0.85 * out; D(g, cxl + 1, r * 32 + 31 - hh, K.stone, 30, hh); g.globalAlpha = 0.8 * out; D(g, cxl + 1, r * 32 + 31 - hh, K.stonel, 30, 1); g.globalAlpha = 0.8 * out; for (let yy = r * 32 + 30; yy > r * 32 + 31 - hh; yy -= 8) { D(g, cxl + 1, yy, K.stoned, 30, 1); for (let xx = cxl + 4 + ((yy >> 3) % 2) * 7; xx < cxl + 30; xx += 14) D(g, xx, yy - Math.min(7, yy - (r * 32 + 31 - hh)), K.stoned, 1, Math.min(7, yy - (r * 32 + 31 - hh))); }
       if (v > 0.7) { const k = (v - 0.7) / 0.3; seg(g, cxl + 16, r * 32 + 8, cxl + 16 - 6 * k, r * 32 + 16, K.stoned, 1); seg(g, cxl + 16 - 6 * k, r * 32 + 16, cxl + 10, r * 32 + 24 * k + 2, K.stoned, 1); seg(g, cxl + 16, r * 32 + 8, cxl + 23 * k + 4 * (1 - k), r * 32 + 14, K.stoned, 1); }
       g.globalAlpha = 1;
       if (v > 0.85 && u < 0.95) for (let j = 0; j < 4; j++) D(g, cxl + 6 + rnd(c, j, r) * 20, r * 32 + 20 + (v - 0.85) * 60 * rnd(j, c), K.stoned, 2, 2); }
@@ -10862,7 +10865,7 @@ async function runReplay(old, neu) {
     else if (id === 'sun') fx(o, FX.sunFx(), 800);
     else if (id === 'tornado') fx(o, FX.tornado(p.cells), 800);
     else if (id === 'discus') fx(o, FX.discus(p.tg, false), 650);
-    else if (id === 'gaze') fx(o, FX.gazeFx(rows, rev), 750);
+    else if (id === 'gaze') { fx(o, FX.gazeFx(rows, rev), 750); fx(o, FX.gazeStone(rows, rev), 750); }
     else if (id === 'topple') { fx(o, FX.rubble(p.cells), 800); pulse(bEl(o), 'shake', 400); }
     else if (id === 'star') p.tg.forEach((c, n) => fx(o, FX.asStar(c), 850, n * 170));
     else if (id === 'nova') { if (p.nova >= 0) { fx(o, FX.asNova(p.nova), 1100); fx(o, FX.asNovaArm(p.cells.filter(c => c !== p.nova)), 1100); later(() => { play('boom'); pulse(bEl(o), 'shake', 450); }, WIND + 420); floatText(o, p.nova, '초신성!', 'f-big f-warn'); } else floatText(o, 4, '별이 없는 칸', 'f-miss'); }
@@ -14822,7 +14825,7 @@ function stOverHTML(won) {
   [['c', 'kNicks kThrust hawkHopFx staffFx encircleFx stoopFx brushFx splashFx rollerFx magnumFx bingoFx footFx flaskFx philoFx trayBreakFx punchFx upperFx bladeFx pebbleFx clumpFx heelFx showFx mgMotes mgFire mgSky drSeed drBurst asConStar asNovaArm asCometR asConstel blJet blPop blHelium mfProng mfHarpoon gbChips qnChips wwArrow wwVolley cmTalis cmTaiji smHammer smSkewer smErupt gdebris surgeRing shardFx twinFx kaleidoCast kaleidoFx tickFx clockCast clockBoom bellFx echoFx biteFx bspearFx batsFx feastFx arrowFx volleyFx pickFx wispCast wispFx ghandFx boom fireCast meteor markPop thrust whiff spore splat engulf shovelFx heavy rubble balls notes sparks talisFx sickleFx peckFx eggBreak prongFx'],
     ['c1', 'hawkSwoopFx whistleFx talonFx treatFx sketchFx dyeFx acidPoolFx acidFx antiFx catFx tmFx grabFx counterFx tuneFx trayFx cupFx winkFx castRing clBoxPop asStar asNova asComet asLens asHole asHoleBurst blInflate blBang blKnot mfBubble mfDive mfSurf gbWheel gbCoin gbAllin gbBluff gbPot qnWheel qnCoin qnAllin qnBluff qnPot wwTag wwPrey wwNoose wwSnap wwAmbush cmWard smOpus smAnvil smStoke gplungeFx gblockFx gstomp surgeCharge surgeFx copyFx flipFx haltFx mistFx drainFx bloodPay tagFx preyFx nooseFx nooseSnap ambushFx coffinFx quakeFx parryReady clash guard guardOk dust sparkle hit crumble place hookFx bramble thornHit healFx dirt pillarFx headFx starFx splash'],
     ['a', 'kChop cmShiki gchopFx gcleaveFx tornado diceFx scry sand sunFx blink batMove rewindFx'], ['r', 'driveFx wwDrive slashH vine turretFire snowFx gazeFx pieFx waveFx'], ['r1', 'kSweep turretUp gsweepFx gbDice qnDice mfWave'], ['rows3', 'wolves gust'],
-    ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx kickFx'], ['ground', 'kCut mgCircle asConLine asCometCast gbRoulette qnRoulette cmBoard smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
+    ['vol', 'asConWall gslabFx frost rail slashV discus windV bubbles burst ring heatFx crowFx holeFx lensFx taijiFx kickFx'], ['ground', 'gazeStone kCut mgCircle asConLine asCometCast gbRoulette qnRoulette cmBoard smHeat gfissure grideFx crackFx bolt meteorCast mark trail ripple constelFx']
   ].forEach(function (m) { m[1].split(' ').forEach(function (n) { MODE[n] = m[0]; }); });
   /* 2D에서는 바닥 그림이지만 3D에서는 칸 위에 세워야 읽히는 것: 관리자의 오류 창 */
   const UPRIGHT = { admPopup: 1 }; MODE.admPopup = 'c';
