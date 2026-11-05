@@ -14721,6 +14721,68 @@ function stOverHTML(won) {
     const g = new T.Group(), M = PM.rub || (PM.rub = lam(0x8a7d78)), Md = PM.rubd || (PM.rubd = lam(0x5a4644));
     for (let i = 0; i < 8; i++) { const a = i * 0.785 + 0.3, r = 0.34, m = new T.Mesh(new T.BoxGeometry(0.09 + (i % 3) * 0.03, 0.06 + (i % 2) * 0.04, 0.08), i % 2 ? M : Md); m.position.set(Math.cos(a) * r, 0.04, 0.1 + Math.sin(a) * r * 0.9); m.rotation.y = a; g.add(m); }
     return g; }
+  /* 매조련사의 매 모형 두 가지(원점 기준, 머리가 +z). 반환 { g, anim(초) }
+     B: 날고 있을 때(리플레이 중, 막 옮겨 왔을 때) — 면을 깎은 몸통과 손가락처럼 갈라진 날개깃으로 원을 그리며 활공
+     C: 카드를 고를 때 — T자 횃대에 날개를 접고 앉아 가끔 날개를 펴고 고개를 돌린다 */
+  const HAWK3 = (function () {
+  const lam = (c, o) => new T.MeshLambertMaterial(Object.assign({ color: c, flatShading: true }, o || {}));
+  const C = { b: 0x6b4a2e, bd: 0x3d2a1c, bl: 0x9a6a3e, cr: 0xe9d6ae, st: 0x8a5a34, y: 0xe8b83a, yd: 0x9a6a10, k: 0x1a1210, w: 0xfff6e0, tam: 0x9aa33a, lea: 0x7a4a24 };
+  const box = (g, w, h, d, m, x, y, z, rx, ry, rz) => { const me = new T.Mesh(new T.BoxGeometry(w, h, d), m); me.position.set(x, y, z); me.rotation.set(rx || 0, ry || 0, rz || 0); g.add(me); return me; };
+  const M = {}; const mat = k => M[k] || (M[k] = lam(C[k], k === 'y' ? { emissive: 0x3a2400 } : k === 'cr' ? { emissive: 0x1e160a } : {}));
+
+  /* B. 로우폴리 활공 매: 면을 깎은 몸통, 칼처럼 뻗은 날개에 손가락처럼 갈라진 첫째날개깃, 부채꼴 꼬리. 날개는 얕은 V자로 들고 크게 저어 활공 */
+  function B() {
+    const g = new T.Group(), body = new T.Group(); g.add(body);
+    const ex = (sh, d, k) => { const q = new T.ExtrudeGeometry(sh, { depth: d, bevelEnabled: false }); q.translate(0, 0, -d / 2); return new T.Mesh(q, mat(k)); };
+    const tor = new T.Mesh(new T.OctahedronGeometry(0.1, 0), mat('b')); tor.scale.set(0.85, 0.7, 2); body.add(tor);
+    const chest = new T.Mesh(new T.OctahedronGeometry(0.085, 0), mat('cr')); chest.scale.set(0.8, 0.6, 1.5); chest.position.set(0, -0.025, 0.03); body.add(chest);
+    const head = new T.Mesh(new T.IcosahedronGeometry(0.068, 0), mat('b')); head.position.set(0, 0.035, 0.19); head.scale.set(1, 0.9, 1.1); body.add(head);
+    const face = new T.Mesh(new T.IcosahedronGeometry(0.05, 0), mat('cr')); face.position.set(0, 0.012, 0.22); body.add(face);
+    [-1, 1].forEach(s => { box(body, 0.018, 0.018, 0.018, mat('k'), s * 0.052, 0.05, 0.225); box(body, 0.012, 0.03, 0.05, mat('bd'), s * 0.055, 0.03, 0.2); });
+    const bk = new T.Mesh(new T.ConeGeometry(0.024, 0.07, 4), mat('y')); bk.rotation.x = PI2(); bk.position.set(0, 0.025, 0.28); body.add(bk);
+    const hook = new T.Mesh(new T.ConeGeometry(0.012, 0.03, 4), mat('yd')); hook.rotation.x = Math.PI; hook.position.set(0, 0.0, 0.305); body.add(hook);
+    const ts = new T.Shape(); ts.moveTo(-0.03, 0); ts.lineTo(0.03, 0); ts.lineTo(0.09, -0.2); ts.lineTo(0.03, -0.22); ts.lineTo(0, -0.2); ts.lineTo(-0.03, -0.22); ts.lineTo(-0.09, -0.2); ts.lineTo(-0.03, 0);
+    const tail = ex(ts, 0.014, 'bl'); tail.rotation.x = -Math.PI / 2; tail.position.set(0, 0.005, -0.15); body.add(tail);
+    const tb = new T.Shape(); tb.moveTo(-0.09, -0.2); tb.lineTo(0.09, -0.2); tb.lineTo(0.03, -0.22); tb.lineTo(0, -0.2); tb.lineTo(-0.03, -0.22); const tbm = ex(tb, 0.016, 'bd'); tbm.rotation.x = -Math.PI / 2; tbm.position.set(0, 0.006, -0.15); body.add(tbm);
+    const wings = [-1, 1].map(s => { const piv = new T.Group(); piv.position.set(s * 0.06, 0.03, 0.02); body.add(piv);
+      const w = new T.Shape(); w.moveTo(0, 0.07); w.lineTo(0.16, 0.08); w.lineTo(0.3, 0.04); w.lineTo(0.3, -0.03); w.lineTo(0.14, -0.06); w.lineTo(0, -0.07); w.lineTo(0, 0.07);
+      const wm = ex(w, 0.016, 'b'); wm.rotation.x = -Math.PI / 2; wm.scale.x = s; piv.add(wm);
+      const cov = new T.Shape(); cov.moveTo(0, 0.07); cov.lineTo(0.16, 0.08); cov.lineTo(0.22, 0.05); cov.lineTo(0.1, 0.03); cov.lineTo(0, 0.02);
+      const cm = ex(cov, 0.02, 'bl'); cm.rotation.x = -Math.PI / 2; cm.scale.x = s; cm.position.y = 0.004; piv.add(cm);
+      const hand = new T.Group(); hand.position.set(s * 0.3, 0, 0); piv.add(hand);
+      for (let k = 0; k < 5; k++) { const f = box(hand, 0.11 - k * 0.012, 0.012, 0.022, mat(k % 2 ? 'bd' : 'b'), s * (0.05 - k * 0.006), 0, 0.03 - k * 0.022); f.rotation.y = -s * (0.18 - k * 0.13); }
+      return { piv, hand, s }; });
+    return { g, anim(t) { const a = Math.sin(t * 4.2); wings.forEach(w => { w.piv.rotation.z = w.s * (0.22 + a * 0.3); w.hand.rotation.z = w.s * (a * 0.25); }); body.rotation.z = Math.sin(t * 1.3) * 0.12; body.position.y = -a * 0.02; } };
+  }
+  function PI2() { return Math.PI / 2; }
+
+  /* C. 횃대 위 매: 매조련사의 T자 횃대에 앉아 날개를 접고 서 있다. 가죽 끈(젠시스)과 방울. 가끔 날개를 반쯤 펴며 고개를 돌린다 */
+  function Cc() {
+    const g = new T.Group();
+    box(g, 0.035, 0.36, 0.035, mat('lea'), 0, 0.18, 0); box(g, 0.2, 0.03, 0.04, mat('bd'), 0, 0.37, 0); box(g, 0.12, 0.02, 0.12, mat('bd'), 0, 0.01, 0);
+    box(g, 0.22, 0.012, 0.05, mat('tam'), 0, 0.392, 0);
+    const bird = new T.Group(); bird.position.set(0, 0.4, 0); g.add(bird);
+    const tor = new T.Mesh(new T.IcosahedronGeometry(0.075, 0), mat('b')); tor.scale.set(0.95, 1.35, 0.95); tor.position.set(0, 0.1, -0.01); tor.rotation.x = -0.2; bird.add(tor);
+    const chest = new T.Mesh(new T.IcosahedronGeometry(0.062, 0), mat('cr')); chest.scale.set(0.9, 1.3, 0.8); chest.position.set(0, 0.09, 0.03); bird.add(chest);
+    for (let i = -1; i <= 1; i++) box(bird, 0.012, 0.05, 0.01, mat('st'), i * 0.025, 0.07 + Math.abs(i) * 0.02, 0.083);
+    const head = new T.Group(); head.position.set(0, 0.215, 0.015); bird.add(head);
+    const hm = new T.Mesh(new T.IcosahedronGeometry(0.055, 0), mat('b')); hm.scale.set(1, 0.95, 1.05); head.add(hm);
+    const fc = new T.Mesh(new T.IcosahedronGeometry(0.04, 0), mat('cr')); fc.position.set(0, -0.015, 0.025); head.add(fc);
+    [-1, 1].forEach(s => { box(head, 0.016, 0.016, 0.016, mat('k'), s * 0.042, 0.01, 0.03); box(head, 0.012, 0.03, 0.03, mat('bd'), s * 0.046, -0.01, 0.02); });
+    const bk = new T.Mesh(new T.ConeGeometry(0.02, 0.055, 4), mat('y')); bk.rotation.x = Math.PI / 2; bk.position.set(0, -0.005, 0.07); head.add(bk);
+    const hook = new T.Mesh(new T.ConeGeometry(0.01, 0.025, 4), mat('yd')); hook.rotation.x = Math.PI; hook.position.set(0, -0.025, 0.09); head.add(hook);
+    const wings = [-1, 1].map(s => { const piv = new T.Group(); piv.position.set(s * 0.07, 0.16, -0.01); bird.add(piv);
+      const wm = box(piv, 0.03, 0.17, 0.11, mat('b'), s * 0.012, -0.075, -0.02); wm.rotation.x = -0.25;
+      for (let k = 0; k < 3; k++) box(piv, 0.026, 0.035, 0.1, mat(k % 2 ? 'bl' : 'bd'), s * 0.014, -0.17 - k * 0.025, -0.06 - k * 0.02);
+      return { piv, s }; });
+    const tail = box(bird, 0.07, 0.15, 0.025, mat('bl'), 0, -0.04, -0.07); tail.rotation.x = 0.35; box(bird, 0.07, 0.03, 0.026, mat('bd'), 0, -0.115, -0.1).rotation.x = 0.35;
+    [-1, 1].forEach(s => { box(bird, 0.018, 0.04, 0.03, mat('y'), s * 0.03, -0.0, 0.02); box(bird, 0.006, 0.08, 0.006, mat('lea'), s * 0.03, -0.06, 0.03); });
+    const bell = new T.Mesh(new T.IcosahedronGeometry(0.014, 0), lam(0xd9b24a, { emissive: 0x4a3608 })); bell.position.set(0.03, -0.1, 0.03); bird.add(bell);
+    return { g, anim(t) { const c = t % 4, open = c > 3 && c < 3.8 ? Math.sin((c - 3) / 0.8 * Math.PI) : 0; wings.forEach(w => { w.piv.rotation.z = w.s * open * 1.1; });
+      head.rotation.y = Math.sin(t * 0.9) * 0.6 * (Math.sin(t * 0.37) > 0 ? 1 : 0.2); bird.position.y = 0.4 + open * 0.02; } };
+  }
+  return { B, C: Cc };
+  })();
   /* 칸 위의 설치물: 토큰 종류마다 작은 3D 소품 */
   const PM = {};
   const lam = (c, o) => new T.MeshLambertMaterial(Object.assign({ color: c }, o || {}));
@@ -14751,16 +14813,14 @@ function stOverHTML(won) {
       const S = PM.tray || (PM.tray = lam(0xd8d0d8, { emissive: 0x2a2228 })), Sd = PM.trayd || (PM.trayd = lam(0x8a7d88));
       m = new T.Mesh(new T.CylinderGeometry(0.23, 0.23, 0.03, 14), S); m.position.set(-0.06, 0.05, -0.24); m.rotation.set(0.18, 0, 0.12); g.add(m);
       m = new T.Mesh(new T.TorusGeometry(0.23, 0.025, 4, 16), Sd); m.rotation.set(PI / 2 + 0.18, 0.12, 0); m.position.set(-0.06, 0.07, -0.24); g.add(m); }
-    else if (kind === 'hawkt' || kind === 'hawkg') {   /* 매조련사의 매(hawkg는 휘파람으로 부를 칸의 반투명 미리보기): 칸 모서리 위에 날개를 편 갈색 매 */
+    else if (kind === 'hawkt' || kind === 'hawkg') {   /* 매조련사의 매(hawkg는 휘파람으로 부를 칸의 반투명 미리보기): 칸 모서리에서 날거나(B) 횃대에 앉는다(C) */
       const B = PM.hawk || (PM.hawk = lam(0x6b4a2e, { emissive: 0x1d120a })), W = PM.hawkw || (PM.hawkw = lam(0x3d2a1c)), Y = PM.hawky || (PM.hawky = lam(0xe8b83a, { emissive: 0x4a3008 })), H = PM.hawkh || (PM.hawkh = lam(0xd9b98a));
-      const hk = new T.Group(); hk.position.set(0.22, 0.5, -0.2);
-      m = new T.Mesh(new T.SphereGeometry(0.1, 7, 5), B); m.scale.set(1, 0.85, 1.3); hk.add(m);
-      m = new T.Mesh(new T.SphereGeometry(0.065, 6, 5), H); m.position.set(0, 0.07, 0.12); hk.add(m);
-      m = new T.Mesh(new T.ConeGeometry(0.025, 0.07, 4), Y); m.rotation.x = PI / 2; m.position.set(0, 0.06, 0.2); hk.add(m);
-      [-1, 1].forEach(function (sd) { m = new T.Mesh(new T.BoxGeometry(0.26, 0.02, 0.12), W); m.position.set(sd * 0.2, 0.03, -0.02); m.rotation.z = sd * 0.35; hk.add(m); });
-      m = new T.Mesh(new T.BoxGeometry(0.08, 0.02, 0.12), W); m.position.set(0, -0.01, -0.16); hk.add(m);
-      if (kind === 'hawkg') hk.traverse(function (o) { if (o.material) { o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = 0.45; } });
-      g.add(hk); g.userData.spin = hk; }
+      const fly = HAWK3.B(), sit = HAWK3.C(), orb = new T.Group(); fly.g.scale.setScalar(1.2); sit.g.scale.setScalar(1.7);
+      orb.position.set(0.22, 0.5, -0.2); orb.add(fly.g); g.add(orb); sit.g.position.set(0.22, 0, -0.2); g.add(sit.g);
+      if (kind === 'hawkg') [fly.g, sit.g].forEach(function (x) { x.traverse(function (o) { if (o.material) { o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = 0.45; } }); });
+      /* 리플레이 중이거나 이 칸에 막 날아온 뒤 1.4초는 날고, 카드를 고르는 동안에는 횃대에 앉아 있다. 미리보기(hawkg)는 늘 앉은 모습 */
+      g.userData.anim = function (ts, since) { const flying = kind === 'hawkt' && ((typeof replaying !== 'undefined' && replaying) || since < 1400); fly.g.visible = flying; sit.g.visible = !flying;
+        if (flying) { const a = ts * 0.9; fly.g.position.set(Math.cos(a) * 0.12, Math.sin(ts * 1.7) * 0.03, Math.sin(a) * 0.12); fly.g.rotation.y = -a; fly.anim(ts); } else sit.anim(ts); }; }
     else if (kind === 'paint') {   /* 화가 물감: 바닥에 납작한 세 색 얼룩 */
       const cs = [0xf2c230, 0xe0524f, 0x4f86d9]; [[0, 0, 0.2], [0.14, 0.1, 0.12], [-0.12, 0.12, 0.09]].forEach(function (q, i) { m = new T.Mesh(new T.CylinderGeometry(q[2], q[2] * 1.05, 0.015, 10), PM['pt' + i] || (PM['pt' + i] = lam(cs[(i + 1) % 3], { emissive: 0x2a2010 }))); m.position.set(q[0] - 0.02, 0.015 + i * 0.002, q[1] - 0.05); m.scale.z = 0.85; g.add(m); }); }
     else if (kind === 'acid') {   /* 산성 웅덩이: 낮은 반투명 초록 원판 + 거품 몇 알 */
@@ -15772,7 +15832,7 @@ function stOverHTML(won) {
       if (cl.contains('blk-ice')) { if (!t.ice) { t.ice = new T.Mesh(iceGeo, iceMat); t.ice.position.set(t.x, TY + 0.25, t.z); t.ice.renderOrder = 4; boardG[b].add(t.ice); } t.ice.visible = true; } else if (t.ice) t.ice.visible = false;
       if (cl.contains('blk-grass')) { if (!t.grass) { t.grass = grassMound(); t.grass.position.set(t.x, TY, t.z); boardG[b].add(t.grass); } t.grass.visible = true; } else if (t.grass) t.grass.visible = false;
       if (cl.contains('blk-pil')) { if (!t.rubble) { t.rubble = rubbleRing(); t.rubble.position.set(t.x, TY, t.z); boardG[b].add(t.rubble); } t.rubble.visible = true; } else if (t.rubble) t.rubble.visible = false;
-      for (const k of PK) { let p = t.props[k]; if (kinds[k]) { if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); } p.visible = true; p.position.y = TY + t.lift * 0.05; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
+      for (const k of PK) { let p = t.props[k]; if (kinds[k]) { if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); p.userData.shown = now; } if (!p.visible) p.userData.shown = now; p.visible = true; if (p.userData.anim) p.userData.anim(now / 1000, now - p.userData.shown); p.position.y = TY + t.lift * 0.05; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
       if (h !== t.lsig) { t.lsig = h;
         if (!h) { if (t.label) { t.label.remove(); t.label = null; } }
         else { if (!t.label) { t.label = document.createElement('div'); t.label.className = 'cell a3-cl'; lab.appendChild(t.label); } t.label.innerHTML = h; } }
