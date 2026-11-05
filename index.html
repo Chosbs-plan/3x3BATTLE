@@ -4362,6 +4362,71 @@ html:is(.kbnav, .pad) :focus { outline: 4px solid #ffd75e !important; outline-of
 @media (min-width: 1100px) and (min-height: 660px) { @media (hover: hover) { html:is(.kbnav, .pad) #app > .play.v2 .hand .card:focus { --sc: 1.45; --lift: calc(var(--ch2) * -.42); z-index: 6; } } }
 /* 손패 카드 위 숫자 단축키(넓은 PC) */
 .kcap { display: none; } @media (min-width: 1100px) and (min-height: 660px) and (hover: hover) { #app > .play.v2 .hand .card .kcap { display: block; position: absolute; left: 6px; bottom: 6px; z-index: 3; padding: 0 6px; font-size: 13px; font-weight: 700; line-height: 18px; color: var(--ink); background: #fff; border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); pointer-events: none; } }
+/* ===== PC 하위 페이지를 '게임 창'으로: 양피지 바탕, 금 테두리와 모서리 징, 어두운 제목판. 내용 카드(흰 카드)는 그대로 ===== */
+.menu.t2 .pc-page { inset: 18px 30px 16px; background:
+    radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(120, 78, 36, .16)),
+    repeating-linear-gradient(0deg, rgba(120, 80, 40, .035) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(90deg, rgba(120, 80, 40, .03) 0 2px, transparent 2px 8px),
+    #f4ead7;
+  border: 4px solid #1d1413; box-shadow: inset 0 0 0 3px #c99a4e, inset 0 0 0 6px #1d1413, 0 0 0 3px rgba(255, 244, 214, .35), 12px 12px 0 rgba(29, 20, 19, .4); }
+.menu.t2 .pc-page::before, .menu.t2 .pc-page::after { content: ""; position: absolute; z-index: 3; width: 18px; height: 18px; background: #e7b75c; box-shadow: inset -4px -4px 0 #a66f22, inset 4px 4px 0 #fbe3a2, 0 0 0 3px #1d1413; pointer-events: none; }
+.menu.t2 .pc-page::before { left: -11px; top: -11px; } .menu.t2 .pc-page::after { right: -11px; bottom: -11px; }
+.menu.t2 .pc-ph { position: relative; margin: 6px 6px 0; padding: 14px 26px 13px; background: linear-gradient(#45322f, #2a1e1d); border-bottom: 4px solid var(--red); box-shadow: 0 3px 0 #1d1413; }
+.menu.t2 .pc-ph h2 { color: #fdf7ee; text-shadow: 3px 3px 0 #1d1413, 0 0 0 transparent; }
+.menu.t2 .pc-ph h2::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 12px; vertical-align: 6px; background: var(--red); box-shadow: 2px 2px 0 #1d1413; }
+.menu.t2 .pc-ph p { color: #cdbcb6; }
+.menu.t2 .pc-ph-r { color: #fff3c4; } .menu.t2 .pc-ph-r .dia-n { color: #bfeeff; }
+.menu.t2 .pc-page .pc-pb { margin: 0 6px 6px; background: none !important; }
+/* 빈 공간 정리: 묶음이 적은 칸은 가운데로, 빈 메일함은 가운데에 크게 */
+.menu.t2 .dsh.pc { justify-items: center; align-content: start; padding-top: 12px; }
+.menu.t2 .dsh.pc .dsh-grid { width: 100%; grid-template-columns: repeat(auto-fit, minmax(230px, 270px)); justify-content: center; }
+.menu.t2 .dsh.pc .dsh-note { text-align: center; }
+.menu.t2 .pg-mail .ml { margin: 0 auto; width: min(860px, 100%); }
+.menu.t2 .pg-mail .ml-empty { padding: 70px 16px; background: rgba(255, 255, 255, .55); }
+.menu.t2 .pg-mail .ml-empty i { font-size: 54px; }
+/* ===== 페이지별 재배치(시안) ===== */
+/* 처형 이펙트: 왼쪽 목록 + 오른쪽 큰 무대(고른 이펙트가 소리 없이 계속 재생) */
+.menu.t2 .exb.pc.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(520px, 46%); gap: 22px; height: 100%; min-height: 0; }
+.exb.two .exb-l { display: grid; align-content: start; gap: 12px; min-height: 0; overflow: auto; padding: 2px; }
+.exb.two .exb-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+.exb.two .exb-it { font: inherit; text-align: left; cursor: pointer; color: inherit; }
+.exb.two .exb-it .exb-art { height: 130px; }
+.exb.two .exb-it.sel { box-shadow: inset 0 0 0 3px #ffd75e, 0 0 0 3px #1d1413, 5px 5px 0 #c99a4e; translate: 0 -3px; }
+.exb.two .exb-it > b { padding: 2px 4px 4px; font-size: 18px; }
+.exb-stage { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-height: 0; color: #f1e9e6; background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, inset 0 0 0 4px rgba(255, 255, 255, .07), 6px 6px 0 rgba(29, 20, 19, .35); padding: 14px; gap: 14px; }
+.exb-stage .exs-st { width: 100%; height: 100%; aspect-ratio: auto; min-height: 260px; border-width: 3px; box-shadow: none; }
+.exb-stage .exs-st .exepv-n { display: none; }
+.exs-info { display: grid; gap: 6px; padding: 2px 6px 4px; } .exs-info h3 { margin: 0; font-size: 34px; color: #fff; text-shadow: 3px 3px 0 #1d1413; } .exs-info > p:not(.pmc-k) { margin: 0; color: #d9cbc7; }
+.exs-bt { display: flex; gap: 10px; margin-top: 6px; } .exs-bt .pcb { flex: 1 1 0; } .exs-bt .pcb.ghost { flex: 0 0 auto; color: #f1e9e6; outline: 2px solid #8a7470; outline-offset: -2px; }
+/* 메일함: 왼쪽 메일 + 오른쪽 안내(우체통 그림) */
+.menu.t2 .mlp { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 22px; height: 100%; min-height: 0; }
+.menu.t2 .pg-mail .mlp .ml { width: auto; max-width: none; margin: 0; align-content: start; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+.menu.t2 .pg-mail .mlp .ml-empty { height: 100%; min-height: 300px; align-content: center; }
+.ml-side { display: grid; align-content: start; gap: 12px; padding: 20px 22px; color: #f1e9e6; background: linear-gradient(170deg, #3d2d2b, #2a1e1d 55%, #241918); box-shadow: inset 0 0 0 3px #1d1413, 6px 6px 0 rgba(29, 20, 19, .35); }
+.ml-side h3 { margin: 4px 0 0; font-size: 20px; color: #ffd75e; } .ml-side .cap { color: #bfaea9; margin: 0; }
+.ml-kinds { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ml-kinds li { display: grid; grid-template-columns: 34px 1fr; grid-template-rows: auto auto; column-gap: 10px; padding: 8px 10px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .06); }
+.ml-kinds i { grid-row: span 2; font-style: normal; font-size: 24px; align-self: center; } .ml-kinds b { font-size: 16px; } .ml-kinds span { font-size: 15px; color: #cdbcb6; } .ml-kinds .mdl-n { color: #fff3c4; }
+.ml-box { position: relative; height: 170px; margin-bottom: 4px; background: radial-gradient(ellipse 60% 20% at 50% 96%, rgba(0, 0, 0, .35), transparent 70%); }
+.ml-box .mb-post { position: absolute; left: calc(50% - 8px); bottom: 10px; width: 16px; height: 70px; background: #6b4a2f; box-shadow: inset -4px 0 0 #4a3020; }
+.ml-box .mb-body { position: absolute; left: calc(50% - 62px); bottom: 74px; width: 124px; height: 82px; background: #d8475a; border-radius: 40px 40px 0 0; box-shadow: inset -8px -6px 0 #a9303f, inset 6px 6px 0 #ef7383, 0 0 0 4px #1d1413; }
+.ml-box .mb-slot { position: absolute; left: 24px; right: 24px; top: 34px; height: 8px; background: #1d1413; }
+.ml-box .mb-flag { position: absolute; left: calc(50% + 50px); bottom: 120px; width: 8px; height: 46px; background: #ffd75e; box-shadow: 0 0 0 3px #1d1413; transform-origin: 50% 100%; rotate: 12deg; }
+.ml-box .mb-flag::after { content: ""; position: absolute; left: 8px; top: 0; width: 22px; height: 14px; background: #ffd75e; box-shadow: 0 0 0 3px #1d1413; }
+/* 주간 도전: 두 칸이 화면 높이를 채우고, 순위표에 보상과 빈 자리를 보인다 */
+.menu.t2 .pc-page .wk { align-items: stretch; height: 100%; }
+.menu.t2 .pc-page .wk-card { grid-template-rows: minmax(220px, 1fr) auto; } .menu.t2 .pc-page .wk-art { height: auto; min-height: 220px; }
+.menu.t2 .pc-page .wk-art .wk-hero, .menu.t2 .pc-page .wk-art .wk-boss { scale: 1.35; transform-origin: 50% 100%; }
+.menu.t2 .pc-page .wk-board { align-content: start; grid-template-rows: auto auto auto 1fr; }
+.wk-prize { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 8px 10px; background: #fff7dc; box-shadow: inset 0 0 0 2px #e3c066; font-size: 15px; } .wk-prize > span { font-weight: 700; color: #8a6510; margin-right: 4px; } .wk-prize b { display: inline-flex; align-items: center; gap: 4px; }
+.wk-ghost { display: none; } .menu.t2 .pc-page .wk-ghost { display: grid; max-height: none; } .menu.t2 .pc-page .wk-list li { font-size: 15px; } .wk-ghost li { opacity: .55; background: repeating-linear-gradient(90deg, rgba(0, 0, 0, .04) 0 6px, transparent 6px 12px), var(--wash); }
+/* 다이아 충전: 위쪽 큰 소개판 */
+.dsh-hero { width: 100%; display: grid; grid-template-columns: 260px minmax(0, 1fr); align-items: center; gap: 24px; padding: 22px 30px; color: #f1e9e6; background: radial-gradient(ellipse at 18% 60%, rgba(111, 211, 245, .28), transparent 60%), linear-gradient(170deg, #22324a, #18223a 60%, #121a2c); box-shadow: inset 0 0 0 3px #0b1220, 6px 6px 0 rgba(29, 20, 19, .35); }
+.dsh-hero h3 { margin: 2px 0 6px; font-size: 38px; color: #fff; text-shadow: 3px 3px 0 #0b1220; } .dsh-hero p { margin: 0; color: #c9d8ea; } .dsh-hero .pmc-k { color: #8fe3ff; }
+.dsh-pile { position: relative; height: 150px; } .dsh-pile .dia { position: absolute; width: 46px; height: 56px; filter: drop-shadow(3px 4px 0 #0b1220); }
+.dsh-pile .dia:nth-child(1) { left: 10px; bottom: 0; } .dsh-pile .dia:nth-child(2) { left: 56px; bottom: 0; } .dsh-pile .dia:nth-child(3) { left: 102px; bottom: 0; } .dsh-pile .dia:nth-child(4) { left: 148px; bottom: 0; } .dsh-pile .dia:nth-child(5) { left: 194px; bottom: 0; }
+.dsh-pile .dia:nth-child(6) { left: 33px; bottom: 44px; } .dsh-pile .dia:nth-child(7) { left: 79px; bottom: 44px; } .dsh-pile .dia:nth-child(8) { left: 125px; bottom: 44px; } .dsh-pile .dia:nth-child(9) { left: 92px; bottom: 88px; width: 64px; height: 78px; }
+.menu.t2 .dsh.pc { gap: 18px; } .menu.t2 .dsh.pc .dsh-it { min-height: 300px; justify-content: space-between; }
 /* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
 .dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
 .dia { display: inline-block; width: 14px; height: 14px; flex: none; background: linear-gradient(135deg, #e6fbff 0 26%, #6fd3f5 27% 52%, #2a9bd6 53% 76%, #1c6ea6 77%); clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
@@ -8393,6 +8458,8 @@ function wkBody() {
     : B.err === 'nosql' ? `<p class="cap">${L('순위표 서버가 아직 준비되지 않았습니다(관리자: supabase/weekly.sql 실행).', 'Leaderboard is not set up yet (run supabase/weekly.sql).')}</p>` : B.err ? `<p class="cap">${L('순위표를 불러오지 못했습니다.', 'Could not load the leaderboard.')}</p>`
     : B.rows.length ? `<ol class="wk-list">${B.rows.map(x => row(x, B.me && x.rank === B.me.rank && x.nick === AUTH.nick)).join('')}</ol>${B.me && B.me.rank > B.rows.length ? `<ol class="wk-list wk-mine">${row(Object.assign({ nick: AUTH.nick }, B.me), true)}</ol>` : ''}<p class="cap">${L(`이번 주 완주 ${B.n}명`, `${B.n} cleared this week`)}</p>`
     : `<p class="cap">${L('아직 아무도 완주하지 못했습니다. 첫 이름을 올려 보세요!', 'Nobody has cleared it yet. Be the first!')}</p>`;
+  const empty = !(B && B.rows && B.rows.length), ghost = empty ? `<ol class="wk-list wk-ghost" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<li class="${i < 3 ? 'top' + (i + 1) : ''}"><b class="wk-rk">${i + 1}</b><span class="wk-nm">—</span><span class="wk-sc"></span></li>`).join('')}</ol>` : '';
+  const prize = `<div class="wk-prize"><span>${L('이번 주 보상', 'This week\'s prizes')}</span><b class="p1">1${L('등', 'st')} ${MDL(200)}</b><b class="p2">2${L('등', 'nd')} ${MDL(100)}</b><b class="p3">3${L('등', 'rd')} ${MDL(50)}</b></div>`;
   return `<div class="wk">
     <section class="wk-card c-${w.cls}"><div class="wk-art th-castle"><i class="px wk-hero a-${w.cls}${skc(w.cls, skinOf(w.cls))}" aria-hidden="true"></i><i class="px wk-boss a-admin flip" aria-hidden="true"></i></div>
       <div class="wk-tx"><p class="cap">${L('주간 도전', 'Weekly Challenge')} · ${wkDates(w.id)} · ${wkLeft(w.id)}</p><h3>${L(`이번 주 직업: ${CLS[w.cls].n}`, `This week: ${TR(CLS[w.cls].n)}`)}</h3>
@@ -8401,7 +8468,7 @@ function wkBody() {
         ${best ? `<p class="wk-best">${L('내 최고', 'My best')} <b>${best.score}${L('점', ' pts')}</b> · ${best.turns}${L('턴', ' turns')}${B && B.me ? ` · <b>${B.me.rank}${L('위', 'th')}</b>` : ''}</p>` : ''}
         ${sv ? `<p class="wk-best">${L('진행 중', 'In progress')} · ${L(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)} · ${L('체력', 'HP')} ${sv.hp}/${sv.maxHp}</p>` : ''}
         <div class="wk-go"><button type="button" class="btn red big" data-a="wkgo">${sv ? L('이어하기', 'Continue') : best ? L('다시 도전', 'Try again') : L('도전하기', 'Start')}</button>${sv ? `<button type="button" class="btn ghost" data-a="wknew">${L('처음부터', 'Restart')}</button>` : ''}</div></div></section>
-    <section class="wk-board"><div class="wk-bh"><h3>${lbIc('rec')}${L('이번 주 순위', 'This week\'s ranking')}</h3>${AUTH.user ? `<button type="button" class="btn ghost sm" data-a="wkre">${L('새로 고침', 'Refresh')}</button>` : ''}</div>${board}</section></div>`;
+    <section class="wk-board"><div class="wk-bh"><h3>${lbIc('rec')}${L('이번 주 순위', 'This week\'s ranking')}</h3>${AUTH.user ? `<button type="button" class="btn ghost sm" data-a="wkre">${L('새로 고침', 'Refresh')}</button>` : ''}</div>${prize}${board}${ghost}</section></div>`;
 }
 /* 싱글 플레이 화면의 주간 도전 띠 */
 function wkStrip(pc) {
@@ -8454,6 +8521,16 @@ function mailBody() {
     : MAIL.err === 'nosql' ? `<p class="cap">${mE('메일함 서버가 아직 준비되지 않았습니다(관리자: supabase/mail.sql 실행).', 'Mail is not set up yet (run supabase/mail.sql).')}</p>`
     : !MAIL.t && MAIL.busy ? `<p class="cap">${mE('메일을 불러오는 중…', 'Loading mail…')}</p>`
     : MAIL.list.length ? `<ul class="ml-list">${MAIL.list.map(item).join('')}</ul>` : `<div class="ml-empty"><i aria-hidden="true">✉</i><p>${mE('받은 메일이 없습니다.', 'No mail.')}</p><p class="cap">${mE('개발자 선물, 이벤트 보상, 주간 도전 1~3등 보상이 여기로 옵니다.', 'Developer gifts, event rewards and weekly top-3 rewards arrive here.')}</p></div>`;
+  const pcp = isPC() && !doc && menuTab === 'mail' && infoEl.hidden;
+  if (pcp) return `<div class="mlp">${mlMain(n, body)}<aside class="ml-side"><div class="ml-box" aria-hidden="true"><i class="mb-flag"></i><i class="mb-body"><i class="mb-slot"></i></i><i class="mb-post"></i></div>
+      <h3>${mE('메일로 오는 것', 'What arrives here')}</h3><ul class="ml-kinds"><li><i>🎁</i><b>${mE('개발자 선물', 'Developer gifts')}</b><span>${mE('점검·업데이트 보상', 'Maintenance & update rewards')}</span></li>
+        <li><i>🎉</i><b>${mE('이벤트 보상', 'Event rewards')}</b><span>${mE('기간 한정 이벤트', 'Limited-time events')}</span></li>
+        <li><i>🏆</i><b>${mE('주간 도전 1~3등', 'Weekly top 3')}</b><span>${MDL(200)} · ${MDL(100)} · ${MDL(50)}</span></li></ul>
+      <p class="cap">${mE('받은 메일은 7일 동안 남고, 기한이 지난 메일은 받을 수 없습니다.', 'Claimed mail stays for 7 days. Expired mail cannot be claimed.')}</p>
+      <button type="button" class="pcb red" data-a="mtab" data-m="weekly">${mE('주간 도전 보러 가기', 'Go to Weekly Challenge')} ▶</button></aside></div>`;
+  return mlMain(n, body);
+}
+function mlMain(n, body) {
   return `<div class="ml"><div class="ml-top"><p>${n ? mE(`받지 않은 메일 <b>${n}</b>통`, `<b>${n}</b> unclaimed`) : mE('받을 메일이 없습니다', 'Nothing to claim')}</p>
       <span><button type="button" class="btn ghost sm" data-a="mlre">${mE('새로 고침', 'Refresh')}</button>${n > 1 ? `<button type="button" class="btn red sm" data-a="mlget" data-k=""${MAIL.claiming ? ' disabled' : ''}>${mE('모두 받기', 'Claim all')}</button>` : ''}</span></div>
     ${body}<p class="cap ml-note">${mE('받은 메일은 7일 동안 목록에 남습니다. 기한이 지난 메일은 받을 수 없습니다.', 'Claimed mail stays for 7 days. Expired mail can no longer be claimed.')}</p></div>`;
@@ -8524,7 +8601,9 @@ const packPrice = k => LANG === 'en' ? '$' + (k.usd / 100).toFixed(2) : k.krw.to
 function diaShopHTML(pc) {
   const packs = (AUTH.packs || []).filter(k => !(k.once && (AUTH.bought || []).includes(k.id))), d = AUTH.dia || { paid: 0, free: 0 };
   const cls = pc ? 'pcb' : 'btn';
-  return `<div class="dsh${pc ? ' pc' : ''}">
+  const hero = pc ? `<section class="dsh-hero"><span class="dsh-pile" aria-hidden="true">${'<i class="dia"></i>'.repeat(9)}</span><div class="dsh-ht"><p class="pmc-k">${mE('유료 재화', 'Premium currency')}</p><h3>${mE('다이아 충전', 'Top up Diamonds')}</h3>
+      <p>${mE('모든 스킨을 다이아로 살 수 있고, 전설 스킨은 다이아로만 팝니다. 대전 실력에는 영향이 없습니다.', 'Diamonds buy any skin, and Legend skins are diamond-only. They never affect play.')}</p></div></section>` : '';
+  return `<div class="dsh${pc ? ' pc' : ''}">${hero}
     <p class="dsh-bal">${DIA(dias())}<small>${mE(`유료 ${Math.max(0, d.paid)} · 보너스 ${d.free}`, `Paid ${Math.max(0, d.paid)} · Bonus ${d.free}`)}</small></p>
     <div class="dsh-grid">${packs.map(k => `<div class="dsh-it${k.once ? ' first' : ''}">
         ${k.once ? `<em class="dsh-tag">${mE('첫 결제 한 번', 'First purchase')}</em>` : k.bonus ? `<em class="dsh-tag">+${Math.round(k.bonus / k.dia * 100)}%</em>` : ''}
@@ -8564,7 +8643,7 @@ function multiBody(off) {
     </div></div>`;
 }
 /* 로비 버튼들 */
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="bsv"],[data-a="bsplay"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"],[data-a="collkind"],[data-a="exewear"],[data-a="exeprev"]'); if (!b || doc) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="reppick"],[data-a="repset"],[data-a="cxv"],[data-a="cxtab"],[data-a="rlv"],[data-a="bsv"],[data-a="bsplay"],[data-a="collwear"],[data-a="shopgo"],[data-a="colltab"],[data-a="mmquick"],[data-a="pcsel"],[data-a="pcprev"],[data-a="collkind"],[data-a="exewear"],[data-a="exeprev"],[data-a="exesel"]'); if (!b || doc) return;
   e.stopPropagation(); const a = b.dataset.a; SND.unlock();
   if (a === 'reppick') repOpen = !repOpen;
   else if (a === 'repset') { ls('ssd-rep', b.dataset.k); repOpen = false; SND.play('relicGood'); }
@@ -8579,6 +8658,7 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   else if (a === 'collkind') collKind = b.dataset.k === 'exe' ? 'exe' : 'skin';
   else if (a === 'exewear') { ls('ssd-exe', b.dataset.k || ''); SND.play('relicGood'); return render(); }
   else if (a === 'exeprev') { exePreview(b.dataset.k || ''); return; }
+  else if (a === 'exesel') { if (exeSel === (b.dataset.k || '')) return; exeSel = b.dataset.k || ''; SND.play('tap'); return render(); }
   else if (a === 'pcsel') { collSel = b.dataset.k; collPrev = null; }
   else if (a === 'pcprev') { collSel = b.dataset.c; collPrev = b.dataset.id; }
   else if (a === 'mmquick') { if (b.disabled) return; menuTab = 'multi'; tabAnim = true; SND.play('pop'); return render(); }   /* 매칭 화면에서 대전 방식을 골라 시작 */
@@ -11230,26 +11310,52 @@ async function exeInDuel(id, w, l, cls, fin, kill) {
   return exeRun(id, null, pt, sc, l === seat ? -1 : 1, CLS[cls(l)].n, kill, { el: uEl(l), coins3d: () => on3() && !!window.A3COINS && A3COINS(bd, cell), a3: kind => on3() && !!window.A3EXE && A3EXE(kind, bd, cell, l === seat ? -1 : 1) });
 }
 /* 미리 보기: 작은 무대에서 내 대표 캐릭터가 허수아비에게 재생 */
-async function exePreview(id) {
-  document.querySelectorAll('.exepv').forEach(e => e.remove());
-  const rep = repCls(), foe = rep === 'scarecrow' ? 'statue' : 'scarecrow', m = document.createElement('div'); m.className = 'exepv'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', exeName(id));
-  m.innerHTML = `<div class="exepv-st"><i class="exepv-fl"></i><i class="px exepv-me a-${rep}${skc(rep, skinOf(rep))}"></i><i class="px exepv-foe flip a-${foe}"></i><b class="exepv-n">${exeName(id)}</b></div><p class="cap">${mE('누르면 닫습니다', 'Click to close')}</p>`;
-  document.body.appendChild(m); const st = m.querySelector('.exepv-st'), f = m.querySelector('.exepv-foe');
-  m.addEventListener('click', () => m.remove());
-  /* 3D가 켜져 있으면 결투와 같은 3D 무대에서 재생한다(동전·단두대·큐브도 3D) */
-  let ctl = null; try { ctl = window.A3PV ? A3PV(st, m.querySelector('.exepv-me'), f) : null; } catch (e) { ctl = null; }
-  if (ctl) st.classList.add('d3');
-  await exeWait(350); if (!m.isConnected) return;
+/* 무대 하나에서 한 번 재생: st 안에 내 대표 캐릭터와 허수아비를 세우고(3D가 켜져 있으면 3D 무대), 이펙트를 재생한 뒤 원래대로 되돌린다.
+   quiet이면 효과음 없이(컬렉션 화면에서 계속 도는 무대) */
+async function exeStageRun(st, id, quiet) {
+  const rep = repCls(), foe = rep === 'scarecrow' ? 'statue' : 'scarecrow';
+  if (!st.querySelector('.exepv-foe')) {
+    st.innerHTML = `<i class="exepv-fl"></i><i class="px exepv-me a-${rep}${skc(rep, skinOf(rep))}"></i><i class="px exepv-foe flip a-${foe}"></i><b class="exepv-n">${exeName(id)}</b>`;
+    let ctl = null; try { ctl = window.A3PV ? A3PV(st, st.querySelector('.exepv-me'), st.querySelector('.exepv-foe')) : null; } catch (e) { ctl = null; }
+    st._ctl = ctl; if (ctl) st.classList.add('d3');
+    await exeWait(350);
+  }
+  const f = st.querySelector('.exepv-foe'), ctl = st._ctl; if (!st.isConnected || !f) return;
+  const nm = st.querySelector('.exepv-n'); if (nm) nm.textContent = exeName(id);
   const sr = st.getBoundingClientRect(), fr = f.getBoundingClientRect();
   const pt = ctl ? ctl.pt() : { x: fr.left - sr.left + fr.width / 2, y: fr.top - sr.top + fr.height * 0.55 }, sc = ctl ? ctl.scale() : fr.height / 170;
-  if (EXE_RUN[id]) await exeRun(id, st, pt, sc, 1, CLS[foe].n, () => f.classList.add('gone'), { el: f, a3: ctl ? kind => ctl.exe(kind) : null, coins3d: ctl ? () => ctl.coins() : null });
-  else { SND.play('ko'); f.classList.add('gone'); st.insertAdjacentHTML('beforeend', '<b class="exepv-ko">K.O.</b>'); await exeWait(1200); }
-  await exeWait(500); if (m.isConnected) { const n = m.querySelector('.exepv-foe'); if (n) { n.classList.remove('gone'); n.style.scale = n.style.opacity = ''; } const k = m.querySelector('.exepv-ko'); if (k) k.remove(); }
+  const snd = SND.play; if (quiet) SND.play = () => {};
+  try {
+    if (EXE_RUN[id]) await exeRun(id, st, pt, sc, 1, CLS[foe].n, () => f.classList.add('gone'), { el: f, a3: ctl ? kind => ctl.exe(kind) : null, coins3d: ctl ? () => ctl.coins() : null });
+    else { SND.play('ko'); f.classList.add('gone'); st.insertAdjacentHTML('beforeend', '<b class="exepv-ko">K.O.</b>'); await exeWait(1200); }
+  } finally { if (quiet) SND.play = snd; }
+  await exeWait(500); if (st.isConnected) { f.classList.remove('gone'); f.style.scale = f.style.opacity = ''; const k = st.querySelector('.exepv-ko'); if (k) k.remove(); }
+}
+/* 미리 보기 창 */
+async function exePreview(id) {
+  document.querySelectorAll('.exepv').forEach(e => e.remove());
+  const m = document.createElement('div'); m.className = 'exepv'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', exeName(id));
+  m.innerHTML = `<div class="exepv-st"></div><p class="cap">${mE('누르면 닫습니다', 'Click to close')}</p>`;
+  document.body.appendChild(m); m.addEventListener('click', () => m.remove());
+  await exeStageRun(m.querySelector('.exepv-st'), id, false);
+}
+/* 컬렉션(PC) 오른쪽 무대: 고른 이펙트를 소리 없이 계속 재생한다 */
+let exeSel = null;
+function exeStageSync() {
+  const st = document.querySelector('.exs-st'); if (!st) return; const id = st.dataset.k || '';
+  if (st._loop === id) return; st._loop = id; const tok = (st._tok = (st._tok || 0) + 1);
+  (async () => { while (st.isConnected && st._tok === tok) { await exeStageRun(st, id, true); await exeWait(900); } })();
 }
 /* 컬렉션의 처형 이펙트 칸 */
 function exeBody(pc) {
   const cur = exeOf(), ids = ['', ...Object.keys(EXE)];
   const art = id => id === 'check' ? `<span class="exa-pcs">${cmImg('K', true)}${cmImg('N', false)}</span>` : id === 'jackpot' ? '<span class="exa-slot"><b>7</b><b>7</b><b>7</b></span>' : id === 'bsod' ? '<span class="exa-bs"><b>:(</b><i></i><i></i></span>' : id === 'guillo' ? '<span class="exa-gl"><i class="gl-post l"></i><i class="gl-post r"></i><i class="gl-beam"></i><i class="gl-lun l"></i><i class="gl-lun r"></i><span class="gl-blade"><i class="gl-wt"></i><i class="gl-edge"></i></span><i class="gl-base"></i></span>' : id === 'cube' ? '<span class="exa-cb"><i></i><i></i></span>' : '<span class="exa-ko">K.O.</span>';
+  if (pc) { const sel = exeSel != null && (exeSel === '' || EXE[exeSel]) ? exeSel : cur, on = sel === cur; setTimeout(exeStageSync, 0);
+    return `<div class="exb pc two"><div class="exb-l"><p class="cap">${mE('결투에서 이기면 장착한 처형 이펙트가 재생됩니다. 대전 상대에게도 같은 연출이 보입니다.', 'When you win, your execution effect plays. Your opponent sees it too.')}</p>
+      <div class="exb-grid">${ids.map(id => `<button type="button" class="exb-it ex-a-${id || 'ko'}${id === cur ? ' on' : ''}${id === sel ? ' sel' : ''}" data-a="exesel" data-k="${id}" aria-pressed="${id === sel}"><span class="exb-art">${art(id)}${id === cur ? `<span class="exb-tag">${mE('장착 중', 'Equipped')}</span>` : ''}</span><b>${exeName(id)}</b></button>`).join('')}</div></div>
+      <aside class="exb-stage"><div class="exs-st exepv-st" data-k="${sel}"></div><div class="exs-info"><p class="pmc-k">${mE('처형 이펙트', 'Execution')}</p><h3>${exeName(sel)}</h3>
+        <p>${sel ? mE(EXE[sel][2], EXE[sel][3]) : mE('K.O. 글자와 함께 가루가 되어 흩어진다', 'The plain K.O. and dust')}</p>
+        <div class="exs-bt"><button type="button" class="pcb ghost" data-a="exeprev" data-k="${sel}">${mE('크게 보기', 'Full view')}</button><button type="button" class="pcb ${on ? 'dark' : 'red'} big" data-a="exewear" data-k="${sel}" ${on ? 'disabled' : ''}>${on ? mE('장착 중', 'Equipped') : mE('장착하기', 'Equip')}</button></div></div></aside></div>`; }
   return `<div class="exb${pc ? ' pc' : ''}"><p class="cap">${mE('결투에서 이기면 마지막에 장착한 처형 이펙트가 재생됩니다. 대전 상대에게도 같은 연출이 보입니다.', 'When you win, your execution effect plays at the end. Your opponent sees it too.')}</p>
     <div class="exb-grid">${ids.map(id => { const on = id === cur;
       return `<div class="exb-it ex-a-${id || 'ko'}${on ? ' on' : ''}"><div class="exb-art">${art(id)}${on ? `<span class="exb-tag">${mE('장착 중', 'Equipped')}</span>` : ''}</div>
