@@ -4361,7 +4361,7 @@ kbd { display: inline-block; padding: 2px 8px; font: inherit; font-size: 14px; f
 html:is(.kbnav, .pad) :focus { outline: 4px solid #ffd75e !important; outline-offset: 3px; box-shadow: 0 0 0 7px rgba(29, 20, 19, .7); }
 @media (min-width: 1100px) and (min-height: 660px) { @media (hover: hover) { html:is(.kbnav, .pad) #app > .play.v2 .hand .card:focus { --sc: 1.45; --lift: calc(var(--ch2) * -.42); z-index: 6; } } }
 /* 손패 카드 위 숫자 단축키(넓은 PC) */
-.kcap { display: none; } @media (min-width: 1100px) and (min-height: 660px) and (hover: hover) { #app > .play.v2 .hand .card .kcap { display: block; position: absolute; left: 50%; translate: -50% 0; top: -16px; z-index: 3; padding: 0 6px; font-size: 13px; font-weight: 700; line-height: 18px; color: var(--ink); background: #fff; border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); pointer-events: none; } }
+.kcap { display: none; } @media (min-width: 1100px) and (min-height: 660px) and (hover: hover) { #app > .play.v2 .hand .card .kcap { display: block; position: absolute; left: 6px; bottom: 6px; z-index: 3; padding: 0 6px; font-size: 13px; font-weight: 700; line-height: 18px; color: var(--ink); background: #fff; border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); pointer-events: none; } }
 /* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
 .dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
 .dia { display: inline-block; width: 14px; height: 14px; flex: none; background: linear-gradient(135deg, #e6fbff 0 26%, #6fd3f5 27% 52%, #2a9bd6 53% 76%, #1c6ea6 77%); clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
@@ -4797,6 +4797,20 @@ html:is(.kbnav, .pad) :focus { outline: 4px solid #ffd75e !important; outline-of
   html body #app > .play.v2 > .bar > span:nth-child(2), html body #app > .play.v2 > .bar .row, html body #app > .play.v2 .a3-ui, html body #app > .play.v2 > .hint2,
   html body #app > .play.v2 .arc, html body #app > .play.v2 .disc, html body #app > .play.v2 .dk-l .pile, html body #app > .play.v2 .dk-l .sum, html body #app > .play.v2 .acts { zoom: var(--uik, 1); }
   html body #app > .play.v2 > .arena .abar:not(.foe) { zoom: var(--uik, 1); }
+}
+/* ===== PC 전투 화면 정보 줄이기: 항상 보일 것과 마우스를 올렸을 때 보일 것을 나눈다 =====
+   - 위 상태줄: 남은 시간(과 3판 2선승 점수, 바닥 붕괴 경고)만. 방 코드·모드·결투장 이름은 결투장 카드와 겹친다
+   - 상대 능력 띠: 상대 프로필 카드의 패시브·능력 칩과 같은 내용이라 숨긴다(설명은 칩에 마우스, '설명' 버튼)
+   - 결투장 카드: 이름과 축복 턴만, 규칙 글은 마우스를 올리면 아래로 펼친다 */
+@media (min-width: 1100px) and (min-height: 660px) {
+  html body #app > .play.v2 > .bar .bt-meta { display: none; }
+  html body #app > .play.v2 > .bar .bt-warn { color: var(--red); font-weight: 700; }
+  html body #app > .play.v2 > .arena .abar.foe { display: none !important; }
+  html body #app > .play.v2 .dk-l .arc { cursor: help; }
+  html body #app > .play.v2 .dk-l .arc > p:not(.arc-b) { position: absolute; left: -3px; right: -3px; top: calc(100% + 3px); z-index: 40; margin: 0; padding: 8px 12px; background: var(--wash); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); display: none; }
+  html body #app > .play.v2 .dk-l .arc:is(:hover, :focus-within) > p:not(.arc-b) { display: block; }
+  html body #app > .play.v2 .dk-l .arc .arc-b { margin-top: 2px; }
+  html body #app > .play.v2 .dk-l .arc { padding-top: 16px; }
 }
 </style>
 <main id="app"></main>
@@ -7868,7 +7882,7 @@ function trackHTML() {
 /* 손패 왼쪽: 결투장 규칙 카드와 버린 카드 더미 */
 function arcHTML() {
   const a = ARENAS[G.arena] ? G.arena : 'castle', nb = Math.ceil(G.turn / 10) * 10;
-  return `<div class="arc"><span class="arc-h">${L('결투장', 'Arena')}</span><b>${ARENAS[a]}</b><p>${ARENA_RULE[a]}</p><p class="arc-b">${G.bless ? L(`★ 축복의 칸 ${G.bless.until - G.turn + 1}턴 남음`, `★ Blessing: ${G.bless.until - G.turn + 1} turn(s) left`) : L(`★ ${nb}턴에 축복의 칸`, `★ Blessing on turn ${nb}`)}</p></div>`;
+  return `<div class="arc" tabindex="0"><span class="arc-h">${L('결투장', 'Arena')}</span><b>${ARENAS[a]}</b><p>${ARENA_RULE[a]}</p><p class="arc-b">${G.bless ? L(`★ 축복의 칸 ${G.bless.until - G.turn + 1}턴 남음`, `★ Blessing: ${G.bless.until - G.turn + 1} turn(s) left`) : L(`★ ${nb}턴에 축복의 칸`, `★ Blessing on turn ${nb}`)}</p></div>`;
 }
 function discHTML() { const n = myP().disc.length; return `<button type="button" class="disc" data-a="deck" aria-label="${L(`버린 카드 ${n}장 보기`, `View ${n} discarded card(s)`)}"><span>${L('버림', 'Discard')}</span><i></i><b>${n}</b></button>`; }
 /* PC 결과 무대: 캐릭터를 화면 한가운데 받침 위에 세우고, 위에 큰 제목(쾅 찍힘), 왼쪽 경기 기록, 오른쪽 결과·보상, 아래 버튼.
@@ -7925,7 +7939,7 @@ function playHTML() {
   const sd = !over && !RP ? actId(pl) || mvId(pl) : null;
   return `<div class="play v2${SPD === 2 ? ' x2' : ''}${over ? ' over' : ''}">${over ? vStageHTML() : ''}
     <div class="bar"><span class="turn">${G.turn}턴</span>
-      <span>${over || RP ? '' : `남은 시간 <b id="timer" class="timer">--</b>초 · `}방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}${modeOf() === 'bo3' ? ` ${scoreOf()[seat]} : ${scoreOf()[o]}` : ''} · ${ARENAS[G.arena] || ARENAS.castle}${G.turn >= COLLAPSE_FROM - 1 ? ' · 바닥 붕괴 중' : ''}</span>
+      <span>${over || RP ? '' : `<span class="bt-time">${mE('남은 시간', 'Time left')} <b id="timer" class="timer">--</b>${mE('초', 's')}</span><span class="bt-meta"> · </span>`}<span class="bt-meta">방 ${esc(code)}${stageOn() ? stFoot() : (local ? ' · 봇 ' + BOTS[botLv][0] : '') + ' · ' + MODES[modeOf()][0]}</span>${modeOf() === 'bo3' ? `<span class="bt-score"> ${MODES.bo3[0]} ${scoreOf()[seat]} : ${scoreOf()[o]}</span>` : ''}<span class="bt-meta"> · ${ARENAS[G.arena] || ARENAS.castle}</span>${G.turn >= COLLAPSE_FROM - 1 ? '<span class="bt-warn"> · 바닥 붕괴 중</span>' : ''}</span>
       <span class="row"><button type="button" class="btn ghost" data-a="snd" aria-pressed="${SND.on}">효과음 ${SND.on ? '켬' : '끔'}</button><button type="button" class="btn ghost" data-a="bgm" aria-pressed="${SND.bgm}">배경음 ${SND.bgm ? '켬' : '끔'}</button>
         <label class="vol">음량<input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"></label><button type="button" class="btn ghost logb" data-a="logp">기록</button><button type="button" class="btn ghost optb" data-a="ov" data-o="settings">설정</button><button type="button" class="btn ghost" data-a="leave">나가기</button></span>${trackHTML()}</div>
     <div class="arena th-${ARENAS[G.arena] ? G.arena : 'castle'}${G.turn >= COLLAPSE_FROM - 1 ? ' dusk' : ''}"><div class="back" aria-hidden="true"><i class="bl a-bfar"></i>${G.arena === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i></div>
