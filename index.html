@@ -4354,6 +4354,14 @@ html .pc-ui :is(.ml-empty p) { font-size: 15px; }
 html .pc-ui :is(.ml-note) { font-size: 15px; }
 html .pc-ui :is(.ps-it.sp .sh-sp) { font-size: 15px; }
 html .pc-ui { font-size: 15px; } html .pc-ui .pc-tipc p { font-size: 15px !important; }
+.keys { display: grid; gap: 6px; } .keys h3 { margin: 10px 0 2px; font-size: 18px; }
+.keys dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 0; align-items: baseline; } .keys dt { margin: 0; } .keys dd { margin: 0; font-size: 15px; }
+kbd { display: inline-block; padding: 2px 8px; font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: #fff; border: 2px solid var(--ink); box-shadow: 0 3px 0 var(--ink); white-space: nowrap; }
+/* 키보드·패드로 움직일 때 지금 고른 것을 굵은 노란 테두리로 */
+html:is(.kbnav, .pad) :focus { outline: 4px solid #ffd75e !important; outline-offset: 3px; box-shadow: 0 0 0 7px rgba(29, 20, 19, .7); }
+@media (min-width: 1100px) and (min-height: 660px) { @media (hover: hover) { html:is(.kbnav, .pad) #app > .play.v2 .hand .card:focus { --sc: 1.45; --lift: calc(var(--ch2) * -.42); z-index: 6; } } }
+/* 손패 카드 위 숫자 단축키(넓은 PC) */
+.kcap { display: none; } @media (min-width: 1100px) and (min-height: 660px) and (hover: hover) { #app > .play.v2 .hand .card .kcap { display: block; position: absolute; left: 50%; translate: -50% 0; top: -16px; z-index: 3; padding: 0 6px; font-size: 13px; font-weight: 700; line-height: 18px; color: var(--ink); background: #fff; border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); pointer-events: none; } }
 /* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
 .dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
 .dia { display: inline-block; width: 14px; height: 14px; flex: none; background: linear-gradient(135deg, #e6fbff 0 26%, #6fd3f5 27% 52%, #2a9bd6 53% 76%, #1c6ea6 77%); clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
@@ -7835,7 +7843,7 @@ function handHTML() {
     const live = { pos: p.pos, dest: pl.dest, sel, tg: pl.tg, ab: pl.ab && p.cls === 'samurai', abAny: pl.ab, o2: p.cls === 'slime' ? p.clone : null };
     const yang = c.yy ? lvOf(G, p, sel && pl.ab) === 1 : null;
     const tmc = p.cls === 'alch' && !RP && ((pl.tm && pl.ab && pl.tm.i === i) || (p.tmap || []).some(e => e[0] === id));
-    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}${tmc ? ' tmc' : ''}" style="--d:${Math.max(0, i - n0)};--el:${Math.round(dEl)}ms;--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" data-id="${id}" aria-pressed="${sel}"><span class="glare" aria-hidden="true"></span>${tmc ? '<span class="tmb">변성</span>' : ''}
+    return `<button type="button" class="card t-${c.t}${c.relic ? ' relic' : ''}${sel ? ' sel' : ''}${no ? ' no' : ''}${i >= n0 ? ' draw' : ''}${tmc ? ' tmc' : ''}" style="--d:${Math.max(0, i - n0)};--el:${Math.round(dEl)}ms;--i:${i};--n:${p.hand.length}" data-a="card" data-i="${i}" data-id="${id}" aria-pressed="${sel}" aria-keyshortcuts="${i < 6 ? i + 1 : ''}"><span class="glare" aria-hidden="true"></span>${i < 6 ? `<span class="kcap" aria-hidden="true">${i + 1}</span>` : ''}${tmc ? '<span class="tmb">변성</span>' : ''}
       <span class="top"><span class="cost${cardCost(p, id) < c.c ? ' cut' : ''}" title="마나">${cardCost(p, id)}</span><span class="nm">${c.n}</span></span>
       <span class="cg">${cardIc(id)}${cardGrid(id, live)}<span class="tag">${c.relic ? '유물 · ' : ''}${TAGS[id]}${(p.temper || {})[id] && c.t === 'atk' ? ` · <b class="k k-d">담금질 +${p.temper[id]}</b>` : ''}</span></span>
       <span class="ds">${c.yy ? yyDesc(c.d, yang) : hl(c.d)}</span></button>`;
@@ -8808,11 +8816,14 @@ function ovHTML() {
   const close = '<div class="d-go"><button type="button" class="btn big" data-x="1">닫기</button></div>';
   if (ovKind === 'rules') return `<div class="info-in"><section class="detail ov-box"><h1>규칙</h1><ol class="rule-ol">${RULES.map(r => `<li>${hl(r)}</li>`).join('')}</ol>
       <p class="cap">대전 방식: 단판, 3판 2선승, 밴픽(서로 직업 하나씩 금지). 방장이 대기실에서 고릅니다.</p>${close}</section></div>`;
+  if (ovKind === 'keys') return `<div class="info-in"><section class="detail ov-box"><h1>${mE('단축키', 'Controls')}</h1>${keysHTML()}${close}</section></div>`;
   if (ovKind === 'settings') { const A3 = window.A3SET ? A3SET.get() : null, lg = typeof LANG === 'string' ? LANG : 'ko', onoff = (k, v) => `<button type="button" class="btn ghost${v ? ' on' : ''}" data-s="${k}" aria-pressed="${v}">${v ? '켬' : '끔'}</button>`;
     return `<div class="info-in"><section class="detail ov-box set-box"><h1>설정</h1><div class="set-grid">
       <div class="set-row"><b>언어 · Language</b><span class="lvs">${[['ko', '한국어'], ['en', 'English']].map(([k, n]) => `<button type="button" class="btn ghost${lg === k ? ' on' : ''}" data-s="lang" data-l="${k}" data-notr aria-pressed="${lg === k}" ${doc && lg !== k ? 'disabled' : ''}>${n}</button>`).join('')}</span></div>
       ${A3 ? `<div class="set-row"><b>화면</b><span class="lvs">${[[1, '3D'], [0, '2D']].map(([v, n]) => `<button type="button" class="btn ghost${A3.on === !!v ? ' on' : ''}" data-s="v3" data-n="${v}" aria-pressed="${A3.on === !!v}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>3D 화질</b><span class="lvs">${[['lo', '거침'], ['mid', '보통'], ['hi', '선명']].map(([k, n]) => `<button type="button" class="btn ghost${A3.qual === k ? ' on' : ''}" data-s="q3" data-l="${k}" aria-pressed="${A3.qual === k}">${n}</button>`).join('')}</span></div>` : ''}
+      <div class="set-row"><b>${mE('화면 모드', 'Window')}</b><span class="lvs">${[[0, '창', 'Windowed'], [1, '전체 화면', 'Fullscreen']].map(([v, a, b2]) => `<button type="button" class="btn ghost${fsOn() === !!v ? ' on' : ''}" data-s="fs" data-n="${v}" aria-pressed="${fsOn() === !!v}">${mE(a, b2)}</button>`).join('')}</span></div>
+      <div class="set-row"><b>${mE('조작', 'Controls')}</b><button type="button" class="btn ghost" data-s="keys">${mE('단축키 · 패드 보기', 'Keys & gamepad')}</button></div>
       <div class="set-row"><b>UI 크기</b><span class="lvs">${[['1', '보통'], ['1.12', '크게']].map(([k, n]) => `<button type="button" class="btn ghost${uiK() === +k ? ' on' : ''}" data-s="uik" data-l="${k}" aria-pressed="${uiK() === +k}">${n}</button>`).join('')}</span></div>
       <div class="set-row"><b>모션 줄이기</b>${onoff('motion', noMotion)}</div>
       <div class="set-row"><b>화면 흔들림·번쩍임</b><span class="lvs">${[[0, '끔'], [1, '약'], [2, '강']].map(([v, n]) => `<button type="button" class="btn ghost${fxLv === v ? ' on' : ''}" data-s="fxlv" data-n="${v}" aria-pressed="${fxLv === v}">${n}</button>`).join('')}</span></div>
@@ -8928,6 +8939,8 @@ infoEl.addEventListener('click', e => {
   if (s === 'snd') SND.toggle(); else if (s === 'bgm') { SND.toggleBgm(); if (SND.bgm && !doc && menuSt === 'main') SND.music('menu'); }
   else if (s === 'lang') { if (b.disabled || b.dataset.l === LANG) return; return setLang(b.dataset.l); }
   else if (s === 'uik') { ls('ssd-uik', b.dataset.l); uiApply(); }
+  else if (s === 'fs') { fsSet(b.dataset.n === '1'); }
+  else if (s === 'keys') { openOv('keys'); return; }
   else if (s === 'v3') { if (window.A3SET) A3SET.setOn(b.dataset.n === '1'); } else if (s === 'q3') { if (window.A3SET) A3SET.setQual(b.dataset.l); }
   else if (s === 'motion') { noMotion = !noMotion; ls('ssd-motion', noMotion ? '0' : '1'); document.documentElement.classList.toggle('nomo', noMotion); }
   else if (s === 'vib') { vibOn = !vibOn; ls('ssd-vib', vibOn ? '1' : '0'); if (vibOn && navigator.vibrate) navigator.vibrate(30); }
@@ -9110,6 +9123,105 @@ app.addEventListener('click', e => {
 });
 app.addEventListener('input', e => { if (e.target.matches('[data-vol]')) SND.setVol(+e.target.value / 100); });
 app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'code') joinRoom(e.target.value.trim().toUpperCase()); });
+/* ===== 입력: 전체 화면, 키보드 단축키, 패드 =====
+   스팀판(Electron)은 window.SSD_APP.setFullscreen(bool)·isFullscreen()을 넣어 주면 창 전체 화면을 그쪽으로 바꾼다. 없으면 브라우저 전체 화면 API */
+const fsOn = () => (window.SSD_APP && SSD_APP.isFullscreen ? !!SSD_APP.isFullscreen() : !!document.fullscreenElement);
+function fsSet(on) {
+  ls('ssd-fs', on ? '1' : '0');
+  if (window.SSD_APP && SSD_APP.setFullscreen) { SSD_APP.setFullscreen(on); return; }
+  try { if (on && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {}); else if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) { /* 전체 화면을 못 쓰는 곳 */ }
+}
+document.addEventListener('fullscreenchange', () => { if (ovKind === 'settings' && !infoEl.hidden) { infoEl.innerHTML = ovHTML(); } });
+/* 단축키 표: [키, 한국어 설명, 영어 설명]. 설정의 '단축키' 버튼과 F1이 이 표를 띄운다 */
+const KEYS = [
+  ['1 ~ 6', '손패 카드 고르기 · 다시 누르면 취소', 'Pick a hand card · press again to cancel'],
+  ['Q W E / A S D / Z X C', '판의 칸 고르기(왼쪽 위부터). 카드가 상대 칸을 고르면 상대 판, 아니면 내 이동 칸', 'Pick a tile (top-left first). Targets the foe board when a card needs it, else your move'],
+  ['R', '능력 쓰기 · 취소', 'Use ability · cancel'],
+  ['Space · Enter', '계획 확정', 'Confirm plan'],
+  ['Tab', '기록 열기 · 닫기', 'Open · close the log'],
+  ['방향키', '버튼 사이 이동(Enter로 누르기)', 'Move between buttons (Enter to press)'],
+  ['Esc', '창 닫기 · 뒤로', 'Close · back'],
+  ['F11 · Alt+Enter', '전체 화면', 'Fullscreen'],
+  ['M', '효과음 켜기 · 끄기', 'Toggle sound effects'],
+  ['F1', '이 단축키 표', 'This list'],
+];
+const PAD_KEYS = [['방향 패드 · 왼쪽 스틱', '버튼 사이 이동', 'Move between buttons'], ['A', '누르기', 'Press'], ['B', '뒤로 · 닫기', 'Back · close'], ['X', '능력', 'Ability'], ['Y', '기록', 'Log'], ['시작(Start)', '계획 확정', 'Confirm plan'], ['LB · RB', '손패 카드 앞뒤로', 'Previous · next hand card']];
+const keysHTML = () => `<div class="keys"><h3>${mE('키보드', 'Keyboard')}</h3><dl>${KEYS.map(([k, a, b]) => `<dt><kbd>${k}</kbd></dt><dd>${mE(a, b)}</dd>`).join('')}</dl>
+  <h3>${mE('패드', 'Gamepad')}</h3><dl>${PAD_KEYS.map(([k, a, b]) => `<dt><kbd>${mE(k, k === '방향 패드 · 왼쪽 스틱' ? 'D-pad · left stick' : k === '시작(Start)' ? 'Start' : k)}</kbd></dt><dd>${mE(a, b)}</dd>`).join('')}</dl></div>`;
+const typing = t => !!(t && t.closest && t.closest('input, textarea, select, [contenteditable="true"]'));
+/* 전투 중: 계획을 짜는 단계인지 */
+const planning = () => !!(doc && doc.phase === 'play' && G && seat && infoEl.hidden && !RP);
+/* 칸 단축키: 상대 칸을 골라야 하는 카드·능력이면 상대 판, 아니면 내 이동 */
+const CELL_KEY = { KeyQ: 0, KeyW: 1, KeyE: 2, KeyA: 3, KeyS: 4, KeyD: 5, KeyZ: 6, KeyX: 7, KeyC: 8, Numpad7: 0, Numpad8: 1, Numpad9: 2, Numpad4: 3, Numpad5: 4, Numpad6: 5, Numpad1: 6, Numpad2: 7, Numpad3: 8 };
+function keyCell(i) { if (locked) return; const k = (needTg(plan) || wNeed(plan)) ? opp(seat) : seat; const b = app.querySelector(`[data-a="cell"][data-k="${k}"][data-i="${i}"]`); if (b && !b.disabled) b.click(); else clickCell(k, i); }
+document.addEventListener('keydown', e => {
+  if (e.defaultPrevented || e.ctrlKey || e.metaKey || typing(e.target)) return;
+  if (e.key === 'F11' || (e.key === 'Enter' && e.altKey)) { e.preventDefault(); fsSet(!fsOn()); return; }
+  if (e.altKey) return;
+  if (e.key === 'F1') { e.preventDefault(); if (ovKind === 'keys' && !infoEl.hidden) { infoEl.hidden = true; infoEl.innerHTML = ''; ovKind = null; } else openOv('keys'); return; }
+  if ((e.key === 'm' || e.key === 'M') && !planning()) { const b = document.querySelector('[data-a="snd"]'); if (b) { e.preventDefault(); b.click(); } return; }
+  if (!planning()) return;
+  if (/^[1-6]$/.test(e.key)) { const c = app.querySelector(`.hand .card[data-i="${+e.key - 1}"]`); if (c && !c.disabled && !locked) { e.preventDefault(); c.click(); } return; }
+  if (e.code in CELL_KEY) { e.preventDefault(); keyCell(CELL_KEY[e.code]); return; }
+  if (e.key === 'r' || e.key === 'R') { const b = app.querySelector('[data-a="ab"]'); if (b && !b.disabled && !locked) { e.preventDefault(); b.click(); } return; }
+  if (e.key === 'm' || e.key === 'M') { const b = document.querySelector('[data-a="snd"]'); if (b) { e.preventDefault(); b.click(); } return; }
+  if (e.key === 'Tab') { const b = app.querySelector('.play [data-a="logp"]'); if (b) { e.preventDefault(); b.click(); } return; }
+  if ((e.key === ' ' || e.key === 'Enter') && !(e.target && e.target.closest && e.target.closest('button:not(body)') && e.key === 'Enter')) { const b = app.querySelector('[data-a="lock"]'); if (b && !b.disabled) { e.preventDefault(); b.click(); } }
+});
+/* 방향키·패드로 버튼 사이 이동: 지금 포커스한 것에서 그 방향으로 가장 가까운 누를 수 있는 것을 고른다(맨 위 창 안에서만) */
+function navScope() { if (!infoEl.hidden) return infoEl; const m = document.querySelector('.exepv, .wel-ov:not([hidden]), .vstage .vs-go'); return m && m.classList.contains('vs-go') ? app : m || app; }
+function navItems(scope) {
+  return [...scope.querySelectorAll('button, [href], input, select, [tabindex]:not([tabindex="-1"]), .card[data-a]')].filter(el => !el.disabled && el.getClientRects().length && (() => { const r = el.getBoundingClientRect(); if (r.width < 4 || r.height < 4 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return false; const cs = getComputedStyle(el); return cs.visibility !== 'hidden' && cs.pointerEvents !== 'none'; })());
+}
+function navMove(dx, dy) {
+  const items = navItems(navScope()); if (!items.length) return false; const cur = document.activeElement && items.includes(document.activeElement) ? document.activeElement : null;
+  if (!cur) { const pick = items.find(el => el.matches('.lb-go, .pc-go, [data-a="lock"], .btn.big, .pcb.big')) || items[0]; pick.focus({ preventScroll: false }); return true; }
+  const a = cur.getBoundingClientRect(), ax = a.left + a.width / 2, ay = a.top + a.height / 2; let best = null, bs = 1e9;
+  for (const el of items) { if (el === cur) continue; const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, px = (x - ax) * dx + (y - ay) * dy; if (px <= 4) continue;
+    const ortho = Math.abs(dx ? y - ay : x - ax); if (ortho > px * 1.6 + 30) continue;   /* 그 방향 부채꼴 안에서만 */
+    const s = px + ortho * 2.2; if (s < bs) { bs = s; best = el; } }
+  if (best) { best.focus({ preventScroll: false }); best.scrollIntoView({ block: 'nearest', inline: 'nearest' }); navKeep(best); SND.play('tap'); return true; }
+  return false;
+}
+/* 화면이 다시 그려져 버튼이 새로 만들어져도 키보드·패드 포커스를 같은 버튼에 되돌린다 */
+let navKey = '';
+const NAV_ATTR = ['data-a', 'data-m', 'data-k', 'data-i', 'data-t', 'data-s', 'data-l', 'data-n', 'data-shop', 'data-id', 'data-c', 'data-o', 'data-x'];
+function navKeep(el) { navKey = NAV_ATTR.filter(a => el.hasAttribute(a)).map(a => `[${a}="${CSS.escape(el.getAttribute(a))}"]`).join('') || (el.id ? '#' + CSS.escape(el.id) : ''); }
+new MutationObserver(() => { const h = document.documentElement.classList; if (!navKey || !(h.contains('pad') || h.contains('kbnav'))) return;
+  requestAnimationFrame(() => { if (document.activeElement && document.activeElement !== document.body) return; const el = navItems(navScope()).find(e => e.matches(navKey)); if (el) el.focus({ preventScroll: true }); }); }).observe(document.body, { childList: true, subtree: true });
+document.addEventListener('focusin', e => { const h = document.documentElement.classList; if ((h.contains('pad') || h.contains('kbnav')) && e.target && e.target.matches && e.target.matches('button, [tabindex], input, select, .card')) navKeep(e.target); });
+window.addEventListener('keydown', e => {
+  if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || typing(e.target)) return;
+  const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key]; if (!d) return;
+  if (doc && doc.phase !== 'play' && doc.phase !== 'over') return;   /* 직업 고르기 화면은 자체 방향키 처리 */
+  if (navMove(d[0], d[1])) { e.preventDefault(); document.documentElement.classList.add('kbnav'); }
+});
+addEventListener('mousemove', () => document.documentElement.classList.remove('kbnav', 'pad'), { passive: true });
+/* 패드: 연결되면 매 프레임 버튼을 읽어 키 입력처럼 다룬다 */
+(function () {
+  if (!navigator.getGamepads) return;
+  let on = false, prev = [], rep = { k: '', t: 0 };
+  const key = (k, code) => { document.documentElement.classList.add('pad'); const t = document.activeElement && document.activeElement !== document.body ? document.activeElement : document;
+    const ev = new KeyboardEvent('keydown', { key: k, code: code || '', bubbles: true, cancelable: true }); t.dispatchEvent(ev); return ev; };
+  function poll(now) {
+    if (!on) return; requestAnimationFrame(poll);
+    const pads = [...navigator.getGamepads()].filter(Boolean); if (!pads.length || document.hidden) return; const p = pads[0], b = i => !!(p.buttons[i] && p.buttons[i].pressed);
+    const ax = p.axes[0] || 0, ay = p.axes[1] || 0, dir = b(14) || ax < -0.55 ? 'L' : b(15) || ax > 0.55 ? 'R' : b(12) || ay < -0.55 ? 'U' : b(13) || ay > 0.55 ? 'D' : '';
+    if (dir) { if (rep.k !== dir) { rep = { k: dir, t: now + 320 }; step(dir); } else if (now >= rep.t) { rep.t = now + 110; step(dir); } } else rep.k = '';
+    const down = i => b(i) && !prev[i];
+    if (down(0)) { document.documentElement.classList.add('pad'); const el = document.activeElement; if (el && el !== document.body && el.click) el.click(); }
+    if (down(1)) { const ev = key('Escape', 'Escape'); if (!ev.defaultPrevented && !infoEl.hidden) { const x = infoEl.querySelector('[data-x]'); if (x) x.click(); } }
+    if (down(2) && planning()) key('r', 'KeyR');
+    if (down(3) && planning()) key('Tab', 'Tab');
+    if (down(9)) { if (planning()) key(' ', 'Space'); else key('Enter', 'Enter'); }
+    if ((down(4) || down(5)) && planning()) { const cs = [...app.querySelectorAll('.hand .card[data-a="card"]:not(:disabled)')]; if (cs.length) { const i = cs.indexOf(document.activeElement), n = i < 0 ? 0 : (i + (down(5) ? 1 : -1) + cs.length) % cs.length; cs[n].focus(); document.documentElement.classList.add('pad'); SND.play('tap'); } }
+    prev = p.buttons.map(x => x.pressed);
+  }
+  function step(dir) { document.documentElement.classList.add('pad'); navMove(dir === 'L' ? -1 : dir === 'R' ? 1 : 0, dir === 'U' ? -1 : dir === 'D' ? 1 : 0); }
+  addEventListener('gamepadconnected', () => { if (!on) { on = true; requestAnimationFrame(poll); toast(mE('패드가 연결되었습니다', 'Gamepad connected')); } });
+  addEventListener('gamepaddisconnected', () => { if (![...navigator.getGamepads()].some(Boolean)) on = false; });
+})();
+
 /* 코드 입력: 대문자로 고치고 네 칸 상자에 한 글자씩 보여 준다 */
 app.addEventListener('input', e => { if (e.target.id !== 'code') return; const t = e.target, v = t.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); if (t.value !== v) t.value = v; prefill = v;
   const sl = t.parentNode.querySelectorAll('.mu-slots i'); sl.forEach((x, n) => { x.textContent = v[n] || ''; x.classList.toggle('on', n === v.length); x.classList.toggle('f', !!v[n]); }); });
