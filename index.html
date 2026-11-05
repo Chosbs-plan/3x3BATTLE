@@ -4877,6 +4877,17 @@ html:is(.kbnav, .pad) :focus { outline: 4px solid #ffd75e !important; outline-of
   html body #app > .play.v2 .dk-l .arc .arc-b { margin-top: 2px; }
   html body #app > .play.v2 .dk-l .arc { padding-top: 16px; }
 }
+/* ===== 전투 안내 한 줄(PC): 짧은 문구만, 마우스를 올리면 긴 설명이 아래로 ===== */
+.hint2 .h-l { display: none; }
+@media (min-width: 1100px) and (min-height: 660px) {
+  html body #app > .play.v2 > .hint2 { z-index: 35; }   /* 상대 판(.side.op, 30) 위로 */
+  html body #app > .play.v2 > .hint2.short { white-space: nowrap; text-align: center; cursor: help; }
+  html body #app > .play.v2 > .hint2.short .h-s small { margin-left: 8px; font-size: .85em; opacity: .75; }
+  html body #app > .play.v2 > .hint2.short .h-s kbd { margin-left: 6px; font-size: 13px; padding: 0 6px; box-shadow: 0 2px 0 var(--ink); }
+  html body #app > .play.v2 > .hint2.short .h-l { position: absolute; left: 50%; top: calc(100% + 6px); translate: -50% 0; width: max-content; max-width: min(560px, 80vw); padding: 8px 12px; white-space: normal; text-align: left; font-size: 15px; background: #fffbe9; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); z-index: 50; }
+  html body #app > .play.v2 > .hint2.short:hover .h-l { display: block; }
+}
+@media not ((min-width: 1100px) and (min-height: 660px)) { .hint2.short .h-s { display: none; } .hint2.short .h-l { display: inline; } }
 </style>
 <main id="app"></main>
 <div id="toast" class="toast" role="status" hidden></div>
@@ -7761,6 +7772,22 @@ function hintText() {
   if (plan.dest == null) return '내 진영에서 이동할 칸을 누르세요. 제자리에 머물면 마나 +1' + (p.cls === 'samurai' ? ', 다음 턴 공격 +1.' : '.') + (p.rooted === G.turn ? ' 속박되어 기본 이동은 못 합니다.' : '') + ' 카드는 안 내도 됩니다.';
   return '준비됐으면 계획을 확정하세요. 양쪽이 확정하면 동시에 공개됩니다.';
 }
+/* PC 안내 한 줄: hintText의 긴 설명을 짧게. 긴 설명은 마우스를 올리면 펼친다(튜토리얼 중에는 긴 설명 그대로) */
+function hintShort() {
+  const p = myP(), K = k => `<kbd>${k}</kbd>`;
+  if (doc.phase === 'over') return mE('결투 종료', 'Duel over');
+  if (locked) return doc.lock[opp(seat)] === curTag ? mE('결과를 계산하는 중…', 'Resolving…') : mE('상대를 기다리는 중…', 'Waiting for the opponent…');
+  if (wNeed(plan)) return mE('상대 진영 · 매를 부를 칸을 고르세요', 'Enemy side · pick a tile for your hawk');
+  const need = needTg(plan);
+  if (need && !validTg(need, plan.tg)) { const m = { sq: ['2×2 영역을 고르세요', 'pick a 2×2 area'], col: ['세로줄을 고르세요', 'pick a column'], row: ['가로줄을 고르세요', 'pick a row'], two: ['칸 2곳을 고르세요', 'pick 2 tiles'],
+    two2: ['한 칸 더 고르세요', 'pick one more tile'], line: ['줄을 고르세요', 'pick a line'], cell: ['칸 하나를 고르세요', 'pick a tile'] }[need] || ['칸을 고르세요', 'pick a tile'];
+    return mE('상대 진영 · ' + m[0], 'Enemy side · ' + m[1]); }
+  if (p.dive && plan.dest == null) return mE('내 진영 · 솟아오를 칸을 고르세요', 'My side · pick where to surface');
+  if (plan.ab && p.cls === 'mower' && plan.dest == null) return mE('내 진영 · 달려 나갈 끝 칸을 고르세요', 'My side · pick the end of your charge');
+  if (plan.ab && p.cls === 'vampire' && plan.dest == null) return mE('내 진영 · 박쥐로 날아갈 칸을 고르세요', 'My side · pick a tile to fly to');
+  if (plan.dest == null && !(plan.ab && ['merfolk', 'chrono', 'brawler'].includes(p.cls))) return mE(`내 진영 · 이동할 칸을 고르세요 <small>제자리면 마나 +1</small>`, `My side · pick a tile to move <small>stay for Mana +1</small>`);
+  return mE(`준비됐으면 계획 확정 ${K('Space')}`, `Confirm your plan ${K('Space')}`);
+}
 /* 카드 그림: 카드 성격을 나타내는 도트 아이콘 */
 const CARD_IC = {};
 Object.entries({ boot: 'leap ride', spark: 'blink', shield: 'guard harden block knot bluff rest amulet parry', eye: 'scry head gaze scare', fire: 'fire meteor comet burst nova topple opus sun heatw',
@@ -8009,7 +8036,7 @@ function playHTML() {
         <label class="vol">음량<input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"></label><button type="button" class="btn ghost logb" data-a="logp">기록</button><button type="button" class="btn ghost optb" data-a="ov" data-o="settings">설정</button><button type="button" class="btn ghost" data-a="leave">나가기</button></span>${trackHTML()}</div>
     <div class="arena th-${ARENAS[G.arena] ? G.arena : 'castle'}${G.turn >= COLLAPSE_FROM - 1 ? ' dusk' : ''}"><div class="back" aria-hidden="true"><i class="bl a-bfar"></i>${G.arena === 'snow' ? '<i class="bl sf a-snowfall"></i>' : ''}<i class="bl an a-bmid"></i><i class="bl an fl a-bflag"></i></div>
       <div class="field">${sideHTML(seat)}<span class="vs" aria-hidden="true">vs</span>${sideHTML(o)}</div>${abarHTML()}</div>
-      <p class="hint2" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>    <div class="ctrl">
+      <p class="hint2${!RP && !tutOn() ? ' short' : ''}" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : tutOn() ? hintText() : `<span class="h-s">${hintShort()}</span><span class="h-l">${hintText()}</span>`}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>    <div class="ctrl">
       ${verdict}
       ${tutOn() && !over && !RP ? tutHTML() : ''}
       <p class="hint" aria-live="polite">${RP ? `공개! 양쪽의 수가 동시에 펼쳐집니다. <span class="rpc"><button type="button" class="btn ghost" data-a="spd" aria-label="재생 속도 전환">속도 ${SPD}배</button><button type="button" class="btn ghost" data-a="skip">건너뛰기</button></span>` : hintText()}${!RP && !locked && !over && needTg(plan) === 'line' ? ` <button type="button" class="btn ghost" data-a="orient">${lineO === 'r' ? '가로줄' : '세로줄'} 기준 (전환)</button>` : ''}</p>
