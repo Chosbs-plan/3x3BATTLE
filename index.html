@@ -2944,6 +2944,15 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .menu.t2 .pc-top .lg-sub { display: none; } .menu.t2 .pc-top .lg-mark { grid-template-columns: repeat(3, 10px); gap: 2px; } .menu.t2 .pc-top .lg-mark i { background: #fdf7ee; } .menu.t2 .pc-top .lg-mark b { height: 3px; margin-top: -1.5px; }
 .pc-nav { display: flex; min-width: 0; }
 .menu.t2 .pc-top .logo { flex: none; } .menu.t2 .pc-top .logo h1 { white-space: nowrap; }
+/* 메뉴줄이 길어도(영어) 화면 전체를 밀어내지 않게: 한 칸짜리 격자로 고정하고, 좁으면 메뉴 글자를 줄인다 */
+.pc-ui { grid-template-columns: minmax(0, 1fr); } .pc-top { min-width: 0; }
+html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px) - 1600px) / 40 + 15px), 19px); letter-spacing: 0; }
+/* 모드 카드: 글 부분은 내용만큼, 남는 높이를 그림이 쓴다(낮은 화면에서 보상 줄이 잘리지 않게) */
+.pmc { grid-template-rows: minmax(60px, 1fr) auto auto; } .pmc .pmc-tx { overflow: visible; }
+/* 프로필 그림 칸: 낮은 화면에서는 줄어들어 아래 버튼이 가려지지 않게 */
+.pp-hero .pp-stage { flex: 1 1 320px; height: auto; min-height: 150px; max-height: 320px; } .pp-hero .pp-stage .pf-spr { width: min(270px, 84%); height: auto; aspect-ratio: 1; }
+/* 프로필 버튼 두 개: 글이 길면(영어) 버튼 안에서 줄을 바꾼다 */
+.pp-act { grid-template-columns: minmax(0, 1fr) minmax(0, auto); } .pp-act .pcb { min-width: 0; padding: 0 12px; white-space: normal; line-height: 1.1; text-align: center; }
 /* 설계 폭이 1600에 가까우면 메뉴 칸 간격을 줄인다 */
 .pc-top .pc-tr { gap: clamp(6px, calc((var(--pcw, 1920px) - 1600px) / 40 + 6px), 14px); } .pc-top .pc-ics { padding-left: clamp(6px, calc((var(--pcw, 1920px) - 1600px) / 50 + 6px), 12px); }
 .pc-top .pc-me { padding-right: clamp(8px, calc((var(--pcw, 1920px) - 1600px) / 30 + 8px), 18px); gap: 8px; min-width: 0; } .pc-top .pc-me > span { min-width: 0; max-width: 150px; } .pc-top .pc-me > span > * { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -8810,11 +8819,11 @@ function ovHTML() {
       ${navigator.vibrate ? `<div class="set-row"><b>진동</b>${onoff('vib', vibOn)}</div>` : ''}
       <div class="set-row"><b>효과음</b><button type="button" class="btn ghost${SND.on ? ' on' : ''}" data-s="snd" aria-pressed="${SND.on}">${SND.on ? '켬' : '끔'}</button></div>
       <div class="set-row"><b>배경음</b><button type="button" class="btn ghost${SND.bgm ? ' on' : ''}" data-s="bgm" aria-pressed="${SND.bgm}">${SND.bgm ? '켬' : '끔'}</button></div>
-      <div class="set-row"><b>타이틀 음악</b><span class="lvs">${Object.entries(TITLE_BGM).map(([k, [n]]) => `<button type="button" class="btn ghost${titleBgm === k ? ' on' : ''}" data-s="tbgm" data-l="${k}" aria-pressed="${titleBgm === k}">${n}</button>`).join('')}</span></div>
+      <div class="set-row"><b>${mE('타이틀 음악', 'Title music')}</b><span class="lvs">${Object.entries(TITLE_BGM).map(([k, [n0, n1]]) => `<button type="button" class="btn ghost${titleBgm === k ? ' on' : ''}" data-s="tbgm" data-l="${k}" aria-pressed="${titleBgm === k}">${mE(n0, n1)}</button>`).join('')}</span></div>
       <div class="set-row"><b>음량</b><label class="vol"><input type="range" min="0" max="100" step="5" value="${Math.round(SND.vol * 100)}" data-vol aria-label="전체 음량"><span>${Math.round(SND.vol * 100)}</span></label></div>
       <div class="set-row"><b>턴 재생 속도</b><span class="lvs">${[1, 2].map(n => `<button type="button" class="btn ghost${SPD === n ? ' on' : ''}" data-s="spd" data-n="${n}" aria-pressed="${SPD === n}">${n}배</button>`).join('')}</span></div>
       <div class="set-row"><b>연습 봇 난이도</b><span class="lvs">${Object.entries(BOTS).map(([k, [n]]) => `<button type="button" class="btn ghost${botLv === k ? ' on' : ''}" data-s="bot" data-l="${k}" aria-pressed="${botLv === k}">${n}</button>`).join('')}</span></div>
-      <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">모험 기록 초기화</button></div></div>
+      <div class="set-row"><b>기록 지우기</b><button type="button" class="btn ghost" data-s="wipe">${mE('모험 기록 초기화', 'Reset adventure records')}</button></div></div>
       <p class="cap">설정은 이 브라우저에 저장됩니다.${doc ? ' 언어는 첫 화면에서 바꿀 수 있습니다.' : ''}</p>${close}</section></div>`; }
   if (ovKind === 'mail') return `<div class="info-in"><section class="detail ov-box ml-box"><h1>${mE('메일함', 'Mailbox')}</h1>${mailBody()}${close}</section></div>`;
   if (ovKind === 'shop') return `<div class="info-in"><section class="detail ov-box shop-box"><h1>${mE('스킨 상점', 'Skin Shop')}</h1>${shopBody()}${close}</section></div>`;
