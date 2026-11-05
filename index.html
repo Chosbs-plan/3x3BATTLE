@@ -2942,7 +2942,12 @@ html:not(.a3on) .unit.dust::before { content: ''; position: absolute; left: 50%;
 .menu.t2 .pc-top .logo { display: flex; flex-direction: row; align-items: center; gap: 10px; }
 .menu.t2 .pc-top .logo h1 { font-size: 32px; letter-spacing: 2px; color: #fdf7ee; text-shadow: 3px 3px 0 #1d1413; }
 .menu.t2 .pc-top .lg-sub { display: none; } .menu.t2 .pc-top .lg-mark { grid-template-columns: repeat(3, 10px); gap: 2px; } .menu.t2 .pc-top .lg-mark i { background: #fdf7ee; } .menu.t2 .pc-top .lg-mark b { height: 3px; margin-top: -1.5px; }
-.pc-nav { display: flex; }
+.pc-nav { display: flex; min-width: 0; }
+.menu.t2 .pc-top .logo { flex: none; } .menu.t2 .pc-top .logo h1 { white-space: nowrap; }
+/* 설계 폭이 1600에 가까우면 메뉴 칸 간격을 줄인다 */
+.pc-top .pc-tr { gap: clamp(6px, calc((var(--pcw, 1920px) - 1600px) / 40 + 6px), 14px); } .pc-top .pc-ics { padding-left: clamp(6px, calc((var(--pcw, 1920px) - 1600px) / 50 + 6px), 12px); }
+.pc-top .pc-me { padding-right: clamp(8px, calc((var(--pcw, 1920px) - 1600px) / 30 + 8px), 18px); gap: 8px; min-width: 0; } .pc-top .pc-me > span { min-width: 0; max-width: 150px; } .pc-top .pc-me > span > * { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu .pc-top { gap: clamp(12px, calc((var(--pcw, 1920px) - 1600px) / 12 + 12px), 26px); } .pc-top .pc-nv { padding: 0 clamp(11px, calc((var(--pcw, 1920px) - 1600px) / 36 + 11px), 20px); }
 .pc-nv { position: relative; padding: 0 20px; font: inherit; font-size: 19px; font-weight: 700; letter-spacing: 1px; color: #bfaea9; background: none; border: 0; cursor: pointer; white-space: nowrap; }
 .pc-nv::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: -3px; height: 6px; background: var(--red); transition: left .15s, right .15s; }
 .pc-nv:hover, .pc-nv:focus-visible { color: #fff; outline: none; } .pc-nv:hover::after, .pc-nv:focus-visible::after { left: 28%; right: 28%; }
@@ -4264,6 +4269,82 @@ html[lang=en] .cell.ice::after { content: 'Ice'; }
 .exb.pc .exb-art { height: 170px; } .exb.pc .exb-it > b { font-size: 22px; } .exb.pc .exb-it > .cap { font-size: 15px; } .exb.pc .exb-bt .pcb { min-height: 46px; font-size: 16px; padding: 0 10px; }
 .exb.pc .exa-pcs img { width: 78px; height: 102px; } .exb.pc .exa-pcs img + img { width: 72px; height: 84px; } .exb.pc .exa-slot b { width: 40px; height: 52px; font-size: 34px; } .exb.pc .exa-bs b { font-size: 52px; } .exb.pc .exa-ko { font-size: 64px; }
 @media (prefers-reduced-motion: reduce) { .ex-glitch i, .exe.hit .ex-lamp, .exe.hit .ex-jp { animation-iteration-count: 1; } }
+/* ===== PC 로비 글자 최소 크기: 1920에서 15px, 1280×800(0.8배)에서도 12px 이상. 15px보다 작게 잡혀 있던 로비 규칙만 덮어쓴다 ===== */
+html .pc-ui :is(.pc-me small) { font-size: 15px; }
+html .pc-ui :is(.pc-ch) { font-size: 15px; }
+html .pc-ui :is(.pc-more) { font-size: 15px; }
+html .pc-ui :is(.pc-stats dd small) { font-size: 15px; }
+html .pc-ui :is(.wh-wk small) { font-size: 15px; }
+html .pc-ui :is(.wh-none, .wh-me) { font-size: 15px; }
+html .pc-ui :is(.pc-ph3) { font-size: 15px; }
+html .pc-ui :is(.pc-mode small) { font-size: 15px; }
+html .pc-ui :is(.pc-go span) { font-size: 15px; }
+html .pc-ui :is(.pc-foot) { font-size: 15px; }
+html .pc-ui :is(.pc-tip b) { font-size: 15px; }
+html .pc-ui :is(.wks span) { font-size: 15px; }
+html .pc-ui :is(.pmc-tx > .pmc-k) { font-size: 15px; }
+html .pc-ui :is(.pc-lv > span) { font-size: 15px; }
+html .pc-ui :is(.pmc-note) { font-size: 15px; }
+html .pc-ui :is(.mu-net) { font-size: 15px; }
+html .pc-ui :is(.pmr-c > small) { font-size: 15px; }
+html .pc-ui :is(.pcl-c small) { font-size: 15px; }
+html .pc-ui :is(.pcl-badge) { font-size: 15px; }
+html .pc-ui :is(.pcl-info .pmc-k) { font-size: 15px; }
+html .pc-ui :is(.pcl-s) { font-size: 15px; }
+html .pc-ui :is(.exb-tag) { font-size: 15px; }
+html .pc-ui :is(.cx-tb em) { font-size: 15px; }
+html .pc-ui :is(.pcx-h) { font-size: 15px; }
+html .pc-ui :is(.pcx-f) { font-size: 15px; }
+html .pc-ui :is(.d-pv .pv-n) { font-size: 15px; }
+html .pc-ui :is(.d-lab) { font-size: 15px; }
+html .pc-ui :is(.card .ds) { font-size: 15px; }
+html .pc-ui :is(.card .ds .k) { font-size: 15px; }
+html .pc-ui :is(.cx2-s) { font-size: 15px; }
+html .pc-ui :is(.ach-now small) { font-size: 15px; }
+html .pc-ui :is(.ach-pc) { font-size: 15px; }
+html .pc-ui :is(.ach-pl ul) { font-size: 15px; }
+html .pc-ui :is(.ach-tr) { font-size: 15px; }
+html .pc-ui :is(.ach-tx span) { font-size: 15px; }
+html .pc-ui :is(.ach-ti em) { font-size: 15px; }
+html .pc-ui :is(.ach-rw) { font-size: 15px; }
+html .pc-ui :is(.ach-lk) { font-size: 15px; }
+html .pc-ui :is(.ach-tx small) { font-size: 15px; }
+html .pc-ui :is(.psh-wal > span) { font-size: 15px; }
+html .pc-ui :is(.psh-wal small) { font-size: 15px; }
+html .pc-ui :is(.psh-earn p) { font-size: 15px; }
+html .pc-ui :is(.psh-earn li) { font-size: 15px; }
+html .pc-ui :is(.psh-ftt .pmc-k) { font-size: 15px; }
+html .pc-ui :is(.ps-tx span) { font-size: 15px; }
+html .pc-ui :is(.sh-sp) { font-size: 15px; }
+html .pc-ui :is(.dsh.pc .dsh-tag) { font-size: 15px; }
+html .pc-ui :is(.pp-role span) { font-size: 15px; }
+html .pc-ui :is(.pp-acc) { font-size: 15px; }
+html .pc-ui :is(.lnk) { font-size: 15px; }
+html .pc-ui :is(.pp-st small) { font-size: 15px; }
+html .pc-ui :is(.pp-rec header span) { font-size: 15px; }
+html .pc-ui :is(.pp-r > span:not(.lb-face)) { font-size: 15px; }
+html .pc-ui :is(.wk-bh .btn.sm) { font-size: 15px; }
+html .pc-ui :is(.ml .btn.sm) { font-size: 15px; }
+html .pc-ui small { font-size: max(15px, 1em); }
+html .pc-ui :is(.pp-r > b) { font-size: 15px; }
+html .pc-ui :is(.psh-cat em) { font-size: 15px; }
+html .pc-ui :is(.pmc-chips > span) { font-size: 15px; }
+html .pc-ui :is(.pc-seg button) { font-size: 15px; }
+html .pc-ui :is(.pp-l) { font-size: 15px; }
+html .pc-ui :is(.ttl) { font-size: 15px; }
+html .pc-ui :is(.pc-stats dt) { font-size: 15px; }
+html .pc-ui :is(.pc-mode em) { font-size: 15px; }
+html .pc-ui :is(.pmc-tx > .pmc-rw) { font-size: 15px; }
+html .pc-ui :is(.pc-lv button) { font-size: 15px; }
+html .pc-ui :is(.pp-cls) { font-size: 15px; }
+html .pc-ui :is(.wk-tx p) { font-size: 15px; }
+html .pc-ui :is(.pmc-tx > p) { font-size: 15px; }
+html .pc-ui :is(.pcl-prog > span:first-child) { font-size: 15px; }
+html .pc-ui :is(.dsh.pc .dsh-note) { font-size: 15px; }
+html .pc-ui :is(.ml-empty p) { font-size: 15px; }
+html .pc-ui :is(.ml-note) { font-size: 15px; }
+html .pc-ui :is(.ps-it.sp .sh-sp) { font-size: 15px; }
+html .pc-ui { font-size: 15px; } html .pc-ui .pc-tipc p { font-size: 15px !important; }
 /* 다이아: 하늘색 마름모. 메달(.mdl)과 같은 자리에 같은 크기로 쓴다 */
 .dia-n { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; white-space: nowrap; }
 .dia { display: inline-block; width: 14px; height: 14px; flex: none; background: linear-gradient(135deg, #e6fbff 0 26%, #6fd3f5 27% 52%, #2a9bd6 53% 76%, #1c6ea6 77%); clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
@@ -8438,7 +8519,8 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
 const PC_MQ = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 1000px) and (min-height: 600px)');
 const isPC = () => PC_MQ.matches;
 PC_MQ.addEventListener('change', () => { if (!doc) render(); });
-function pcZoom() { const z = Math.max(0.5, Math.min(2, innerWidth / 1920, innerHeight / 1080)), r = document.documentElement.style;
+/* 1920×1080을 기준으로 그리되, 작은 창(스팀 덱 1280×800 등)에서는 설계 영역을 1600×900까지 좁혀서 덜 줄인다(글자가 너무 작아지지 않게) */
+function pcZoom() { const w = innerWidth, h = innerHeight, z = Math.max(0.5, Math.min(2, Math.max(Math.min(w / 1920, h / 1080), Math.min(1, w / 1600, h / 900)))), r = document.documentElement.style;
   r.setProperty('--pcz', z.toFixed(4)); r.setProperty('--pcw', (innerWidth / z).toFixed(1) + 'px'); r.setProperty('--pch', (innerHeight / z).toFixed(1) + 'px'); }
 pcZoom(); addEventListener('resize', pcZoom);
 let pcMode = (() => { const v = ls('ssd-pmode'); return ['adv', 'bot', 'rand', 'room'].includes(v) ? v : 'adv'; })();
