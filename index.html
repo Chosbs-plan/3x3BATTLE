@@ -12,7 +12,35 @@
 <meta name="copyright" content="© 2026 CHOSBS. All rights reserved.">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>삼삼결투</title>
-<style>body{margin:0}</style>
+<style>body{margin:0}
+/* 계정 레벨: 프로필 카드, 레벨 보상 띠, 로비 배지, 레벨 업 알림 */
+.lvbadge { display: inline-block; margin-left: 6px; padding: 1px 6px; font-style: normal; font-size: .72em; line-height: 1.4; color: #2a1e22; background: #ffd75e; box-shadow: inset 0 0 0 2px #2a1e22; vertical-align: 2px; }
+.pc-me { position: relative; } .pc-me .dot { position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; background: #e0524f; box-shadow: 0 0 0 2px #fff; }
+.lvc { display: grid; gap: 10px; padding: 14px 16px; background: #fff; box-shadow: inset 0 0 0 3px var(--sil, #5a4644), 6px 6px 0 var(--line, rgba(0,0,0,.15)); color: #2a1e22; text-align: left; }
+.lvc.off { grid-template-columns: auto 1fr; align-items: center; }
+.lvc-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; }
+.lvb { display: grid; place-items: center; min-width: 76px; height: 56px; padding: 0 8px; font-size: 24px; color: #fff; background: #4f7fd0; box-shadow: inset 0 0 0 3px #2a1e22, 4px 4px 0 #2a1e22; }
+.lvc-mid { display: grid; gap: 4px; min-width: 0; } .lvc-cap { font-size: 14px; font-weight: 700; } .lvc-mid small { font-size: 13px; color: #6b5a54; }
+.lvc-bar { position: relative; height: 14px; background: #e9e2d2; box-shadow: inset 0 0 0 2px #2a1e22; overflow: hidden; } .lvc-bar i { position: absolute; inset: 2px auto 2px 2px; max-width: calc(100% - 4px); background: linear-gradient(#8fd4ff, #4f7fd0); }
+.lvc-claim { display: flex; align-items: center; gap: 8px; white-space: nowrap; } .lvc-claim span { display: flex; gap: 6px; }
+.lvc-how { margin: 0; font-size: 13px; color: #6b5a54; }
+.lvc-track { display: flex; gap: 8px; margin: 0; padding: 4px 2px 10px; list-style: none; overflow-x: auto; scrollbar-width: thin; }
+.lvt { position: relative; flex: 0 0 112px; display: grid; align-content: start; gap: 4px; padding: 8px 8px 10px; font-size: 13px; background: #f4efe4; box-shadow: inset 0 0 0 2px #b9ad95; }
+.lvt > b { font-size: 15px; } .lvt .ttl { font-style: normal; font-size: 12px; line-height: 1.3; } .lvt .lnk { justify-self: start; padding: 0; font: inherit; font-size: 12px; color: #4f7fd0; background: none; border: 0; text-decoration: underline; cursor: pointer; }
+.lvt.got { opacity: .62; } .lvt.can { background: #fff6d8; box-shadow: inset 0 0 0 3px #f2c230; } .lvt.next { box-shadow: inset 0 0 0 3px #4f7fd0; } .lvt.lock { filter: saturate(.4); color: #8a7d78; }
+.lvt.tl { background-image: linear-gradient(135deg, rgba(255, 215, 94, .25), transparent 60%); }
+.lvt-st { position: absolute; top: 6px; right: 8px; font-style: normal; font-weight: 700; color: #3f7234; } .lvt.can .lvt-st { color: #d8475a; }
+.pf .lvc { margin: 10px 0; } .pf .lvc-top { grid-template-columns: auto minmax(0, 1fr); } .pf .lvc-claim { grid-column: 1 / -1; justify-content: center; }
+.vs-rw .x i { color: #fff; background: #4f7fd0; font-size: 16px; } .xpg { margin-left: 8px; color: #4f7fd0; }
+.lvup { position: fixed; left: 50%; top: 18%; z-index: 90; translate: -50% 0; display: grid; justify-items: center; gap: 6px; min-width: 280px; padding: 18px 26px 20px; color: #fff; text-align: center; background: #2a1e22; box-shadow: inset 0 0 0 3px #ffd75e, 6px 6px 0 rgba(0, 0, 0, .35); animation: lvupIn .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+.lvup.out { animation: lvupOut .5s ease-in forwards; }
+.lvup small { font-size: 14px; letter-spacing: .2em; color: #ffd75e; } .lvup > b { font-size: 46px; line-height: 1; text-shadow: 3px 3px 0 #4f7fd0; }
+.lvup p { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 4px 0 6px; font-size: 15px; } .lvup em { font-style: normal; color: #ffd75e; }
+.lvup-glow { position: absolute; inset: -30px; z-index: -1; background: radial-gradient(closest-side, rgba(255, 215, 94, .45), transparent); animation: lvupGlow 1.6s ease-in-out infinite alternate; }
+@keyframes lvupIn { 0% { opacity: 0; scale: .6; } 100% { opacity: 1; scale: 1; } } @keyframes lvupOut { to { opacity: 0; translate: -50% -20px; } } @keyframes lvupGlow { from { opacity: .5; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lvup, .lvup.out, .lvup-glow { animation: none; } }
+
+</style>
 </head>
 <body>
 <script>
@@ -2982,7 +3010,7 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
 /* 홈 */
 .pc-main { position: relative; min-height: 0; }
 .pc-card, .pc-play { color: #f1e9e6; background: rgba(42, 31, 36, .9); border: 2px solid #1d1413; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
-.pc-news { position: absolute; left: 34px; top: 30px; width: 430px; display: grid; gap: 14px; filter: drop-shadow(0 6px 0 rgba(29, 20, 19, .3)); }
+.pc-news { position: absolute; left: 34px; top: 30px; width: 430px; display: grid; align-content: start; gap: 14px; filter: drop-shadow(0 6px 0 rgba(29, 20, 19, .3)); max-height: calc(100% - 60px); overflow: hidden auto; scrollbar-width: thin; padding-bottom: 8px; }
 .pc-card { display: grid; gap: 12px; padding: 16px 18px 18px; font: inherit; text-align: left; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
 .pc-ch { display: flex; align-items: center; justify-content: space-between; padding-bottom: 9px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; border-bottom: 1px solid rgba(255, 255, 255, .12); }
 .pc-more { padding: 0; font: inherit; font-size: 12px; letter-spacing: 0; color: #d9cbc7; cursor: pointer; background: none; border: 0; } .pc-more:hover, .pc-more:focus-visible { outline: none; color: #fff; }
@@ -3103,6 +3131,8 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
   background: radial-gradient(ellipse 60% 45% at 50% 100%, rgba(255, 215, 94, .25), transparent 70%), radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, radial-gradient(#ffd75e 1px, transparent 1.5px) 20px 14px / 70px 60px, #2a1e1d; }
 .pmc.red .pmc-art { background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .08) 0 26px, transparent 26px 52px), rgba(0, 0, 0, .18); }
 .pmc-hero { width: min(240px, 60%); aspect-ratio: 1; height: auto; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .4)); }
+/* 모험 모드 카드의 대표 캐릭터는 절반 크기로 작고 귀엽게(큰 스킨도 칸 위로 넘치지 않게) */
+.adv-art .pmc-hero { width: min(120px, 30%); }
 .pmc-acts { position: absolute; left: 16px; top: 16px; right: 16px; display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .pmc-acts li { flex: 1 1 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--sil); background: var(--tint); box-shadow: inset 0 0 0 2px #1d1413, inset 0 -4px 0 rgba(0, 0, 0, .12); }
 .pmc-acts li.th-forest { --tint: #cfe3c4; } .pmc-acts li.th-snow { --tint: #d6e4f3; } .pmc-acts li.th-castle { --tint: #e3d9d5; }
@@ -3114,6 +3144,19 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
 .pmc-pad { display: grid; grid-template-columns: repeat(3, 58px); gap: 8px; padding: 12px; transform: perspective(500px) rotateX(38deg); background: rgba(74, 59, 59, .12); box-shadow: 0 0 0 4px rgba(74, 59, 59, .2); }
 .pmc-pad i { aspect-ratio: 1; background: #fff; box-shadow: inset 0 0 0 3px #d9cfcc, 4px 4px 0 rgba(74, 59, 59, .2); }
 .pmc-pad i.me { background: #dfe9fb; box-shadow: inset 0 0 0 3px var(--blue), 4px 4px 0 rgba(74, 59, 59, .2); } .pmc-pad i.hit { background: #fde6e9; box-shadow: inset 0 0 0 3px var(--red), 4px 4px 0 rgba(74, 59, 59, .2); }
+/* 싱글 플레이: 세 카드가 한 화면에. 위 줄은 모험·연습(그림 칸을 낮게), 아래 줄은 튜토리얼을 가로로 납작하게 */
+.pg-single .pmcs { grid-template-rows: minmax(0, 1fr) auto; gap: 16px 22px; }
+.pg-single .pmc { min-height: 0; grid-template-rows: minmax(84px, 28%) minmax(0, 1fr) auto; }
+.pg-single .pmc .pmc-tx { gap: 6px; padding: 14px 24px 8px; overflow: hidden; } .pg-single .pmc .pmc-tx h3 { font-size: clamp(26px, 3.2vh, 40px); }
+.pg-single .pmc .pmc-art { align-items: flex-end; padding: 8px 16px; }
+.pg-single .adv-art .pmc-hero, .pg-single .duel-art .pmc-a { width: auto; height: 72%; max-height: 120px; }
+.pg-single .pmc.tut { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: 130px minmax(0, 1fr) auto; align-items: center; }
+.pg-single .pmc.tut .pmc-art { align-self: stretch; border-bottom: 0; border-right: 3px solid #1d1413; padding: 6px; align-items: center; }
+.pg-single .pmc.tut .pmc-pad { zoom: .5; }
+.pg-single .pmc.tut .pmc-tx { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 12px 20px; overflow: visible; }
+.pg-single .pmc.tut .pmc-tx h3 { font-size: 26px; margin: 0; } .pg-single .pmc.tut .pmc-tx .pmc-k { flex-basis: 100%; margin: 0; }
+.pg-single .pmc.tut .pmc-steps { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
+.pg-single .pmc.tut .pmc-go { padding: 0 20px; }
 .rand-art { align-items: center; gap: 28px; }
 .pmc-f { display: grid; justify-items: center; gap: 10px; } .pmc-f .lb-face { --s: 130px; --z: 8; box-shadow: inset 0 0 0 4px #1d1413, 6px 6px 0 #1d1413; } .pmc-f > b { font-size: 18px; color: #fff; text-shadow: 2px 2px 0 #1d1413; }
 .pmc-f .lb-face.q > i { font-size: 64px; }
@@ -3520,6 +3563,11 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
 .unit.ghost2 { pointer-events: none; transition: none !important; animation: ghostFade .76s ease-out forwards !important; filter: brightness(0) invert(.55) sepia(1) hue-rotate(185deg) saturate(4); }
 @keyframes ghostFade { 0% { opacity: .85; } 30% { opacity: .7; scale: 1.06; } 100% { opacity: 0; scale: 1.2; } }
 /* 예측 적중: 결투장에 집중선이 번쩍 */
+.arena .edgefl { position: absolute; inset: 0; z-index: 29; pointer-events: none; box-shadow: inset 0 0 90px 30px rgba(255, 255, 255, .85); animation: edgefl .42s ease-out forwards; }
+.arena .edgefl.t2 { box-shadow: inset 0 0 70px 18px rgba(255, 236, 214, .8); } .arena .edgefl.t3 { box-shadow: inset 0 0 120px 40px rgba(255, 90, 78, .75); }
+.arena .edgefl.me.t2, .arena .edgefl.me.t3 { box-shadow: inset 0 0 120px 40px rgba(216, 40, 60, .78); } .arena .edgefl.par { box-shadow: inset 0 0 110px 34px rgba(150, 220, 255, .8); }
+@keyframes edgefl { 0% { opacity: 1; } 100% { opacity: 0; } }
+.fx1 .arena .edgefl { animation-duration: .26s; opacity: .5; } .fx0 .arena .edgefl, .nomo .arena .edgefl { display: none; }
 .arena .speedl { position: absolute; inset: -10%; z-index: 30; pointer-events: none; animation: speedl .76s ease-out forwards;
   background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, .0) 0 4deg, rgba(255, 255, 255, .85) 4deg 5deg, rgba(255, 255, 255, 0) 5deg 11deg);
   mask-image: radial-gradient(circle at 50% 50%, transparent 22%, #000 62%); }
@@ -6537,7 +6585,7 @@ if (false) module.exports = { lvOf, yangOf, shapeG, shapeN, hpBase, hpMaxOf, man
 
 /* ===== 효과음: 파일 없이 Web Audio로 합성한 8비트풍 소리 ===== */
 const SND = (() => {
-  let ac = null, master = null, nb = null, on = true, vol = 1, bgm = true, mg = null, mTimer = 0, mMode = 'off', mStep = 0, mNext = 0;
+  let ac = null, master = null, bus = null, rv = null, nb = null, on = true, vol = 1, bgm = true, mg = null, mTimer = 0, mMode = 'off', mStep = 0, mNext = 0;
   try { on = localStorage.getItem('ssd-snd') !== '0'; bgm = localStorage.getItem('ssd-bgm') !== '0'; const v = parseFloat(localStorage.getItem('ssd-vol')); if (v >= 0 && v <= 1) vol = v; } catch (e) { /* 저장소 없음 */ }
   function ctx() {
     if (!ac) {
@@ -6546,27 +6594,46 @@ const SND = (() => {
       mg = ac.createGain(); mg.gain.value = 0.55; mg.connect(master);
       nb = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
       const d = nb.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      /* 효과음 버스: 압축기로 큰 소리를 눌러 고르게 하고, 짧은 잔향을 조금 섞어 "방 안에서 나는 소리"처럼 만든다.
+         잔향은 지수로 줄어드는 잡음을 저역 통과시켜 직접 만든다(파일 없이) */
+      try { const cp = ac.createDynamicsCompressor(); cp.threshold.value = -16; cp.knee.value = 10; cp.ratio.value = 4; cp.attack.value = 0.004; cp.release.value = 0.18; cp.connect(master);
+        bus = ac.createGain(); bus.connect(cp);
+        const L = Math.floor(ac.sampleRate * 0.9), ir = ac.createBuffer(2, L, ac.sampleRate);
+        for (let c = 0; c < 2; c++) { const q = ir.getChannelData(c); let lp = 0; for (let i = 0; i < L; i++) { lp += (Math.random() * 2 - 1 - lp) * 0.32; q[i] = lp * Math.pow(1 - i / L, 3.2); } }
+        const cv = ac.createConvolver(); cv.buffer = ir; rv = ac.createGain(); rv.gain.value = 0.2; rv.connect(cv); cv.connect(cp);
+      } catch (e) { bus = master; rv = null; }
     }
     if (ac.state === 'suspended') ac.resume();
     return ac;
   }
   /* 음: f 시작 주파수, d 길이, o.to 끝 주파수, o.w 파형, o.v 음량, o.at 지연 */
+  /* 출력: 효과음은 버스로, 잔향(o.rv, 기본 1)과 좌우 위치(o.pan)를 붙인다 */
+  function out(a, node, o) { let n = node; if (o.pan && a.createStereoPanner) { const p = a.createStereoPanner(); p.pan.value = o.pan; n.connect(p); n = p; } n.connect(bus || master); if (rv && o.rv !== 0) { const s2 = a.createGain(); s2.gain.value = o.rv == null ? 1 : o.rv; n.connect(s2); s2.connect(rv); } }
+  /* 음: f 시작 주파수, d 길이, o.to 끝 주파수, o.w 파형, o.v 음량, o.at 지연.
+     o.a 올라오는 시간(딸깍 소리 방지), o.lp 저역 통과(사각·톱니파는 기본으로 깎아 삑 소리를 줄인다), o.q 공명, o.vib [깊이 Hz, 빠르기], o.det 살짝 어긋난 두 번째 음(센트) */
   function T(f, d, o) {
     const a = ctx(); if (!a) return; o = o || {};
-    const t = a.currentTime + (o.at || 0), os = a.createOscillator(), g = a.createGain();
-    os.type = o.w || 'square'; os.frequency.setValueAtTime(f, t);
+    const t = a.currentTime + (o.at || 0), os = a.createOscillator(), g = a.createGain(), w = o.w || 'square', v = o.v || 0.16, at0 = o.a == null ? 0.004 : o.a;
+    os.type = w; os.frequency.setValueAtTime(f, t);
     if (o.to) os.frequency.exponentialRampToValueAtTime(o.to, t + d);
-    g.gain.setValueAtTime(o.v || 0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
-    os.connect(g); g.connect(master); os.start(t); os.stop(t + d + 0.03);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(at0, d * 0.5)); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    let src = os, lpf = o.lp != null ? o.lp : (w === 'square' || w === 'sawtooth') ? Math.min(6000, Math.max(1400, f * 4)) : 0;
+    if (lpf) { const fl = a.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.setValueAtTime(lpf, t); if (o.lpTo) fl.frequency.exponentialRampToValueAtTime(o.lpTo, t + d); fl.Q.value = o.q || 0.7; os.connect(fl); src = fl; }
+    if (o.vib) { const lf = a.createOscillator(), lg = a.createGain(); lf.frequency.value = o.vib[1]; lg.gain.value = o.vib[0]; lf.connect(lg); lg.connect(os.frequency); lf.start(t); lf.stop(t + d + 0.03); }
+    if (o.det) { const o2 = a.createOscillator(); o2.type = w; o2.frequency.setValueAtTime(f, t); o2.detune.value = o.det; if (o.to) o2.frequency.exponentialRampToValueAtTime(o.to, t + d); o2.connect(lpf ? src : g); o2.start(t); o2.stop(t + d + 0.03); }
+    src.connect(g); out(a, g, o); os.start(t); os.stop(t + d + 0.03);
   }
   /* 잡음: d 길이, o.f 필터 주파수, o.to 끝 주파수, o.ft 필터 종류 */
+  /* o.q 필터 공명, o.pk 소리가 가장 커지는 지점(0~1, 휙 지나가는 바람 소리처럼 올라왔다 사라지게), o.a 올라오는 시간 */
   function N(d, o) {
     const a = ctx(); if (!a) return; o = o || {};
-    const t = a.currentTime + (o.at || 0), src = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain();
-    src.buffer = nb; src.loop = true; fl.type = o.ft || 'lowpass'; fl.frequency.setValueAtTime(o.f || 1800, t);
+    const t = a.currentTime + (o.at || 0), src = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain(), v = o.v || 0.22;
+    src.buffer = nb; src.loop = true; fl.type = o.ft || 'lowpass'; fl.frequency.setValueAtTime(o.f || 1800, t); if (o.q) fl.Q.value = o.q;
     if (o.to) fl.frequency.exponentialRampToValueAtTime(o.to, t + d);
-    g.gain.setValueAtTime(o.v || 0.22, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
-    src.connect(fl); fl.connect(g); g.connect(master); src.start(t, Math.random() * 0.5); src.stop(t + d + 0.03);
+    g.gain.setValueAtTime(0.0001, t);
+    if (o.pk) { g.gain.linearRampToValueAtTime(v, t + d * o.pk); g.gain.exponentialRampToValueAtTime(0.001, t + d); }
+    else { g.gain.linearRampToValueAtTime(v, t + (o.a == null ? 0.003 : o.a)); g.gain.exponentialRampToValueAtTime(0.001, t + d); }
+    src.connect(fl); fl.connect(g); out(a, g, o); src.start(t, Math.random() * 0.5); src.stop(t + d + 0.03);
   }
   const arp = (notes, step, d, o) => notes.forEach((f, i) => T(f, d, Object.assign({}, o, { at: (o && o.at || 0) + i * step })));
   const boom = (at, big) => { N(big ? 0.7 : 0.45, { f: 1400, to: 90, v: big ? 0.5 : 0.36, at }); T(big ? 130 : 160, big ? 0.5 : 0.3, { to: 40, w: 'sine', v: 0.4, at }); };
@@ -7151,7 +7218,8 @@ function matchReward(g) {
   const before = medals(), st = qsOut(), done = n => { rw.n = n; if (lastRw === rw) render(); };
   const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv, p_stats: st }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose', p_stats: st }));
   const wait = () => (pl.sid ? Promise.resolve() : new Promise(r => setTimeout(r, 1500)));
-  wait().then(go).then(n => { done(n || 0); return walletPull(); }).then(() => {
+  const xp0 = AUTH.lv ? AUTH.lv.xp : null;
+  wait().then(go).then(n => { done(n || 0); return walletPull(); }).then(() => { if (xp0 != null && AUTH.lv && AUTH.lv.xp > xp0) rw.xp = AUTH.lv.xp - xp0;
     /* 대전은 상대 보고가 와야 지급된다. 잠시 뒤 지갑을 다시 보고 늘었으면 표시 */
     if (!vsBot && !rw.n) [4000, 12000].forEach(t => setTimeout(() => walletPull().then(() => { if (medals() > before && !rw.n) done(medals() - before); }).catch(() => {}), t)); else render();
   }).catch(() => done(0));
@@ -7996,6 +8064,7 @@ function vStageHTML() {
   const rw = lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? lastRw : null;
   const items = [];
   if (rw) items.push(`<div class="m"><i>M</i><span><b>${rw.n == null ? '…' : '+' + rw.n}</b><small>${L('메달', 'Medals')} · ${rw.why}</small></span></div>`);
+  if (rw && rw.xp) items.push(`<div class="x"><i>XP</i><span><b>+${rw.xp}</b><small>${L('계정 경험치', 'Account XP')} · Lv.${myLv()}</small></span></div>`);
   if (modeOf() === 'bo3' && !stageOn()) items.push(`<div class="g"><i>3</i><span><b>${scoreOf()[seat]} : ${scoreOf()[o]}</b><small>${matchDone() ? (scoreOf()[seat] >= 2 ? L('매치 승리', 'Match won') : L('매치 패배', 'Match lost')) : L('3판 2선승', 'Best of 3')}</small></span></div>`);
   notes.forEach(t => items.push(`<div class="g"><i>★</i><span><b>${t}</b></span></div>`));
   if (res === 'lose') { const oc = CLS[G.P[o].cls]; items.unshift(`<div class="tip"><i>!</i><span><b>${L('다음엔 이렇게', 'Next time')}</b><span>${oc.n} · ${L('패시브', 'Passive')} <b>${oc.pas[0]}</b>: ${hl(oc.pas[1])}</span></span></div>`); }
@@ -8223,6 +8292,7 @@ function profBody() {
     <section class="pf-card c-${rep}">
       <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
       <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}
+      ${lvCardHTML()}
       <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
       <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
       ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
@@ -8338,7 +8408,7 @@ const ACH_POOL = {
   g: { n: ['골드', 'Gold'], m: 120, bonus: 500, t: ['골드 컬렉터', 'Gold Collector'] },
   l: { n: ['전설', 'Legend'], m: 300, bonus: 1000, t: ['살아 있는 전설', 'Living Legend'] },
 };
-const achTier = id => { if (/^tier:/.test(id)) return id.slice(5); for (const t in ACH_TIER) if (ACH_TIER[t].split(' ').includes(id)) return t; return 'b'; };
+const achTier = id => { if (/^lv:/.test(id)) return (LV_TITLE[id.slice(3)] || [])[2] || 'b'; if (/^tier:/.test(id)) return id.slice(5); for (const t in ACH_TIER) if (ACH_TIER[t].split(' ').includes(id)) return t; return 'b'; };
 const tierIds = t => ACH_TIER[t].split(' ');
 const tierDone = t => { const g = achGot(); return tierIds(t).every(id => g[id]); };
 let ACHR = { ids: null, t: 0, busy: false, err: '', claiming: false };
@@ -8359,10 +8429,62 @@ function achClaim(ids) {
 const achGot = () => parse(ls('ssd-ach')) || {};
 const achC = () => Object.assign({ wins: 0, perf: 0, pvpw: 0, hardw: 0, runs: 0, emo: 0, cw: [] }, parse(ls('ssd-achc')) || {});
 const achGoal = a => (typeof a.g === 'function' ? a.g() : a.g || 1);
-const achTitle = id => { if (/^tier:/.test(id)) { const P = ACH_POOL[id.slice(5)]; return P ? L(...P.t) : ''; } const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
-const titleOk = id => !!id && (/^tier:/.test(id) ? ACH_POOL[id.slice(5)] && tierDone(id.slice(5)) : !!achGot()[id]);
+const achTitle = id => { if (/^lv:/.test(id)) { const T0 = LV_TITLE[id.slice(3)]; return T0 ? L(T0[0], T0[1]) : ''; } if (/^tier:/.test(id)) { const P = ACH_POOL[id.slice(5)]; return P ? L(...P.t) : ''; } const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
+const titleOk = id => !!id && (/^lv:/.test(id) ? !!LV_TITLE[id.slice(3)] && myLv() >= +id.slice(3) : /^tier:/.test(id) ? ACH_POOL[id.slice(5)] && tierDone(id.slice(5)) : !!achGot()[id]);
 const myTitle = () => { const id = ls('ssd-title'); return titleOk(id) ? achTitle(id) : ''; };
 const myTitleTier = () => { const id = ls('ssd-title'); return titleOk(id) ? achTier(id) : ''; };
+
+/* --- 계정 레벨: 경험치는 서버(account_level.sql)가 판이 끝날 때 준다. 여기서는 같은 공식으로 레벨을 계산해 보여 주고, 보상은 lv_claim으로 받는다 --- */
+const LV_MAX = 50, lvNeed = n => 100 + 20 * (n - 1);
+const lvInfo = xp => { let l = 1, r = Math.max(0, xp || 0); while (l < LV_MAX && r >= lvNeed(l)) { r -= lvNeed(l); l++; } return { lv: l, into: r, need: l >= LV_MAX ? 0 : lvNeed(l), max: l >= LV_MAX }; };
+/* 칭호: [한국어, 영어, 색 등급] */
+const LV_TITLE = { 5: ['새내기 결투사', 'Rookie Duelist', 'b'], 10: ['숙련 결투사', 'Skilled Duelist', 'b'], 20: ['베테랑 결투사', 'Veteran Duelist', 's'], 30: ['노련한 승부사', 'Seasoned Victor', 's'], 40: ['결투의 달인', 'Dueling Master', 'g'], 50: ['전설의 결투사', 'Legendary Duelist', 'l'] };
+const lvReward = l => ({ m: 30 + 5 * l, d: l % 10 === 0 ? 50 : l % 5 === 0 ? 20 : 0, t: LV_TITLE[l] || null });
+const myLv = () => (AUTH.lv ? lvInfo(AUTH.lv.xp).lv : 0);
+const lvCanClaim = () => !!AUTH.lv && myLv() > (AUTH.lv.claimed || 1);
+/* 받을 보상 합계(받지 않은 레벨들) */
+const lvPending = () => { const o = { m: 0, d: 0, n: 0 }; if (!AUTH.lv) return o; for (let l = (AUTH.lv.claimed || 1) + 1; l <= myLv(); l++) { const r = lvReward(l); o.m += r.m; o.d += r.d; o.n++; } return o; };
+/* 서버에서 새로 읽은 경험치로 레벨이 올랐으면 알림 */
+function lvSet(x) {
+  const prev = AUTH.lv; AUTH.lv = { xp: x ? x.xp : 0, claimed: x ? x.claimed : 1 };
+  if (prev) { AUTH.lvGain = Math.max(0, AUTH.lv.xp - prev.xp); const a = lvInfo(prev.xp).lv, b = lvInfo(AUTH.lv.xp).lv; if (b > a) setTimeout(() => lvUpShow(a, b), 900); }
+}
+function lvUpShow(from, to) {
+  if (!AUTH.lv) return; document.querySelectorAll('.lvup').forEach(e => e.remove());
+  let m = 0, d = 0; const tt = []; for (let l = from + 1; l <= to; l++) { const r = lvReward(l); m += r.m; d += r.d; if (r.t) tt.push(L(r.t[0], r.t[1])); }
+  const e = document.createElement('div'); e.className = 'lvup'; e.setAttribute('role', 'status');
+  e.innerHTML = `<i class="lvup-glow" aria-hidden="true"></i><small>${mE('레벨 업', 'LEVEL UP')}</small><b>Lv.${to}</b><p>${MDL(m)}${d ? DIA(d) : ''}${tt.length ? `<em>${mE('칭호', 'Title')} 「${esc(tt.join('」 「'))}」</em>` : ''}</p><button type="button" class="pcb red" data-a="lvclaim">${mE('보상 받기', 'Claim rewards')}</button>`;
+  document.body.appendChild(e); SND.play('win'); setTimeout(() => e.classList.add('out'), 6000); setTimeout(() => e.remove(), 6600);
+}
+let lvBusy = false;
+function lvClaim() {
+  if (lvBusy || !lvCanClaim()) return; lvBusy = true; render();
+  rpc('lv_claim').then(r => { lvBusy = false; if (!r) return; if (r.wallet != null) AUTH.wallet = r.wallet; if (AUTH.lv) AUTH.lv.claimed = r.to || AUTH.lv.claimed;
+    document.querySelectorAll('.lvup').forEach(e => e.remove());
+    if (r.medals || r.dia) { toast(r.dia ? L(`레벨 보상 · 메달 +${r.medals} · 다이아 +${r.dia}`, `Level rewards · +${r.medals} medals · +${r.dia} diamonds`) : L(`레벨 보상 · 메달 +${r.medals}`, `Level rewards · +${r.medals} medals`)); SND.play('relicGood'); for (let k = 0; k < Math.min(6, Math.ceil(r.medals / 80)); k++) setTimeout(() => SND.play('coin'), 200 + k * 90); }
+    if (r.dia) walletPull().catch(() => {}); render(); })
+    .catch(() => { lvBusy = false; toast(L('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); render(); });
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="lvclaim"]'); if (!b) return; e.stopPropagation(); SND.unlock(); lvClaim(); });
+/* 프로필의 레벨 카드: 배지, 경험치 막대, 받을 보상, 레벨별 보상 띠 */
+function lvCardHTML() {
+  if (!AUTH.user) return '';
+  if (!AUTH.lv) return `<section class="lvc off"><b class="lvb">Lv.-</b><span>${mE('계정 레벨을 불러오지 못했습니다', 'Could not load account level')}</span></section>`;
+  const I = lvInfo(AUTH.lv.xp), cl = AUTH.lv.claimed || 1, pd = lvPending(), tid = ls('ssd-title');
+  const pct = I.max ? 100 : Math.round(I.into / I.need * 100);
+  const items = []; for (let l = 2; l <= LV_MAX; l++) { const r = lvReward(l), st = l <= cl ? 'got' : l <= I.lv ? 'can' : 'lock', tk = 'lv:' + l;
+    items.push(`<li class="lvt ${st}${l === I.lv + 1 ? ' next' : ''}${r.t ? ' tl' : ''}"${l === Math.min(LV_MAX, cl < I.lv ? cl + 1 : I.lv + 1) ? ' data-cur' : ''}><b>Lv.${l}</b><span>${MDL(r.m)}</span>${r.d ? `<span>${DIA(r.d)}</span>` : ''}${r.t ? `<em class="ttl t-${r.t[2]}">「${L(r.t[0], r.t[1])}」</em>${st !== 'lock' ? (tid === tk ? `<button type="button" class="lnk" data-a="achtitle" data-k="">${mE('달고 있음', 'Equipped')}</button>` : `<button type="button" class="lnk" data-a="achtitle" data-k="${tk}">${mE('칭호 달기', 'Equip')}</button>`) : ''}` : ''}<i class="lvt-st" aria-hidden="true">${st === 'got' ? '✓' : st === 'can' ? '!' : ''}</i></li>`); }
+  return `<section class="lvc">
+    <div class="lvc-top"><b class="lvb">Lv.${I.lv}</b>
+      <div class="lvc-mid"><span class="lvc-cap">${mE('계정 레벨', 'Account level')}${I.max ? ' · MAX' : ''}</span><span class="lvc-bar"><i style="width:${pct}%"></i></span><small>${I.max ? mE('최고 레벨', 'Max level') : `${I.into.toLocaleString()} / ${I.need.toLocaleString()} XP`}</small></div>
+      ${pd.n ? `<button type="button" class="pcb red lvc-claim" data-a="lvclaim"${lvBusy ? ' disabled' : ''}>${mE('보상 받기', 'Claim')} <span>${MDL(pd.m)}${pd.d ? DIA(pd.d) : ''}</span></button>` : ''}</div>
+    <p class="lvc-how">${mE('판을 끝내면 경험치를 받습니다 · 대전 승리 60, 봇 승리 20~45, 모험 한 칸 10(완주 +80)', 'Earn XP by finishing matches · PvP win 60, bot win 20-45, 10 per adventure node (+80 for clearing)')}</p>
+    <ol class="lvc-track" aria-label="${mE('레벨 보상', 'Level rewards')}">${items.join('')}</ol>
+  </section>`;
+}
+/* 레벨 띠는 지금 레벨 근처가 보이게 굴린다 */
+function lvTrackScroll() { document.querySelectorAll('.lvc-track').forEach(t => { if (t.dataset.sc) return; const c = t.querySelector('[data-cur]'); if (c) { t.scrollLeft = Math.max(0, c.offsetLeft - t.offsetLeft - 12); t.dataset.sc = '1'; } }); }
+{ let q = 0; new MutationObserver(() => { if (!q) q = requestAnimationFrame(() => { q = 0; lvTrackScroll(); }); }).observe(document.documentElement, { childList: true, subtree: true }); }
 let achQ = [], achT = 0;
 function achGive(id) {
   const o = achGot(); if (o[id] || !ACH.some(a => a.id === id)) return false;
@@ -8729,7 +8851,7 @@ function pcHTML(scene, logo, off, ta, anim) {
           <button type="button" class="pc-ic${SND.bgm ? '' : ' off'}" data-a="bgm" title="${mE('배경음', 'Music')}" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button>
           <button type="button" class="pc-ic tx" data-a="lang" data-notr aria-label="Language">${mE('EN', '한')}</button>
           <button type="button" class="pc-ic" data-a="ov" data-o="settings" title="${mE('설정', 'Settings')}" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></span>
-        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${myTitle() ? `「${myTitle()}」` : CLS[rep].n}</small></span></button>
+        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}${AUTH.lv ? `<em class="lvbadge">Lv.${myLv()}</em>` : ''}</b><small>${myTitle() ? `「${myTitle()}」` : CLS[rep].n}</small></span>${lvCanClaim() ? '<i class="dot" aria-hidden="true"></i>' : ''}</button>
       </div></header>`;
   const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
@@ -8745,7 +8867,7 @@ function pcSingleBody() {
   const top = Object.entries(rec).filter(([k]) => CLS[k]).sort((a, b) => b[1] - a[1]).slice(0, 3), foe = MENU_DUEL.find(k => k !== rep) || 'samurai';
   const ic = k => (typeof pxi === 'function' ? pxi(k) : '');
   return `${wkStrip(true)}<div class="pmcs">
-    <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art"><ol class="pmc-acts">${[['forest', '1막', 'Act 1', 'fight'], ['snow', '2막', 'Act 2', 'elite'], ['castle', '3막', 'Act 3', 'boss']].map(([th, a, b, k]) => `<li class="th-${th}"><i>${ic(k)}</i><b>${mE(a, b)}</b></li>`).join('')}</ol>
+    <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art">
         <i class="px pmc-hero a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('메인 모드', 'Main mode')}</p><h3>${mE('모험 모드', 'Adventure')}</h3>
         <p>${mE('직업 하나로 세 막을 돌파합니다. 갈림길 지도에서 길을 고르고, 이길 때마다 금화와 카드, 정예와 보스는 유물. 지면 처음부터.', 'Take one class through three acts. Pick your path, win gold and cards; elites and bosses drop relics. Lose and start over.')}</p>
@@ -8758,7 +8880,7 @@ function pcSingleBody() {
         <div class="pc-lv" role="group" aria-label="${mE('봇 난이도', 'Bot difficulty')}"><span>${mE('난이도', 'Difficulty')}</span>${Object.entries(BOTS).map(([k, [nm]]) => `<button type="button" class="${botLv === k ? 'on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${nm}</button>`).join('')}</div>
         <p class="pmc-rw">${mE('보상', 'Reward')} <b>${mE('승리 5 · 8 · 12 / 패배 2', 'Win 5 · 8 · 12 / Loss 2')}</b></p></div>
       <div class="pmc-go"><button type="button" class="pcb red big" data-a="local">${mE('연습 시작', 'Start Practice')}</button></div></section>
-    <section class="pmc" style="--i:2"><div class="pmc-art tut-art"><span class="pmc-pad">${ALL.map(n => `<i${n === 4 ? ' class="me"' : n === 1 ? ' class="hit"' : ''}></i>`).join('')}</span></div>
+    <section class="pmc tut" style="--i:2"><div class="pmc-art tut-art"><span class="pmc-pad">${ALL.map(n => `<i${n === 4 ? ' class="me"' : n === 1 ? ' class="hit"' : ''}></i>`).join('')}</span></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('처음이라면', 'New here?')}</p><h3>${mE('튜토리얼', 'Tutorial')}</h3><p>${mE('다섯 턴 동안 결투의 기본을 배웁니다.', 'Learn the basics in five turns.')}</p>
         <ol class="pmc-steps">${[['이동과 마나', 'Moving and mana'], ['상대 위치 예측', 'Reading the opponent'], ['예고 공격', 'Delayed attacks'], ['피하기', 'Dodging']].map(([a, b]) => `<li>${mE(a, b)}</li>`).join('')}</ol></div>
       <div class="pmc-go"><button type="button" class="pcb gold big" data-a="tut">${mE('튜토리얼 시작', 'Start Tutorial')}</button></div></section>
@@ -8810,7 +8932,7 @@ function pcProfBody() {
   return `<div class="pp">
     <aside class="pp-hero c-${rep}">
       <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}${AUTH.lv ? ` <em class="lvbadge">Lv.${myLv()}</em>` : ''}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
       <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
       ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
       ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
@@ -8819,6 +8941,7 @@ function pcProfBody() {
       <div class="pp-acc"><span>${st}</span><span class="pp-accb"><button type="button" class="pcb ghost" data-a="ov" data-o="settings">${mE('설정', 'Settings')}</button><button type="button" class="pcb ghost" data-a="logout">${mE('로그아웃', 'Log out')}</button></span></div>
     </aside>
     <div class="pp-main">
+      ${lvCardHTML()}
       <div class="pp-stats">
         ${tile('<i class="mdl"></i>', mE('보유 메달', 'Medals'), medals(), `<button type="button" class="lnk" data-a="mtab" data-m="shop">${mE('상점 가기', 'Go to shop')} ▶</button>`, null, ' gold')}
         ${tile(lbIc('rec'), mE('대전 전적', 'PvP record'), `${pv.w}<i>${mE('승', 'W')}</i> ${pv.d}<i>${mE('무', 'D')}</i> ${pv.l}<i>${mE('패', 'L')}</i>`, `${mE('승률', 'Win rate')} ${pvr == null ? '-' : pvr + '%'}`, pvr)}
@@ -8901,10 +9024,6 @@ function pcHomeHTML(on) {
   const goTx = { adv: hasRun ? ['이어하기', 'Continue'] : ['모험 시작', 'Start Adventure'], bot: ['연습 시작', 'Start Practice'], rand: ['방식 고르기', 'Choose Format'], room: ['친구 대전', 'Friendly Duel'] }[pcMode];
   return `<aside class="pc-news" aria-label="${mE('소식', 'News')}">
       ${hasRun ? `<button type="button" class="pc-card pc-cont c-${sv.cls}" data-a="stage" style="--i:0"><span class="pc-ch">${mE('진행 중인 모험', 'Run in progress')}</span><span class="pc-cb">${faceOf(sv.cls, sv.skin || '')}<span><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><small>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</small></span><em>${mE('이어하기', 'Continue')} ▶</em></span></button>` : ''}
-      <section class="pc-card" style="--i:1"><span class="pc-ch">${mE('내 기록', 'My records')}<button type="button" class="pc-more" data-a="mtab" data-m="acct">${mE('프로필', 'Profile')} ▶</button></span>
-        <dl class="pc-stats"><div><dt>${mE('대전 전적', 'PvP')}</dt><dd>${pv.w}${mE('승', 'W')} ${pv.d}${mE('무', 'D')} ${pv.l}${mE('패', 'L')}<small>${n ? Math.round(pv.w / n * 100) + '%' : '-'}</small></dd></div>
-          <div><dt>${mE('모험 돌파', 'Adventure')}</dt><dd>${clr}<small>/ ${CLASS_IDS.length}</small></dd><span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span></div>
-          <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
       ${wkHome(true)}
       ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>` : ''}
     </aside>
@@ -9387,6 +9506,7 @@ async function walletPull() {
   try { AUTH.bought = (await sb('/rest/v1/dia_orders?select=pack&status=in.(done,refund)') || []).map(r => r.pack); } catch (e) { AUTH.bought = []; }
   try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
   if (AUTH.gift) setTimeout(welcomeShow, 600);
+  try { const [x] = await sb('/rest/v1/account_xp?select=xp,claimed') || []; lvSet(x); } catch (e) { AUTH.lv = null; }   /* 레벨 표가 아직 없으면 레벨 칸을 숨긴다 */
   questPull(); mailPull(true);
 }
 function authKeep(ses) {
@@ -9523,8 +9643,9 @@ async function chargeDia(pack) {
   document.addEventListener('click', e => { if (doc || !AUTH.user) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
     const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
     const q = (window.prompt('', '1000') || '').trim(), v = parseInt(q.replace(/^d/, ''), 10);
-    /* d500: 무료 다이아 지급, t:m: 스팀 없이 m 묶음 충전 흐름 시험(실제 결제 없음) */
+    /* d500: 무료 다이아 지급, x500: 계정 경험치(x-500이면 빼기), t:m: 스팀 없이 m 묶음 충전 흐름 시험(실제 결제 없음) */
     if (/^t:/.test(q)) { rpc('admin_dia_test', { p_pack: q.slice(2) }).then(w => { AUTH.dia = w; walletPull().catch(() => {}); SND.play('relicGood'); toast('test ' + q.slice(2)); render(); }).catch(e => toast(String(e.message))); return; }
+    if (/^x-?\d+$/.test(q)) { rpc('admin_xp', { p_amt: parseInt(q.slice(1), 10) }).then(() => walletPull()).then(() => { SND.play('relicGood'); toast(q); render(); }).catch(e => toast(String(e.message))); return; }
     if (!(v > 0)) return;
     if (/^d/.test(q)) { rpc('admin_dia', { p_amt: v }).then(w => { AUTH.dia = w; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); return; }
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
@@ -10175,23 +10296,7 @@ Object.assign(FX, {
     if (ok) circ(g, cx, cy + 12, 6 + t * 8, K.grn);
   }),
   /* 슬라임 */
-  splat: (cells, c) => hi((g, t) => cells.forEach(i => {
-    const [cx, cy] = mid2(i);
-    if (t < 0.4) { const u = t / 0.4; ell(g, cx, cy + 4 - (1 - u) * 14, 6 + u * 7, 9 - u * 5, c); }
-    else { const u = (t - 0.4) / 0.6; g.globalAlpha = 1 - u * 0.6; ell(g, cx, cy + 6, 13, 4 - u * 2, c); g.globalAlpha = 1; for (let j = 0; j < 9; j++) { const a = j / 9 * 6.283, r = 6 + u * 14; disc(g, cx + Math.cos(a) * r, cy + 4 + Math.sin(a) * r * 0.6 - Math.sin(u * 3.14) * 8, Math.max(0, 2.5 * (1 - u)), c); } }
-  })),
-  engulf: cells => hi((g, t, f) => cells.forEach(i => {
-    const [cx, cy] = mid2(i), u = Math.min(1, t / 0.45), gap = Math.round((1 - ease(u)) * 15);
-    for (const s of [-1, 1]) { ell(g, cx, cy + s * (gap + 7), 14, 7, K.vio); for (let k = -2; k <= 2; k++) D(g, cx + k * 5 - 1, cy + s * gap + (s < 0 ? -1 : -3), K.pale, 3, 4); }
-    if (t > 0.45) { const v = (t - 0.45) / 0.55; for (let j = 0; j < 7; j++) disc(g, cx + Math.cos(j) * (8 + v * 12), cy + Math.sin(j) * (5 + v * 8), 2 * (1 - v) + 1, K.vio); if (f % 2) twk(g, cx, cy, 5, K.pale); }
-  })),
   /* 고고학자 */
-  shovelFx: (cells, rev) => hi((g, t) => cells.forEach(i => {
-    const [cx, cy] = mid2(i), d = rev ? -1 : 1, u = Math.min(1, t / 0.35), a = -1.9 + u * 2.2;
-    const hx = cx - d * 10, hy = cy - 2, ex = hx + d * Math.cos(a) * -20 * -1, ey = hy + Math.sin(a) * 20;
-    seg(g, hx, hy, ex, ey, K.sandd, 2); D(g, ex - 4, ey - 4, K.sil, 9, 8); D(g, ex - 3, ey - 3, K.ash, 7, 2);
-    if (t > 0.35) { const v = (t - 0.35) / 0.65; for (let j = 0; j < 8; j++) { const an = j / 8 * 6.283; seg(g, cx + Math.cos(an) * (5 + v * 6), cy + 4 + Math.sin(an) * (5 + v * 6), cx + Math.cos(an) * (9 + v * 10), cy + 4 + Math.sin(an) * (9 + v * 10), j % 2 ? K.yel : K.amb, 2); } }
-  })),
   dirt: cell => hi((g, t) => {
     const [cx, cy] = mid2(cell); ell(g, cx, cy + 11, 10, 3, K.sandd);
     for (let j = 0; j < 18; j++) { const d0 = (j % 4) * 0.12, u = (t - d0) / (1 - d0); if (u < 0) continue; const vx = (rnd(j, cell) - 0.5) * 40, vy = -20 - rnd(cell, j) * 22, s = 2 + (j % 3); D(g, cx + vx * u, cy + 10 + vy * u + 38 * u * u, j % 3 === 0 ? K.sil : j % 3 === 1 ? K.sand : K.sandd, s, s); }
@@ -10459,6 +10564,22 @@ function impactFx(k, cell, tier) {
     u.style.setProperty('--kd', me ? -1 : 1); u.style.setProperty('--ka', Math.round([0, 22, 34, 48][tier] * (0.4 + 0.6 * f)) + '%'); pulse(u, 'knock', 460); }
   if (f) window.A3PUNCH = { t0: performance.now(), s: [0, 0.5, 0.8, 1.2][tier] * f, x: me ? -1 : 1 };
   if (window.A3BURST) window.A3BURST(bEl(k), cell, tier);
+  /* 타격 무게: 3D 캐릭터가 휘청이게 맞은 시각과 세기를 남기고, 중간 이상이면 화면 테두리가 번쩍이고 바닥에 충격파가 퍼진다 */
+  if (u) { u.dataset.hitAt = String(performance.now()); u.dataset.hitT = String(tier); }
+  if (tier >= 2 && f) { const ar = app.querySelector('.arena'); if (ar) { const e = document.createElement('i'); e.className = 'edgefl t' + tier + (me ? ' me' : ''); e.setAttribute('aria-hidden', 'true'); ar.appendChild(e); setTimeout(() => e.remove(), 420); }
+    if (window.A3RING) window.A3RING(bEl(k), cell, tier); }
+}
+/* 받아넘기기 성공: 공격이 튕겨 나가는 순간 잠깐 멈추고, 느려지며 카메라가 막아 낸 쪽으로 다가간다 */
+async function parryFx(k, cell) {
+  if (SKIP) return; const ar = app.querySelector('.arena'), u = uEl(k);
+  if (u) { u.dataset.parAt = String(performance.now()); }
+  if (calmMotion() || !ar) { await sleep(150); return; }
+  window.A3PUNCH = { t0: performance.now(), s: 0.6 * FXK(), x: k === seat ? 1 : -1 };
+  ar.classList.add('rd-zoom', k === seat ? 'kz-me' : 'kz-op'); window.A3SLOMO = { until: performance.now() + 520, k: 0.25 };
+  const sl = document.createElement('i'); sl.className = 'speedl' + (k === seat ? '' : ' bad'); sl.setAttribute('aria-hidden', 'true'); ar.appendChild(sl); setTimeout(() => sl.remove(), 760);
+  if (FXK()) { const e = document.createElement('i'); e.className = 'edgefl par'; e.setAttribute('aria-hidden', 'true'); ar.appendChild(e); setTimeout(() => e.remove(), 420); }
+  setTimeout(() => { ar.classList.remove('rd-zoom'); if (!ar.classList.contains('ko-zoom')) ar.classList.remove('kz-me', 'kz-op'); }, 760);
+  await hitStop(120); await sleep(380);
 }
 /* 예정 경로: 움직이기 직전, 양쪽 이동 경로와 노린 칸을 먼저 보여 주고 잠깐 멈춘다 */
 async function planPreview(rp) {
@@ -10590,7 +10711,7 @@ async function runReplay(old, neu) {
   let any = false;
   for (const k of KS) {
     const p = rp.P[k], o = opp(k);
-    const sp = (snd, pose) => { play(snd); if (pose) setPose(k, cls(k), true); any = true; };
+    const sp = (snd, pose) => { play(spSnd(p.actId, snd)); if (pose) setPose(k, cls(k), true); any = true; };
     if (p.actId === 'guard') { fx(k, FX.guard(p.from), 2200); sp('guardUp'); }
     if (p.blood) { fx(k, FX.bloodPay(p.from), 700); floatText(k, p.from, '피의 대가 -1', 'f-dmg'); sp('thorn'); later(() => refreshStat(k), 200); }
     if (p.echo) { fx(k, FX.copyFx(p.from), 1000); floatText(k, p.from, '되비추기 · ' + CARDS[p.echo].n, 'f-big f-sp'); sp('scry', 1); later(() => refreshStat(k), 250); }
@@ -10667,7 +10788,7 @@ async function runReplay(old, neu) {
     setPose(k, cls(k), false);
     if (p.ab && cls(k) === 'samurai') { const b = bEl(k); if (b) { const gh = document.createElement('i'); gh.className = `unit after px a-samurai${mine(k) ? '' : ' flip'}`; gh.style.setProperty('--x', C(p.from)); gh.style.setProperty('--y', R(p.from)); b.insertBefore(gh, u); later(() => gh.remove(), 1900); } play('ghost'); }
     if (p.bat) floatText(k, p.from, '박쥐 변신 -1', 'f-dmg');
-    play(p.bat ? 'ghost' : p.mvId === 'blink' ? 'blink' : p.actId === 'dash' ? 'dashmv' : p.actId === 'ride' ? 'gallop' : p.actId === 'bounce' ? 'bounce' : p.actId === 'jet' ? 'jet' : 'hop');
+    play(p.bat ? 'ghost' : p.mvId === 'blink' ? 'blink' : p.mvId && SND.kit.S['m_' + p.mvId] ? 'm_' + p.mvId : p.actId === 'dash' ? 'dashmv' : p.actId === 'ride' ? 'gallop' : p.actId === 'bounce' ? 'bounce' : p.actId === 'jet' ? 'jet' : 'hop');
     if (p.mvId === 'blink' || p.bat || p.rewind) { u.classList.add('gone'); fx(k, p.bat ? FX.batMove(p.from, p.to) : p.rewind ? FX.rewindFx(p.from, p.to) : FX.blink(p.from, p.to), p.bat || p.rewind ? 760 : 600); later(() => { u.classList.add('warp'); u.style.setProperty('--x', C(p.to)); u.style.setProperty('--y', R(p.to)); void u.offsetWidth; u.classList.remove('warp', 'gone'); }, 300); }
     else {
       if (p.actId === 'dash' || p.actId === 'ride') { fx(k, p.actId === 'ride' ? FX.grideFx(p.from, p.to) : FX.trail(p.from, p.to), p.actId === 'ride' ? 800 : 500); u.classList.add('fast'); }
@@ -10719,7 +10840,7 @@ async function runReplay(old, neu) {
     if (p.trayBreak) { any = true; const tb = p.trayBreak; tok(tb.c, '.tok.tray'); fx(o, FX.trayBreakFx(tb.cells, tb.c), 900); floatText(o, tb.c, mE('쟁반 파편!', 'Tray shards!'), 'f-big f-warn'); play('dice'); pulse(bEl(o), 'shake1', 300); }
     if (rp.P[o].hawkBlock != null) { any = true; floatText(o, rp.P[o].hawkBlock, mE('매가 길을 막았다!', 'The hawk blocks the way!'), 'f-big f-warn'); }
     if (p.hawkLost) { any = true; floatText(o, rp.P[o].to, mE('매가 놓쳤다', 'The hawk lost track'), 'f-miss'); }
-    if (p.hawkPath && p.hawkPath.length > 1) { any = true; const hp = p.hawkPath; fx(o, FX.hawkHopFx(hp), 300 * hp.length + 300); later(() => hawkPut(k, hp[hp.length - 1]), 300 * (hp.length - 1)); }
+    if (p.hawkPath && p.hawkPath.length > 1) { any = true; const hp = p.hawkPath; fx(o, FX.hawkHopFx(hp), 300 * hp.length + 300); hp.slice(1).forEach((c, n) => later(() => hawkPut(k, c), 300 * (n + 1))); }
     if (p.talon) { any = true; const tl = p.talon, dl = p.hawkPath && p.hawkPath.length > 1 ? 300 * (p.hawkPath.length - 1) : 0; fx(o, FX.talonFx(tl.c), 800, dl); floatText(o, tl.c, tl.free ? mE('길목 습격! 피해 1', 'Ambushed! 1 damage') : mE('발톱! 피해 1', 'Talons! 1 damage'), 'f-big f-warn', dl + 150); later(() => { play('slash'); pulse(bEl(o), 'shake1', 300); hawkPut(k, tl.hp > 0 ? (p.hawkPath || [])[p.hawkPath.length - 1] : null, tl.hp); if (tl.hp <= 0) floatText(o, tl.c, mE('지친 매가 날아갔다', 'The tired hawk flew off'), 'f-miss', 300); refreshStat(k); }, dl + 150); }
     if (p.steps) { any = true; fx(k, FX.footFx(p.steps), 900); floatText(k, p.steps[p.steps.length - 1], mE('물감 발자국', 'Paint tracks'), 'f-sp'); pntAdd(k, p.steps, 300); }
     if (p.acidHit != null) { any = true; tok(p.acidHit, '.tok.acid'); fx(o, FX.acidPoolFx(p.acidHit), 900); floatText(o, p.acidHit, mE('산성 웅덩이!', 'Acid pool!'), 'f-big f-warn'); play('bubble'); pulse(bEl(o), 'shake1', 300); }
@@ -10820,7 +10941,7 @@ async function runReplay(old, neu) {
       else floatText(k, p.to, '무너뜨릴 칸이 없다', 'f-miss'); }
     if (p.bingo) { any = true; const bd = id && CARDS[id].t === 'atk' ? WIND + 520 : 0, bc = uniq(p.bingo.lines.flat()); fx(o, FX.bingoFx(bc), 1000, bd); later(() => { play('relicGood'); pulse(bEl(o), 'shake1', 350); pntDel(o, bc); }, bd + 120); floatText(o, p.bingo.lines[0][1], mE('완성! ', 'Complete! ') + p.bingo.lines.length + mE('줄', p.bingo.lines.length > 1 ? ' lines' : ' line'), 'f-big f-warn', bd + 100); }
     if (!id || CARDS[id].t !== 'atk') continue; any = true;
-    attackAnim(k, cls(k)); later(() => play(ATK_SND[id]), WIND); swung = true; FXD = WIND;
+    attackAnim(k, cls(k)); later(() => play(atkSnd(id)), WIND); swung = true; FXD = WIND;
     const rows = [...new Set(p.cells.map(R))], cols = [...new Set(p.cells.map(C))], rev = mine(o);
     if (id === 'fire' || id === 'meteor') { FXD = 0; fx(k, FX.castRing(p.to, id), 800); FXD = WIND; }
     if (id === 'fire') { fx(o, FX.mgCircle(p.cells, 'fire', true), 1000); fx(o, FX.mgMotes(p.cells, 'fire'), 1000); }
@@ -10858,9 +10979,9 @@ async function runReplay(old, neu) {
     else if (id === 'heel') fx(o, FX.heelFx(p.cells, p.to, !!p.heelJump), 800);
     else if (id === 'show') { if (p.cells.length) { fx(o, FX.showFx(p.cells), 1100); floatText(o, p.cells[0], mE('쇼타임!', 'Showtime!'), 'f-big f-sp'); } else floatText(k, p.to, mE('잔이 없다', 'No cups'), 'f-miss'); }
     else if (id === 'spore') { fx(o, FX.drSeed(p.cells), 1000); later(() => play('vine'), WIND); }
-    else if (id === 'slam' || id === 'bounce') fx(o, FX.splat(p.cells, K.vio), 650);
-    else if (id === 'engulf') fx(o, FX.engulf(p.cells), 650);
-    else if (id === 'shovel') fx(o, FX.shovelFx(p.cells, rev), 650);
+    else if (id === 'slam' || id === 'bounce') fx(o, FX.splat(p.cells, K.vio), 800);
+    else if (id === 'engulf') fx(o, FX.engulf(p.cells), 1000);
+    else if (id === 'shovel') fx(o, FX.shovelFx(p.cells, rev), 850);
     else if (id === 'spear') fx(o, FX.rail(p.tg, [K.sandd, K.amb, K.yel]), 700);
     else if (id === 'sun') fx(o, FX.sunFx(), 800);
     else if (id === 'tornado') fx(o, FX.tornado(p.cells), 800);
@@ -10961,7 +11082,7 @@ async function runReplay(old, neu) {
     await sleep(350);
     floatText(k, p.to, '앙코르!', 'f-big f-sp'); fx(k, FX.sparkle(p.to, K.mag), 600); pulse(uEl(k), 'puff', 500); play('encore');
     await sleep(600);
-    attackAnim(k, cls(k)); later(() => play(ATK_SND[id]), WIND); FXD = WIND;
+    attackAnim(k, cls(k)); later(() => play(atkSnd(id)), WIND); FXD = WIND;
     const c2 = p.cells2 || [];
     if (id === 'juggle') fx(o, FX.balls(c2, mine(o)), 800);
     else if (id === 'pie') fx(o, FX.pieFx(uniq(c2.map(R)), mine(o)), 750);
@@ -10990,7 +11111,7 @@ async function runReplay(old, neu) {
     if (r.stolen) floatText(k, cell, '마나 -' + r.stolen, 'f-move', 600);
     if (r.lift != null) later(() => { const u = uEl(k); if (u) { u.style.setProperty('--x', C(r.lift)); u.style.setProperty('--y', R(r.lift)); } floatText(k, r.lift, '둥실', 'f-sp'); }, 500);
     if (r.pierced) floatText(k, cell, '방어 붕괴!', 'f-warn', 500);
-    if (r.pOk) { play('parry'); fx(k, FX.clash(cell), 600); floatText(k, cell, '받아넘김!', 'f-big f-sp'); pulse(bEl(k), 'glow', 600); any = true; }
+    if (r.pOk) { play('parry'); fx(k, FX.clash(cell), 600); floatText(k, cell, '받아넘김!', 'f-big f-sp'); pulse(bEl(k), 'glow', 600); any = true; await parryFx(k, cell); }
     else if (r.dmg > 0) { const tier = Math.min(3, r.dmg); hits.push([k, cell, r.dmg, tier]); { const fr = rp.P[k].from, ac = aimed(k); if (fr != null && fr !== cell && ac.includes(cell) && !ac.includes(fr)) reads.push([o, k, cell]); } fx(k, FX.hit(cell, tier), 450 + tier * 60); const u = uEl(k); if (u) { u.classList.add('white'); setPose(k, cls(k), 'hit'); } play('impact'); if (r.gOk) { fx(k, FX.guardOk(cell, sc), 500); floatText(k, cell, '방어 -' + r.gOk, 'f-sp', 350); } if (r.rooted) floatText(k, cell, '속박!', 'f-heal', 600); any = true; }
     else if (r.gOk) { play('guard'); fx(k, FX.guardOk(cell, sc), 600); floatText(k, cell, r.mist ? '안개 속으로!' : r.ambush ? '잠복! 피해 없음' : r.immune ? '부적이 막았다!' : '방어 성공!', 'f-big f-sp'); pulse(bEl(k), 'glow', 600); any = true; }
     else if (r.dodge && attacked(k)) {
@@ -12382,6 +12503,95 @@ Object.assign(FX, {
   /* 휘두르기 전: 발밑에서 먼지가 인다 */
   gstomp: cell => HI((g, t, f) => { const [cx, cy] = m3(cell), gy = cy + 10; gring(g, cx, gy, 6 + t * 16, K.gray, 1); gdust(g, cx, gy, t, 10); for (let j = 0; j < 4; j++) D(g, cx - 10 + j * 7, gy - 6 - t * 22 - rnd(j, cell) * 8, j % 2 ? K.lblue : K.steel, 1, 4); }),
 });
+/* --- 슬라임(몸통 박치기·튀어오르기·삼키기)과 고고학자(삽 타격) 이펙트. 96칸, 위쪽이 하늘 --- */
+Object.assign(K, { slm: '#8a6fd0', slmd: '#5a3f9e', slml: '#c4b2f2', gut: '#2e1f4a', soil: '#8a5a2e', soild: '#5a3a1c', soill: '#c79a5b', spd: '#d8dde8', spdd: '#7a8296', hdl: '#a8703a', hdld: '#6b4422' });
+/* 색 섞기: a에서 b로 k만큼 */
+const mixC = (a, b, k) => { const p = s => [1, 3, 5].map(i => parseInt(s.substr(i, 2), 16)), A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join(''); };
+/* 젤리 덩어리: (cx, gy)가 바닥 가운데. w, h는 반지름. 테두리는 진하게, 위쪽은 밝게, 하이라이트 점 */
+function jellyG(g, cx, gy, w, h, c, eyes) {
+  const cd = mixC(c, '#1a1030', 0.45), cl = mixC(c, '#ffffff', 0.45);
+  ell(g, cx, gy - h, w + 1, h + 1, cd); ell(g, cx, gy - h, w, h, c);
+  ell(g, cx - w * 0.15, gy - h * 1.35, w * 0.6, h * 0.45, cl);
+  D(g, cx - w * 0.5, gy - h * 1.55, K.wht, Math.max(2, w * 0.18), Math.max(2, h * 0.16));
+  if (eyes && h > 4) { const ey = gy - h * 1.05; D(g, cx - w * 0.35, ey, K.gut, 2, 3); D(g, cx + w * 0.25, ey, K.gut, 2, 3); }
+}
+Object.assign(FX, {
+  /* 몸통 박치기: 젤리 덩어리가 길쭉하게 떨어져 납작하게 퍼지고, 출렁이다 굳는다. 사방으로 젤리 방울이 튀고 웅덩이가 남는다 */
+  splat: (cells, c) => HI((g, t, f) => cells.forEach((i, n) => {
+    const [cx, cy] = m3(i), gy = cy + 10, tt = t - n * 0.05; if (tt < 0) return; const col = c || K.slm, cd = mixC(col, '#1a1030', 0.45), cl = mixC(col, '#ffffff', 0.45);
+    if (tt < 0.3) { const u = tt / 0.3, y = gy - 70 * (1 - u * u); jellyG(g, cx, y, 8 - u * 1, 12 + u * 3, col, true); for (let j = 1; j < 4; j++) { g.globalAlpha = 0.35; D(g, cx - 3, y - 26 - j * 7, cl, 6, 4); } g.globalAlpha = 1; return; }
+    const v = (tt - 0.3) / 0.7, wob = Math.sin(v * 16) * Math.exp(-v * 4);
+    /* 웅덩이 */
+    g.globalAlpha = v > 0.7 ? 1 - (v - 0.7) / 0.3 : 1; ell(g, cx, gy, 15 + Math.min(1, v * 3) * 3, 3, cd); ell(g, cx, gy - 1, 13 + Math.min(1, v * 3) * 3, 2, col);
+    /* 몸: 처음엔 납작, 출렁이며 둥글게 */
+    const w = 15 - Math.min(1, v * 1.5) * 5 + wob * 4, h = 3 + Math.min(1, v * 1.5) * 6 - wob * 3;
+    if (v < 0.8) jellyG(g, cx, gy, w, Math.max(2, h), col, v > 0.15);
+    if (v < 0.12) { ell(g, cx, gy, 20 + v * 60, 3 + v * 10, K.wht); }
+    /* 방울 */
+    for (let j = 0; j < 10; j++) { const a = -Math.PI * (0.08 + rnd(i, j) * 0.84), sp = 14 + rnd(j, i) * 20, x = cx + Math.cos(a) * sp * v * 1.3, y = gy - 4 + Math.sin(a) * sp * v * 1.6 + v * v * 40;
+      if (y > gy + 2) continue; const r = Math.max(1, 3 - v * 2 - (j % 3) * 0.5); disc(g, x, y, r, j % 3 ? col : cd); if (r > 1.5) D(g, x - 1, y - 1, cl); }
+    /* 거품 */
+    if (v > 0.3) for (let j = 0; j < 3; j++) { const p = (v * 2 + j * 0.33) % 1; if (p < 0.6) circ(g, cx - 8 + j * 8, gy - 2 - p * 6, 1 + p * 2, cl); }
+    g.globalAlpha = 1;
+  })),
+  /* 삼키기: 바닥에서 큰 젤리가 입을 벌리고 솟아 칸을 덮쳐 삼키고, 우물우물 씹은 뒤 꿀꺽, 거품을 뱉고 가라앉는다 */
+  engulf: cells => HI((g, t, f) => cells.forEach(i => {
+    const [cx, cy] = m3(i), gy = cy + 12, col = K.slm, cd = K.slmd, cl = K.slml;
+    let H, W, open, y0 = 0;
+    if (t < 0.25) { const u = t / 0.25; H = 6 + u * 22; W = 12 + u * 4; open = u; }
+    else if (t < 0.4) { const u = (t - 0.25) / 0.15; H = 28 - u * 8; W = 16 + u * 2; open = 1 - u; }
+    else if (t < 0.75) { const u = (t - 0.4) / 0.35, ch = Math.abs(Math.sin(u * Math.PI * 3)); H = 20 - ch * 4; W = 18 + ch * 2; open = 0; }
+    else { const u = (t - 0.75) / 0.25; H = 20 * (1 - u) + 2; W = 18 + u * 2; open = 0; }
+    g.globalAlpha = t > 0.9 ? 1 - (t - 0.9) / 0.1 : 1;
+    ell(g, cx, gy, W + 3, 3, cd);
+    /* 몸 */
+    ell(g, cx, gy - H / 2, W + 1, H / 2 + 1, cd); ell(g, cx, gy - H / 2, W, H / 2, col); ell(g, cx - W * 0.2, gy - H * 0.72, W * 0.55, H * 0.18, cl); D(g, cx - W * 0.55, gy - H * 0.85, K.wht, 3, 2);
+    /* 입: 벌어지면 어두운 속과 위아래 젤리 입술 */
+    if (open > 0.05) { const mh = Math.round(H * 0.42 * open), my = gy - H * 0.5; ell(g, cx, my, W * 0.72, mh, K.gut); ell(g, cx, my - mh, W * 0.72, 2, cl); for (let k = -2; k <= 2; k++) D(g, cx + k * 4 - 1, my + mh - 3, cd, 2, 3); }
+    else if (t >= 0.25) { seg(g, cx - W * 0.55, gy - H * 0.5, cx + W * 0.55, gy - H * 0.5, cd, 1);
+      /* 꿀꺽: 혹이 아래로 내려간다 */
+      if (t > 0.58 && t < 0.75) { const u = (t - 0.58) / 0.17; disc(g, cx + 3, gy - H * 0.8 + u * H * 0.6, 4, cd); disc(g, cx + 3, gy - H * 0.8 + u * H * 0.6, 3, col); }
+      D(g, cx - W * 0.35, gy - H * 0.72, K.gut, 2, 2); D(g, cx + W * 0.25, gy - H * 0.72, K.gut, 2, 2); }
+    /* 덮칠 때 섬광과 젤리 방울 */
+    if (t > 0.25 && t < 0.36) { twk(g, cx, gy - 18, 9, K.wht); for (let j = 0; j < 8; j++) { const a = j / 8 * 6.283, r = 16 + (t - 0.25) * 140; disc(g, cx + Math.cos(a) * r, gy - 12 + Math.sin(a) * r * 0.5, 2, j % 2 ? col : cl); } }
+    /* 트림 거품 */
+    if (t > 0.72) { const u = (t - 0.72) / 0.28; for (let j = 0; j < 4; j++) { const p = Math.min(1, u * 1.4 - j * 0.12); if (p <= 0) continue; circ(g, cx - 6 + j * 4 + Math.sin(p * 6 + j) * 2, gy - H - 2 - p * 22, 1.5 + j % 2 + p * 1.5, cl); } }
+    g.globalAlpha = 1;
+  })),
+  /* 삽 타격: 머리 위로 치켜든 삽이 내리꽂혀 흙이 터지고, 삽을 젖혀 흙을 퍼 올리면 유물 조각이 반짝이며 튄다 */
+  shovelFx: (cells, rev) => HI((g, t, f) => cells.forEach(i => {
+    const [cx, cy] = m3(i), gy = cy + 10, d = rev ? -1 : 1;
+    /* 삽 한 자루: 날 끝(tx, ty), 자루가 ang 쪽으로 */
+    const spade = (tx, ty, ang, a) => { const dx = Math.cos(ang), dy = Math.sin(ang), px = -dy, py = dx; g.globalAlpha = a;
+      for (let s = 0; s <= 13; s++) { const hw = s < 3 ? 3 + s : s > 10 ? 5 - (s - 10) * 0.5 : 6; for (let j = -hw; j <= hw; j += 0.5) D(g, tx + dx * s + px * j, ty + dy * s + py * j, Math.abs(j) > hw - 1 ? K.spdd : s < 2 ? K.wht : j < -hw * 0.3 ? K.wht : K.spd, 1, 1); }
+      for (let s = 13; s <= 16; s++) for (let j = -1.5; j <= 1.5; j += 0.5) D(g, tx + dx * s + px * j, ty + dy * s + py * j, K.spdd, 1, 1);
+      for (let s = 16; s <= 42; s++) for (let j = -1; j <= 1; j += 0.5) D(g, tx + dx * s + px * j, ty + dy * s + py * j, j > 0.4 ? K.hdld : K.hdl, 1, 1);
+      for (let j = -5; j <= 5; j += 0.5) { D(g, tx + dx * 43 + px * j, ty + dy * 43 + py * j, K.hdld, 2, 2); D(g, tx + dx * (47 + Math.abs(j) * 0.1) + px * j, ty + dy * (47 + Math.abs(j) * 0.1) + py * j, K.hdld, 2, 2); }
+      for (const j of [-5, 5]) for (let s = 43; s <= 47; s++) D(g, tx + dx * s + px * j, ty + dy * s + py * j, K.hdld, 2, 2);
+      g.globalAlpha = 1; };
+    /* 자루를 쥔 손(grip)을 축으로, 칼끝 방향 각 a로 휘두른다. 왼쪽에서(d=1) 머리 위 → 앞 → 땅 */
+    const TI = 0.28, L = 44, mir = x => d > 0 ? x : Math.PI - x, A0 = -2.03, A1 = 1.226, tipG = [cx, gy + 5];
+    if (t < TI) { const u = Math.pow(t / TI, 2.2), a = mir(A0 + (A1 - A0) * u), gp = [cx - d * 14, gy - 34], tip = [gp[0] + Math.cos(a) * L, gp[1] + Math.sin(a) * L];
+      if (u > 0.35) for (let k = 1; k <= 4; k++) { const b = mir(A0 + (A1 - A0) * Math.max(0, u - k * 0.06)); g.globalAlpha = 0.18 * (5 - k); D(g, gp[0] + Math.cos(b) * L - 2, gp[1] + Math.sin(b) * L - 2, K.spd, 5, 5); } g.globalAlpha = 1;
+      spade(tip[0], tip[1], a + Math.PI, 1); return; }
+    const v = (t - TI) / (1 - TI), lev = v < 0.35 ? 0 : Math.min(1, (v - 0.35) / 0.3);
+    /* 꽂힘 → 손잡이를 뒤로 젖혀 흙을 퍼 올린다 */
+    const a = mir(A1) + Math.PI - d * lev * 0.55, sink = 5 - lev * 3;
+    if (v < 0.12) { ell(g, cx, gy, 6 + v * 120, 2 + v * 20, K.wht); twk(g, cx, gy - 3, 8, K.wht); }
+    if (v < 0.5) for (let j = 0; j < 7; j++) { const an = j / 7 * 6.283 + 0.4, LL = 6 + rnd(i, j) * 6; seg(g, cx, gy, cx + Math.cos(an) * LL * Math.min(1, v * 6), gy + Math.sin(an) * LL * 0.4 * Math.min(1, v * 6), K.soild, 1); }
+    spade(tipG[0] + d * lev * 2, gy + sink, a, v > 0.8 ? 1 - (v - 0.8) / 0.2 : 1);
+    ell(g, cx, gy + 1, 7, 2, K.soild);
+    /* 흙덩이: 꽂힐 때 한 번, 퍼 올릴 때 크게 한 번 */
+    [[0, 8, 30], [0.35, 12, 46]].forEach(([s0, nn, sp], q) => { const w = (v - s0) / 0.6; if (w < 0 || w > 1) return;
+      for (let j = 0; j < nn; j++) { const vx = (rnd(j, i + q * 7) - 0.5 + (q ? -d * 0.35 : 0)) * sp, pk = 8 + rnd(i + q, j) * sp * 0.5, s = 2 + (j % 3);
+        D(g, cx + vx * w, gy - Math.sin(Math.min(1, w * 1.2) * Math.PI) * pk, j % 3 === 0 ? K.soill : j % 2 ? K.soil : K.soild, s, s); } });
+    gdust(g, cx, gy, v * 1.4, 14);
+    /* 유물 조각: 퍼 올린 흙에서 반짝이며 튄다 */
+    if (v > 0.45) { const w = Math.min(1, (v - 0.45) / 0.5), x = cx - d * w * 16, y = gy - 8 - Math.sin(w * Math.PI) * 30;
+      D(g, x - 3, y - 2, K.tsu || '#d4a93c', 6, 4); D(g, x - 2, y - 3, K.pale, 4, 1); D(g, x - 3, y + 1, '#8a6420', 6, 1);
+      if (f % 2) twk(g, x + 2, y - 3, 3 + (f % 4 > 1 ? 1 : 0), K.wht); }
+  })),
+});
 /* --- 사무라이: 일본도. 대검(gsword)처럼 칼 자체가 움직이고, 지나간 자리에 칼빛 잔상과 베인 선이 남는다 --- */
 Object.assign(K, { kat: '#dfe9f5', katd: '#8796b3', katm: '#b9c6dc', tsu: '#d4a93c', tsud: '#8a6420', ito: '#2a1f3a', same: '#efe6d0', cut: '#ff5d73', cutl: '#ffd0d6' });
 /* 일본도 한 자루. (tx, ty)가 칼끝이고 ang 방향으로 칼몸이 뻗는다. 날(j<0 쪽)이 바깥으로 볼록하게 휜다(소리). side(±1)로 날이 향하는 쪽을 고른다: 휘두르는 방향 쪽이 날. glow면 날이 빛난다 */
@@ -13359,6 +13569,257 @@ SND.kit.S.shuffle = () => { const K0 = SND.kit; [0, 0.07, 0.14, 0.21, 0.3].forEa
 SND.kit.S.bubble = () => { const K0 = SND.kit; [0, 0.06, 0.13, 0.19, 0.27].forEach((at, i) => K0.T(380 + i * 90, 0.07, { to: 620 + i * 120, w: 'sine', v: 0.12, at })); };
 SND.kit.S.whistle = () => { const K0 = SND.kit; K0.T(1568, 0.12, { to: 2093, w: 'sine', v: 0.1 }); K0.T(2093, 0.22, { to: 1760, w: 'sine', v: 0.09, at: 0.13 }); };
 SND.kit.S.glass = () => { const K0 = SND.kit; K0.N(0.06, { f: 6000, ft: 'highpass', v: 0.35 }); [2637, 3136, 2349].forEach((h, i) => K0.T(h, 0.12, { w: 'triangle', v: 0.07, at: 0.02 + i * 0.03 })); };
+/* --- 카드별 효과음: 비트음 대신 그 카드가 "무엇을 하는지"가 들리게. 재료 소리(H)를 섞어 만든다 ---
+   공격 카드는 'c_카드아이디' 소리가 있으면 그걸 쓰고(atkSnd), 없으면 예전처럼 ATK_SND의 공용 소리를 쓴다 */
+const SFXH = (() => {
+  const { T, N } = SND.kit, R = Math.random;
+  const H = {
+    /* 몸에 맞는 둔탁한 소리: 낮게 떨어지는 사인 + 짧은 저역 잡음 */
+    thud: (f = 90, v = 0.4, at = 0, d = 0.22) => { T(f * 1.7, d, { to: f * 0.5, w: 'sine', v, at, rv: 0.4 }); N(0.05, { f: 900, v: v * 0.55, at, rv: 0.3 }); },
+    /* 휙: 대역 잡음이 올라왔다 사라지며 주파수가 쓸려 간다 */
+    whoosh: (d = 0.25, f0 = 500, f1 = 3000, v = 0.3, at = 0, q = 1.2, pan) => N(d, { ft: 'bandpass', f: f0, to: f1, v, at, pk: 0.55, q, pan }),
+    /* 칼날 울림(쉬잉): 금속 배음 + 날카로운 첫소리 */
+    shing: (f = 2600, v = 0.07, at = 0, d = 0.45) => { [1, 2.32, 3.9].forEach((r, i) => T(f * r, d * (1 - i * 0.25), { w: 'sine', v: v / (i + 1), at, a: 0.001 })); N(0.03, { ft: 'highpass', f: 6000, v: v * 2.5, at }); },
+    /* 쇠를 치는 소리: 어울리지 않는 배음(종·모루) */
+    clang: (f = 420, v = 0.16, at = 0, d = 0.9) => { [1, 2.76, 5.4, 8.93].forEach((r, i) => T(f * r, d / (1 + i * 0.6), { w: 'sine', v: v / (1 + i * 0.8), at, a: 0.001 })); N(0.04, { ft: 'highpass', f: 3000, v: v * 1.8, at }); },
+    /* 나무를 두드리는 소리 */
+    wood: (f = 700, v = 0.25, at = 0) => { N(0.045, { ft: 'bandpass', f, q: 7, v: v * 1.4, at }); T(f, 0.07, { w: 'sine', v: v * 0.6, at, a: 0.001 }); T(f * 2.3, 0.04, { w: 'sine', v: v * 0.25, at, a: 0.001 }); },
+    /* 젤리·고무가 철퍽 */
+    squish: (v = 0.3, at = 0, d = 0.3) => { N(d, { f: 900, to: 180, v, at, q: 6 }); T(170, d, { to: 70, w: 'sine', v: v * 0.8, at, vib: [30, 18] }); },
+    bubble: (f = 400, v = 0.1, at = 0) => T(f, 0.09, { to: f * 2.2, w: 'sine', v, at, a: 0.006 }),
+    /* 줄을 퉁기는 소리: 톱니파를 저역 통과 필터가 빠르게 닫으며 */
+    pluck: (f, v = 0.14, at = 0, d = 0.6, pan) => { T(f, d, { w: 'sawtooth', lp: f * 7, lpTo: f * 1.1, v, at, a: 0.002, pan }); T(f * 2, d * 0.5, { w: 'triangle', v: v * 0.25, at, pan }); },
+    /* 타닥타닥 */
+    crackle: (d = 0.5, v = 0.12, at = 0, n = 12) => { for (let i = 0; i < n; i++) N(0.012 + R() * 0.01, { ft: 'highpass', f: 2000 + R() * 4000, v: v * (0.4 + R() * 0.6), at: at + R() * d, rv: 0.3 }); },
+    rumble: (d = 0.6, v = 0.35, at = 0) => { N(d, { f: 240, to: 60, v, at, a: 0.04 }); T(58, d, { to: 32, w: 'sine', v: v * 0.8, at, a: 0.02 }); },
+    /* 전기: 톱니파를 빠르게 흔들어(FM 비슷하게) 지직 */
+    zap: (f = 900, d = 0.2, v = 0.1, at = 0) => { T(f, d, { to: f * 0.25, w: 'sawtooth', vib: [f * 0.6, 55], v, at, lp: 5000 }); N(d * 0.6, { ft: 'highpass', f: 3000, v: v * 1.4, at }); },
+    glass: (v = 0.16, at = 0) => { [2637, 3520, 4186, 2960, 3951].forEach((f, i) => T(f * (0.97 + R() * 0.06), 0.12 + R() * 0.25, { w: 'sine', v: v * 0.5, at: at + i * 0.012, a: 0.001 })); N(0.08, { ft: 'highpass', f: 5000, v: v * 1.6, at }); },
+    hiss: (d = 0.4, v = 0.12, at = 0, f = 5000) => N(d, { ft: 'highpass', f, v, at, a: 0.03 }),
+    /* 휘이익: 공명이 높은 대역 잡음이 위에서 아래로(화살·날아가는 물건) */
+    whizz: (d = 0.22, v = 0.18, at = 0, f0 = 5000, f1 = 1600) => N(d, { ft: 'bandpass', f: f0, to: f1, q: 9, v, at, pk: 0.4 }),
+    /* 활시위 */
+    twang: (f = 196, v = 0.14, at = 0) => { T(f, 0.35, { w: 'triangle', to: f * 0.97, vib: [5, 32], v, at, a: 0.002 }); N(0.025, { ft: 'bandpass', f: 1800, q: 3, v: v * 1.4, at }); },
+    /* 맑은 종 */
+    chime: (f = 1319, v = 0.08, at = 0, d = 1.0, pan) => { T(f, d, { w: 'sine', v, at, a: 0.002, pan }); T(f * 2.01, d * 0.6, { w: 'sine', v: v * 0.4, at, pan }); T(f * 3.02, d * 0.35, { w: 'sine', v: v * 0.2, at, pan }); },
+    coin: (v = 0.08, at = 0) => { [3951, 5274, 6272].forEach((f, i) => T(f, 0.28 - i * 0.06, { w: 'sine', v: v / (i + 1), at, a: 0.001 })); },
+    gulp: (v = 0.3, at = 0) => { T(230, 0.2, { to: 85, w: 'sine', vib: [20, 12], v, at }); N(0.12, { f: 600, v: v * 0.5, at: at + 0.03 }); },
+    boing: (f = 180, v = 0.2, at = 0) => T(f, 0.36, { to: f * 2.6, w: 'sine', vib: [f * 0.18, 22], v, at }),
+    /* 젖은 것이 철썩 */
+    splat: (v = 0.3, at = 0) => { N(0.25, { f: 2600, to: 300, q: 2, v, at }); T(320, 0.12, { to: 80, w: 'sine', v: v * 0.6, at }); },
+    /* 모음처럼 울리는 소리(닭·늑대): 톱니파를 공명 필터로 */
+    voice: (f, d, o) => T(f, d, Object.assign({ w: 'sawtooth', lp: 1100, q: 7, v: 0.12 }, o)),
+    /* 물 */
+    water: (d = 0.4, v = 0.3, at = 0) => { N(d, { ft: 'bandpass', f: 1800, to: 500, q: 1.5, v, at, pk: 0.15 }); for (let i = 0; i < 5; i++) H.bubble(300 + R() * 500, v * 0.25, at + R() * d * 0.7); },
+    /* 바위가 부서지는 소리 */
+    crunch: (v = 0.3, at = 0, d = 0.35) => { N(d, { f: 1400, to: 300, v, at, q: 1.5 }); for (let i = 0; i < 6; i++) N(0.03, { ft: 'bandpass', f: 600 + R() * 1400, q: 4, v: v * 0.7, at: at + R() * d * 0.8 }); },
+    /* 흙: 낮은 잡음 알갱이 */
+    dirt: (v = 0.25, at = 0, d = 0.3) => { for (let i = 0; i < 9; i++) N(0.025, { f: 500 + R() * 900, v: v * (0.5 + R() * 0.5), at: at + R() * d }); },
+    /* 날갯짓 */
+    flap: (n = 3, v = 0.2, at = 0, gap = 0.09) => { for (let i = 0; i < n; i++) N(0.07, { f: 700, to: 300, v, at: at + i * gap, pk: 0.3 }); },
+  };
+  return H;
+})();
+/* 공격 카드 소리 이름: 카드 전용 소리가 있으면 그것 */
+const atkSnd = id => (SND.kit.S['c_' + id] ? 'c_' + id : ATK_SND[id]);
+{ const { T, N, arp } = SND.kit, H = SFXH, R = Math.random;
+  Object.assign(SND.kit.S, {
+    /* 마법사: 불꽃은 확 붙어 타닥, 번개는 지직 터지고 천둥, 폭발은 마력이 차오르다 터진다 */
+    c_fire: () => { H.whoosh(0.35, 300, 2200, 0.32, 0, 0.8); N(0.6, { f: 900, to: 300, v: 0.18, at: 0.08, a: 0.05 }); H.crackle(0.6, 0.12, 0.1); },
+    c_bolt: () => { H.zap(1600, 0.18, 0.12); N(0.06, { ft: 'highpass', f: 2500, v: 0.45 }); H.rumble(0.9, 0.3, 0.08); },
+    c_burst: () => { arp([523, 784, 1047, 1568], 0.035, 0.3, { w: 'sine', v: 0.06 }); N(0.5, { ft: 'bandpass', f: 400, to: 3000, v: 0.2, pk: 0.7 }); H.thud(70, 0.4, 0.22, 0.4); N(0.5, { f: 3000, to: 200, v: 0.25, at: 0.22 }); },
+    c_meteor: () => { N(0.6, { ft: 'bandpass', f: 4000, to: 400, q: 4, v: 0.18, pk: 0.8 }); H.thud(55, 0.5, 0.55, 0.6); H.crunch(0.3, 0.58); H.rumble(0.8, 0.25, 0.6); },
+    /* 사무라이: 칼을 휘두르는 바람 + 칼날 울림 */
+    c_hslash: () => { H.whoosh(0.22, 900, 6000, 0.32, 0, 2.2, -0.3); H.shing(2800, 0.06, 0.1); },
+    c_vslash: () => { H.whoosh(0.2, 6000, 900, 0.32, 0, 2.2); H.shing(2400, 0.06, 0.12); H.thud(110, 0.2, 0.16); },
+    c_thrust: () => { H.whoosh(0.12, 1500, 7000, 0.3, 0, 3); N(0.02, { ft: 'highpass', f: 5000, v: 0.3, at: 0.1 }); H.thud(140, 0.28, 0.1, 0.12); H.shing(3600, 0.04, 0.11, 0.3); },
+    c_dash: () => { for (let i = 0; i < 3; i++) N(0.04, { f: 700, v: 0.18, at: i * 0.06 }); H.whoosh(0.24, 900, 6000, 0.3, 0.16, 2); H.shing(2800, 0.05, 0.26); },
+    /* 정비공: 충전되는 고음이 쏘아지고, 감전망은 지지직 */
+    c_rail: () => { T(220, 0.35, { to: 1800, w: 'sawtooth', lp: 3000, v: 0.06, vib: [8, 30] }); H.zap(2400, 0.25, 0.12, 0.33); N(0.3, { f: 4000, to: 600, v: 0.25, at: 0.33 }); H.clang(900, 0.05, 0.35, 0.4); },
+    c_ring: () => { T(100, 0.6, { w: 'sawtooth', lp: 1800, q: 4, v: 0.08, vib: [40, 60] }); for (let i = 0; i < 5; i++) H.zap(800 + R() * 1600, 0.06, 0.07, R() * 0.5); },
+    /* 드루이드: 덩굴이 삐걱이며 채찍처럼, 포자는 퐁퐁, 늑대는 울부짖고 문다 */
+    c_vine: () => { T(140, 0.25, { to: 200, w: 'sawtooth', lp: 600, q: 8, v: 0.1 }); H.whoosh(0.16, 600, 5000, 0.25, 0.18, 3); N(0.03, { ft: 'highpass', f: 3000, v: 0.4, at: 0.32 }); },
+    c_spore: () => { for (let i = 0; i < 5; i++) { N(0.12, { f: 1600, to: 500, v: 0.14, at: i * 0.07, pk: 0.3 }); H.bubble(500 + i * 60, 0.06, i * 0.07 + 0.02); } H.hiss(0.5, 0.05, 0.2, 6000); },
+    c_wolves: () => { H.voice(330, 0.55, { to: 520, v: 0.08, vib: [6, 6], a: 0.12 }); H.voice(300, 0.5, { to: 470, v: 0.06, at: 0.08, a: 0.12 }); [0.5, 0.62, 0.74].forEach(a => { N(0.06, { f: 1200, v: 0.3, at: a }); T(120, 0.08, { to: 60, w: 'sawtooth', lp: 500, v: 0.12, at: a }); }); },
+    /* 슬라임: 젤리 철퍽, 튀어오르면 띠용, 삼키면 꿀꺽 */
+    c_slam: () => { H.whoosh(0.2, 1200, 300, 0.12); H.squish(0.35, 0.22); H.thud(80, 0.3, 0.22); },
+    c_bounce: () => { H.boing(160, 0.18); H.squish(0.32, 0.3); H.thud(80, 0.28, 0.3); },
+    c_engulf: () => { T(110, 0.25, { to: 220, w: 'sine', v: 0.25, vib: [15, 9] }); H.squish(0.35, 0.25, 0.25); H.gulp(0.3, 0.6); [0.85, 0.95, 1.05].forEach((a, i) => H.bubble(300 + i * 120, 0.08, a)); },
+    /* 고고학자: 삽이 흙에 박히고 퍼 올리면 유물이 짤랑 */
+    c_shovel: () => { H.whoosh(0.18, 600, 2500, 0.26); N(0.05, { ft: 'bandpass', f: 1800, q: 3, v: 0.5, at: 0.18 }); H.thud(120, 0.3, 0.18, 0.15); H.dirt(0.5, 0.2, 0.3); H.coin(0.08, 0.55); },
+    /* 주술사: 회오리 바람 */
+    c_tornado: () => { N(1.2, { ft: 'bandpass', f: 300, to: 1600, q: 5, v: 0.28, pk: 0.5, vib: 0 }); N(1.0, { ft: 'bandpass', f: 900, to: 400, q: 8, v: 0.12, at: 0.15, pk: 0.4 }); H.rumble(0.9, 0.15, 0.1); },
+    /* 듀라한: 무거운 대검이 바람을 가르고 땅을 친다. 머리는 유령처럼 날아가 투구가 쾅 */
+    c_sweep: () => { H.whoosh(0.45, 200, 1600, 0.4, 0, 1.4); H.thud(60, 0.45, 0.38, 0.5); H.crunch(0.3, 0.4); H.clang(220, 0.06, 0.38, 0.6); },
+    c_cleave: () => { H.whoosh(0.35, 1600, 200, 0.38, 0.05, 1.4); H.thud(50, 0.55, 0.38, 0.6); H.crunch(0.35, 0.4, 0.5); H.rumble(0.8, 0.25, 0.42); },
+    c_head: () => { T(600, 0.5, { to: 300, w: 'sine', v: 0.06, vib: [12, 7] }); H.whoosh(0.4, 400, 1800, 0.2, 0, 2); H.clang(380, 0.12, 0.38, 0.5); H.thud(90, 0.3, 0.38); },
+    /* 석고상: 돌 원반이 웅웅 돌다 쿵, 시선은 으스스하게 돌이 굳고, 조각이 무너진다 */
+    c_discus: () => { T(140, 0.5, { w: 'sawtooth', lp: 500, v: 0.08, vib: [20, 16] }); H.whoosh(0.5, 400, 900, 0.15, 0, 2); H.thud(100, 0.35, 0.48); H.crunch(0.2, 0.5, 0.2); },
+    c_gaze: () => { T(880, 0.7, { w: 'sine', v: 0.05, vib: [10, 5], a: 0.15 }); T(1320, 0.6, { w: 'sine', v: 0.03, at: 0.1, a: 0.15 }); H.crunch(0.18, 0.4, 0.5); N(0.5, { f: 400, v: 0.15, at: 0.4 }); },
+    c_topple: () => { H.crunch(0.35, 0, 0.6); H.rumble(0.9, 0.3, 0.1); for (let i = 0; i < 4; i++) H.thud(90 + R() * 50, 0.25, 0.15 + i * 0.12); },
+    /* 천문학자: 별이 반짝이며 떨어지고, 초신성은 부풀다 터지고, 혜성은 휘파람처럼 떨어져 쾅, 블랙홀은 빨려 들어간다 */
+    c_star: () => { arp([2093, 2637, 3136], 0.05, 0.5, { w: 'sine', v: 0.05 }); H.whizz(0.3, 0.1, 0.05, 6000, 2000); H.thud(120, 0.25, 0.32); H.chime(1568, 0.05, 0.34, 0.8); },
+    c_nova: () => { N(0.6, { ft: 'bandpass', f: 200, to: 3000, v: 0.2, pk: 0.9 }); T(110, 0.6, { to: 440, w: 'sine', v: 0.12, a: 0.4 }); H.thud(50, 0.5, 0.55, 0.6); N(0.8, { f: 5000, to: 300, v: 0.3, at: 0.55 }); arp([1568, 2093, 2637, 3136], 0.06, 0.6, { w: 'sine', v: 0.04, at: 0.6 }); },
+    c_comet: () => { N(0.55, { ft: 'bandpass', f: 6000, to: 700, q: 6, v: 0.2, pk: 0.7 }); T(1800, 0.55, { to: 400, w: 'sine', v: 0.04 }); H.thud(55, 0.5, 0.52, 0.6); H.crunch(0.25, 0.54); H.crackle(0.5, 0.08, 0.55); },
+    c_blackhole: () => { T(40, 1.0, { to: 90, w: 'sine', v: 0.4, a: 0.5 }); N(0.9, { ft: 'bandpass', f: 3000, to: 150, q: 3, v: 0.25, pk: 0.85 }); H.thud(45, 0.5, 0.9, 0.5); },
+    /* 광대: 저글링은 통통 공, 흉내는 뿅, 파이는 휙 철퍽 */
+    c_juggle: () => { [0, 0.12, 0.24].forEach((a, i) => H.wood(900 + i * 150, 0.22, a)); T(500, 0.4, { to: 1400, w: 'sine', v: 0.06, at: 0.05 }); H.boing(220, 0.12, 0.36); },
+    c_mimic: () => { T(400, 0.12, { to: 800, w: 'square', lp: 1500, v: 0.08 }); H.boing(200, 0.15, 0.1); T(220, 0.25, { w: 'sawtooth', lp: 900, q: 5, v: 0.1, at: 0.3 }); N(0.15, { f: 3000, to: 600, v: 0.2, at: 0.32 }); },
+    c_pie: () => { H.whoosh(0.25, 800, 2500, 0.2); H.splat(0.4, 0.24); H.bubble(500, 0.06, 0.4); },
+    /* 풍선: 바람이 쉭, 펑, 헬륨은 고무가 끽끽 늘어난다 */
+    c_jet: () => { H.hiss(0.5, 0.2, 0, 2500); N(0.5, { ft: 'bandpass', f: 1200, to: 2400, q: 2, v: 0.12 }); },
+    c_pop: () => { T(500, 0.15, { to: 1500, w: 'sine', v: 0.05, vib: [40, 30] }); N(0.08, { f: 4000, v: 0.55, at: 0.15 }); H.thud(140, 0.25, 0.15, 0.12); },
+    c_helium: () => { T(300, 0.5, { to: 900, w: 'sawtooth', lp: 1400, q: 9, v: 0.06, vib: [25, 14] }); H.hiss(0.3, 0.08, 0.1, 4000); H.boing(400, 0.08, 0.45); },
+    /* 도박사: 주사위가 나무 위를 굴러 멈추고, 동전은 띵 돌다 짤랑, 룰렛 공은 점점 느려지고, 올인은 칩이 와르르 */
+    c_dice: () => { [0, 0.07, 0.15, 0.21, 0.3, 0.36].forEach((a, i) => H.wood(1400 + R() * 600, 0.18 - i * 0.02, a)); H.wood(900, 0.2, 0.46); },
+    c_coin: () => { T(2600, 0.5, { w: 'sine', v: 0.04, vib: [60, 14] }); H.coin(0.08, 0.05); H.coin(0.07, 0.5); },
+    c_roulette: () => { let a = 0; for (let i = 0; i < 12; i++) { H.wood(2200 + R() * 400, 0.1, a); a += 0.03 + i * 0.008; } H.wood(1200, 0.2, a + 0.05); H.coin(0.04, a + 0.06); },
+    c_allin: () => { for (let i = 0; i < 14; i++) H.wood(1800 + R() * 1400, 0.12, i * 0.025 + R() * 0.02); arp([1047, 1319, 1568, 2093], 0.07, 0.6, { w: 'triangle', v: 0.07, at: 0.38 }); H.chime(2093, 0.06, 0.62, 1.2); },
+    /* 대장장이: 모루에 망치(챙), 달군 쇠꼬챙이는 치이익, 걸작은 큰 망치와 긴 울림 */
+    c_hammer: () => { H.whoosh(0.18, 300, 1200, 0.18); H.clang(500, 0.2, 0.2, 1.1); H.hiss(0.4, 0.06, 0.25, 4000); },
+    c_skewer: () => { H.hiss(0.6, 0.16, 0, 3000); N(0.05, { ft: 'bandpass', f: 1500, q: 3, v: 0.3 }); H.clang(700, 0.08, 0.02, 0.5); },
+    c_opus: () => { H.whoosh(0.4, 200, 1000, 0.25); H.clang(280, 0.28, 0.38, 1.8); H.thud(45, 0.55, 0.38, 0.7); H.rumble(1.0, 0.2, 0.4); },
+    /* 음유시인: 류트를 퉁기고, 화음은 쓸어 내리고, 점점 크게는 쓸어 올린다 */
+    c_note: () => { H.pluck(392, 0.16); H.pluck(587, 0.12, 0.12); },
+    c_chord: () => { [262, 330, 392, 523].forEach((f, i) => H.pluck(f, 0.12, i * 0.025, 0.9, -0.3 + i * 0.2)); },
+    c_cresc: () => { [196, 247, 294, 392, 494, 587].forEach((f, i) => H.pluck(f, 0.06 + i * 0.02, i * 0.06, 0.8, -0.4 + i * 0.16)); },
+    /* 음양사: 부적이 펄럭이고 방울, 식신은 종이 새가 날아가고, 태극은 깊은 징 */
+    c_talis: () => { H.flap(2, 0.12, 0, 0.06); H.chime(1760, 0.07, 0.12, 0.7); H.chime(2349, 0.04, 0.16, 0.5); },
+    c_shiki: () => { H.flap(4, 0.28, 0, 0.07); H.whoosh(0.3, 800, 3000, 0.22, 0.1, 2); H.chime(1976, 0.08, 0.36, 0.6); },
+    c_taiji: () => { T(98, 1.6, { w: 'sine', v: 0.3, a: 0.01, vib: [1.5, 4] }); T(196.5, 1.3, { w: 'sine', v: 0.12 }); T(294, 1.0, { w: 'sine', v: 0.06 }); N(0.08, { f: 800, v: 0.3 }); },
+    /* 닭: 부리로 톡톡, 날갯짓 푸드덕, 꼬끼오 */
+    c_peck: () => { H.wood(1600, 0.25); H.wood(1500, 0.2, 0.12); H.voice(620, 0.12, { to: 480, at: 0.18, lp: 1600, v: 0.09 }); },
+    c_flap: () => { H.flap(5, 0.25, 0, 0.07); H.voice(700, 0.1, { to: 540, at: 0.3, lp: 1700, v: 0.08 }); },
+    c_crow: () => { H.voice(520, 0.12, { to: 700, lp: 1800, v: 0.1 }); H.voice(700, 0.12, { at: 0.13, lp: 1900, v: 0.1 }); H.voice(780, 0.42, { to: 520, at: 0.27, lp: 2000, v: 0.11, vib: [10, 9] }); },
+    /* 인어: 작살과 삼지창은 물을 가르고, 해일은 크게 밀려온다 */
+    c_prong: () => { H.whoosh(0.15, 1200, 5000, 0.25, 0, 2.5); H.thud(130, 0.25, 0.13); H.water(0.35, 0.22, 0.12); },
+    c_harpoon: () => { H.whizz(0.3, 0.16, 0, 3000, 1200); T(300, 0.3, { to: 200, w: 'sawtooth', lp: 900, v: 0.04 }); H.thud(110, 0.32, 0.28); H.water(0.4, 0.2, 0.28); },
+    c_wave: () => { N(1.0, { ft: 'bandpass', f: 300, to: 1400, q: 0.8, v: 0.35, pk: 0.45 }); H.water(0.8, 0.25, 0.35); H.rumble(0.8, 0.2, 0.2); },
+    /* 허수아비: 낫이 쉬익 금속 울림, 부메랑 낫은 붕붕 돌아온다, 갈고리는 걸리며 철컥 */
+    c_sickG: () => { H.whoosh(0.25, 700, 5000, 0.28, 0, 2.5); H.shing(1900, 0.06, 0.18, 0.5); },
+    c_sickN: () => { H.whoosh(0.25, 5000, 700, 0.28, 0, 2.5); H.shing(2100, 0.06, 0.18, 0.5); },
+    c_boomer: () => { for (let i = 0; i < 5; i++) N(0.09, { ft: 'bandpass', f: 1000, q: 3, v: 0.18 - Math.abs(i - 2) * 0.03, at: i * 0.1, pk: 0.5 }); H.shing(2200, 0.05, 0.25); },
+    c_hookS: () => { H.whoosh(0.2, 800, 3000, 0.22); H.clang(1300, 0.07, 0.2, 0.4); T(180, 0.2, { to: 120, w: 'sawtooth', lp: 700, q: 4, v: 0.08, at: 0.28 }); },
+    /* 흡혈귀: 송곳니로 콱 물고 후릅, 피의 창은 축축한 쉬잉, 박쥐 떼는 찍찍 퍼덕, 만찬은 어둡게 차오르는 심장 소리 */
+    c_bite: () => { N(0.05, { f: 2500, v: 0.4 }); H.thud(150, 0.3, 0.02); N(0.35, { ft: 'bandpass', f: 600, to: 1200, q: 4, v: 0.12, at: 0.12, pk: 0.5 }); },
+    c_bspear: () => { H.whoosh(0.18, 1200, 5000, 0.25, 0, 2); H.shing(1600, 0.05, 0.14); H.splat(0.2, 0.16); },
+    c_bats: () => { H.flap(6, 0.32, 0, 0.05); for (let i = 0; i < 5; i++) T(5200 + R() * 1800, 0.05, { to: 4000, w: 'sine', v: 0.06, at: R() * 0.4 }); },
+    c_feast: () => { T(55, 0.8, { w: 'sine', v: 0.3, a: 0.3 }); [0.1, 0.3, 0.6, 0.8].forEach(a => H.thud(60, 0.28, a, 0.14)); N(0.6, { ft: 'bandpass', f: 500, to: 1100, q: 3, v: 0.1, at: 0.2, pk: 0.6 }); },
+    /* 사냥꾼: 활시위 퉁 + 화살 휘익 + 박힘, 질주는 발소리와 베기, 일제 사격은 여러 발 */
+    c_arrow: () => { H.twang(196, 0.14); H.whizz(0.2, 0.16, 0.05); H.wood(500, 0.22, 0.25); },
+    c_drive: () => { for (let i = 0; i < 4; i++) N(0.04, { f: 700, v: 0.18, at: i * 0.055 }); H.whoosh(0.22, 900, 5000, 0.26, 0.2, 2); },
+    c_volley: () => { [0, 0.06, 0.12].forEach(a => H.twang(180 + R() * 40, 0.08, a)); for (let i = 0; i < 6; i++) { H.whizz(0.18, 0.06, 0.15 + i * 0.05, 6000, 2000); H.wood(450 + R() * 200, 0.12, 0.33 + i * 0.05); } },
+    /* 무덤지기: 곡괭이가 돌을 쪼고, 도깨비불은 흐느끼며 타오르고, 땅속 손이 뼈를 덜그럭 */
+    c_pickaxe: () => { H.whoosh(0.16, 500, 2000, 0.16); H.clang(1100, 0.1, 0.16, 0.35); H.crunch(0.2, 0.17, 0.25); },
+    c_wisp: () => { T(500, 0.7, { to: 380, w: 'sine', v: 0.12, vib: [14, 5], a: 0.1 }); T(760, 0.6, { to: 560, w: 'sine', v: 0.06, vib: [10, 6], a: 0.1 }); H.whoosh(0.5, 300, 1500, 0.22, 0.1, 1); },
+    c_ghand: () => { H.rumble(0.6, 0.25); for (let i = 0; i < 6; i++) H.wood(1200 + R() * 900, 0.12, 0.25 + i * 0.04); },
+    /* 거울: 유리가 쩍 갈라지고, 쌍둥이는 좌우로 울리고, 만화경은 반짝이는 유리 조각 */
+    c_shard: () => { N(0.03, { ft: 'highpass', f: 4000, v: 0.4 }); H.glass(0.18, 0.02); },
+    c_twin: () => { H.chime(1568, 0.07, 0, 0.8, -0.6); H.chime(1568, 0.07, 0.08, 0.8, 0.6); H.glass(0.08, 0.15); },
+    c_kaleido: () => { for (let i = 0; i < 8; i++) H.chime(1760 + i * 220 + R() * 100, 0.035, i * 0.05, 0.6, R() * 1.6 - 0.8); H.glass(0.12, 0.4); },
+    /* 시계공: 째깍 + 찌름, 분침·시침은 톱니가 드르륵 + 땡, 종은 큰 시계종 */
+    c_tick: () => { H.wood(2400, 0.15); H.wood(1800, 0.12, 0.12); H.whoosh(0.1, 2000, 6000, 0.2, 0.2, 3); H.thud(150, 0.2, 0.28); },
+    c_minute: () => { for (let i = 0; i < 6; i++) H.wood(2000 + (i % 2) * 300, 0.18, i * 0.04); H.chime(1175, 0.1, 0.28, 0.7); },
+    c_hour: () => { for (let i = 0; i < 8; i++) H.wood(1500 + (i % 2) * 250, 0.12, i * 0.045); H.chime(784, 0.08, 0.38, 1.0); },
+    c_bell: () => { H.clang(330, 0.2, 0, 2.0); H.chime(660, 0.05, 0.01, 1.4); },
+    /* 격투가: 주먹이 바람을 가르고 퍽 */
+    c_jab: () => { H.whoosh(0.08, 1500, 4000, 0.2, 0, 2); H.thud(160, 0.35, 0.07, 0.12); },
+    c_straight: () => { H.whoosh(0.12, 900, 4000, 0.26, 0, 2); H.thud(110, 0.45, 0.11, 0.18); N(0.06, { f: 2500, v: 0.25, at: 0.11 }); },
+    c_upper: () => { H.whoosh(0.22, 400, 5000, 0.28, 0, 1.5); H.thud(90, 0.5, 0.2, 0.25); N(0.08, { f: 2000, v: 0.3, at: 0.2 }); },
+    c_kick: () => { H.whoosh(0.2, 600, 2500, 0.26, 0, 1.4); H.thud(80, 0.48, 0.18, 0.22); },
+    /* 잔디깎이: 엔진이 붕 돌며 풀이 잘리고, 자갈은 튕겨 나간다 */
+    c_blade: () => { T(70, 0.6, { to: 110, w: 'sawtooth', lp: 700, q: 3, v: 0.12, vib: [8, 28] }); N(0.5, { ft: 'bandpass', f: 3000, q: 1.5, v: 0.12, at: 0.1, pk: 0.3 }); H.crackle(0.4, 0.08, 0.15, 16); },
+    c_pebble: () => { H.wood(2600, 0.2); H.whizz(0.2, 0.1, 0.03, 4000, 2500); H.wood(2100, 0.2, 0.24); },
+    /* 바니걸: 쟁반이 쨍, 하이힐 또각 + 발차기, 쇼는 반짝이와 짠 */
+    c_tray: () => { H.whoosh(0.15, 800, 2500, 0.15); H.clang(900, 0.14, 0.14, 0.6); },
+    c_heel: () => { H.wood(2800, 0.2); H.wood(2600, 0.18, 0.12); H.whoosh(0.15, 800, 3000, 0.22, 0.18); H.thud(130, 0.3, 0.32); },
+    c_show: () => { for (let i = 0; i < 7; i++) H.chime(2093 + R() * 1500, 0.03, R() * 0.4, 0.5, R() * 1.4 - 0.7); arp([523, 659, 784, 1047], 0.06, 0.4, { w: 'triangle', v: 0.07, at: 0.3 }); },
+    /* 연금술사: 산성은 치이익 보글, 플라스크는 깨지며 쉬익, 현자의 돌은 신비로운 울림 */
+    c_acid: () => { H.hiss(0.7, 0.14, 0, 3500); for (let i = 0; i < 7; i++) H.bubble(250 + R() * 400, 0.07, R() * 0.6); },
+    c_flask: () => { H.whoosh(0.2, 700, 2500, 0.15); H.glass(0.16, 0.2); H.hiss(0.5, 0.1, 0.25, 3000); },
+    c_philo: () => { T(220, 1.0, { w: 'sine', v: 0.1, a: 0.3, vib: [3, 5] }); arp([880, 1109, 1319, 1760], 0.08, 0.8, { w: 'sine', v: 0.05, at: 0.2 }); H.chime(2637, 0.04, 0.55, 0.9); },
+    /* 화가: 붓이 쓱, 물감이 철벅, 롤러가 데굴, 매그넘은 액자가 쾅 하고 반짝 */
+    c_brush: () => { N(0.3, { ft: 'bandpass', f: 2000, to: 3500, q: 1.5, v: 0.18, pk: 0.4 }); H.splat(0.15, 0.25); },
+    c_splash: () => { H.splat(0.35); for (let i = 0; i < 4; i++) H.splat(0.12, 0.08 + i * 0.05); },
+    c_roller: () => { N(0.6, { f: 500, v: 0.18, a: 0.05 }); for (let i = 0; i < 8; i++) N(0.04, { f: 900, q: 3, v: 0.08, at: i * 0.07 }); H.squish(0.15, 0.5, 0.2); },
+    c_magnum: () => { H.thud(90, 0.4, 0, 0.25); H.wood(500, 0.3); arp([1047, 1319, 1568, 2093], 0.05, 0.5, { w: 'sine', v: 0.05, at: 0.15 }); },
+    /* 매조련사: 지팡이 휙 딱, 매가 날개를 치며 맴돌고, 급강하는 매 울음과 함께 내리꽂힌다 */
+    c_staff: () => { H.whoosh(0.2, 500, 2000, 0.22); H.wood(600, 0.3, 0.18); },
+    c_encircle: () => { H.flap(6, 0.32, 0, 0.08); T(2400, 0.4, { to: 1800, w: 'sawtooth', lp: 3500, q: 4, v: 0.08, at: 0.2, vib: [60, 20] }); },
+    c_stoop: () => { T(2600, 0.35, { to: 1900, w: 'sawtooth', lp: 3800, q: 4, v: 0.05, vib: [80, 22] }); H.whoosh(0.35, 3000, 500, 0.3, 0.1, 2); H.thud(90, 0.45, 0.42, 0.3); },
+  });
+}
+/* --- 방어·특수·이동 효과음. 공용 소리 이름은 그대로 두고 소리만 새로 만들고,
+       공용 소리를 빌려 쓰던 카드 가운데 컨셉이 다른 것은 's_카드아이디' 전용 소리를 쓴다(SPO: 그 카드가 원래 부르던 공용 소리) --- */
+const SPO = { copycat: 'scry', mist: 'wind', coffin: 'stone', cocktail: 'coin', sketch: 'scry', treat: 'heal', catalyst: 'bubble', antidote: 'heal', counter: 'parryUp', noose: 'hook', heal: 'spore', bubble: 'guardUp', block: 'anvil', box: 'mine', bluff: 'guardUp', rest: 'guardUp', knot: 'guardUp', pillar: 'stone', reverse: 'wind', amulet: 'guardUp', grail: 'heal' };
+const spSnd = (id, snd) => (id && SPO[id] === snd && SND.kit.S['s_' + id] ? 's_' + id : snd);
+{ const { T, N, arp } = SND.kit, H = SFXH, R = Math.random;
+  Object.assign(SND.kit.S, {
+    /* 공용: 방어 자세는 방패를 세우는 쿵과 금속 울림, 받아넘기기 준비는 칼을 겨누는 쉬잉 */
+    guardUp: () => { H.thud(140, 0.25, 0, 0.15); H.clang(620, 0.07, 0.02, 0.5); N(0.3, { ft: 'bandpass', f: 1500, to: 3000, q: 2, v: 0.06, at: 0.05, pk: 0.3 }); },
+    parryUp: () => { H.whoosh(0.15, 1500, 5000, 0.14, 0, 2); H.shing(3000, 0.05, 0.1, 0.6); },
+    hourglass: () => { N(0.6, { ft: 'bandpass', f: 4000, q: 2, v: 0.136, a: 0.08 }); for (let i = 0; i < 10; i++) N(0.01, { ft: 'highpass', f: 5000, v: 0.085, at: R() * 0.6 }); H.chime(1760, 0.09, 0.5, 0.8); },
+    swap: () => { H.whoosh(0.2, 800, 3000, 0.3, 0, 2, -0.7); H.whoosh(0.2, 3000, 800, 0.3, 0.12, 2, 0.7); H.chime(1319, 0.07, 0.3, 0.4); },
+    wind: () => { N(0.8, { ft: 'bandpass', f: 500, to: 1200, q: 3, v: 0.2, pk: 0.5 }); N(0.7, { ft: 'bandpass', f: 1500, to: 800, q: 5, v: 0.08, at: 0.1, pk: 0.4 }); },
+    bramble: () => { T(120, 0.3, { to: 160, w: 'sawtooth', lp: 500, q: 8, v: 0.08 }); for (let i = 0; i < 8; i++) N(0.03, { ft: 'bandpass', f: 2500 + R() * 2000, q: 3, v: 0.1, at: R() * 0.4 }); },
+    stone: () => { H.thud(80, 0.35, 0, 0.3); N(0.4, { f: 600, to: 150, v: 0.25, q: 2 }); H.crunch(0.15, 0.05, 0.25); },
+    heal: () => { [523, 659, 784, 1047].forEach((f, i) => H.chime(f, 0.05, i * 0.07, 0.9)); N(0.6, { ft: 'highpass', f: 6000, v: 0.04, a: 0.2 }); },
+    hook: () => { for (let i = 0; i < 6; i++) H.clang(1400 + R() * 600, 0.03, i * 0.05, 0.2); H.thud(150, 0.2, 0.32, 0.1); },
+    scry: () => { T(660, 0.7, { w: 'sine', v: 0.05, a: 0.2, vib: [6, 5] }); arp([1319, 1568, 1976], 0.08, 0.6, { w: 'sine', v: 0.04, at: 0.15 }); },
+    regroup: () => { for (let i = 0; i < 8; i++) N(0.035, { ft: 'bandpass', f: 3000 + R() * 1500, q: 2, v: 0.14, at: i * 0.04 }); H.wood(1200, 0.12, 0.38); },
+    frost: () => { H.hiss(0.4, 0.08, 0, 6000); for (let i = 0; i < 6; i++) H.chime(2600 + R() * 1600, 0.025, R() * 0.35, 0.3); H.crunch(0.12, 0.05, 0.2); },
+    mine: () => { H.dirt(0.2, 0, 0.15); H.wood(1800, 0.15, 0.18); H.clang(1600, 0.04, 0.22, 0.25); },
+    turret: () => { T(90, 0.35, { to: 160, w: 'sawtooth', lp: 600, q: 3, v: 0.08 }); [0, 0.15, 0.3].forEach(a => H.clang(900, 0.04, a, 0.2)); H.thud(110, 0.25, 0.32); },
+    spore: () => { for (let i = 0; i < 4; i++) { N(0.12, { f: 1400, to: 400, v: 0.14, at: i * 0.08, pk: 0.3 }); H.bubble(500 + i * 80, 0.05, i * 0.08); } },
+    harden: () => { H.squish(0.2, 0, 0.25); H.thud(120, 0.25, 0.2, 0.12); H.clang(500, 0.04, 0.22, 0.4); },
+    gong: () => { T(130, 1.4, { w: 'sine', v: 0.25, vib: [1.2, 4] }); T(262, 1.0, { w: 'sine', v: 0.1 }); T(345, 0.8, { w: 'sine', v: 0.05 }); N(0.06, { f: 900, v: 0.2 }); },
+    anvil: () => H.clang(560, 0.18, 0, 1.0),
+    inflate: () => { N(0.5, { ft: 'bandpass', f: 600, to: 1600, q: 3, v: 0.288, pk: 0.6 }); T(200, 0.5, { to: 500, w: 'sawtooth', lp: 900, q: 6, v: 0.072 }); },
+    lull: () => { [392, 330, 294, 262].forEach((f, i) => H.chime(f * 2, 0.05, i * 0.22, 0.7)); T(196, 1.0, { w: 'sine', v: 0.06, a: 0.3 }); },
+    well: () => { H.water(0.4, 0.12); arp([784, 988, 1175, 1568], 0.06, 0.5, { w: 'sine', v: 0.05, at: 0.1 }); },
+    wxCast: () => { H.rumble(0.9, 0.2); N(0.9, { ft: 'bandpass', f: 400, to: 1200, q: 3, v: 0.14, pk: 0.5 }); },
+    dig: () => { H.whoosh(0.15, 500, 2000, 0.16); H.dirt(0.35, 0.12, 0.3); H.thud(110, 0.2, 0.12, 0.12); },
+    lens: () => { T(1200, 0.8, { w: 'sine', v: 0.05, a: 0.1, vib: [20, 4] }); H.glass(0.06, 0.2); },
+    snow: () => { N(0.8, { ft: 'bandpass', f: 1200, to: 600, q: 1.5, v: 0.14, pk: 0.4 }); for (let i = 0; i < 6; i++) H.chime(2800 + R() * 1200, 0.02, R() * 0.6, 0.3); },
+    whistle: () => { T(1568, 0.14, { to: 2093, w: 'sine', v: 0.1, vib: [20, 9] }); T(2093, 0.3, { to: 1760, w: 'sine', v: 0.1, at: 0.15, vib: [25, 9] }); },
+    mark: () => { H.wood(1400, 0.18); T(880, 0.25, { w: 'sine', v: 0.06, at: 0.05 }); },
+    thorn: () => { for (let i = 0; i < 4; i++) N(0.03, { ft: 'bandpass', f: 3000 + R() * 2000, q: 4, v: 0.2, at: i * 0.03 }); H.thud(160, 0.2, 0.05, 0.1); },
+    bark: () => { T(120, 0.4, { to: 90, w: 'sawtooth', lp: 400, q: 6, v: 0.1 }); for (let i = 0; i < 6; i++) H.wood(400 + R() * 300, 0.12, 0.05 + i * 0.05); },
+    /* 이동: 발걸음, 도약, 순간이동, 질주, 말발굽, 박쥐, 분사, 통통 */
+    hop: () => { N(0.05, { f: 700, v: 0.352 }); N(0.05, { f: 600, v: 0.308, at: 0.16 }); },
+    blink: () => { T(300, 0.2, { to: 2400, w: 'sine', v: 0.1, vib: [40, 30] }); N(0.15, { ft: 'highpass', f: 5000, v: 0.08, at: 0.15 }); T(2400, 0.25, { to: 500, w: 'sine', v: 0.08, at: 0.3 }); },
+    dashmv: () => { for (let i = 0; i < 4; i++) N(0.04, { f: 700, v: 0.24, at: i * 0.05 }); H.whoosh(0.22, 400, 3000, 0.32, 0.05, 1.5); },
+    gallop: () => { [0, 0.09, 0.22, 0.31].forEach((a, i) => H.wood(500 + (i % 2) * 120, 0.22, a)); },
+    ghost: () => { H.flap(5, 0.18, 0, 0.05); T(700, 0.5, { to: 400, w: 'sine', v: 0.05, vib: [15, 6] }); },
+    jet: () => { H.hiss(0.45, 0.16, 0, 2500); N(0.45, { ft: 'bandpass', f: 1000, to: 2200, q: 2, v: 0.1 }); },
+    bounce: () => { H.boing(150, 0.16); N(0.05, { f: 700, v: 0.15, at: 0.3 }); },
+    m_leap: () => { H.whoosh(0.25, 400, 1600, 0.14, 0, 1.5); N(0.06, { f: 700, v: 0.2, at: 0.28 }); H.thud(110, 0.15, 0.28, 0.1); },
+    m_curve: () => { T(90, 0.4, { to: 140, w: 'sawtooth', lp: 700, q: 3, v: 0.1, vib: [6, 25] }); N(0.3, { ft: 'bandpass', f: 2500, q: 6, v: 0.1, at: 0.1, pk: 0.3 }); },
+    m_backstep: () => { H.wood(2800, 0.16); H.boing(260, 0.08, 0.05); H.wood(2600, 0.16, 0.3); },
+    /* 컨셉이 다른 카드 전용 */
+    s_copycat: () => { H.glass(0.06); T(880, 0.6, { w: 'sine', v: 0.05, a: 0.1, vib: [8, 6] }); H.chime(1760, 0.04, 0.2, 0.6, 0.5); },
+    s_mist: () => { N(1.0, { ft: 'lowpass', f: 900, v: 0.238, pk: 0.4 }); T(220, 0.9, { w: 'sine', v: 0.068, a: 0.3, vib: [4, 3] }); },
+    s_coffin: () => { T(160, 0.35, { to: 120, w: 'sawtooth', lp: 500, q: 8, v: 0.08 }); H.thud(80, 0.4, 0.35, 0.3); H.wood(300, 0.25, 0.36); },
+    s_cocktail: () => { H.water(0.25, 0.12); H.chime(2637, 0.06, 0.25, 0.5); H.chime(3136, 0.05, 0.3, 0.5); },
+    s_sketch: () => { for (let i = 0; i < 4; i++) N(0.09, { ft: 'bandpass', f: 3500, q: 3, v: 0.24, at: i * 0.1, pk: 0.5 }); },
+    s_treat: () => { for (let i = 0; i < 3; i++) N(0.04, { ft: 'bandpass', f: 1800, q: 2, v: 0.32, at: i * 0.08 }); T(2600, 0.15, { to: 3200, w: 'sine', v: 0.08, at: 0.3, vib: [80, 25] }); },
+    s_catalyst: () => { H.chime(2093, 0.05); for (let i = 0; i < 6; i++) H.bubble(300 + R() * 500, 0.07, 0.1 + R() * 0.5); },
+    s_antidote: () => { N(0.04, { f: 3000, v: 0.3 }); T(500, 0.06, { to: 900, w: 'sine', v: 0.1 }); H.gulp(0.2, 0.2); [659, 784, 1047].forEach((f, i) => H.chime(f, 0.04, 0.45 + i * 0.07, 0.6)); },
+    s_counter: () => { N(0.08, { ft: 'bandpass', f: 800, q: 2, v: 0.15 }); H.whoosh(0.12, 1000, 3000, 0.15, 0.1); H.thud(150, 0.2, 0.2, 0.1); },
+    s_noose: () => { T(200, 0.3, { to: 140, w: 'sawtooth', lp: 700, q: 5, v: 0.07 }); N(0.2, { ft: 'bandpass', f: 1200, q: 3, v: 0.12, pk: 0.6 }); H.wood(900, 0.15, 0.3); },
+    s_heal: () => { for (let i = 0; i < 6; i++) N(0.05, { ft: 'bandpass', f: 2500 + R() * 2000, q: 2, v: 0.06, at: R() * 0.3 }); [392, 523, 659].forEach((f, i) => H.chime(f * 2, 0.05, 0.1 + i * 0.08, 0.9)); },
+    s_bubble: () => { for (let i = 0; i < 6; i++) H.bubble(250 + i * 70, 0.09, i * 0.05); H.chime(1568, 0.04, 0.3, 0.7); },
+    s_block: () => { H.whoosh(0.2, 300, 1000, 0.2); H.clang(240, 0.16, 0.18, 1.0); H.thud(70, 0.4, 0.18, 0.3); H.crunch(0.15, 0.2, 0.2); },
+    s_box: () => { for (let i = 0; i < 5; i++) H.wood(1600 + (i % 2) * 300, 0.12, i * 0.07); H.boing(240, 0.16, 0.38); },
+    s_bluff: () => { N(0.04, { ft: 'bandpass', f: 3000, q: 2, v: 0.2 }); H.wood(2000, 0.12, 0.08); T(400, 0.3, { to: 300, w: 'sawtooth', lp: 900, q: 6, v: 0.06, at: 0.2 }); },
+    s_rest: () => { [262, 330, 392, 523].forEach((f, i) => H.pluck(f, 0.07, i * 0.12, 1.0)); },
+    s_knot: () => { T(600, 0.15, { to: 900, w: 'sawtooth', lp: 1500, q: 8, v: 0.096, vib: [40, 30] }); T(800, 0.12, { to: 500, w: 'sawtooth', lp: 1500, q: 8, v: 0.08, at: 0.15 }); },
+    s_pillar: () => { H.rumble(0.7, 0.25); H.crunch(0.2, 0.1, 0.5); H.thud(70, 0.35, 0.55, 0.25); },
+    s_reverse: () => { N(0.7, { ft: 'bandpass', f: 1500, to: 400, q: 3, v: 0.306, pk: 0.85 }); T(800, 0.7, { to: 300, w: 'sine', v: 0.068, a: 0.5 }); },
+    s_amulet: () => { H.chime(1760, 0.07); H.chime(2349, 0.04, 0.08, 0.7); },
+    s_grail: () => { H.chime(1047, 0.06, 0, 1.2); [1319, 1568, 2093].forEach((f, i) => H.chime(f, 0.04, 0.1 + i * 0.08, 1.0)); },
+  });
+}
 
 /* 승리 대사 */
 const WINL = {
@@ -13476,7 +13937,7 @@ const PVSET = {
   bunny: () => [['tray', [FX.trayFx(4, false, true)], 850], ['heel', [FX.heelFx([1, 3, 4, 5, 7], 4, true)], 800], ['show', [FX.showFx([1, 3, 4, 5, 7])], 1100]],
   mage: () => [['meteor', [FX.meteor([1, 3, 4, 5, 7])], 1000], ['bolt', [FX.bolt(1)], 650]], samurai: () => [['hslash', [FX.kSweep(1, false)], 800], ['vslash', [FX.kChop(1, false)], 800], ['thrust', [FX.kThrust([4], false)], 650]],
   mechanic: () => [['rail', [FX.rail(1)], 700], ['mine', [FX.boom([4])], 700]], druid: () => [['vine', [FX.vine([1], false)], 700], ['spore', [FX.spore([3, 4, 5], true)], 700]],
-  slime: () => [['slam', [FX.splat([3, 4, 5], K.vio)], 650], ['engulf', [FX.engulf([4])], 650]], archaeologist: () => [['shovel', [FX.shovelFx([4], false)], 650]],
+  slime: () => [['slam', [FX.splat([3, 4, 5], K.vio)], 800], ['engulf', [FX.engulf([4])], 1000]], archaeologist: () => [['shovel', [FX.shovelFx([4], false)], 850]],
   shaman: () => [['storm', [FX.bolt(1)], 650], ['tornado', [FX.tornado([1, 3, 4, 5, 7])], 800]],
   dullahan: () => [['sweep', [FX.gfissure(1, true, false, false, 48), FX.gfissure(1, true, false, true, 48), FX.gplungeFx(4, false, false)], 1150], ['cleave', [FX.gslabFx(1, false)], 850]],
   statue: () => [['discus', [FX.discus(1, false)], 650], ['topple', [FX.rubble([3, 4, 5])], 800]], astronomer: () => [['star', [FX.asStar(4)], 850], ['nova', [FX.asNova(4), FX.asNovaArm([1, 3, 5, 7])], 1100]],
@@ -14077,7 +14538,7 @@ function stMedal(won) {
   if (!run || run.medalReq) return; const total = run.map && !run.weekly ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18,   /* 주간 도전(한 막)은 일반 모험 18칸 중 한 막 몫 */ done = (run.path || []).length;
   run.rate = Math.min(1, done / total); run.medal = null; run.medalReq = true;
   if (!AUTH.user || !run.sid) { run.medal = 0; return; }
-  const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won, p_stats: Object.assign({ cls: r.cls }, r.qs || {}) }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
+  const r = run, xp0 = AUTH.lv ? AUTH.lv.xp : null; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won, p_stats: Object.assign({ cls: r.cls }, r.qs || {}) }).then(n => { r.medal = n || 0; return walletPull(); }).then(() => { if (xp0 != null && AUTH.lv && AUTH.lv.xp > xp0) r.xp = AUTH.lv.xp - xp0; }).catch(() => { if (r.medal == null) r.medal = 0; }).then(() => render());
 }
 function stSumHTML() {
   const won = !!run.cleared, ln = won ? null : stCurNode(), rec = stageRec3(), c = CLS[run.cls], log = run.log || [];
@@ -14098,7 +14559,7 @@ function stSumHTML() {
     <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
       <div><p class="cap">${run.weekly ? L('주간 도전 · 도전 결과', 'Weekly · Run result') : L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? (run.weekly ? L('이번 주 도전을 완주했습니다!', 'Weekly challenge cleared!') : L('세 막을 모두 돌파했습니다!', 'All three acts cleared!')) : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
-    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won && !run.weekly ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
+    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal) + (run.xp ? ` <b class="xpg">+${run.xp} XP</b>` : '')}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won && !run.weekly ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
     <div class="ss-body">
       <section class="ss-route"><h3>${L('지나온 길', 'Your route')}</h3><ol class="sr-acts">${route}</ol></section>
       <section class="ss-side">
@@ -14819,8 +15280,12 @@ function stOverHTML(won) {
       orb.position.set(0.22, 0.5, -0.2); orb.add(fly.g); g.add(orb); sit.g.position.set(0.22, 0, -0.2); g.add(sit.g);
       if (kind === 'hawkg') [fly.g, sit.g].forEach(function (x) { x.traverse(function (o) { if (o.material) { o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = 0.45; } }); });
       /* 리플레이 중이거나 이 칸에 막 날아온 뒤 1.4초는 날고, 카드를 고르는 동안에는 횃대에 앉아 있다. 미리보기(hawkg)는 늘 앉은 모습 */
-      g.userData.anim = function (ts, since) { const flying = kind === 'hawkt' && ((typeof replaying !== 'undefined' && replaying) || since < 1400); fly.g.visible = flying; sit.g.visible = !flying;
-        if (flying) { const a = ts * 0.9; fly.g.position.set(Math.cos(a) * 0.12, Math.sin(ts * 1.7) * 0.03, Math.sin(a) * 0.12); fly.g.rotation.y = -a; fly.anim(ts); } else sit.anim(ts); }; }
+      g.userData.anim = function (ts, since, from) { const flying = kind === 'hawkt' && ((typeof replaying !== 'undefined' && replaying) || since < 1400); fly.g.visible = flying; sit.g.visible = !flying;
+        if (!flying) { sit.anim(ts); return; }
+        /* 다른 칸에서 옮겨 왔으면 이전 칸에서 이 칸까지 낮은 호를 그리며 날아온다(한 칸에 약 0.32초, 머리는 가는 쪽) */
+        const k = from ? Math.min(1, since / (180 + 140 * Math.hypot(from[0], from[1]))) : 1;
+        if (k < 1) { const e = k * k * (3 - 2 * k); fly.g.position.set(from[0] * (1 - e), Math.sin(k * Math.PI) * 0.35, from[1] * (1 - e)); fly.g.rotation.y = Math.atan2(-from[0], -from[1]); fly.g.rotation.z = -Math.sign(from[0] || 0.001) * 0.35 * Math.sin(k * Math.PI); fly.anim(ts * 2.2); return; }
+        const a = ts * 0.9; fly.g.position.set(Math.cos(a) * 0.12, Math.sin(ts * 1.7) * 0.03, Math.sin(a) * 0.12); fly.g.rotation.y = -a; fly.g.rotation.z = 0; fly.anim(ts); }; }
     else if (kind === 'paint') {   /* 화가 물감: 바닥에 납작한 세 색 얼룩 */
       const cs = [0xf2c230, 0xe0524f, 0x4f86d9]; [[0, 0, 0.2], [0.14, 0.1, 0.12], [-0.12, 0.12, 0.09]].forEach(function (q, i) { m = new T.Mesh(new T.CylinderGeometry(q[2], q[2] * 1.05, 0.015, 10), PM['pt' + i] || (PM['pt' + i] = lam(cs[(i + 1) % 3], { emissive: 0x2a2010 }))); m.position.set(q[0] - 0.02, 0.015 + i * 0.002, q[1] - 0.05); m.scale.z = 0.85; g.add(m); }); }
     else if (kind === 'acid') {   /* 산성 웅덩이: 낮은 반투명 초록 원판 + 거품 몇 알 */
@@ -15137,7 +15602,7 @@ function stOverHTML(won) {
     arrowFx: [0.28, 6, ['sand', 'gray', 'rope'], 2, 2.4], wwArrow: [0.28, 7, ['wwb', 'wwf', 'wwm'], 2, 2.4], wwVolley: [0.4, 6, ['wwb', 'wwf'], 2, 2.2], wwPrey: [0, 9, ['wwb', 'wwf', 'wwd'], 2.8, 2.4], wwSnap: [0.5, 8, ['wwb', 'wwf', 'wwd'], 1.8, 2.2], wwAmbush: [0, 6, ['wwg', 'wwm'], 1.6, 2.6], volleyFx: [0.4, 5, ['sand', 'gray'], 2, 2.2], preyFx: [0, 9, ['red', 'wht'], 2.8, 2.4], nooseSnap: [0.25, 5, ['rope', 'yel'], 1.8, 2.2], ambushFx: [0, 6, ['pine', 'grn'], 1.6, 2.6],
     pickFx: [0.28, 10, ['gray', 'ash', 'sil'], 2.8, 3.2], wispFx: [0.1, 12, ['wisp', 'wispd', 'wht'], 1.2, 2.4, -1.6], ghandFx: [0.2, 5, ['sil', 'bone'], 1.6, 2.2], quakeFx: [0.02, 16, ['gray', 'sil', 'ash'], 3.2, 3.8], coffinFx: [0.02, 6, ['ash', 'sil'], 1.6, 1.4], hit: [0, 12, ['red', 'org', 'wht'], 3.2, 2.8], boom: [0.12, 12, ['org', 'yel', 'red'], 3.4, 3.4], meteor: [0.4, 18, ['org', 'red', 'sil', 'yel'], 4.2, 4], sparks: [0, 10, ['ember', 'yel'], 3, 3.2],
     clash: [0, 9, ['amb', 'wht'], 3, 2.6], rubble: [0.5, 6, ['gray', 'ash'], 1.6, 1.4], dirt: [0.05, 9, ['sand', 'sandd'], 2, 3.2], crumble: [0, 9, ['ash', 'sil'], 1.4, 1.2], eggBreak: [0, 7, ['wht', 'yolk'], 2.2, 2.6],
-    splat: [0.4, 9, [1], 2.4, 2.2], splash: [0.1, 10, ['lblue', 'wht', 'mint'], 2, 3.8], thornHit: [0.3, 5, ['red'], 1.6, 2.6], guardOk: [0, 8, [1, 'wht'], 2.6, 2.4], markPop: [0.3, 8, ['red', 'yel'], 3, 2.8],
+    splat: [0.32, 9, [1], 2.4, 2.2], engulf: [0.27, 8, ['slm', 'slml'], 2.2, 2.4], shovelFx: [0.3, 9, ['soil', 'soild', 'soill'], 2.4, 3.2], splash: [0.1, 10, ['lblue', 'wht', 'mint'], 2, 3.8], thornHit: [0.3, 5, ['red'], 1.6, 2.6], guardOk: [0, 8, [1, 'wht'], 2.6, 2.4], markPop: [0.3, 8, ['red', 'yel'], 3, 2.8],
     frost: [0.3, 6, ['ice', 'lblue'], 1.4, 2], peckFx: [0.2, 6, ['yolk', 'pale'], 2.2, 2.4], kNicks: [0.05, 6, ['wht', 'yel', 'cutl'], 2.6, 2.6], kThrust: [0.26, 8, ['cut', 'wht', 'cutl'], 2.4, 2.4], fireCast: [0.62, 6, ['org', 'red', 'yel'], 2, 2.4], starFx: [0.45, 8, ['star', 'yel', 'pale'], 2.6, 2.8],
     talisFx: [0.4, 5, ['ind', 'pale'], 1.8, 2.2], cmTalis: [0.4, 7, ['cmW', 'cmB', 'cmA'], 2, 2.4], cmShiki: [0.3, 6, ['cmW', 'cmB', 'cmA'], 1.8, 2.2], cmTaiji: [0.35, 8, ['cmW', 'cmB'], 2.4, 2.6], balls: [0.55, 6, ['mag', 'yel', 'blue'], 2.4, 2.4], headFx: [0.55, 8, ['steel', 'lblue'], 2.6, 2.4], prongFx: [0.3, 5, ['mint', 'lblue'], 2, 2],
     healFx: [0, 6, ['grn', 'lime'], 0.5, 1.5, -1.2], sparkle: [0, 6, [1], 0.5, 1.4, -1.2], bolt: [0.05, 8, ['yel', 'pale', 'amb'], 3, 3] };
@@ -15832,7 +16297,8 @@ function stOverHTML(won) {
       if (cl.contains('blk-ice')) { if (!t.ice) { t.ice = new T.Mesh(iceGeo, iceMat); t.ice.position.set(t.x, TY + 0.25, t.z); t.ice.renderOrder = 4; boardG[b].add(t.ice); } t.ice.visible = true; } else if (t.ice) t.ice.visible = false;
       if (cl.contains('blk-grass')) { if (!t.grass) { t.grass = grassMound(); t.grass.position.set(t.x, TY, t.z); boardG[b].add(t.grass); } t.grass.visible = true; } else if (t.grass) t.grass.visible = false;
       if (cl.contains('blk-pil')) { if (!t.rubble) { t.rubble = rubbleRing(); t.rubble.position.set(t.x, TY, t.z); boardG[b].add(t.rubble); } t.rubble.visible = true; } else if (t.rubble) t.rubble.visible = false;
-      for (const k of PK) { let p = t.props[k]; if (kinds[k]) { if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); p.userData.shown = now; } if (!p.visible) p.userData.shown = now; p.visible = true; if (p.userData.anim) p.userData.anim(now / 1000, now - p.userData.shown); p.position.y = TY + t.lift * 0.05; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
+      for (const k of PK) { let p = t.props[k]; if (kinds[k]) { const fresh = !p || !p.visible; if (!p) { p = t.props[k] = propOf(k); p.position.set(t.x, TY, t.z); boardG[b].add(p); } if (fresh) { p.userData.shown = now; const hl = boardG[b].userData.hawkAt; if (k === 'hawkt' && hl && (hl[0] !== t.x || hl[1] !== t.z) && now - hl[2] < 400) p.userData.from = [hl[0] - t.x, hl[1] - t.z]; else if (k === 'hawkt') p.userData.from = null; }
+        if (k === 'hawkt') boardG[b].userData.hawkAt = [t.x, t.z, now]; p.visible = true; if (p.userData.anim) p.userData.anim(now / 1000, now - p.userData.shown, p.userData.from); p.position.y = TY + t.lift * 0.05; if (p.userData.spin) { p.userData.spin.rotation.y = st * 0.12; } if (p.userData.bob) p.userData.bob.position.y = 0.95 + Math.sin(st * 0.2) * 0.06; } else if (p) p.visible = false; }
       if (h !== t.lsig) { t.lsig = h;
         if (!h) { if (t.label) { t.label.remove(); t.label = null; } }
         else { if (!t.label) { t.label = document.createElement('div'); t.label.className = 'cell a3-cl'; lab.appendChild(t.label); } t.label.innerHTML = h; } }
@@ -15909,7 +16375,19 @@ function stOverHTML(won) {
       }
     }
     const flip = cl.contains('flip'), x = BX[b] + (col - 1) + tx / cs32, y = Math.max(-0.95, -ty / cs32) + jmp, z = (row - 1) + 0.1;
-    u.g.position.set(x, TY + y, z); u.g.scale.set((flip ? -1 : 1) * sc, sc, sc); u.g.rotation.x = -0.55;
+    /* 몸 연기: 맞으면 밀린 쪽으로 휘청(강타는 무릎이 꺾이듯 주저앉았다 일어남), 피하면 옆으로 몸을 틀며 살짝 뜨고,
+       받아넘기면 앞으로 몸을 숙였다 펴고, 체력 1이면 거칠게 숨 쉬며 흔들리다 가끔 비틀거린다 */
+    let rz = 0, dy = 0; const low = !still && cl.contains('main') && !cl.contains('ko') && !!(el.closest('.side') && el.closest('.side').querySelector('.stat.low'));
+    if (!still) {
+      const ha = el.dataset.hitAt; if (ha && ha !== u.hitAt) { u.hitAt = ha; const tr0 = +el.dataset.hitT || 1; u.hit = { t0: tSec, tier: tr0, dir: parseFloat(el.style.getPropertyValue('--kd')) || 1 }; u.sq = Math.max(u.sq || 0, [0, 0.35, 0.6, 1.1][tr0]); }
+      if (u.hit) { const e = tSec - u.hit.t0, amp = [0, 0.22, 0.34, 0.5][u.hit.tier]; if (e > 1.2) u.hit = null; else { rz -= u.hit.dir * amp * Math.min(1, e / 0.05) * Math.exp(-e * 4.5) * Math.cos(e * 9); if (u.hit.tier >= 3) dy -= 0.12 * Math.sin(Math.min(1, e / 0.7) * Math.PI); } }
+      const dg = cl.contains('dodge'); if (dg && !u.dgOn) u.dg = tSec; u.dgOn = dg;
+      if (u.dg != null) { const p = (tSec - u.dg) / 0.45; if (p > 1) u.dg = null; else { rz += Math.sin(p * Math.PI * 2) * 0.28; dy += Math.sin(p * Math.PI) * 0.14; } }
+      const pa = el.dataset.parAt; if (pa && pa !== u.parAt) { u.parAt = pa; u.par = tSec; }
+      if (u.par != null) { const p = (tSec - u.par) / 0.5; if (p > 1) u.par = null; else { rz += (flip ? 1 : -1) * 0.3 * Math.sin(p * Math.PI); dy -= 0.05 * Math.sin(p * Math.PI); } }
+      if (low) { if (u.ph == null) u.ph = Math.random() * 6.28; rz += Math.sin(tSec * 1.4 + u.ph) * 0.06; const st2 = (tSec + u.ph) % 3.4; if (st2 < 0.5) { rz += Math.sin(st2 / 0.5 * Math.PI) * 0.16; dy -= Math.sin(st2 / 0.5 * Math.PI) * 0.05; } }
+    }
+    u.g.position.set(x, TY + y + dy, z); u.g.scale.set((flip ? -1 : 1) * sc, sc, sc); u.g.rotation.x = -0.55; u.g.rotation.z = rz;
     const red = cl.contains('hurt') || cl.contains('white'), after = cl.contains('after'), wf = cl.contains('flashw');
     u.mat.color.setHex(red || wf ? 0x000000 : 0xffffff); u.mat.emissive.setHex(wf ? 0xffffff : red ? 0xd8475a : after ? 0x3560c8 : 0);
     u.mat.transparent = op < 0.99; u.mat.opacity = op; u.mat.depthWrite = op > 0.6; u.g.visible = op > 0.02; u.back.material.transparent = u.mat.transparent; u.back.material.opacity = op * 0.9;
@@ -15919,7 +16397,7 @@ function stOverHTML(won) {
     if (landed) { u.sq = 1; if (GM && !still) burst(b, cellI, 6, [GM.K.wht, GM.K.ash, GM.K.gray], 0.9, 0.55, 10); }
     /* 대기 동작: 캐릭터마다 다른 박자로 숨 쉬듯 위아래로 늘었다 줄어든다. 뛰는 중에는 길쭉하게 */
     { if (u.ph == null) u.ph = Math.random() * 6.28; const dl = Math.min(0.1, Math.max(0, tSec - (u.lt == null ? tSec : u.lt))); u.lt = tSec;
-      const br = still ? 0 : Math.sin(tSec * 2.6 + u.ph), sq = u.sq || 0, air = jmp > 0.04 ? Math.min(1, jmp * 4) : 0;
+      const br = still ? 0 : Math.sin(tSec * (low ? 4.6 : 2.6) + u.ph) * (low ? 2.2 : 1), sq = u.sq || 0, air = jmp > 0.04 ? Math.min(1, jmp * 4) : 0;
       const sy = 1 + br * 0.028 - sq * 0.2 + air * 0.08, sx = 1 - br * 0.014 + sq * 0.15 - air * 0.05;
       u.mesh.scale.set(sx, sy, 1); u.back.scale.set(sx, sy, 1); u.sy = sy; if (u.sq) u.sq = Math.max(0, u.sq - dl * 6); }
     /* 가루: 'dust'가 붙는 순간 그림을 픽셀 조각으로 바꿔 흩날리고, 'dusted'(이미 사라짐)면 감춘다 */
@@ -16023,6 +16501,12 @@ function stOverHTML(won) {
   /* 피격 불꽃: 2D 쪽 진영 요소와 칸 번호로 부른다 */
   window.A3BURST = function (boardEl, cell, tier) { if (!boards || !GM || mode !== 'duel') return; const b = [].indexOf.call(boards, boardEl); if (b < 0) return;
     burst(b, cell, 8 + tier * 8, [GM.K.wht, '#ffe08a', '#ffb347', '#ff5a4e'], 1.8 + tier * 0.7, 1.5 + tier * 0.3, 11); if (tier >= 2) burst(b, cell, 6 + tier * 3, [GM.K.ash, GM.K.gray], 0.9, 0.7, 9); };
+  /* 타격 충격파: 맞은 칸 바닥에서 고리가 퍼진다(중간 타격 1겹, 강타 2겹) */
+  window.A3RING = function (boardEl, cell, tier) { if (!active || !boards || mode !== 'duel' || still) return; const b = [].indexOf.call(boards, boardEl); if (b < 0) return;
+    const x = cellX(b, cell % 3) + boardG[b].position.x, z = cellZ(Math.floor(cell / 3)) + 0.1;
+    for (let n = 0; n < (tier >= 3 ? 2 : 1); n++) { const m = new T.Mesh(new T.RingGeometry(0.3, 0.42, 28), new T.MeshBasicMaterial({ color: n ? 0xffb347 : 0xffffff, transparent: true, opacity: 0.85, depthWrite: false, side: T.DoubleSide }));
+      m.rotation.x = -PI / 2; m.position.set(x, TY + 0.04 + n * 0.01, z); m.renderOrder = 8;
+      xAdd(m, function (t) { const u = (t - n * 0.07) / 0.42; if (u < 0) { m.visible = false; return true; } m.visible = true; const r = 0.4 + u * (tier >= 3 ? 1.9 : 1.3); m.scale.set(r, r, r); m.material.opacity = 0.85 * (1 - u); return u < 1; }); } };
   /* 잭팟 처형: 3D 동전을 쏟는다. 3D가 아니면 false */
   window.A3COINS = function (boardEl, cell) { if (!active || !boards || mode !== 'duel') return false; const b = [].indexOf.call(boards, boardEl); if (b < 0) return false; coinsGo(b, cell); return true; };
   /* 처형 이펙트용: 판 칸 위 높이 h(월드 단위) 지점의 화면 좌표. 3D가 아니면 null */
