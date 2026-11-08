@@ -6542,7 +6542,7 @@ if (false) module.exports = { lvOf, yangOf, shapeG, shapeN, hpBase, hpMaxOf, man
 
 /* ===== 효과음: 파일 없이 Web Audio로 합성한 8비트풍 소리 ===== */
 const SND = (() => {
-  let ac = null, master = null, nb = null, on = true, vol = 1, bgm = true, mg = null, mTimer = 0, mMode = 'off', mStep = 0, mNext = 0;
+  let ac = null, master = null, bus = null, rv = null, nb = null, on = true, vol = 1, bgm = true, mg = null, mTimer = 0, mMode = 'off', mStep = 0, mNext = 0;
   try { on = localStorage.getItem('ssd-snd') !== '0'; bgm = localStorage.getItem('ssd-bgm') !== '0'; const v = parseFloat(localStorage.getItem('ssd-vol')); if (v >= 0 && v <= 1) vol = v; } catch (e) { /* 저장소 없음 */ }
   function ctx() {
     if (!ac) {
@@ -6551,27 +6551,46 @@ const SND = (() => {
       mg = ac.createGain(); mg.gain.value = 0.55; mg.connect(master);
       nb = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
       const d = nb.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      /* 효과음 버스: 압축기로 큰 소리를 눌러 고르게 하고, 짧은 잔향을 조금 섞어 "방 안에서 나는 소리"처럼 만든다.
+         잔향은 지수로 줄어드는 잡음을 저역 통과시켜 직접 만든다(파일 없이) */
+      try { const cp = ac.createDynamicsCompressor(); cp.threshold.value = -16; cp.knee.value = 10; cp.ratio.value = 4; cp.attack.value = 0.004; cp.release.value = 0.18; cp.connect(master);
+        bus = ac.createGain(); bus.connect(cp);
+        const L = Math.floor(ac.sampleRate * 0.9), ir = ac.createBuffer(2, L, ac.sampleRate);
+        for (let c = 0; c < 2; c++) { const q = ir.getChannelData(c); let lp = 0; for (let i = 0; i < L; i++) { lp += (Math.random() * 2 - 1 - lp) * 0.32; q[i] = lp * Math.pow(1 - i / L, 3.2); } }
+        const cv = ac.createConvolver(); cv.buffer = ir; rv = ac.createGain(); rv.gain.value = 0.2; rv.connect(cv); cv.connect(cp);
+      } catch (e) { bus = master; rv = null; }
     }
     if (ac.state === 'suspended') ac.resume();
     return ac;
   }
   /* 음: f 시작 주파수, d 길이, o.to 끝 주파수, o.w 파형, o.v 음량, o.at 지연 */
+  /* 출력: 효과음은 버스로, 잔향(o.rv, 기본 1)과 좌우 위치(o.pan)를 붙인다 */
+  function out(a, node, o) { let n = node; if (o.pan && a.createStereoPanner) { const p = a.createStereoPanner(); p.pan.value = o.pan; n.connect(p); n = p; } n.connect(bus || master); if (rv && o.rv !== 0) { const s2 = a.createGain(); s2.gain.value = o.rv == null ? 1 : o.rv; n.connect(s2); s2.connect(rv); } }
+  /* 음: f 시작 주파수, d 길이, o.to 끝 주파수, o.w 파형, o.v 음량, o.at 지연.
+     o.a 올라오는 시간(딸깍 소리 방지), o.lp 저역 통과(사각·톱니파는 기본으로 깎아 삑 소리를 줄인다), o.q 공명, o.vib [깊이 Hz, 빠르기], o.det 살짝 어긋난 두 번째 음(센트) */
   function T(f, d, o) {
     const a = ctx(); if (!a) return; o = o || {};
-    const t = a.currentTime + (o.at || 0), os = a.createOscillator(), g = a.createGain();
-    os.type = o.w || 'square'; os.frequency.setValueAtTime(f, t);
+    const t = a.currentTime + (o.at || 0), os = a.createOscillator(), g = a.createGain(), w = o.w || 'square', v = o.v || 0.16, at0 = o.a == null ? 0.004 : o.a;
+    os.type = w; os.frequency.setValueAtTime(f, t);
     if (o.to) os.frequency.exponentialRampToValueAtTime(o.to, t + d);
-    g.gain.setValueAtTime(o.v || 0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
-    os.connect(g); g.connect(master); os.start(t); os.stop(t + d + 0.03);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(at0, d * 0.5)); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    let src = os, lpf = o.lp != null ? o.lp : (w === 'square' || w === 'sawtooth') ? Math.min(6000, Math.max(1400, f * 4)) : 0;
+    if (lpf) { const fl = a.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.setValueAtTime(lpf, t); if (o.lpTo) fl.frequency.exponentialRampToValueAtTime(o.lpTo, t + d); fl.Q.value = o.q || 0.7; os.connect(fl); src = fl; }
+    if (o.vib) { const lf = a.createOscillator(), lg = a.createGain(); lf.frequency.value = o.vib[1]; lg.gain.value = o.vib[0]; lf.connect(lg); lg.connect(os.frequency); lf.start(t); lf.stop(t + d + 0.03); }
+    if (o.det) { const o2 = a.createOscillator(); o2.type = w; o2.frequency.setValueAtTime(f, t); o2.detune.value = o.det; if (o.to) o2.frequency.exponentialRampToValueAtTime(o.to, t + d); o2.connect(lpf ? src : g); o2.start(t); o2.stop(t + d + 0.03); }
+    src.connect(g); out(a, g, o); os.start(t); os.stop(t + d + 0.03);
   }
   /* 잡음: d 길이, o.f 필터 주파수, o.to 끝 주파수, o.ft 필터 종류 */
+  /* o.q 필터 공명, o.pk 소리가 가장 커지는 지점(0~1, 휙 지나가는 바람 소리처럼 올라왔다 사라지게), o.a 올라오는 시간 */
   function N(d, o) {
     const a = ctx(); if (!a) return; o = o || {};
-    const t = a.currentTime + (o.at || 0), src = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain();
-    src.buffer = nb; src.loop = true; fl.type = o.ft || 'lowpass'; fl.frequency.setValueAtTime(o.f || 1800, t);
+    const t = a.currentTime + (o.at || 0), src = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain(), v = o.v || 0.22;
+    src.buffer = nb; src.loop = true; fl.type = o.ft || 'lowpass'; fl.frequency.setValueAtTime(o.f || 1800, t); if (o.q) fl.Q.value = o.q;
     if (o.to) fl.frequency.exponentialRampToValueAtTime(o.to, t + d);
-    g.gain.setValueAtTime(o.v || 0.22, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
-    src.connect(fl); fl.connect(g); g.connect(master); src.start(t, Math.random() * 0.5); src.stop(t + d + 0.03);
+    g.gain.setValueAtTime(0.0001, t);
+    if (o.pk) { g.gain.linearRampToValueAtTime(v, t + d * o.pk); g.gain.exponentialRampToValueAtTime(0.001, t + d); }
+    else { g.gain.linearRampToValueAtTime(v, t + (o.a == null ? 0.003 : o.a)); g.gain.exponentialRampToValueAtTime(0.001, t + d); }
+    src.connect(fl); fl.connect(g); out(a, g, o); src.start(t, Math.random() * 0.5); src.stop(t + d + 0.03);
   }
   const arp = (notes, step, d, o) => notes.forEach((f, i) => T(f, d, Object.assign({}, o, { at: (o && o.at || 0) + i * step })));
   const boom = (at, big) => { N(big ? 0.7 : 0.45, { f: 1400, to: 90, v: big ? 0.5 : 0.36, at }); T(big ? 130 : 160, big ? 0.5 : 0.3, { to: 40, w: 'sine', v: 0.4, at }); };
@@ -10825,7 +10844,7 @@ async function runReplay(old, neu) {
       else floatText(k, p.to, '무너뜨릴 칸이 없다', 'f-miss'); }
     if (p.bingo) { any = true; const bd = id && CARDS[id].t === 'atk' ? WIND + 520 : 0, bc = uniq(p.bingo.lines.flat()); fx(o, FX.bingoFx(bc), 1000, bd); later(() => { play('relicGood'); pulse(bEl(o), 'shake1', 350); pntDel(o, bc); }, bd + 120); floatText(o, p.bingo.lines[0][1], mE('완성! ', 'Complete! ') + p.bingo.lines.length + mE('줄', p.bingo.lines.length > 1 ? ' lines' : ' line'), 'f-big f-warn', bd + 100); }
     if (!id || CARDS[id].t !== 'atk') continue; any = true;
-    attackAnim(k, cls(k)); later(() => play(ATK_SND[id]), WIND); swung = true; FXD = WIND;
+    attackAnim(k, cls(k)); later(() => play(atkSnd(id)), WIND); swung = true; FXD = WIND;
     const rows = [...new Set(p.cells.map(R))], cols = [...new Set(p.cells.map(C))], rev = mine(o);
     if (id === 'fire' || id === 'meteor') { FXD = 0; fx(k, FX.castRing(p.to, id), 800); FXD = WIND; }
     if (id === 'fire') { fx(o, FX.mgCircle(p.cells, 'fire', true), 1000); fx(o, FX.mgMotes(p.cells, 'fire'), 1000); }
@@ -10966,7 +10985,7 @@ async function runReplay(old, neu) {
     await sleep(350);
     floatText(k, p.to, '앙코르!', 'f-big f-sp'); fx(k, FX.sparkle(p.to, K.mag), 600); pulse(uEl(k), 'puff', 500); play('encore');
     await sleep(600);
-    attackAnim(k, cls(k)); later(() => play(ATK_SND[id]), WIND); FXD = WIND;
+    attackAnim(k, cls(k)); later(() => play(atkSnd(id)), WIND); FXD = WIND;
     const c2 = p.cells2 || [];
     if (id === 'juggle') fx(o, FX.balls(c2, mine(o)), 800);
     else if (id === 'pie') fx(o, FX.pieFx(uniq(c2.map(R)), mine(o)), 750);
@@ -13453,6 +13472,186 @@ SND.kit.S.shuffle = () => { const K0 = SND.kit; [0, 0.07, 0.14, 0.21, 0.3].forEa
 SND.kit.S.bubble = () => { const K0 = SND.kit; [0, 0.06, 0.13, 0.19, 0.27].forEach((at, i) => K0.T(380 + i * 90, 0.07, { to: 620 + i * 120, w: 'sine', v: 0.12, at })); };
 SND.kit.S.whistle = () => { const K0 = SND.kit; K0.T(1568, 0.12, { to: 2093, w: 'sine', v: 0.1 }); K0.T(2093, 0.22, { to: 1760, w: 'sine', v: 0.09, at: 0.13 }); };
 SND.kit.S.glass = () => { const K0 = SND.kit; K0.N(0.06, { f: 6000, ft: 'highpass', v: 0.35 }); [2637, 3136, 2349].forEach((h, i) => K0.T(h, 0.12, { w: 'triangle', v: 0.07, at: 0.02 + i * 0.03 })); };
+/* --- 카드별 효과음: 비트음 대신 그 카드가 "무엇을 하는지"가 들리게. 재료 소리(H)를 섞어 만든다 ---
+   공격 카드는 'c_카드아이디' 소리가 있으면 그걸 쓰고(atkSnd), 없으면 예전처럼 ATK_SND의 공용 소리를 쓴다 */
+const SFXH = (() => {
+  const { T, N } = SND.kit, R = Math.random;
+  const H = {
+    /* 몸에 맞는 둔탁한 소리: 낮게 떨어지는 사인 + 짧은 저역 잡음 */
+    thud: (f = 90, v = 0.4, at = 0, d = 0.22) => { T(f * 1.7, d, { to: f * 0.5, w: 'sine', v, at, rv: 0.4 }); N(0.05, { f: 900, v: v * 0.55, at, rv: 0.3 }); },
+    /* 휙: 대역 잡음이 올라왔다 사라지며 주파수가 쓸려 간다 */
+    whoosh: (d = 0.25, f0 = 500, f1 = 3000, v = 0.3, at = 0, q = 1.2, pan) => N(d, { ft: 'bandpass', f: f0, to: f1, v, at, pk: 0.55, q, pan }),
+    /* 칼날 울림(쉬잉): 금속 배음 + 날카로운 첫소리 */
+    shing: (f = 2600, v = 0.07, at = 0, d = 0.45) => { [1, 2.32, 3.9].forEach((r, i) => T(f * r, d * (1 - i * 0.25), { w: 'sine', v: v / (i + 1), at, a: 0.001 })); N(0.03, { ft: 'highpass', f: 6000, v: v * 2.5, at }); },
+    /* 쇠를 치는 소리: 어울리지 않는 배음(종·모루) */
+    clang: (f = 420, v = 0.16, at = 0, d = 0.9) => { [1, 2.76, 5.4, 8.93].forEach((r, i) => T(f * r, d / (1 + i * 0.6), { w: 'sine', v: v / (1 + i * 0.8), at, a: 0.001 })); N(0.04, { ft: 'highpass', f: 3000, v: v * 1.8, at }); },
+    /* 나무를 두드리는 소리 */
+    wood: (f = 700, v = 0.25, at = 0) => { N(0.045, { ft: 'bandpass', f, q: 7, v: v * 1.4, at }); T(f, 0.07, { w: 'sine', v: v * 0.6, at, a: 0.001 }); T(f * 2.3, 0.04, { w: 'sine', v: v * 0.25, at, a: 0.001 }); },
+    /* 젤리·고무가 철퍽 */
+    squish: (v = 0.3, at = 0, d = 0.3) => { N(d, { f: 900, to: 180, v, at, q: 6 }); T(170, d, { to: 70, w: 'sine', v: v * 0.8, at, vib: [30, 18] }); },
+    bubble: (f = 400, v = 0.1, at = 0) => T(f, 0.09, { to: f * 2.2, w: 'sine', v, at, a: 0.006 }),
+    /* 줄을 퉁기는 소리: 톱니파를 저역 통과 필터가 빠르게 닫으며 */
+    pluck: (f, v = 0.14, at = 0, d = 0.6, pan) => { T(f, d, { w: 'sawtooth', lp: f * 7, lpTo: f * 1.1, v, at, a: 0.002, pan }); T(f * 2, d * 0.5, { w: 'triangle', v: v * 0.25, at, pan }); },
+    /* 타닥타닥 */
+    crackle: (d = 0.5, v = 0.12, at = 0, n = 12) => { for (let i = 0; i < n; i++) N(0.012 + R() * 0.01, { ft: 'highpass', f: 2000 + R() * 4000, v: v * (0.4 + R() * 0.6), at: at + R() * d, rv: 0.3 }); },
+    rumble: (d = 0.6, v = 0.35, at = 0) => { N(d, { f: 240, to: 60, v, at, a: 0.04 }); T(58, d, { to: 32, w: 'sine', v: v * 0.8, at, a: 0.02 }); },
+    /* 전기: 톱니파를 빠르게 흔들어(FM 비슷하게) 지직 */
+    zap: (f = 900, d = 0.2, v = 0.1, at = 0) => { T(f, d, { to: f * 0.25, w: 'sawtooth', vib: [f * 0.6, 55], v, at, lp: 5000 }); N(d * 0.6, { ft: 'highpass', f: 3000, v: v * 1.4, at }); },
+    glass: (v = 0.16, at = 0) => { [2637, 3520, 4186, 2960, 3951].forEach((f, i) => T(f * (0.97 + R() * 0.06), 0.12 + R() * 0.25, { w: 'sine', v: v * 0.5, at: at + i * 0.012, a: 0.001 })); N(0.08, { ft: 'highpass', f: 5000, v: v * 1.6, at }); },
+    hiss: (d = 0.4, v = 0.12, at = 0, f = 5000) => N(d, { ft: 'highpass', f, v, at, a: 0.03 }),
+    /* 휘이익: 공명이 높은 대역 잡음이 위에서 아래로(화살·날아가는 물건) */
+    whizz: (d = 0.22, v = 0.18, at = 0, f0 = 5000, f1 = 1600) => N(d, { ft: 'bandpass', f: f0, to: f1, q: 9, v, at, pk: 0.4 }),
+    /* 활시위 */
+    twang: (f = 196, v = 0.14, at = 0) => { T(f, 0.35, { w: 'triangle', to: f * 0.97, vib: [5, 32], v, at, a: 0.002 }); N(0.025, { ft: 'bandpass', f: 1800, q: 3, v: v * 1.4, at }); },
+    /* 맑은 종 */
+    chime: (f = 1319, v = 0.08, at = 0, d = 1.0, pan) => { T(f, d, { w: 'sine', v, at, a: 0.002, pan }); T(f * 2.01, d * 0.6, { w: 'sine', v: v * 0.4, at, pan }); T(f * 3.02, d * 0.35, { w: 'sine', v: v * 0.2, at, pan }); },
+    coin: (v = 0.08, at = 0) => { [3951, 5274, 6272].forEach((f, i) => T(f, 0.28 - i * 0.06, { w: 'sine', v: v / (i + 1), at, a: 0.001 })); },
+    gulp: (v = 0.3, at = 0) => { T(230, 0.2, { to: 85, w: 'sine', vib: [20, 12], v, at }); N(0.12, { f: 600, v: v * 0.5, at: at + 0.03 }); },
+    boing: (f = 180, v = 0.2, at = 0) => T(f, 0.36, { to: f * 2.6, w: 'sine', vib: [f * 0.18, 22], v, at }),
+    /* 젖은 것이 철썩 */
+    splat: (v = 0.3, at = 0) => { N(0.25, { f: 2600, to: 300, q: 2, v, at }); T(320, 0.12, { to: 80, w: 'sine', v: v * 0.6, at }); },
+    /* 모음처럼 울리는 소리(닭·늑대): 톱니파를 공명 필터로 */
+    voice: (f, d, o) => T(f, d, Object.assign({ w: 'sawtooth', lp: 1100, q: 7, v: 0.12 }, o)),
+    /* 물 */
+    water: (d = 0.4, v = 0.3, at = 0) => { N(d, { ft: 'bandpass', f: 1800, to: 500, q: 1.5, v, at, pk: 0.15 }); for (let i = 0; i < 5; i++) H.bubble(300 + R() * 500, v * 0.25, at + R() * d * 0.7); },
+    /* 바위가 부서지는 소리 */
+    crunch: (v = 0.3, at = 0, d = 0.35) => { N(d, { f: 1400, to: 300, v, at, q: 1.5 }); for (let i = 0; i < 6; i++) N(0.03, { ft: 'bandpass', f: 600 + R() * 1400, q: 4, v: v * 0.7, at: at + R() * d * 0.8 }); },
+    /* 흙: 낮은 잡음 알갱이 */
+    dirt: (v = 0.25, at = 0, d = 0.3) => { for (let i = 0; i < 9; i++) N(0.025, { f: 500 + R() * 900, v: v * (0.5 + R() * 0.5), at: at + R() * d }); },
+    /* 날갯짓 */
+    flap: (n = 3, v = 0.2, at = 0, gap = 0.09) => { for (let i = 0; i < n; i++) N(0.07, { f: 700, to: 300, v, at: at + i * gap, pk: 0.3 }); },
+  };
+  return H;
+})();
+/* 공격 카드 소리 이름: 카드 전용 소리가 있으면 그것 */
+const atkSnd = id => (SND.kit.S['c_' + id] ? 'c_' + id : ATK_SND[id]);
+{ const { T, N, arp } = SND.kit, H = SFXH, R = Math.random;
+  Object.assign(SND.kit.S, {
+    /* 마법사: 불꽃은 확 붙어 타닥, 번개는 지직 터지고 천둥, 폭발은 마력이 차오르다 터진다 */
+    c_fire: () => { H.whoosh(0.35, 300, 2200, 0.32, 0, 0.8); N(0.6, { f: 900, to: 300, v: 0.18, at: 0.08, a: 0.05 }); H.crackle(0.6, 0.12, 0.1); },
+    c_bolt: () => { H.zap(1600, 0.18, 0.12); N(0.06, { ft: 'highpass', f: 2500, v: 0.45 }); H.rumble(0.9, 0.3, 0.08); },
+    c_burst: () => { arp([523, 784, 1047, 1568], 0.035, 0.3, { w: 'sine', v: 0.06 }); N(0.5, { ft: 'bandpass', f: 400, to: 3000, v: 0.2, pk: 0.7 }); H.thud(70, 0.4, 0.22, 0.4); N(0.5, { f: 3000, to: 200, v: 0.25, at: 0.22 }); },
+    c_meteor: () => { N(0.6, { ft: 'bandpass', f: 4000, to: 400, q: 4, v: 0.18, pk: 0.8 }); H.thud(55, 0.5, 0.55, 0.6); H.crunch(0.3, 0.58); H.rumble(0.8, 0.25, 0.6); },
+    /* 사무라이: 칼을 휘두르는 바람 + 칼날 울림 */
+    c_hslash: () => { H.whoosh(0.22, 900, 6000, 0.32, 0, 2.2, -0.3); H.shing(2800, 0.06, 0.1); },
+    c_vslash: () => { H.whoosh(0.2, 6000, 900, 0.32, 0, 2.2); H.shing(2400, 0.06, 0.12); H.thud(110, 0.2, 0.16); },
+    c_thrust: () => { H.whoosh(0.12, 1500, 7000, 0.3, 0, 3); N(0.02, { ft: 'highpass', f: 5000, v: 0.3, at: 0.1 }); H.thud(140, 0.28, 0.1, 0.12); H.shing(3600, 0.04, 0.11, 0.3); },
+    c_dash: () => { for (let i = 0; i < 3; i++) N(0.04, { f: 700, v: 0.18, at: i * 0.06 }); H.whoosh(0.24, 900, 6000, 0.3, 0.16, 2); H.shing(2800, 0.05, 0.26); },
+    /* 정비공: 충전되는 고음이 쏘아지고, 감전망은 지지직 */
+    c_rail: () => { T(220, 0.35, { to: 1800, w: 'sawtooth', lp: 3000, v: 0.06, vib: [8, 30] }); H.zap(2400, 0.25, 0.12, 0.33); N(0.3, { f: 4000, to: 600, v: 0.25, at: 0.33 }); H.clang(900, 0.05, 0.35, 0.4); },
+    c_ring: () => { T(100, 0.6, { w: 'sawtooth', lp: 1800, q: 4, v: 0.08, vib: [40, 60] }); for (let i = 0; i < 5; i++) H.zap(800 + R() * 1600, 0.06, 0.07, R() * 0.5); },
+    /* 드루이드: 덩굴이 삐걱이며 채찍처럼, 포자는 퐁퐁, 늑대는 울부짖고 문다 */
+    c_vine: () => { T(140, 0.25, { to: 200, w: 'sawtooth', lp: 600, q: 8, v: 0.1 }); H.whoosh(0.16, 600, 5000, 0.25, 0.18, 3); N(0.03, { ft: 'highpass', f: 3000, v: 0.4, at: 0.32 }); },
+    c_spore: () => { for (let i = 0; i < 5; i++) { N(0.12, { f: 1600, to: 500, v: 0.14, at: i * 0.07, pk: 0.3 }); H.bubble(500 + i * 60, 0.06, i * 0.07 + 0.02); } H.hiss(0.5, 0.05, 0.2, 6000); },
+    c_wolves: () => { H.voice(330, 0.55, { to: 520, v: 0.08, vib: [6, 6], a: 0.12 }); H.voice(300, 0.5, { to: 470, v: 0.06, at: 0.08, a: 0.12 }); [0.5, 0.62, 0.74].forEach(a => { N(0.06, { f: 1200, v: 0.3, at: a }); T(120, 0.08, { to: 60, w: 'sawtooth', lp: 500, v: 0.12, at: a }); }); },
+    /* 슬라임: 젤리 철퍽, 튀어오르면 띠용, 삼키면 꿀꺽 */
+    c_slam: () => { H.whoosh(0.2, 1200, 300, 0.12); H.squish(0.35, 0.22); H.thud(80, 0.3, 0.22); },
+    c_bounce: () => { H.boing(160, 0.18); H.squish(0.32, 0.3); H.thud(80, 0.28, 0.3); },
+    c_engulf: () => { T(110, 0.25, { to: 220, w: 'sine', v: 0.25, vib: [15, 9] }); H.squish(0.35, 0.25, 0.25); H.gulp(0.3, 0.6); [0.85, 0.95, 1.05].forEach((a, i) => H.bubble(300 + i * 120, 0.08, a)); },
+    /* 고고학자: 삽이 흙에 박히고 퍼 올리면 유물이 짤랑 */
+    c_shovel: () => { H.whoosh(0.18, 600, 2500, 0.26); N(0.05, { ft: 'bandpass', f: 1800, q: 3, v: 0.5, at: 0.18 }); H.thud(120, 0.3, 0.18, 0.15); H.dirt(0.5, 0.2, 0.3); H.coin(0.08, 0.55); },
+    /* 주술사: 회오리 바람 */
+    c_tornado: () => { N(1.2, { ft: 'bandpass', f: 300, to: 1600, q: 5, v: 0.28, pk: 0.5, vib: 0 }); N(1.0, { ft: 'bandpass', f: 900, to: 400, q: 8, v: 0.12, at: 0.15, pk: 0.4 }); H.rumble(0.9, 0.15, 0.1); },
+    /* 듀라한: 무거운 대검이 바람을 가르고 땅을 친다. 머리는 유령처럼 날아가 투구가 쾅 */
+    c_sweep: () => { H.whoosh(0.45, 200, 1600, 0.4, 0, 1.4); H.thud(60, 0.45, 0.38, 0.5); H.crunch(0.3, 0.4); H.clang(220, 0.06, 0.38, 0.6); },
+    c_cleave: () => { H.whoosh(0.35, 1600, 200, 0.38, 0.05, 1.4); H.thud(50, 0.55, 0.38, 0.6); H.crunch(0.35, 0.4, 0.5); H.rumble(0.8, 0.25, 0.42); },
+    c_head: () => { T(600, 0.5, { to: 300, w: 'sine', v: 0.06, vib: [12, 7] }); H.whoosh(0.4, 400, 1800, 0.2, 0, 2); H.clang(380, 0.12, 0.38, 0.5); H.thud(90, 0.3, 0.38); },
+    /* 석고상: 돌 원반이 웅웅 돌다 쿵, 시선은 으스스하게 돌이 굳고, 조각이 무너진다 */
+    c_discus: () => { T(140, 0.5, { w: 'sawtooth', lp: 500, v: 0.08, vib: [20, 16] }); H.whoosh(0.5, 400, 900, 0.15, 0, 2); H.thud(100, 0.35, 0.48); H.crunch(0.2, 0.5, 0.2); },
+    c_gaze: () => { T(880, 0.7, { w: 'sine', v: 0.05, vib: [10, 5], a: 0.15 }); T(1320, 0.6, { w: 'sine', v: 0.03, at: 0.1, a: 0.15 }); H.crunch(0.18, 0.4, 0.5); N(0.5, { f: 400, v: 0.15, at: 0.4 }); },
+    c_topple: () => { H.crunch(0.35, 0, 0.6); H.rumble(0.9, 0.3, 0.1); for (let i = 0; i < 4; i++) H.thud(90 + R() * 50, 0.25, 0.15 + i * 0.12); },
+    /* 천문학자: 별이 반짝이며 떨어지고, 초신성은 부풀다 터지고, 혜성은 휘파람처럼 떨어져 쾅, 블랙홀은 빨려 들어간다 */
+    c_star: () => { arp([2093, 2637, 3136], 0.05, 0.5, { w: 'sine', v: 0.05 }); H.whizz(0.3, 0.1, 0.05, 6000, 2000); H.thud(120, 0.25, 0.32); H.chime(1568, 0.05, 0.34, 0.8); },
+    c_nova: () => { N(0.6, { ft: 'bandpass', f: 200, to: 3000, v: 0.2, pk: 0.9 }); T(110, 0.6, { to: 440, w: 'sine', v: 0.12, a: 0.4 }); H.thud(50, 0.5, 0.55, 0.6); N(0.8, { f: 5000, to: 300, v: 0.3, at: 0.55 }); arp([1568, 2093, 2637, 3136], 0.06, 0.6, { w: 'sine', v: 0.04, at: 0.6 }); },
+    c_comet: () => { N(0.55, { ft: 'bandpass', f: 6000, to: 700, q: 6, v: 0.2, pk: 0.7 }); T(1800, 0.55, { to: 400, w: 'sine', v: 0.04 }); H.thud(55, 0.5, 0.52, 0.6); H.crunch(0.25, 0.54); H.crackle(0.5, 0.08, 0.55); },
+    c_blackhole: () => { T(40, 1.0, { to: 90, w: 'sine', v: 0.4, a: 0.5 }); N(0.9, { ft: 'bandpass', f: 3000, to: 150, q: 3, v: 0.25, pk: 0.85 }); H.thud(45, 0.5, 0.9, 0.5); },
+    /* 광대: 저글링은 통통 공, 흉내는 뿅, 파이는 휙 철퍽 */
+    c_juggle: () => { [0, 0.12, 0.24].forEach((a, i) => H.wood(900 + i * 150, 0.22, a)); T(500, 0.4, { to: 1400, w: 'sine', v: 0.06, at: 0.05 }); H.boing(220, 0.12, 0.36); },
+    c_mimic: () => { T(400, 0.12, { to: 800, w: 'square', lp: 1500, v: 0.08 }); H.boing(200, 0.15, 0.1); T(220, 0.25, { w: 'sawtooth', lp: 900, q: 5, v: 0.1, at: 0.3 }); N(0.15, { f: 3000, to: 600, v: 0.2, at: 0.32 }); },
+    c_pie: () => { H.whoosh(0.25, 800, 2500, 0.2); H.splat(0.4, 0.24); H.bubble(500, 0.06, 0.4); },
+    /* 풍선: 바람이 쉭, 펑, 헬륨은 고무가 끽끽 늘어난다 */
+    c_jet: () => { H.hiss(0.5, 0.2, 0, 2500); N(0.5, { ft: 'bandpass', f: 1200, to: 2400, q: 2, v: 0.12 }); },
+    c_pop: () => { T(500, 0.15, { to: 1500, w: 'sine', v: 0.05, vib: [40, 30] }); N(0.08, { f: 4000, v: 0.55, at: 0.15 }); H.thud(140, 0.25, 0.15, 0.12); },
+    c_helium: () => { T(300, 0.5, { to: 900, w: 'sawtooth', lp: 1400, q: 9, v: 0.06, vib: [25, 14] }); H.hiss(0.3, 0.08, 0.1, 4000); H.boing(400, 0.08, 0.45); },
+    /* 도박사: 주사위가 나무 위를 굴러 멈추고, 동전은 띵 돌다 짤랑, 룰렛 공은 점점 느려지고, 올인은 칩이 와르르 */
+    c_dice: () => { [0, 0.07, 0.15, 0.21, 0.3, 0.36].forEach((a, i) => H.wood(1400 + R() * 600, 0.18 - i * 0.02, a)); H.wood(900, 0.2, 0.46); },
+    c_coin: () => { T(2600, 0.5, { w: 'sine', v: 0.04, vib: [60, 14] }); H.coin(0.08, 0.05); H.coin(0.07, 0.5); },
+    c_roulette: () => { let a = 0; for (let i = 0; i < 12; i++) { H.wood(2200 + R() * 400, 0.1, a); a += 0.03 + i * 0.008; } H.wood(1200, 0.2, a + 0.05); H.coin(0.04, a + 0.06); },
+    c_allin: () => { for (let i = 0; i < 14; i++) H.wood(1800 + R() * 1400, 0.12, i * 0.025 + R() * 0.02); arp([1047, 1319, 1568, 2093], 0.07, 0.6, { w: 'triangle', v: 0.07, at: 0.38 }); H.chime(2093, 0.06, 0.62, 1.2); },
+    /* 대장장이: 모루에 망치(챙), 달군 쇠꼬챙이는 치이익, 걸작은 큰 망치와 긴 울림 */
+    c_hammer: () => { H.whoosh(0.18, 300, 1200, 0.18); H.clang(500, 0.2, 0.2, 1.1); H.hiss(0.4, 0.06, 0.25, 4000); },
+    c_skewer: () => { H.hiss(0.6, 0.16, 0, 3000); N(0.05, { ft: 'bandpass', f: 1500, q: 3, v: 0.3 }); H.clang(700, 0.08, 0.02, 0.5); },
+    c_opus: () => { H.whoosh(0.4, 200, 1000, 0.25); H.clang(280, 0.28, 0.38, 1.8); H.thud(45, 0.55, 0.38, 0.7); H.rumble(1.0, 0.2, 0.4); },
+    /* 음유시인: 류트를 퉁기고, 화음은 쓸어 내리고, 점점 크게는 쓸어 올린다 */
+    c_note: () => { H.pluck(392, 0.16); H.pluck(587, 0.12, 0.12); },
+    c_chord: () => { [262, 330, 392, 523].forEach((f, i) => H.pluck(f, 0.12, i * 0.025, 0.9, -0.3 + i * 0.2)); },
+    c_cresc: () => { [196, 247, 294, 392, 494, 587].forEach((f, i) => H.pluck(f, 0.06 + i * 0.02, i * 0.06, 0.8, -0.4 + i * 0.16)); },
+    /* 음양사: 부적이 펄럭이고 방울, 식신은 종이 새가 날아가고, 태극은 깊은 징 */
+    c_talis: () => { H.flap(2, 0.12, 0, 0.06); H.chime(1760, 0.07, 0.12, 0.7); H.chime(2349, 0.04, 0.16, 0.5); },
+    c_shiki: () => { H.flap(4, 0.28, 0, 0.07); H.whoosh(0.3, 800, 3000, 0.22, 0.1, 2); H.chime(1976, 0.08, 0.36, 0.6); },
+    c_taiji: () => { T(98, 1.6, { w: 'sine', v: 0.3, a: 0.01, vib: [1.5, 4] }); T(196.5, 1.3, { w: 'sine', v: 0.12 }); T(294, 1.0, { w: 'sine', v: 0.06 }); N(0.08, { f: 800, v: 0.3 }); },
+    /* 닭: 부리로 톡톡, 날갯짓 푸드덕, 꼬끼오 */
+    c_peck: () => { H.wood(1600, 0.25); H.wood(1500, 0.2, 0.12); H.voice(620, 0.12, { to: 480, at: 0.18, lp: 1600, v: 0.09 }); },
+    c_flap: () => { H.flap(5, 0.25, 0, 0.07); H.voice(700, 0.1, { to: 540, at: 0.3, lp: 1700, v: 0.08 }); },
+    c_crow: () => { H.voice(520, 0.12, { to: 700, lp: 1800, v: 0.1 }); H.voice(700, 0.12, { at: 0.13, lp: 1900, v: 0.1 }); H.voice(780, 0.42, { to: 520, at: 0.27, lp: 2000, v: 0.11, vib: [10, 9] }); },
+    /* 인어: 작살과 삼지창은 물을 가르고, 해일은 크게 밀려온다 */
+    c_prong: () => { H.whoosh(0.15, 1200, 5000, 0.25, 0, 2.5); H.thud(130, 0.25, 0.13); H.water(0.35, 0.22, 0.12); },
+    c_harpoon: () => { H.whizz(0.3, 0.16, 0, 3000, 1200); T(300, 0.3, { to: 200, w: 'sawtooth', lp: 900, v: 0.04 }); H.thud(110, 0.32, 0.28); H.water(0.4, 0.2, 0.28); },
+    c_wave: () => { N(1.0, { ft: 'bandpass', f: 300, to: 1400, q: 0.8, v: 0.35, pk: 0.45 }); H.water(0.8, 0.25, 0.35); H.rumble(0.8, 0.2, 0.2); },
+    /* 허수아비: 낫이 쉬익 금속 울림, 부메랑 낫은 붕붕 돌아온다, 갈고리는 걸리며 철컥 */
+    c_sickG: () => { H.whoosh(0.25, 700, 5000, 0.28, 0, 2.5); H.shing(1900, 0.06, 0.18, 0.5); },
+    c_sickN: () => { H.whoosh(0.25, 5000, 700, 0.28, 0, 2.5); H.shing(2100, 0.06, 0.18, 0.5); },
+    c_boomer: () => { for (let i = 0; i < 5; i++) N(0.09, { ft: 'bandpass', f: 1000, q: 3, v: 0.18 - Math.abs(i - 2) * 0.03, at: i * 0.1, pk: 0.5 }); H.shing(2200, 0.05, 0.25); },
+    c_hookS: () => { H.whoosh(0.2, 800, 3000, 0.22); H.clang(1300, 0.07, 0.2, 0.4); T(180, 0.2, { to: 120, w: 'sawtooth', lp: 700, q: 4, v: 0.08, at: 0.28 }); },
+    /* 흡혈귀: 송곳니로 콱 물고 후릅, 피의 창은 축축한 쉬잉, 박쥐 떼는 찍찍 퍼덕, 만찬은 어둡게 차오르는 심장 소리 */
+    c_bite: () => { N(0.05, { f: 2500, v: 0.4 }); H.thud(150, 0.3, 0.02); N(0.35, { ft: 'bandpass', f: 600, to: 1200, q: 4, v: 0.12, at: 0.12, pk: 0.5 }); },
+    c_bspear: () => { H.whoosh(0.18, 1200, 5000, 0.25, 0, 2); H.shing(1600, 0.05, 0.14); H.splat(0.2, 0.16); },
+    c_bats: () => { H.flap(6, 0.32, 0, 0.05); for (let i = 0; i < 5; i++) T(5200 + R() * 1800, 0.05, { to: 4000, w: 'sine', v: 0.06, at: R() * 0.4 }); },
+    c_feast: () => { T(55, 0.8, { w: 'sine', v: 0.3, a: 0.3 }); [0.1, 0.3, 0.6, 0.8].forEach(a => H.thud(60, 0.28, a, 0.14)); N(0.6, { ft: 'bandpass', f: 500, to: 1100, q: 3, v: 0.1, at: 0.2, pk: 0.6 }); },
+    /* 사냥꾼: 활시위 퉁 + 화살 휘익 + 박힘, 질주는 발소리와 베기, 일제 사격은 여러 발 */
+    c_arrow: () => { H.twang(196, 0.14); H.whizz(0.2, 0.16, 0.05); H.wood(500, 0.22, 0.25); },
+    c_drive: () => { for (let i = 0; i < 4; i++) N(0.04, { f: 700, v: 0.18, at: i * 0.055 }); H.whoosh(0.22, 900, 5000, 0.26, 0.2, 2); },
+    c_volley: () => { [0, 0.06, 0.12].forEach(a => H.twang(180 + R() * 40, 0.08, a)); for (let i = 0; i < 6; i++) { H.whizz(0.18, 0.06, 0.15 + i * 0.05, 6000, 2000); H.wood(450 + R() * 200, 0.12, 0.33 + i * 0.05); } },
+    /* 무덤지기: 곡괭이가 돌을 쪼고, 도깨비불은 흐느끼며 타오르고, 땅속 손이 뼈를 덜그럭 */
+    c_pickaxe: () => { H.whoosh(0.16, 500, 2000, 0.16); H.clang(1100, 0.1, 0.16, 0.35); H.crunch(0.2, 0.17, 0.25); },
+    c_wisp: () => { T(500, 0.7, { to: 380, w: 'sine', v: 0.12, vib: [14, 5], a: 0.1 }); T(760, 0.6, { to: 560, w: 'sine', v: 0.06, vib: [10, 6], a: 0.1 }); H.whoosh(0.5, 300, 1500, 0.22, 0.1, 1); },
+    c_ghand: () => { H.rumble(0.6, 0.25); for (let i = 0; i < 6; i++) H.wood(1200 + R() * 900, 0.12, 0.25 + i * 0.04); },
+    /* 거울: 유리가 쩍 갈라지고, 쌍둥이는 좌우로 울리고, 만화경은 반짝이는 유리 조각 */
+    c_shard: () => { N(0.03, { ft: 'highpass', f: 4000, v: 0.4 }); H.glass(0.18, 0.02); },
+    c_twin: () => { H.chime(1568, 0.07, 0, 0.8, -0.6); H.chime(1568, 0.07, 0.08, 0.8, 0.6); H.glass(0.08, 0.15); },
+    c_kaleido: () => { for (let i = 0; i < 8; i++) H.chime(1760 + i * 220 + R() * 100, 0.035, i * 0.05, 0.6, R() * 1.6 - 0.8); H.glass(0.12, 0.4); },
+    /* 시계공: 째깍 + 찌름, 분침·시침은 톱니가 드르륵 + 땡, 종은 큰 시계종 */
+    c_tick: () => { H.wood(2400, 0.15); H.wood(1800, 0.12, 0.12); H.whoosh(0.1, 2000, 6000, 0.2, 0.2, 3); H.thud(150, 0.2, 0.28); },
+    c_minute: () => { for (let i = 0; i < 6; i++) H.wood(2000 + (i % 2) * 300, 0.18, i * 0.04); H.chime(1175, 0.1, 0.28, 0.7); },
+    c_hour: () => { for (let i = 0; i < 8; i++) H.wood(1500 + (i % 2) * 250, 0.12, i * 0.045); H.chime(784, 0.08, 0.38, 1.0); },
+    c_bell: () => { H.clang(330, 0.2, 0, 2.0); H.chime(660, 0.05, 0.01, 1.4); },
+    /* 격투가: 주먹이 바람을 가르고 퍽 */
+    c_jab: () => { H.whoosh(0.08, 1500, 4000, 0.2, 0, 2); H.thud(160, 0.35, 0.07, 0.12); },
+    c_straight: () => { H.whoosh(0.12, 900, 4000, 0.26, 0, 2); H.thud(110, 0.45, 0.11, 0.18); N(0.06, { f: 2500, v: 0.25, at: 0.11 }); },
+    c_upper: () => { H.whoosh(0.22, 400, 5000, 0.28, 0, 1.5); H.thud(90, 0.5, 0.2, 0.25); N(0.08, { f: 2000, v: 0.3, at: 0.2 }); },
+    c_kick: () => { H.whoosh(0.2, 600, 2500, 0.26, 0, 1.4); H.thud(80, 0.48, 0.18, 0.22); },
+    /* 잔디깎이: 엔진이 붕 돌며 풀이 잘리고, 자갈은 튕겨 나간다 */
+    c_blade: () => { T(70, 0.6, { to: 110, w: 'sawtooth', lp: 700, q: 3, v: 0.12, vib: [8, 28] }); N(0.5, { ft: 'bandpass', f: 3000, q: 1.5, v: 0.12, at: 0.1, pk: 0.3 }); H.crackle(0.4, 0.08, 0.15, 16); },
+    c_pebble: () => { H.wood(2600, 0.2); H.whizz(0.2, 0.1, 0.03, 4000, 2500); H.wood(2100, 0.2, 0.24); },
+    /* 바니걸: 쟁반이 쨍, 하이힐 또각 + 발차기, 쇼는 반짝이와 짠 */
+    c_tray: () => { H.whoosh(0.15, 800, 2500, 0.15); H.clang(900, 0.14, 0.14, 0.6); },
+    c_heel: () => { H.wood(2800, 0.2); H.wood(2600, 0.18, 0.12); H.whoosh(0.15, 800, 3000, 0.22, 0.18); H.thud(130, 0.3, 0.32); },
+    c_show: () => { for (let i = 0; i < 7; i++) H.chime(2093 + R() * 1500, 0.03, R() * 0.4, 0.5, R() * 1.4 - 0.7); arp([523, 659, 784, 1047], 0.06, 0.4, { w: 'triangle', v: 0.07, at: 0.3 }); },
+    /* 연금술사: 산성은 치이익 보글, 플라스크는 깨지며 쉬익, 현자의 돌은 신비로운 울림 */
+    c_acid: () => { H.hiss(0.7, 0.14, 0, 3500); for (let i = 0; i < 7; i++) H.bubble(250 + R() * 400, 0.07, R() * 0.6); },
+    c_flask: () => { H.whoosh(0.2, 700, 2500, 0.15); H.glass(0.16, 0.2); H.hiss(0.5, 0.1, 0.25, 3000); },
+    c_philo: () => { T(220, 1.0, { w: 'sine', v: 0.1, a: 0.3, vib: [3, 5] }); arp([880, 1109, 1319, 1760], 0.08, 0.8, { w: 'sine', v: 0.05, at: 0.2 }); H.chime(2637, 0.04, 0.55, 0.9); },
+    /* 화가: 붓이 쓱, 물감이 철벅, 롤러가 데굴, 매그넘은 액자가 쾅 하고 반짝 */
+    c_brush: () => { N(0.3, { ft: 'bandpass', f: 2000, to: 3500, q: 1.5, v: 0.18, pk: 0.4 }); H.splat(0.15, 0.25); },
+    c_splash: () => { H.splat(0.35); for (let i = 0; i < 4; i++) H.splat(0.12, 0.08 + i * 0.05); },
+    c_roller: () => { N(0.6, { f: 500, v: 0.18, a: 0.05 }); for (let i = 0; i < 8; i++) N(0.04, { f: 900, q: 3, v: 0.08, at: i * 0.07 }); H.squish(0.15, 0.5, 0.2); },
+    c_magnum: () => { H.thud(90, 0.4, 0, 0.25); H.wood(500, 0.3); arp([1047, 1319, 1568, 2093], 0.05, 0.5, { w: 'sine', v: 0.05, at: 0.15 }); },
+    /* 매조련사: 지팡이 휙 딱, 매가 날개를 치며 맴돌고, 급강하는 매 울음과 함께 내리꽂힌다 */
+    c_staff: () => { H.whoosh(0.2, 500, 2000, 0.22); H.wood(600, 0.3, 0.18); },
+    c_encircle: () => { H.flap(6, 0.32, 0, 0.08); T(2400, 0.4, { to: 1800, w: 'sawtooth', lp: 3500, q: 4, v: 0.08, at: 0.2, vib: [60, 20] }); },
+    c_stoop: () => { T(2600, 0.35, { to: 1900, w: 'sawtooth', lp: 3800, q: 4, v: 0.05, vib: [80, 22] }); H.whoosh(0.35, 3000, 500, 0.3, 0.1, 2); H.thud(90, 0.45, 0.42, 0.3); },
+  });
+}
 
 /* 승리 대사 */
 const WINL = {
