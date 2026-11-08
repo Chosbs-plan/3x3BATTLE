@@ -6976,6 +6976,78 @@ function PeerDB(myId, note) {
   };
 }
 
+
+/* ===== 서버 대전 저장소 =====
+   PeerDB와 같은 모양(doc().set/get/update/onSnapshot). 방 상태는 서버(duel.sql)에 있고, 판정과 결과는 엣지 함수 duel이 한다.
+   그래서 방장 브라우저가 판정하지 않고, 누가 새로고침하거나 앱을 껐다 켜도 같은 방으로 돌아온다(duel_mine).
+   읽기는 duel_poll을 짧게 되풀이해 바뀐 판본(ver)만 받는다. 제한 시간이 지나면(due) tick을 불러 서버가 판정하게 한다 */
+function ServerDB(note) {
+  let code = null, ver = 0, cur = null, subs = [], timer = 0, fails = 0, tickAt = 0, oppOff = false, gen = 0;
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const snap = () => ({ exists: !!cur, data: () => clone(cur) });
+  const fire = () => { const s = snap(); subs.slice().forEach(cb => { try { cb(s); } catch (e) { console.error(e); } }); };
+  async function fn(op, args) {
+    await authFresh();
+    let r; try { r = await fetch(SB_URL + '/functions/v1/duel', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + AUTH.tok.access_token, 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ op }, args)) }); }
+    catch (e) { const er = new Error('net'); er.net = true; throw er; }
+    const j = await r.json().catch(() => null);
+    if (!r.ok || !j || !j.ok) { const er = new Error((j && j.error) || String(r.status)); er.status = r.status; throw er; }
+    return j;
+  }
+  const take = j => { if (j && j.doc && j.ver >= ver) { ver = j.ver; cur = j.doc; fire(); } };
+  async function poll(g) {
+    if (g !== gen || !code) return;
+    let wait = document.hidden ? 2500 : 800;
+    try {
+      const r = await rpc('duel_poll', { p_code: code, p_ver: ver });
+      if (g !== gen) return;
+      if (fails >= 3) note('back'); fails = 0;
+      if (r.gone || (r.doc && r.doc.closed)) { if (r.doc) { cur = r.doc; ver = r.ver; } stop(); note('bye'); return; }
+      if (r.doc) { ver = r.ver; cur = r.doc; fire(); }
+      /* 상대가 판 중에 20초 넘게 안 보이면 알리고, 돌아오면 다시 알린다 */
+      const play = cur && cur.phase === 'play', off = play && r.opp > 20;
+      if (off && !oppOff) note('opp-off'); else if (!off && oppOff && play) note('peer-on'); oppOff = off;
+      if (r.due && Date.now() - tickAt > 3000) { tickAt = Date.now(); fn('tick', { code }).then(take).catch(() => {}); }
+    } catch (e) { if (g !== gen) return; if (++fails === 3) note('lost'); wait = Math.min(8000, 1000 * fails); }
+    timer = setTimeout(() => poll(g), wait);
+  }
+  function stop() { gen++; clearTimeout(timer); timer = 0; }
+  function close() { stop(); code = null; cur = null; ver = 0; subs = []; oppOff = false; fails = 0; }
+  return {
+    srv: true, p2p: false,
+    close,
+    /* 나가기: 판 중이면 서버가 기권으로 처리한다 */
+    leave() { const c = code; close(); if (c) return fn('leave', { code: c }).catch(() => {}); return Promise.resolve(); },
+    /* 다시 들어올 방: 아직 끝나지 않은 내 방 */
+    mine() { return rpc('duel_mine').then(r => (r && r.code ? r.code : null)).catch(() => null); },
+    doc(path) {
+      const c = path.split('/').pop();
+      return {
+        async set(data) { close(); const j = await fn('create', { code: c, mm: !!data.mm, mode: data.mode }); code = j.doc ? c : null; ver = j.ver; cur = j.doc; },
+        async get() {
+          if (code === c && cur) return snap();
+          close();
+          try { const j = await fn('join', { code: c }); code = c; ver = j.ver; cur = j.doc; return snap(); }
+          catch (e) { if (e.status === 404) return { exists: false, data: () => null }; if (e.message === 'full') return { exists: true, data: () => ({ seats: { a: 'x', b: 'y' } }) }; throw e; }
+        },
+        async update(patch) { if (!code) throw new Error('closed'); take(await fn('update', { code, patch })); },
+        onSnapshot(cb) { subs.push(cb); if (cur) Promise.resolve().then(() => { if (subs.includes(cb) && cur) cb(snap()); }); stop(); const g = gen; timer = setTimeout(() => poll(g), 300); return () => { subs = subs.filter(x => x !== cb); }; }
+      };
+    }
+  };
+}
+
+
+/* 로그인했고 서버 대전(duel.sql)이 있으면 서버 방을 쓴다. 끝나지 않은 내 방이 있으면 그리로 돌아간다(다시 들어오기) */
+async function duelInit() {
+  if (duelInit.done || !AUTH.user || typeof ServerDB !== 'function') return; duelInit.done = true;
+  let mine;
+  try { mine = await rpc('duel_mine'); } catch (e) { if (!e.net) return; duelInit.done = false; return; }   /* 서버 대전 표가 아직 없으면 예전처럼 P2P */
+  if (doc && !local && p2p()) return;   /* 이미 P2P 방에 있으면 그대로 */
+  if (p2p()) { try { db.close(); } catch (e) { /* 무시 */ } }
+  db = ServerDB(netNote); me = AUTH.user;
+  if (mine && mine.code && !doc) { menuSt = 'main'; const ok = await joinRoom(mine.code, true); if (ok) toast(mE('진행 중이던 대전으로 돌아왔습니다', 'Rejoined your match in progress')); }
+}
 /* ===== 화면과 동기화 ===== */
 const app = document.getElementById('app'), toastEl = document.getElementById('toast');
 const TURN_MS = 45000;
@@ -7111,7 +7183,7 @@ async function createRoom(fixed, mmMode) {
   for (let n = 0; n < (fixed ? 1 : 5); n++) {
     const c = fixed || Array.from({ length: 4 }, () => pick([...A])).join(''), d0 = freshDoc(me); if (fixed) { d0.mm = true; d0.mode = mmMode || 'single'; }   /* 랜덤 매칭 방: 대기실을 건너뛰고 바로 시작 */
     try { await db.doc('rooms/' + c).set(d0); }
-    catch (e) { if (p2p() && e && e.type === 'unavailable-id' && !fixed) continue; busy = false; return toast(p2p() ? '중계 서버에 연결하지 못했습니다. 네트워크를 확인하고 다시 시도하세요' : '방을 만들지 못했습니다. 이 페이지에 쓰기 권한이 필요합니다', 4000); }
+    catch (e) { if (!fixed && e && ((p2p() && e.type === 'unavailable-id') || (db.srv && e.message === 'taken'))) continue; busy = false; return toast(p2p() ? '중계 서버에 연결하지 못했습니다. 네트워크를 확인하고 다시 시도하세요' : '방을 만들지 못했습니다. 이 페이지에 쓰기 권한이 필요합니다', 4000); }
     busy = false; if (p2p()) toastEl.hidden = true;
     enter(c); return true;
   }
@@ -7139,17 +7211,18 @@ function netNote(k) {
   if (k === 'lost') toast('연결이 끊겼습니다. 다시 연결하는 중입니다', 120000);
   else if (k === 'back') toast('다시 연결했습니다');
   else if (k === 'dead') { leave(); toast('방장과 다시 연결하지 못했습니다. 방에서 나왔습니다', 6000); }
-  else if (k === 'bye') { leave(); toast('방장이 방을 닫았습니다', 5000); }
+  else if (k === 'bye') { const gm = G; if (db && db.srv && doc && doc.phase === 'over') return; leave(); toast(db && db.srv ? mE('방이 닫혔습니다', 'The room was closed') : '방장이 방을 닫았습니다', 5000); }
   else if (k === 'peer-off') toast('상대의 연결이 끊겼습니다. 다시 들어오기를 기다립니다', 6000);
   else if (k === 'peer-on') toast('상대가 다시 연결했습니다');
   else if (k === 'peer-left') toast('상대가 방을 나갔습니다', 4000);
+  else if (k === 'opp-off') toast(mE('상대의 연결이 끊겼습니다. 90초 안에 돌아오지 않으면 기권으로 처리됩니다', 'Opponent disconnected. They forfeit if not back within 90 seconds'), 8000);
 }
 function enter(c) {
   emSeen = null; code = c; ref = db.doc('rooms/' + c);
   unsub = ref.onSnapshot(s => { doc = s.exists ? s.data() : null; onDoc(); }, () => { if (!p2p()) toast('연결이 끊겼습니다. 새로고침 후 같은 코드로 다시 입장하세요'); });
 }
 function startLocal() { emSeen = null; local = true; code = '연습'; me = me || 'me'; doc = freshDoc(me); doc.seats.b = 'bot'; doc.ready.b = true; onDoc(); }
-function leave() { run = null; busy = false; if (!local && p2p()) db.close(); if (unsub) unsub(); unsub = null; ref = null; doc = null; code = null; local = false; G = null; gameStr = ''; curTag = ''; locked = null; replaying = false; render(); }
+function leave() { run = null; busy = false; if (!local && p2p()) db.close(); if (!local && db && db.srv && code) db.leave(); if (unsub) unsub(); unsub = null; ref = null; doc = null; code = null; local = false; G = null; gameStr = ''; curTag = ''; locked = null; replaying = false; render(); }
 
 function onDoc() {
   if (!doc) return render();
@@ -7158,7 +7231,7 @@ function onDoc() {
     if (!doc.ready[seat] && onDoc.mmR !== code + seat) { onDoc.mmR = code + seat; W({ ready: { [seat]: true } }); }
     else if (seat === 'a' && doc.seats.b && doc.ready.a && doc.ready.b && onDoc.mmS !== code) { onDoc.mmS = code; W({ phase: doc.mode === 'ban' ? 'ban' : 'select', mode: doc.mode || 'single', pick: { a: null, b: null }, ban: { a: null, b: null }, score: { a: 0, b: 0 }, gid: doc.gid + 1 }); }
   }
-  if (seat && doc.phase === 'play' && !stageOn() && typeof AUTH !== 'undefined' && AUTH.user) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
+  if (seat && doc.phase === 'play' && !stageOn() && !(db && db.srv && !local) && typeof AUTH !== 'undefined' && AUTH.user) { const pk = (code || '') + ':' + doc.gid; if (!AUTH.play || AUTH.play.key !== pk) { const it = { key: pk, sid: null }; AUTH.play = it; rpc('start_play', { p_kind: local ? 'bot' : 'pvp' }).then(v => { it.sid = v; }).catch(() => {}); } }
   if (seat && typeof AUTH !== 'undefined' && AUTH.nick && !(doc.nick && doc.nick[seat] === AUTH.nick) && onDoc.nk !== doc.seats[seat] + seat + (code || '')) { onDoc.nk = doc.seats[seat] + seat + (code || ''); W({ nick: { [seat]: AUTH.nick }, uid: { [seat]: AUTH.user || '' } }); }
   /* 칭호: 대전 상대에게 보이도록 결투 문서에 적어 둔다 */
   if (seat && !local && typeof myTitle === 'function') { const tt = myTitle(); if (((doc.title || {})[seat] || '') !== tt && onDoc.tt !== seat + (code || '') + tt) { onDoc.tt = seat + (code || '') + tt; W({ title: { [seat]: tt } }); } }
@@ -7183,6 +7256,8 @@ function onDoc() {
   if (!emSeen) emSeen = { a: em.a ? em.a.n : 0, b: em.b ? em.b.n : 0 };
   for (const k of ['a', 'b']) if (em[k] && em[k].n !== emSeen[k]) { emSeen[k] = em[k].n; showEmote(k, em[k].i); }
   if (job) startReplay(job); else render();
+  /* 기권처럼 턴 재생 없이 끝난 판도 결과와 보상을 받는다(matchReward는 같은 판을 두 번 받지 않는다) */
+  if (!job && !local && !replaying && doc.phase === 'over' && G && G.winner && typeof matchReward === 'function') matchReward(G);
   drive();
 }
 async function startReplay(job) {
@@ -7210,8 +7285,14 @@ function matchReward(g) {
   const w = g.winner, win = w === seat, draw = w === 'draw', vsBot = local, why = vsBot ? mE('봇 연습', 'Bot practice') : win ? mE('대전 승리', 'PvP win') : draw ? mE('대전 무승부', 'PvP draw') : mE('대전 참가', 'PvP played');
   if (!(typeof tutOn === 'function' && tutOn())) tally(vsBot ? 'bot' : 'pvp', win ? 'w' : draw ? 'd' : 'l');
   const rw = lastRw = { key, n: null, why }, pl = AUTH.play && AUTH.play.key === (code || '') + ':' + doc.gid ? AUTH.play : null;
-  if (!AUTH.user || !pl) { rw.n = 0; rw.why = AUTH.user ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
+  if (!AUTH.user || (!pl && !(db && db.srv && !vsBot))) { rw.n = 0; rw.why = AUTH.user ? why : mE('로그인하면 메달을 받습니다', 'Log in to earn medals'); return; }
+  if (g.forfeit) rw.why = g.forfeit === seat ? mE('기권패', 'Forfeit loss') : mE('상대 기권승', 'Win by forfeit');
   const before = medals(), st = qsOut(), done = n => { rw.n = n; if (lastRw === rw) render(); };
+  if (!vsBot && db && db.srv) {   /* 서버 대전: 결과와 보상은 서버가 판정한 그대로(duel_fin) */
+    const xp1 = AUTH.lv ? AUTH.lv.xp : null;
+    rpc('duel_fin', { p_code: code || '', p_gid: doc.gid, p_stats: st }).then(r => { done(r && r.ok ? r.medals : 0); return walletPull(); }).then(() => { if (xp1 != null && AUTH.lv && AUTH.lv.xp > xp1) rw.xp = AUTH.lv.xp - xp1; render(); }).catch(() => done(0));
+    return;
+  }
   const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv, p_stats: st }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose', p_stats: st }));
   const wait = () => (pl.sid ? Promise.resolve() : new Promise(r => setTimeout(r, 1500)));
   const xp0 = AUTH.lv ? AUTH.lv.xp : null;
@@ -7238,16 +7319,17 @@ function drive() {
     }
     if (doc.phase === 'play' && doc.lock.a === t && doc.lock.b !== t && !botT) botT = setTimeout(() => { botT = 0; if (local && doc && doc.phase === 'play' && curTag === t && doc.lock.a === t && doc.lock.b !== t) W({ lock: { b: t }, plan: { b: JSON.stringify(Object.assign({ tag: t }, (tutOn() ? tutBot(G) : botPlan(G, 'b', stageOn() ? stLv() : botLv)))) } }); }, 900);
   }
-  if (doc.phase === 'ban' && seat === 'a' && doc.ban && doc.ban.a && doc.ban.b) W({ phase: 'select' });
-  if (doc.phase === 'select' && seat === 'a' && doc.pick.a && doc.pick.b && startedGid !== doc.gid) {
+  const srv = !local && db && db.srv;   /* 서버 대전: 금지·선택·판정은 서버가 한다. 여기서는 내 계획만 보낸다 */
+  if (!srv && doc.phase === 'ban' && seat === 'a' && doc.ban && doc.ban.a && doc.ban.b) W({ phase: 'select' });
+  if (!srv && doc.phase === 'select' && seat === 'a' && doc.pick.a && doc.pick.b && startedGid !== doc.gid) {
     startedGid = doc.gid;
     W({ game: JSON.stringify(newGame(doc.pick)), turn: 1, phase: 'play', lock: { a: '', b: '' }, plan: { a: '', b: '' } });
   }
   if (doc.phase !== 'play') return;
-  if (doc.lock.a === t && doc.lock.b === t && locked && locked.tag === t && sentTag !== t) {
+  if ((srv ? doc.lock[seat] === t : doc.lock.a === t && doc.lock.b === t) && locked && locked.tag === t && sentTag !== t) {
     sentTag = t; W({ plan: { [seat]: JSON.stringify(locked) } });
   }
-  if (seat === 'a' && resolvedTag !== t) {
+  if (!srv && seat === 'a' && resolvedTag !== t) {
     const pa = parse(doc.plan.a), pb = parse(doc.plan.b);
     if (pa && pb && pa.tag === t && pb.tag === t) {
       resolvedTag = t;
@@ -7467,11 +7549,12 @@ function doLock(auto) {
 
 function unLock() {
   if (!locked || !doc || doc.phase !== 'play' || !seat) return;
-  if (doc.lock[opp(seat)] === curTag || sentTag === curTag) return toast('상대가 이미 확정해서 취소할 수 없습니다');
+  const srvU = !local && db && db.srv;   /* 서버 대전은 계획을 바로 보내 두므로, 상대가 아직 확정하지 않았으면 취소할 수 있다 */
+  if (doc.lock[opp(seat)] === curTag || (sentTag === curTag && !srvU)) return toast('상대가 이미 확정해서 취소할 수 없습니다');
   if (Date.now() >= deadline) return toast('시간이 끝나 취소할 수 없습니다');
   const L = locked, v = x => (x === undefined ? null : x);
   plan = { mv: v(L.mv), act: v(L.act), dest: v(L.dest), tg: v(L.tg), ab: !!L.ab, tm: L.tm || null, wt: v(L.wt) };
-  locked = null; unlockTag = curTag; ls('ssd-lock', '');
+  locked = null; unlockTag = curTag; ls('ssd-lock', ''); if (srvU) sentTag = '';
   W({ lock: { [seat]: '' } });
   SND.play('tap'); render();
 }
@@ -9345,7 +9428,7 @@ app.addEventListener('click', e => {
   else if (a === 'stnode') { if (stageOn() && doc.phase === 'map') stPick(+b.dataset.r, +b.dataset.c); }
   else if (a === 'stopt') { if (stageOn() && doc.phase === 'map') stOpt(b.dataset.i); }
   else if (a === 'stquit') { if (stageOn()) { if (run.quit) { SND.play('tap'); stageReset(); } else { run.quit = 1; render(); } } }
-  else if (a === 'leave') leave();
+  else if (a === 'leave') { if (!local && db && db.srv && doc && doc.phase === 'play' && G && !G.winner && !window.confirm(mE('지금 나가면 기권패가 됩니다. 나갈까요?', 'Leaving now counts as a forfeit loss. Leave?'))) return; leave(); }
   else if (a === 'ready') W({ ready: { [seat]: !doc.ready[seat] } });
   else if (a === 'start') W({ phase: modeOf() === 'ban' ? 'ban' : 'select', pick: { a: null, b: null }, ban: { a: null, b: null }, score: { a: 0, b: 0 }, gid: doc.gid + 1 });
   else if (a === 'again') { const p = { phase: modeOf() === 'ban' ? 'ban' : 'select', pick: { a: null, b: null }, ban: { a: null, b: null }, gid: doc.gid + 1, lock: { a: '', b: '' }, plan: { a: '', b: '' } }; if (matchDone()) p.score = { a: 0, b: 0 }; W(p); }
@@ -9504,6 +9587,7 @@ async function walletPull() {
   if (AUTH.gift) setTimeout(welcomeShow, 600);
   try { const [x] = await sb('/rest/v1/account_xp?select=xp,claimed') || []; lvSet(x); } catch (e) { AUTH.lv = null; }   /* 레벨 표가 아직 없으면 레벨 칸을 숨긴다 */
   questPull(); mailPull(true);
+  if (!duelInit.done) duelInit();
 }
 function authKeep(ses) {
   AUTH.tok = { access_token: ses.access_token, refresh_token: ses.refresh_token, exp: Date.now() + (ses.expires_in || 3600) * 1000 };
@@ -9724,6 +9808,7 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   me = me || localId(); netReady = true;
   if (!doc) render();
   await boot;
+  await duelInit();
   if (p2p() && AUTH.user) {
     const sv = db.saved();
     if (sv && (!prefill || prefill === sv.code)) {
