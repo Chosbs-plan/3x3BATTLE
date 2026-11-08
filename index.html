@@ -3009,7 +3009,7 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
 /* 홈 */
 .pc-main { position: relative; min-height: 0; }
 .pc-card, .pc-play { color: #f1e9e6; background: rgba(42, 31, 36, .9); border: 2px solid #1d1413; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
-.pc-news { position: absolute; left: 34px; top: 30px; width: 430px; display: grid; gap: 14px; filter: drop-shadow(0 6px 0 rgba(29, 20, 19, .3)); }
+.pc-news { position: absolute; left: 34px; top: 30px; width: 430px; display: grid; align-content: start; gap: 14px; filter: drop-shadow(0 6px 0 rgba(29, 20, 19, .3)); max-height: calc(100% - 60px); overflow: hidden auto; scrollbar-width: thin; padding-bottom: 8px; }
 .pc-card { display: grid; gap: 12px; padding: 16px 18px 18px; font: inherit; text-align: left; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
 .pc-ch { display: flex; align-items: center; justify-content: space-between; padding-bottom: 9px; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffd75e; border-bottom: 1px solid rgba(255, 255, 255, .12); }
 .pc-more { padding: 0; font: inherit; font-size: 12px; letter-spacing: 0; color: #d9cbc7; cursor: pointer; background: none; border: 0; } .pc-more:hover, .pc-more:focus-visible { outline: none; color: #fff; }
@@ -3130,6 +3130,8 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
   background: radial-gradient(ellipse 60% 45% at 50% 100%, rgba(255, 215, 94, .25), transparent 70%), radial-gradient(#fff 1px, transparent 1.5px) 0 0 / 46px 40px, radial-gradient(#ffd75e 1px, transparent 1.5px) 20px 14px / 70px 60px, #2a1e1d; }
 .pmc.red .pmc-art { background: repeating-linear-gradient(115deg, rgba(255, 255, 255, .08) 0 26px, transparent 26px 52px), rgba(0, 0, 0, .18); }
 .pmc-hero { width: min(240px, 60%); aspect-ratio: 1; height: auto; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .4)); }
+/* 모험 모드 카드의 대표 캐릭터는 절반 크기로 작고 귀엽게(큰 스킨도 칸 위로 넘치지 않게) */
+.adv-art .pmc-hero { width: min(120px, 30%); }
 .pmc-acts { position: absolute; left: 16px; top: 16px; right: 16px; display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .pmc-acts li { flex: 1 1 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--sil); background: var(--tint); box-shadow: inset 0 0 0 2px #1d1413, inset 0 -4px 0 rgba(0, 0, 0, .12); }
 .pmc-acts li.th-forest { --tint: #cfe3c4; } .pmc-acts li.th-snow { --tint: #d6e4f3; } .pmc-acts li.th-castle { --tint: #e3d9d5; }
@@ -9008,10 +9010,6 @@ function pcHomeHTML(on) {
   const goTx = { adv: hasRun ? ['이어하기', 'Continue'] : ['모험 시작', 'Start Adventure'], bot: ['연습 시작', 'Start Practice'], rand: ['방식 고르기', 'Choose Format'], room: ['친구 대전', 'Friendly Duel'] }[pcMode];
   return `<aside class="pc-news" aria-label="${mE('소식', 'News')}">
       ${hasRun ? `<button type="button" class="pc-card pc-cont c-${sv.cls}" data-a="stage" style="--i:0"><span class="pc-ch">${mE('진행 중인 모험', 'Run in progress')}</span><span class="pc-cb">${faceOf(sv.cls, sv.skin || '')}<span><b>${CLS[sv.cls].n} · ${mE(`${(sv.act || 0) + 1}막`, `Act ${(sv.act || 0) + 1}`)}</b><small>${mE('체력', 'HP')} ${sv.hp}/${sv.maxHp} · ${mE('금화', 'Gold')} ${sv.gold || 0} · ${mE('유물', 'Relics')} ${(sv.rl || []).length}</small></span><em>${mE('이어하기', 'Continue')} ▶</em></span></button>` : ''}
-      <section class="pc-card" style="--i:1"><span class="pc-ch">${mE('내 기록', 'My records')}<button type="button" class="pc-more" data-a="mtab" data-m="acct">${mE('프로필', 'Profile')} ▶</button></span>
-        <dl class="pc-stats"><div><dt>${mE('대전 전적', 'PvP')}</dt><dd>${pv.w}${mE('승', 'W')} ${pv.d}${mE('무', 'D')} ${pv.l}${mE('패', 'L')}<small>${n ? Math.round(pv.w / n * 100) + '%' : '-'}</small></dd></div>
-          <div><dt>${mE('모험 돌파', 'Adventure')}</dt><dd>${clr}<small>/ ${CLASS_IDS.length}</small></dd><span class="pf-bar"><i style="width:${clr / CLASS_IDS.length * 100}%"></i></span></div>
-          <div><dt>${mE('스킨 수집', 'Skins')}</dt><dd>${own}<small>/ ${tot}</small></dd><span class="pf-bar"><i style="width:${tot ? own / tot * 100 : 0}%"></i></span></div></dl></section>
       ${wkHome(true)}
       ${QUEST ? `<section class="pc-card pc-qc" style="--i:2"><span class="pc-ch">${mE('일일 퀘스트', 'Daily Quests')}${qReady() ? `<em class="qs-dot">${qReady()}</em>` : ''}${qHead()}</span>${questList()}</section>` : ''}
     </aside>
