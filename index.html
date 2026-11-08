@@ -3144,19 +3144,15 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
 .pmc-pad { display: grid; grid-template-columns: repeat(3, 58px); gap: 8px; padding: 12px; transform: perspective(500px) rotateX(38deg); background: rgba(74, 59, 59, .12); box-shadow: 0 0 0 4px rgba(74, 59, 59, .2); }
 .pmc-pad i { aspect-ratio: 1; background: #fff; box-shadow: inset 0 0 0 3px #d9cfcc, 4px 4px 0 rgba(74, 59, 59, .2); }
 .pmc-pad i.me { background: #dfe9fb; box-shadow: inset 0 0 0 3px var(--blue), 4px 4px 0 rgba(74, 59, 59, .2); } .pmc-pad i.hit { background: #fde6e9; box-shadow: inset 0 0 0 3px var(--red), 4px 4px 0 rgba(74, 59, 59, .2); }
-/* 싱글 플레이: 세 카드가 한 화면에. 위 줄은 모험·연습(그림 칸을 낮게), 아래 줄은 튜토리얼을 가로로 납작하게 */
-.pg-single .pmcs { grid-template-rows: minmax(0, 1fr) auto; gap: 16px 22px; }
-.pg-single .pmc { min-height: 0; grid-template-rows: minmax(84px, 28%) minmax(0, 1fr) auto; }
-.pg-single .pmc .pmc-tx { gap: 6px; padding: 14px 24px 8px; overflow: hidden; } .pg-single .pmc .pmc-tx h3 { font-size: clamp(26px, 3.2vh, 40px); }
-.pg-single .pmc .pmc-art { align-items: flex-end; padding: 8px 16px; }
-.pg-single .adv-art .pmc-hero, .pg-single .duel-art .pmc-a { width: auto; height: 72%; max-height: 120px; }
-.pg-single .pmc.tut { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: 130px minmax(0, 1fr) auto; align-items: center; }
-.pg-single .pmc.tut .pmc-art { align-self: stretch; border-bottom: 0; border-right: 3px solid #1d1413; padding: 6px; align-items: center; }
-.pg-single .pmc.tut .pmc-pad { zoom: .5; }
-.pg-single .pmc.tut .pmc-tx { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 12px 20px; overflow: visible; }
-.pg-single .pmc.tut .pmc-tx h3 { font-size: 26px; margin: 0; } .pg-single .pmc.tut .pmc-tx .pmc-k { flex-basis: 100%; margin: 0; }
-.pg-single .pmc.tut .pmc-steps { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
-.pg-single .pmc.tut .pmc-go { padding: 0 20px; }
+/* 싱글 플레이: 모험·연습·튜토리얼 세 카드를 한 줄에. 모험 카드는 조금만 넓게, 그림 칸은 낮게 */
+.pg-single .pmcs { grid-template-columns: 1.25fr 1fr 1fr; grid-template-rows: minmax(0, 1fr); gap: 18px; }
+.pg-single .pmc { min-height: 0; grid-template-rows: minmax(110px, 32%) minmax(0, 1fr) auto; }
+.pg-single .pmc .pmc-tx { gap: 8px; padding: 16px 20px 8px; overflow: hidden; } .pg-single .pmc .pmc-tx h3 { font-size: clamp(26px, 3.4vh, 40px); }
+.pg-single .pmc .pmc-art { align-items: flex-end; padding: 10px 14px; }
+.pg-single .adv-art .pmc-hero, .pg-single .duel-art .pmc-a { width: auto; height: 74%; max-height: 130px; }
+.pg-single .pmc.tut .pmc-art { align-items: center; } .pg-single .pmc.tut .pmc-pad { zoom: .7; }
+.pg-single .pmc.tut .pmc-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0; }
+.pg-single .pmc .pmc-go { padding-left: 20px; padding-right: 20px; } .pg-single .pmc .pc-lv { flex-wrap: wrap; }
 .rand-art { align-items: center; gap: 28px; }
 .pmc-f { display: grid; justify-items: center; gap: 10px; } .pmc-f .lb-face { --s: 130px; --z: 8; box-shadow: inset 0 0 0 4px #1d1413, 6px 6px 0 #1d1413; } .pmc-f > b { font-size: 18px; color: #fff; text-shadow: 2px 2px 0 #1d1413; }
 .pmc-f .lb-face.q > i { font-size: 64px; }
@@ -8902,7 +8898,7 @@ function pcMultiBody(off) {
         <p>${mE('대전 방식을 고르면 같은 방식을 기다리는 사람과 바로 대결합니다. 결과는 두 사람이 모두 확인해야 인정됩니다.', 'Pick a format to face someone waiting for the same one. Both players confirm the result.')}</p>
         <p class="pmc-chips"><span>${mE('승리', 'Win')} ${MDL(30)}</span><span>${mE('무승부', 'Draw')} ${MDL(15)}</span><span>${mE('패배', 'Loss')} ${MDL(10)}</span><span>${mE('내 전적', 'My record')} ${t.w}${mE('승', 'W')} ${t.d}${mE('무', 'D')} ${t.l}${mE('패', 'L')}</span></p></div>
       ${MM.on ? `<div class="pmc-go">${mmHTML()}</div>` : `<div class="pmr-cols">${MM_MODES.map(([m, a, b, c, d], i) => `<div class="pmr-c m-${m}" style="--i:${i}"><div class="pmr-art" aria-hidden="true">${pmrArt(m, rep, foe)}</div>
-        <b>${mE(a, b)}</b><small>${mE(c, d)}</small><button type="button" class="pcb ${i ? 'dark' : 'gold'} big" data-mm="go" data-md="${m}" ${on ? '' : 'disabled'}>${mE('매칭 시작', 'Find Match')}</button></div>`).join('')}</div>`}</section>
+        <b>${mE(a, b)}</b><small>${mE(c, d)}</small><button type="button" class="pcb gold big" data-mm="go" data-md="${m}" ${on ? '' : 'disabled'}>${mE('매칭 시작', 'Find Match')}</button></div>`).join('')}</div>`}</section>
     <div class="pmc-col">
     <section class="pmc" style="--i:1"><div class="pmc-art duel-art"><i class="px pmc-a a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i><b class="pmc-vs">VS</b><i class="px pmc-a flip a-${foe}" aria-hidden="true"></i></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('친구와 1 대 1', '1v1 with a friend')}</p><h3>${mE('방 만들기', 'Create Room')}</h3>
@@ -9654,7 +9650,7 @@ const MM = { on: false, st: '', t0: 0, timer: 0, opp: '', n: 0, mode: 'single' }
 const MM_MODES = [['single', '단판', 'Single', '한 판 승부', 'One game'], ['bo3', '3판 2선승', 'Best of 3', '먼저 두 판을 이기면 승리', 'First to two wins'], ['ban', '밴픽', 'Ban-pick', '서로 직업 하나씩 금지', 'Each side bans a class']];
 const mmModeN = m => { const x = MM_MODES.find(q => q[0] === m) || MM_MODES[0]; return mE(x[1], x[2]); };
 /* 랜덤 매칭 버튼: 대전 방식마다 따로 */
-const mmBtns = (on, cls) => `<div class="mm-modes">${MM_MODES.map(([m, a, b, c, d], i) => `<button type="button" class="${cls} ${i ? 'dark' : 'gold'} mm-md" data-mm="go" data-md="${m}" ${on ? '' : 'disabled'}><b>${mE(a, b)}</b><small>${mE(c, d)}</small></button>`).join('')}</div>`;
+const mmBtns = (on, cls) => `<div class="mm-modes">${MM_MODES.map(([m, a, b, c, d], i) => `<button type="button" class="${cls} gold mm-md" data-mm="go" data-md="${m}" ${on ? '' : 'disabled'}><b>${mE(a, b)}</b><small>${mE(c, d)}</small></button>`).join('')}</div>`;
 async function mmStart(mode) {
   if (!AUTH.user) return toast(mE('로그인해야 랜덤 매칭을 쓸 수 있습니다', 'Log in to use random match'));
   if (!netReady || !db) return toast(mE('온라인 연결을 기다리는 중입니다', 'Waiting for the network'));
