@@ -1,7 +1,7 @@
 -- 삼삼결투 메달 경제: 메달과 보유 스킨은 서버 함수만 바꿀 수 있다.
 -- 브라우저는 읽기만 하고, 보상·구매·관리자 지급은 아래 함수(RPC)로만 요청한다.
 -- Supabase SQL Editor에 통째로 붙여 넣고 Run. 여러 번 실행해도 된다.
--- 일일 퀘스트(아래 '일일 퀘스트' 부분)도 여기 들어 있다. 이 파일을 다시 Run한 뒤 skin_prices.sql도 한 번 더 Run.
+-- 일일 퀘스트(아래 '일일 퀘스트' 부분)도 여기 들어 있다. 계정 레벨 경험치는 account_level.sql(없으면 경험치만 건너뛴다). 이 파일을 다시 Run한 뒤 skin_prices.sql도 한 번 더 Run.
 
 create table if not exists public.wallet (
   id uuid primary key references auth.users on delete cascade,
@@ -69,6 +69,14 @@ begin
   return s;
 end $$;
 
+-- 계정 레벨 경험치(account_level.sql의 _xp_match). 그 파일을 아직 Run하지 않았으면 조용히 넘어간다
+create or replace function public._xp_try(p_uid uuid, p_mode text, p_res text, p_lv text, p_nodes int, p_cleared boolean) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  perform _xp_match(p_uid, p_mode, p_res, p_lv, p_nodes, p_cleared);
+exception when undefined_function or undefined_table then null;
+end $$;
+
 -- 봇 연습: 40초 이상 걸린 판만. 승리 5·8·12(쉬움·보통·어려움), 패배 2. 하루 150까지
 -- p_stats는 일일 퀘스트 진행용 판 기록. 예전 함수(p_stats 없음)는 지워야 이름이 겹치지 않는다
 drop function if exists public.finish_bot(uuid, boolean, text);
@@ -82,6 +90,7 @@ begin
   if not found or now() - p.started < interval '40 seconds' then return 0; end if;
   update plays set paid = true where sid = p_sid;
   perform _quest_feed(auth.uid(), 'bot', case when p_won then 'win' else 'lose' end, p_lv, p_stats, extract(epoch from now() - p.started), false);
+  perform _xp_try(auth.uid(), 'bot', case when p_won then 'win' else 'lose' end, p_lv, null, false);
   amt := case when p_won then (case p_lv when 'easy' then 5 when 'hard' then 12 else 8 end) else 2 end;
   amt := least(amt, greatest(0, 150 - _today(auth.uid(), 'bot')));
   return _pay(auth.uid(), 'bot', amt);
@@ -100,6 +109,7 @@ begin
   dn := greatest(0, least(coalesce(p_done, 0), tot, floor(secs / 30)::int));
   amt := round(dn::numeric / tot * 200)::int + case when p_cleared and dn >= tot then 100 else 0 end;
   perform _quest_feed(auth.uid(), 'run', null, null, coalesce(p_stats, '{}'::jsonb) || jsonb_build_object('nodes', dn), secs, coalesce(p_cleared, false) and dn >= tot);
+  perform _xp_try(auth.uid(), 'run', null, null, dn, coalesce(p_cleared, false) and dn >= tot);
   amt := least(amt, greatest(0, 900 - _today(auth.uid(), 'run')));
   return _pay(auth.uid(), 'run', amt);
 end $$;
@@ -122,6 +132,7 @@ begin
   select started into os from plays where sid = o.sid;
   perform _quest_feed(p_opp, 'pvp', o.result, null, o.stats, extract(epoch from now() - os), false);
   perform _quest_feed(auth.uid(), 'pvp', p_res, null, p_stats, extract(epoch from now() - p.started), false);
+  perform _xp_try(p_opp, 'pvp', o.result, null, null, false); perform _xp_try(auth.uid(), 'pvp', p_res, null, null, false);
   me := case p_res when 'win' then 30 when 'draw' then 15 else 10 end;
   them := case o.result when 'win' then 30 when 'draw' then 15 else 10 end;
   perform _pay(p_opp, 'pvp', least(them, greatest(0, 600 - _today(p_opp, 'pvp'))));
@@ -353,6 +364,7 @@ end $$;
 -- 실행 권한: 내부 함수는 아무도, 공개 함수는 로그인한 사람만
 revoke all on function public._pay(uuid, text, int) from public, anon, authenticated;
 revoke all on function public._today(uuid, text) from public, anon, authenticated;
+revoke all on function public._xp_try(uuid, text, text, text, int, boolean) from public, anon, authenticated;
 revoke all on function public.start_play(text) from public, anon;
 revoke all on function public.finish_bot(uuid, boolean, text, jsonb) from public, anon;
 revoke all on function public.finish_run(uuid, int, int, boolean, jsonb) from public, anon;

@@ -12,7 +12,34 @@
 <meta name="copyright" content="© 2026 CHOSBS. All rights reserved.">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>삼삼결투</title>
-<style>body{margin:0}</style>
+<style>body{margin:0}
+/* 계정 레벨: 프로필 카드, 레벨 보상 띠, 로비 배지, 레벨 업 알림 */
+.lvbadge { display: inline-block; margin-left: 6px; padding: 1px 6px; font-style: normal; font-size: .72em; line-height: 1.4; color: #2a1e22; background: #ffd75e; box-shadow: inset 0 0 0 2px #2a1e22; vertical-align: 2px; }
+.pc-me { position: relative; } .pc-me .dot { position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; background: #e0524f; box-shadow: 0 0 0 2px #fff; }
+.lvc { display: grid; gap: 10px; padding: 14px 16px; background: #fff; box-shadow: inset 0 0 0 3px var(--sil, #5a4644), 6px 6px 0 var(--line, rgba(0,0,0,.15)); color: #2a1e22; text-align: left; }
+.lvc.off { grid-template-columns: auto 1fr; align-items: center; }
+.lvc-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; }
+.lvb { display: grid; place-items: center; min-width: 76px; height: 56px; padding: 0 8px; font-size: 24px; color: #fff; background: #4f7fd0; box-shadow: inset 0 0 0 3px #2a1e22, 4px 4px 0 #2a1e22; }
+.lvc-mid { display: grid; gap: 4px; min-width: 0; } .lvc-cap { font-size: 14px; font-weight: 700; } .lvc-mid small { font-size: 13px; color: #6b5a54; }
+.lvc-bar { position: relative; height: 14px; background: #e9e2d2; box-shadow: inset 0 0 0 2px #2a1e22; overflow: hidden; } .lvc-bar i { position: absolute; inset: 2px auto 2px 2px; max-width: calc(100% - 4px); background: linear-gradient(#8fd4ff, #4f7fd0); }
+.lvc-claim { display: flex; align-items: center; gap: 8px; white-space: nowrap; } .lvc-claim span { display: flex; gap: 6px; }
+.lvc-how { margin: 0; font-size: 13px; color: #6b5a54; }
+.lvc-track { display: flex; gap: 8px; margin: 0; padding: 4px 2px 10px; list-style: none; overflow-x: auto; scrollbar-width: thin; }
+.lvt { position: relative; flex: 0 0 112px; display: grid; align-content: start; gap: 4px; padding: 8px 8px 10px; font-size: 13px; background: #f4efe4; box-shadow: inset 0 0 0 2px #b9ad95; }
+.lvt > b { font-size: 15px; } .lvt .ttl { font-style: normal; font-size: 12px; line-height: 1.3; } .lvt .lnk { justify-self: start; padding: 0; font: inherit; font-size: 12px; color: #4f7fd0; background: none; border: 0; text-decoration: underline; cursor: pointer; }
+.lvt.got { opacity: .62; } .lvt.can { background: #fff6d8; box-shadow: inset 0 0 0 3px #f2c230; } .lvt.next { box-shadow: inset 0 0 0 3px #4f7fd0; } .lvt.lock { filter: saturate(.4); color: #8a7d78; }
+.lvt.tl { background-image: linear-gradient(135deg, rgba(255, 215, 94, .25), transparent 60%); }
+.lvt-st { position: absolute; top: 6px; right: 8px; font-style: normal; font-weight: 700; color: #3f7234; } .lvt.can .lvt-st { color: #d8475a; }
+.pf .lvc { margin: 10px 0; } .pf .lvc-top { grid-template-columns: auto minmax(0, 1fr); } .pf .lvc-claim { grid-column: 1 / -1; justify-content: center; }
+.vs-rw .x i { color: #fff; background: #4f7fd0; font-size: 16px; } .xpg { margin-left: 8px; color: #4f7fd0; }
+.lvup { position: fixed; left: 50%; top: 18%; z-index: 90; translate: -50% 0; display: grid; justify-items: center; gap: 6px; min-width: 280px; padding: 18px 26px 20px; color: #fff; text-align: center; background: #2a1e22; box-shadow: inset 0 0 0 3px #ffd75e, 6px 6px 0 rgba(0, 0, 0, .35); animation: lvupIn .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+.lvup.out { animation: lvupOut .5s ease-in forwards; }
+.lvup small { font-size: 14px; letter-spacing: .2em; color: #ffd75e; } .lvup > b { font-size: 46px; line-height: 1; text-shadow: 3px 3px 0 #4f7fd0; }
+.lvup p { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 4px 0 6px; font-size: 15px; } .lvup em { font-style: normal; color: #ffd75e; }
+.lvup-glow { position: absolute; inset: -30px; z-index: -1; background: radial-gradient(closest-side, rgba(255, 215, 94, .45), transparent); animation: lvupGlow 1.6s ease-in-out infinite alternate; }
+@keyframes lvupIn { 0% { opacity: 0; scale: .6; } 100% { opacity: 1; scale: 1; } } @keyframes lvupOut { to { opacity: 0; translate: -50% -20px; } } @keyframes lvupGlow { from { opacity: .5; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lvup, .lvup.out, .lvup-glow { animation: none; } }
+</style>
 </head>
 <body>
 <script>
@@ -7175,7 +7202,8 @@ function matchReward(g) {
   const before = medals(), st = qsOut(), done = n => { rw.n = n; if (lastRw === rw) render(); };
   const go = () => (vsBot ? rpc('finish_bot', { p_sid: pl.sid, p_won: win, p_lv: botLv, p_stats: st }) : rpc('finish_pvp', { p_sid: pl.sid, p_room: code || '', p_gid: doc.gid, p_opp: (doc.uid || {})[opp(seat)] || null, p_res: win ? 'win' : draw ? 'draw' : 'lose', p_stats: st }));
   const wait = () => (pl.sid ? Promise.resolve() : new Promise(r => setTimeout(r, 1500)));
-  wait().then(go).then(n => { done(n || 0); return walletPull(); }).then(() => {
+  const xp0 = AUTH.lv ? AUTH.lv.xp : null;
+  wait().then(go).then(n => { done(n || 0); return walletPull(); }).then(() => { if (xp0 != null && AUTH.lv && AUTH.lv.xp > xp0) rw.xp = AUTH.lv.xp - xp0;
     /* 대전은 상대 보고가 와야 지급된다. 잠시 뒤 지갑을 다시 보고 늘었으면 표시 */
     if (!vsBot && !rw.n) [4000, 12000].forEach(t => setTimeout(() => walletPull().then(() => { if (medals() > before && !rw.n) done(medals() - before); }).catch(() => {}), t)); else render();
   }).catch(() => done(0));
@@ -8020,6 +8048,7 @@ function vStageHTML() {
   const rw = lastRw && lastRw.key.indexOf((code || '') + ':' + doc.gid + ':') === 0 ? lastRw : null;
   const items = [];
   if (rw) items.push(`<div class="m"><i>M</i><span><b>${rw.n == null ? '…' : '+' + rw.n}</b><small>${L('메달', 'Medals')} · ${rw.why}</small></span></div>`);
+  if (rw && rw.xp) items.push(`<div class="x"><i>XP</i><span><b>+${rw.xp}</b><small>${L('계정 경험치', 'Account XP')} · Lv.${myLv()}</small></span></div>`);
   if (modeOf() === 'bo3' && !stageOn()) items.push(`<div class="g"><i>3</i><span><b>${scoreOf()[seat]} : ${scoreOf()[o]}</b><small>${matchDone() ? (scoreOf()[seat] >= 2 ? L('매치 승리', 'Match won') : L('매치 패배', 'Match lost')) : L('3판 2선승', 'Best of 3')}</small></span></div>`);
   notes.forEach(t => items.push(`<div class="g"><i>★</i><span><b>${t}</b></span></div>`));
   if (res === 'lose') { const oc = CLS[G.P[o].cls]; items.unshift(`<div class="tip"><i>!</i><span><b>${L('다음엔 이렇게', 'Next time')}</b><span>${oc.n} · ${L('패시브', 'Passive')} <b>${oc.pas[0]}</b>: ${hl(oc.pas[1])}</span></span></div>`); }
@@ -8247,6 +8276,7 @@ function profBody() {
     <section class="pf-card c-${rep}">
       <div class="pf-stage"><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
       <h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}
+      ${lvCardHTML()}
       <p class="pf-cls"><b>${CLS[rep].n}</b> · ${skx ? esc(mE(skx.n, skx.en)) : mE('기본', 'Default')} ${mE('스킨', 'skin')}</p>
       <button type="button" class="btn ghost pf-chg" data-a="reppick" aria-expanded="${repOpen}">${repOpen ? mE('닫기', 'Close') : mE('대표 캐릭터 바꾸기', 'Change main character')}</button>
       ${repOpen ? `<div class="pf-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div><p class="cap">${mE('스킨은 컬렉션에서 착용합니다', 'Equip skins in Collection')}</p>` : ''}
@@ -8362,7 +8392,7 @@ const ACH_POOL = {
   g: { n: ['골드', 'Gold'], m: 120, bonus: 500, t: ['골드 컬렉터', 'Gold Collector'] },
   l: { n: ['전설', 'Legend'], m: 300, bonus: 1000, t: ['살아 있는 전설', 'Living Legend'] },
 };
-const achTier = id => { if (/^tier:/.test(id)) return id.slice(5); for (const t in ACH_TIER) if (ACH_TIER[t].split(' ').includes(id)) return t; return 'b'; };
+const achTier = id => { if (/^lv:/.test(id)) return (LV_TITLE[id.slice(3)] || [])[2] || 'b'; if (/^tier:/.test(id)) return id.slice(5); for (const t in ACH_TIER) if (ACH_TIER[t].split(' ').includes(id)) return t; return 'b'; };
 const tierIds = t => ACH_TIER[t].split(' ');
 const tierDone = t => { const g = achGot(); return tierIds(t).every(id => g[id]); };
 let ACHR = { ids: null, t: 0, busy: false, err: '', claiming: false };
@@ -8383,10 +8413,62 @@ function achClaim(ids) {
 const achGot = () => parse(ls('ssd-ach')) || {};
 const achC = () => Object.assign({ wins: 0, perf: 0, pvpw: 0, hardw: 0, runs: 0, emo: 0, cw: [] }, parse(ls('ssd-achc')) || {});
 const achGoal = a => (typeof a.g === 'function' ? a.g() : a.g || 1);
-const achTitle = id => { if (/^tier:/.test(id)) { const P = ACH_POOL[id.slice(5)]; return P ? L(...P.t) : ''; } const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
-const titleOk = id => !!id && (/^tier:/.test(id) ? ACH_POOL[id.slice(5)] && tierDone(id.slice(5)) : !!achGot()[id]);
+const achTitle = id => { if (/^lv:/.test(id)) { const T0 = LV_TITLE[id.slice(3)]; return T0 ? L(T0[0], T0[1]) : ''; } if (/^tier:/.test(id)) { const P = ACH_POOL[id.slice(5)]; return P ? L(...P.t) : ''; } const a = ACH.find(x => x.id === id); return a ? L(...a.t) : ''; };
+const titleOk = id => !!id && (/^lv:/.test(id) ? !!LV_TITLE[id.slice(3)] && myLv() >= +id.slice(3) : /^tier:/.test(id) ? ACH_POOL[id.slice(5)] && tierDone(id.slice(5)) : !!achGot()[id]);
 const myTitle = () => { const id = ls('ssd-title'); return titleOk(id) ? achTitle(id) : ''; };
 const myTitleTier = () => { const id = ls('ssd-title'); return titleOk(id) ? achTier(id) : ''; };
+
+/* --- 계정 레벨: 경험치는 서버(account_level.sql)가 판이 끝날 때 준다. 여기서는 같은 공식으로 레벨을 계산해 보여 주고, 보상은 lv_claim으로 받는다 --- */
+const LV_MAX = 50, lvNeed = n => 100 + 20 * (n - 1);
+const lvInfo = xp => { let l = 1, r = Math.max(0, xp || 0); while (l < LV_MAX && r >= lvNeed(l)) { r -= lvNeed(l); l++; } return { lv: l, into: r, need: l >= LV_MAX ? 0 : lvNeed(l), max: l >= LV_MAX }; };
+/* 칭호: [한국어, 영어, 색 등급] */
+const LV_TITLE = { 5: ['새내기 결투사', 'Rookie Duelist', 'b'], 10: ['숙련 결투사', 'Skilled Duelist', 'b'], 20: ['베테랑 결투사', 'Veteran Duelist', 's'], 30: ['노련한 승부사', 'Seasoned Victor', 's'], 40: ['결투의 달인', 'Dueling Master', 'g'], 50: ['전설의 결투사', 'Legendary Duelist', 'l'] };
+const lvReward = l => ({ m: 30 + 5 * l, d: l % 10 === 0 ? 50 : l % 5 === 0 ? 20 : 0, t: LV_TITLE[l] || null });
+const myLv = () => (AUTH.lv ? lvInfo(AUTH.lv.xp).lv : 0);
+const lvCanClaim = () => !!AUTH.lv && myLv() > (AUTH.lv.claimed || 1);
+/* 받을 보상 합계(받지 않은 레벨들) */
+const lvPending = () => { const o = { m: 0, d: 0, n: 0 }; if (!AUTH.lv) return o; for (let l = (AUTH.lv.claimed || 1) + 1; l <= myLv(); l++) { const r = lvReward(l); o.m += r.m; o.d += r.d; o.n++; } return o; };
+/* 서버에서 새로 읽은 경험치로 레벨이 올랐으면 알림 */
+function lvSet(x) {
+  const prev = AUTH.lv; AUTH.lv = { xp: x ? x.xp : 0, claimed: x ? x.claimed : 1 };
+  if (prev) { AUTH.lvGain = Math.max(0, AUTH.lv.xp - prev.xp); const a = lvInfo(prev.xp).lv, b = lvInfo(AUTH.lv.xp).lv; if (b > a) setTimeout(() => lvUpShow(a, b), 900); }
+}
+function lvUpShow(from, to) {
+  if (!AUTH.lv) return; document.querySelectorAll('.lvup').forEach(e => e.remove());
+  let m = 0, d = 0; const tt = []; for (let l = from + 1; l <= to; l++) { const r = lvReward(l); m += r.m; d += r.d; if (r.t) tt.push(L(r.t[0], r.t[1])); }
+  const e = document.createElement('div'); e.className = 'lvup'; e.setAttribute('role', 'status');
+  e.innerHTML = `<i class="lvup-glow" aria-hidden="true"></i><small>${mE('레벨 업', 'LEVEL UP')}</small><b>Lv.${to}</b><p>${MDL(m)}${d ? DIA(d) : ''}${tt.length ? `<em>${mE('칭호', 'Title')} 「${esc(tt.join('」 「'))}」</em>` : ''}</p><button type="button" class="pcb red" data-a="lvclaim">${mE('보상 받기', 'Claim rewards')}</button>`;
+  document.body.appendChild(e); SND.play('win'); setTimeout(() => e.classList.add('out'), 6000); setTimeout(() => e.remove(), 6600);
+}
+let lvBusy = false;
+function lvClaim() {
+  if (lvBusy || !lvCanClaim()) return; lvBusy = true; render();
+  rpc('lv_claim').then(r => { lvBusy = false; if (!r) return; if (r.wallet != null) AUTH.wallet = r.wallet; if (AUTH.lv) AUTH.lv.claimed = r.to || AUTH.lv.claimed;
+    document.querySelectorAll('.lvup').forEach(e => e.remove());
+    if (r.medals || r.dia) { toast(r.dia ? L(`레벨 보상 · 메달 +${r.medals} · 다이아 +${r.dia}`, `Level rewards · +${r.medals} medals · +${r.dia} diamonds`) : L(`레벨 보상 · 메달 +${r.medals}`, `Level rewards · +${r.medals} medals`)); SND.play('relicGood'); for (let k = 0; k < Math.min(6, Math.ceil(r.medals / 80)); k++) setTimeout(() => SND.play('coin'), 200 + k * 90); }
+    if (r.dia) walletPull().catch(() => {}); render(); })
+    .catch(() => { lvBusy = false; toast(L('받지 못했습니다. 잠시 뒤 다시 시도하세요', 'Could not claim. Try again shortly')); render(); });
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-a="lvclaim"]'); if (!b) return; e.stopPropagation(); SND.unlock(); lvClaim(); });
+/* 프로필의 레벨 카드: 배지, 경험치 막대, 받을 보상, 레벨별 보상 띠 */
+function lvCardHTML() {
+  if (!AUTH.user) return '';
+  if (!AUTH.lv) return `<section class="lvc off"><b class="lvb">Lv.-</b><span>${mE('계정 레벨을 불러오지 못했습니다', 'Could not load account level')}</span></section>`;
+  const I = lvInfo(AUTH.lv.xp), cl = AUTH.lv.claimed || 1, pd = lvPending(), tid = ls('ssd-title');
+  const pct = I.max ? 100 : Math.round(I.into / I.need * 100);
+  const items = []; for (let l = 2; l <= LV_MAX; l++) { const r = lvReward(l), st = l <= cl ? 'got' : l <= I.lv ? 'can' : 'lock', tk = 'lv:' + l;
+    items.push(`<li class="lvt ${st}${l === I.lv + 1 ? ' next' : ''}${r.t ? ' tl' : ''}"${l === Math.min(LV_MAX, cl < I.lv ? cl + 1 : I.lv + 1) ? ' data-cur' : ''}><b>Lv.${l}</b><span>${MDL(r.m)}</span>${r.d ? `<span>${DIA(r.d)}</span>` : ''}${r.t ? `<em class="ttl t-${r.t[2]}">「${L(r.t[0], r.t[1])}」</em>${st !== 'lock' ? (tid === tk ? `<button type="button" class="lnk" data-a="achtitle" data-k="">${mE('달고 있음', 'Equipped')}</button>` : `<button type="button" class="lnk" data-a="achtitle" data-k="${tk}">${mE('칭호 달기', 'Equip')}</button>`) : ''}` : ''}<i class="lvt-st" aria-hidden="true">${st === 'got' ? '✓' : st === 'can' ? '!' : ''}</i></li>`); }
+  return `<section class="lvc">
+    <div class="lvc-top"><b class="lvb">Lv.${I.lv}</b>
+      <div class="lvc-mid"><span class="lvc-cap">${mE('계정 레벨', 'Account level')}${I.max ? ' · MAX' : ''}</span><span class="lvc-bar"><i style="width:${pct}%"></i></span><small>${I.max ? mE('최고 레벨', 'Max level') : `${I.into.toLocaleString()} / ${I.need.toLocaleString()} XP`}</small></div>
+      ${pd.n ? `<button type="button" class="pcb red lvc-claim" data-a="lvclaim"${lvBusy ? ' disabled' : ''}>${mE('보상 받기', 'Claim')} <span>${MDL(pd.m)}${pd.d ? DIA(pd.d) : ''}</span></button>` : ''}</div>
+    <p class="lvc-how">${mE('판을 끝내면 경험치를 받습니다 · 대전 승리 60, 봇 승리 20~45, 모험 한 칸 10(완주 +80)', 'Earn XP by finishing matches · PvP win 60, bot win 20-45, 10 per adventure node (+80 for clearing)')}</p>
+    <ol class="lvc-track" aria-label="${mE('레벨 보상', 'Level rewards')}">${items.join('')}</ol>
+  </section>`;
+}
+/* 레벨 띠는 지금 레벨 근처가 보이게 굴린다 */
+function lvTrackScroll() { document.querySelectorAll('.lvc-track').forEach(t => { if (t.dataset.sc) return; const c = t.querySelector('[data-cur]'); if (c) { t.scrollLeft = Math.max(0, c.offsetLeft - t.offsetLeft - 12); t.dataset.sc = '1'; } }); }
+{ let q = 0; new MutationObserver(() => { if (!q) q = requestAnimationFrame(() => { q = 0; lvTrackScroll(); }); }).observe(document.documentElement, { childList: true, subtree: true }); }
 let achQ = [], achT = 0;
 function achGive(id) {
   const o = achGot(); if (o[id] || !ACH.some(a => a.id === id)) return false;
@@ -8753,7 +8835,7 @@ function pcHTML(scene, logo, off, ta, anim) {
           <button type="button" class="pc-ic${SND.bgm ? '' : ' off'}" data-a="bgm" title="${mE('배경음', 'Music')}" aria-pressed="${SND.bgm}" aria-label="${mE('배경음', 'Music')}"><i class="qk-ic bgm"></i></button>
           <button type="button" class="pc-ic tx" data-a="lang" data-notr aria-label="Language">${mE('EN', '한')}</button>
           <button type="button" class="pc-ic" data-a="ov" data-o="settings" title="${mE('설정', 'Settings')}" aria-label="${mE('설정', 'Settings')}">${lbIc('gear')}</button></span>
-        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}</b><small>${myTitle() ? `「${myTitle()}」` : CLS[rep].n}</small></span></button>
+        <button type="button" class="pc-me${kind === 'acct' ? ' on' : ''}" data-a="mtab" data-m="acct" aria-label="${mE('프로필', 'Profile')}">${faceOf(rep, skinOf(rep))}<span><b data-notr>${esc(AUTH.nick)}${AUTH.lv ? `<em class="lvbadge">Lv.${myLv()}</em>` : ''}</b><small>${myTitle() ? `「${myTitle()}」` : CLS[rep].n}</small></span>${lvCanClaim() ? '<i class="dot" aria-hidden="true"></i>' : ''}</button>
       </div></header>`;
   const foot = `<footer class="pc-foot"><span class="pc-net${on ? ' ok' : off ? ' off' : ''}"><i></i>${on ? mE('서버 연결됨', 'Online') : off ? mE('오프라인', 'Offline') : mE('연결 중', 'Connecting')}</span>
       <span class="pc-tip"><b>TIP</b>${RULES[MENU_TIP % RULES.length]}</span><span class="pc-cr" data-notr>${mE(`직업 ${CLASS_IDS.length}종 · 결투장 4곳`, `${CLASS_IDS.length} classes · 4 arenas`)} · © 2026 CHOSBS</span></footer>`;
@@ -8834,7 +8916,7 @@ function pcProfBody() {
   return `<div class="pp">
     <aside class="pp-hero c-${rep}">
       <div class="pp-stage"><i class="pp-glow" aria-hidden="true"></i><i class="pf-sh" aria-hidden="true"></i><i class="px pf-spr a-${rep}${skc(rep, sk)}" aria-hidden="true"></i></div>
-      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
+      <div class="pp-id"><h3 data-notr>${esc(AUTH.nick)}${AUTH.lv ? ` <em class="lvbadge">Lv.${myLv()}</em>` : ''}</h3>${myTitle() ? `<p class="ttl t-${myTitleTier()}">「${myTitle()}」</p>` : ''}<p><b>${CLS[rep].n}</b> · ${skinName(rep, sk)} ${mE('스킨', 'skin')}</p></div>
       <p class="pp-role">${(ROLE[rep] || []).map(r => `<span>${r}</span>`).join('')}</p>
       ${repOpen ? '' : `<div class="pp-cls"><span>${mE('패시브', 'Passive')} · <b>${CLS[rep].pas[0]}</b></span><span>${mE('모험 기록', 'Adventure')} · ${rec[rep] ? `<b>${rec[rep]}${mE('턴', ' turns')}</b>` : mE('아직 돌파하지 못했습니다', 'Not cleared yet')}${rec3[rep] ? ` · <em>★${rec3[rep]}</em>` : ''}</span></div>`}
       ${repOpen ? `<div class="pp-pick" role="group" aria-label="${mE('대표 캐릭터', 'Main character')}">${CLASS_IDS.map(k => `<button type="button" class="pf-pk${k === rep ? ' on' : ''}" data-a="repset" data-k="${k}" aria-pressed="${k === rep}" title="${CLS[k].n}">${faceOf(k, skinOf(k))}</button>`).join('')}</div>` : ''}
@@ -8843,6 +8925,7 @@ function pcProfBody() {
       <div class="pp-acc"><span>${st}</span><span class="pp-accb"><button type="button" class="pcb ghost" data-a="ov" data-o="settings">${mE('설정', 'Settings')}</button><button type="button" class="pcb ghost" data-a="logout">${mE('로그아웃', 'Log out')}</button></span></div>
     </aside>
     <div class="pp-main">
+      ${lvCardHTML()}
       <div class="pp-stats">
         ${tile('<i class="mdl"></i>', mE('보유 메달', 'Medals'), medals(), `<button type="button" class="lnk" data-a="mtab" data-m="shop">${mE('상점 가기', 'Go to shop')} ▶</button>`, null, ' gold')}
         ${tile(lbIc('rec'), mE('대전 전적', 'PvP record'), `${pv.w}<i>${mE('승', 'W')}</i> ${pv.d}<i>${mE('무', 'D')}</i> ${pv.l}<i>${mE('패', 'L')}</i>`, `${mE('승률', 'Win rate')} ${pvr == null ? '-' : pvr + '%'}`, pvr)}
@@ -9411,6 +9494,7 @@ async function walletPull() {
   try { AUTH.bought = (await sb('/rest/v1/dia_orders?select=pack&status=in.(done,refund)') || []).map(r => r.pack); } catch (e) { AUTH.bought = []; }
   try { AUTH.gift = !(await sb('/rest/v1/gifts?select=kind') || []).some(r => r.kind === 'welcome'); } catch (e) { AUTH.gift = false; }   /* 선물 표가 아직 없으면 조용히 넘어간다 */
   if (AUTH.gift) setTimeout(welcomeShow, 600);
+  try { const [x] = await sb('/rest/v1/account_xp?select=xp,claimed') || []; lvSet(x); } catch (e) { AUTH.lv = null; }   /* 레벨 표가 아직 없으면 레벨 칸을 숨긴다 */
   questPull(); mailPull(true);
 }
 function authKeep(ses) {
@@ -9547,8 +9631,9 @@ async function chargeDia(pack) {
   document.addEventListener('click', e => { if (doc || !AUTH.user) return; const m = e.target.closest && e.target.closest('.lg-mark'); if (!m) { n = 0; return; } const r = m.getBoundingClientRect(), cx = Math.floor((e.clientX - r.left) / r.width * 3), cy = Math.floor((e.clientY - r.top) / r.height * 3); if (cx !== 1 || cy !== 1) { n = 0; return; }
     const now = Date.now(); n = now - t0 > 3000 ? 1 : n + 1; if (n === 1) t0 = now; if (n < 5) return; n = 0;
     const q = (window.prompt('', '1000') || '').trim(), v = parseInt(q.replace(/^d/, ''), 10);
-    /* d500: 무료 다이아 지급, t:m: 스팀 없이 m 묶음 충전 흐름 시험(실제 결제 없음) */
+    /* d500: 무료 다이아 지급, x500: 계정 경험치(x-500이면 빼기), t:m: 스팀 없이 m 묶음 충전 흐름 시험(실제 결제 없음) */
     if (/^t:/.test(q)) { rpc('admin_dia_test', { p_pack: q.slice(2) }).then(w => { AUTH.dia = w; walletPull().catch(() => {}); SND.play('relicGood'); toast('test ' + q.slice(2)); render(); }).catch(e => toast(String(e.message))); return; }
+    if (/^x-?\d+$/.test(q)) { rpc('admin_xp', { p_amt: parseInt(q.slice(1), 10) }).then(() => walletPull()).then(() => { SND.play('relicGood'); toast(q); render(); }).catch(e => toast(String(e.message))); return; }
     if (!(v > 0)) return;
     if (/^d/.test(q)) { rpc('admin_dia', { p_amt: v }).then(w => { AUTH.dia = w; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); return; }
     rpc('admin_grant', { p_amt: v }).then(bal => { AUTH.wallet = bal; SND.play('relicGood'); toast(`+${v}`); render(); }).catch(() => {}); }); })();
@@ -14441,7 +14526,7 @@ function stMedal(won) {
   if (!run || run.medalReq) return; const total = run.map && !run.weekly ? run.map.reduce((a, m) => a + m.rows.length, 0) : 18,   /* 주간 도전(한 막)은 일반 모험 18칸 중 한 막 몫 */ done = (run.path || []).length;
   run.rate = Math.min(1, done / total); run.medal = null; run.medalReq = true;
   if (!AUTH.user || !run.sid) { run.medal = 0; return; }
-  const r = run; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won, p_stats: Object.assign({ cls: r.cls }, r.qs || {}) }).then(n => { r.medal = n || 0; return walletPull(); }).catch(() => { r.medal = 0; }).then(() => render());
+  const r = run, xp0 = AUTH.lv ? AUTH.lv.xp : null; rpc('finish_run', { p_sid: r.sid, p_done: done, p_total: total, p_cleared: !!won, p_stats: Object.assign({ cls: r.cls }, r.qs || {}) }).then(n => { r.medal = n || 0; return walletPull(); }).then(() => { if (xp0 != null && AUTH.lv && AUTH.lv.xp > xp0) r.xp = AUTH.lv.xp - xp0; }).catch(() => { if (r.medal == null) r.medal = 0; }).then(() => render());
 }
 function stSumHTML() {
   const won = !!run.cleared, ln = won ? null : stCurNode(), rec = stageRec3(), c = CLS[run.cls], log = run.log || [];
@@ -14462,7 +14547,7 @@ function stSumHTML() {
     <header class="ss-top c-${run.cls}"><i class="px${won ? ' spa' : ''} a-${run.cls}${won ? '-act' : '-ko'}${skc(run.cls, run.skin)}" aria-hidden="true"></i>
       <div><p class="cap">${run.weekly ? L('주간 도전 · 도전 결과', 'Weekly · Run result') : L('모험 모드 · 도전 결과', 'Adventure · Run result')} · ${c.n}</p><h2>${won ? (run.weekly ? L('이번 주 도전을 완주했습니다!', 'Weekly challenge cleared!') : L('세 막을 모두 돌파했습니다!', 'All three acts cleared!')) : L('도전 실패', 'Run over')}</h2><p class="ss-where">${won ? L(`점수 = 100 + 정예 20점씩 + 남은 체력 10점씩 + 금화 - 턴 수`, 'Score = 100 + 20 per elite + 10 per HP left + Gold - turns') : where}</p></div>
       ${won ? `<p class="ss-score"><b>${run.score}</b>${L('점', ' pts')}<span>${rec[run.cls] == null ? '' : rec[run.cls] === run.score ? L('이 직업 최고 점수!', 'New best for this class!') : L(`최고 ${rec[run.cls]}점`, `Best ${rec[run.cls]} pts`)}</span></p>` : ''}</header>
-    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal)}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won && !run.weekly ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
+    ${run.medalReq ? `<p class="v-rw ss-rw">${run.medal == null ? mE('메달 계산 중', 'Counting medals') + '…' : MDL('+' + run.medal) + (run.xp ? ` <b class="xpg">+${run.xp} XP</b>` : '')}<span>${L(`클리어율 ${Math.round((run.rate || 0) * 100)}%`, `Clear rate ${Math.round((run.rate || 0) * 100)}%`)}${won && !run.weekly ? L(' · 완주 보너스 +100', ' · Full clear +100') : ''}</span></p>` : ''}
     <div class="ss-body">
       <section class="ss-route"><h3>${L('지나온 길', 'Your route')}</h3><ol class="sr-acts">${route}</ol></section>
       <section class="ss-side">
