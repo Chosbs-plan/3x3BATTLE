@@ -39,6 +39,7 @@
 .lvup-glow { position: absolute; inset: -30px; z-index: -1; background: radial-gradient(closest-side, rgba(255, 215, 94, .45), transparent); animation: lvupGlow 1.6s ease-in-out infinite alternate; }
 @keyframes lvupIn { 0% { opacity: 0; scale: .6; } 100% { opacity: 1; scale: 1; } } @keyframes lvupOut { to { opacity: 0; translate: -50% -20px; } } @keyframes lvupGlow { from { opacity: .5; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .lvup, .lvup.out, .lvup-glow { animation: none; } }
+
 </style>
 </head>
 <body>
@@ -3143,6 +3144,19 @@ html[lang="en"] .pc-top .pc-nv { font-size: clamp(15px, calc((var(--pcw, 1920px)
 .pmc-pad { display: grid; grid-template-columns: repeat(3, 58px); gap: 8px; padding: 12px; transform: perspective(500px) rotateX(38deg); background: rgba(74, 59, 59, .12); box-shadow: 0 0 0 4px rgba(74, 59, 59, .2); }
 .pmc-pad i { aspect-ratio: 1; background: #fff; box-shadow: inset 0 0 0 3px #d9cfcc, 4px 4px 0 rgba(74, 59, 59, .2); }
 .pmc-pad i.me { background: #dfe9fb; box-shadow: inset 0 0 0 3px var(--blue), 4px 4px 0 rgba(74, 59, 59, .2); } .pmc-pad i.hit { background: #fde6e9; box-shadow: inset 0 0 0 3px var(--red), 4px 4px 0 rgba(74, 59, 59, .2); }
+/* 싱글 플레이: 세 카드가 한 화면에. 위 줄은 모험·연습(그림 칸을 낮게), 아래 줄은 튜토리얼을 가로로 납작하게 */
+.pg-single .pmcs { grid-template-rows: minmax(0, 1fr) auto; gap: 16px 22px; }
+.pg-single .pmc { min-height: 0; grid-template-rows: minmax(84px, 28%) minmax(0, 1fr) auto; }
+.pg-single .pmc .pmc-tx { gap: 6px; padding: 14px 24px 8px; overflow: hidden; } .pg-single .pmc .pmc-tx h3 { font-size: clamp(26px, 3.2vh, 40px); }
+.pg-single .pmc .pmc-art { align-items: flex-end; padding: 8px 16px; }
+.pg-single .adv-art .pmc-hero, .pg-single .duel-art .pmc-a { width: auto; height: 72%; max-height: 120px; }
+.pg-single .pmc.tut { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: 130px minmax(0, 1fr) auto; align-items: center; }
+.pg-single .pmc.tut .pmc-art { align-self: stretch; border-bottom: 0; border-right: 3px solid #1d1413; padding: 6px; align-items: center; }
+.pg-single .pmc.tut .pmc-pad { zoom: .5; }
+.pg-single .pmc.tut .pmc-tx { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 12px 20px; overflow: visible; }
+.pg-single .pmc.tut .pmc-tx h3 { font-size: 26px; margin: 0; } .pg-single .pmc.tut .pmc-tx .pmc-k { flex-basis: 100%; margin: 0; }
+.pg-single .pmc.tut .pmc-steps { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
+.pg-single .pmc.tut .pmc-go { padding: 0 20px; }
 .rand-art { align-items: center; gap: 28px; }
 .pmc-f { display: grid; justify-items: center; gap: 10px; } .pmc-f .lb-face { --s: 130px; --z: 8; box-shadow: inset 0 0 0 4px #1d1413, 6px 6px 0 #1d1413; } .pmc-f > b { font-size: 18px; color: #fff; text-shadow: 2px 2px 0 #1d1413; }
 .pmc-f .lb-face.q > i { font-size: 64px; }
@@ -8853,7 +8867,7 @@ function pcSingleBody() {
   const top = Object.entries(rec).filter(([k]) => CLS[k]).sort((a, b) => b[1] - a[1]).slice(0, 3), foe = MENU_DUEL.find(k => k !== rep) || 'samurai';
   const ic = k => (typeof pxi === 'function' ? pxi(k) : '');
   return `${wkStrip(true)}<div class="pmcs">
-    <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art"><ol class="pmc-acts">${[['forest', '1막', 'Act 1', 'fight'], ['snow', '2막', 'Act 2', 'elite'], ['castle', '3막', 'Act 3', 'boss']].map(([th, a, b, k]) => `<li class="th-${th}"><i>${ic(k)}</i><b>${mE(a, b)}</b></li>`).join('')}</ol>
+    <section class="pmc wide" style="--i:0"><div class="pmc-art adv-art">
         <i class="px pmc-hero a-${rep}${skc(rep, skinOf(rep))}" aria-hidden="true"></i></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('메인 모드', 'Main mode')}</p><h3>${mE('모험 모드', 'Adventure')}</h3>
         <p>${mE('직업 하나로 세 막을 돌파합니다. 갈림길 지도에서 길을 고르고, 이길 때마다 금화와 카드, 정예와 보스는 유물. 지면 처음부터.', 'Take one class through three acts. Pick your path, win gold and cards; elites and bosses drop relics. Lose and start over.')}</p>
@@ -8866,7 +8880,7 @@ function pcSingleBody() {
         <div class="pc-lv" role="group" aria-label="${mE('봇 난이도', 'Bot difficulty')}"><span>${mE('난이도', 'Difficulty')}</span>${Object.entries(BOTS).map(([k, [nm]]) => `<button type="button" class="${botLv === k ? 'on' : ''}" data-a="bot" data-l="${k}" aria-pressed="${botLv === k}">${nm}</button>`).join('')}</div>
         <p class="pmc-rw">${mE('보상', 'Reward')} <b>${mE('승리 5 · 8 · 12 / 패배 2', 'Win 5 · 8 · 12 / Loss 2')}</b></p></div>
       <div class="pmc-go"><button type="button" class="pcb red big" data-a="local">${mE('연습 시작', 'Start Practice')}</button></div></section>
-    <section class="pmc" style="--i:2"><div class="pmc-art tut-art"><span class="pmc-pad">${ALL.map(n => `<i${n === 4 ? ' class="me"' : n === 1 ? ' class="hit"' : ''}></i>`).join('')}</span></div>
+    <section class="pmc tut" style="--i:2"><div class="pmc-art tut-art"><span class="pmc-pad">${ALL.map(n => `<i${n === 4 ? ' class="me"' : n === 1 ? ' class="hit"' : ''}></i>`).join('')}</span></div>
       <div class="pmc-tx"><p class="pmc-k">${mE('처음이라면', 'New here?')}</p><h3>${mE('튜토리얼', 'Tutorial')}</h3><p>${mE('다섯 턴 동안 결투의 기본을 배웁니다.', 'Learn the basics in five turns.')}</p>
         <ol class="pmc-steps">${[['이동과 마나', 'Moving and mana'], ['상대 위치 예측', 'Reading the opponent'], ['예고 공격', 'Delayed attacks'], ['피하기', 'Dodging']].map(([a, b]) => `<li>${mE(a, b)}</li>`).join('')}</ol></div>
       <div class="pmc-go"><button type="button" class="pcb gold big" data-a="tut">${mE('튜토리얼 시작', 'Start Tutorial')}</button></div></section>
