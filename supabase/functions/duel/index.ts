@@ -14,7 +14,7 @@
 // 응답: { ok, seat, ver, doc }  (doc의 plan 칸에는 계획 내용 대신 '1'만 있다)
 
 import * as E from './engine.js';
-import { makeCore } from './core.js';
+import { makeCore, viewFor } from './core.js';
 
 const SB = Deno.env.get('SUPABASE_URL')!, ANON = Deno.env.get('SUPABASE_ANON_KEY')!, SERVICE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type' };
@@ -42,13 +42,16 @@ const iso = (n: number) => (n ? new Date(n).toISOString() : null);
 async function load(code: string): Promise<Room | null> {
   const [r] = await db(`/rest/v1/duel_rooms?code=eq.${code}&select=code,doc,ver,deadline,seen_a,seen_b`);
   if (!r) return null;
-  const [s] = await db(`/rest/v1/duel_secret?code=eq.${code}&select=plans`);
-  return { code: r.code, doc: r.doc, ver: r.ver, deadline: ms(r.deadline), seen: { a: ms(r.seen_a), b: ms(r.seen_b) }, plans: (s && s.plans) || {} };
+  const [s] = await db(`/rest/v1/duel_secret?code=eq.${code}&select=plans,game`);
+  /* 원본 게임 상태는 비밀 표에만 있다(예전에 만든 방은 doc 안에) */
+  const doc = Object.assign({}, r.doc, { game: (s && s.game) || r.doc.game || '' });
+  return { code: r.code, doc, ver: r.ver, deadline: ms(r.deadline), seen: { a: ms(r.seen_a), b: ms(r.seen_b) }, plans: (s && s.plans) || {} };
 }
 async function save(room: Room, isNew: boolean, result: unknown) {
-  const d = room.doc;
-  return await call('duel_commit', { p_code: room.code, p_ver: isNew ? 0 : room.ver, p_doc: d, p_a: d.seats.a, p_b: d.seats.b, p_deadline: iso(room.deadline),
-    p_seen_a: iso(room.seen.a || 0), p_seen_b: iso(room.seen.b || 0), p_plans: room.plans, p_result: result || null }) as number;
+  const d = room.doc, g = d.game ? JSON.parse(d.game) : null;
+  return await call('duel_commit', { p_code: room.code, p_ver: isNew ? 0 : room.ver, p_doc: Object.assign({}, d, { game: '' }), p_a: d.seats.a, p_b: d.seats.b, p_deadline: iso(room.deadline),
+    p_seen_a: iso(room.seen.a || 0), p_seen_b: iso(room.seen.b || 0), p_plans: room.plans, p_result: result || null,
+    p_game: d.game || '', p_view_a: g ? JSON.stringify(viewFor(g, 'a')) : '', p_view_b: g ? JSON.stringify(viewFor(g, 'b')) : '' }) as number;
 }
 /* 읽고 → 규칙 적용 → 판본이 그대로일 때만 저장. 동시에 두 사람이 고치면 다시 읽어 처음부터 */
 async function txn(code: string, fn: (room: Room) => any) {
@@ -64,7 +67,9 @@ async function txn(code: string, fn: (room: Room) => any) {
   throw new Fail('busy', 409);
 }
 const AZ = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-const view = (room: Room, uid: string) => ({ ok: true, seat: core.seatOf(room.doc, uid), ver: room.ver, doc: room.doc, engine: E.ENGINE_VER });
+/* 응답: 부른 사람 자리에 맞게 가린 게임 상태만. 자리가 없으면 게임 상태는 빼고 */
+const view = (room: Room, uid: string) => { const k = core.seatOf(room.doc, uid), g = room.doc.game ? JSON.parse(room.doc.game) : null;
+  return { ok: true, seat: k, ver: room.ver, doc: Object.assign({}, room.doc, { game: g && k ? JSON.stringify(viewFor(g, k)) : '' }), engine: E.ENGINE_VER }; };
 
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });

@@ -20,6 +20,27 @@ const tagOf = doc => doc.gid + ':' + doc.turn;
 const matchDone = doc => doc.mode !== 'bo3' || doc.score.a >= 2 || doc.score.b >= 2;
 const blankPlan = (g, k, tag) => ({ mv: null, act: null, dest: g.P[k].pos, tg: null, ab: false, tag, auto: true });
 
+/* 사람마다 보내는 게임 상태: 그 사람이 알면 안 되는 것을 가린다(판정은 가리지 않은 원본으로 한다)
+   - 상대 손패: 카드 대신 '?'(투시 등으로 엿보는 턴에는 그대로). 상대 덱: 순서도 내용도 '?'
+     대신 덱과 손패를 합친 남은 카드(pool)는 정렬해서 준다(덱 보기 창에 원래 보이던 정보)
+   - 내 덱: 다음에 뽑을 순서가 보이지 않게 정렬
+   - 상대가 숨긴 지뢰 칸(개수만 남김), 나를 노리고 숨긴 예고 공격(깜짝 상자), 그것을 놓은 칸(재생 기록)
+   판이 끝나면 손패와 덱 내용은 그대로 보여 준다(내 덱 순서는 계속 가린다) */
+export const HIDDEN = '?';
+export function viewFor(g, k) {
+  const v = clone(g), o = opp(k), me = v.P[k], op = v.P[o];
+  if (!v.winner) {
+    op.pool = [...op.deck, ...op.hand].sort();
+    if (!((me.see || 0) >= v.turn)) op.hand = op.hand.map(() => HIDDEN);
+    op.deck = op.deck.map(() => HIDDEN);
+    op.mines = (op.mines || []).map(() => -1);
+    v.pend = (v.pend || []).filter(e => !(e.hidden && e.t === k));
+    const q = v.rp && v.rp.P && v.rp.P[o];
+    if (q && (q.actId === 'mine' || q.actId === 'box')) { q.tg = null; q.cells = []; }
+  }
+  me.deck = me.deck.slice().sort();
+  return v;
+}
 export function makeCore(E, T) {
   /* 시간(시험용으로 줄일 수 있다) */
   const TURN = (T && T.turn) || TURN_MS, REPLAY = (T && T.replay) || REPLAY_MS, ABSENT = (T && T.absent) || ABSENT_MS;

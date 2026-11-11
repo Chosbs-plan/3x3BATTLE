@@ -1,6 +1,8 @@
 -- 삼삼결투 서버 대전: 방 상태와 판정을 서버가 들고 있는다.
 -- 방(duel_rooms)은 엣지 함수 duel(supabase/functions/duel)만 쓴다. 게임은 폴링 함수(duel_poll)로 읽기만 한다.
--- 양쪽 계획(duel_secret)은 아무도 읽을 수 없고, 엣지 함수가 판정할 때만 쓴다.
+-- 양쪽 계획과 가리지 않은 게임 상태(duel_secret)는 아무도 읽을 수 없고, 엣지 함수가 판정할 때만 쓴다.
+-- 사람마다 그 사람이 봐도 되는 만큼만 가린 게임 상태(view_a, view_b)를 따로 두고, 폴링은 내 자리 것만 돌려준다
+-- (상대 손패·덱 순서·숨긴 지뢰 위치 등은 브라우저에 아예 가지 않는다).
 -- 결과(duel_results)는 서버가 판정한 그대로 남고, 보상은 각자 duel_fin으로 한 번만 받는다.
 -- Supabase SQL Editor에 통째로 붙여 넣고 Run. 여러 번 실행해도 된다. economy.sql(메달), account_level.sql(경험치) 다음에.
 
@@ -16,6 +18,9 @@ create table if not exists public.duel_rooms (
   updated_at timestamptz not null default now()
 );
 create table if not exists public.duel_secret (code text primary key references public.duel_rooms on delete cascade, plans jsonb not null default '{}');
+alter table public.duel_rooms add column if not exists view_a text not null default '';
+alter table public.duel_rooms add column if not exists view_b text not null default '';
+alter table public.duel_secret add column if not exists game text not null default '';
 create table if not exists public.duel_results (
   code text not null, gid int not null, winner text not null check (winner in ('a', 'b', 'draw')), mode text,
   a uuid, b uuid, forfeit text, at timestamptz not null default now(), primary key (code, gid, at)
@@ -43,7 +48,7 @@ begin
   if k is null then return json_build_object('seat', null, 'ver', r.ver); end if;
   if k = 'a' then update duel_rooms set seen_a = now() where code = r.code; else update duel_rooms set seen_b = now() where code = r.code; end if;
   return json_build_object('seat', k, 'ver', r.ver,
-    'doc', case when r.ver <> coalesce(p_ver, 0) then r.doc else null end,
+    'doc', case when r.ver <> coalesce(p_ver, 0) then r.doc || jsonb_build_object('game', case when k = 'a' then r.view_a else r.view_b end) else null end,
     'due', r.deadline is not null and r.deadline < now(),
     'opp', extract(epoch from now() - coalesce(case when k = 'a' then r.seen_b else r.seen_a end, r.created_at))::int);
 end $$;
@@ -58,24 +63,26 @@ language sql security definer set search_path = public as $$
 $$;
 
 -- 엣지 함수 전용: 방을 한 번에 저장한다. p_ver가 0이면 새 방, 아니면 그 판본일 때만 고친다(동시에 고치면 -1, 다시 읽어 재시도)
+-- p_doc에는 게임 상태를 넣지 않고(game = ''), 원본은 p_game(비밀), 사람별로 가린 것은 p_view_a/p_view_b
+drop function if exists public.duel_commit(text, int, jsonb, uuid, uuid, timestamptz, timestamptz, timestamptz, jsonb, jsonb);
 create or replace function public.duel_commit(p_code text, p_ver int, p_doc jsonb, p_a uuid, p_b uuid, p_deadline timestamptz,
-  p_seen_a timestamptz, p_seen_b timestamptz, p_plans jsonb, p_result jsonb default null) returns int
+  p_seen_a timestamptz, p_seen_b timestamptz, p_plans jsonb, p_result jsonb default null, p_game text default '', p_view_a text default '', p_view_b text default '') returns int
 language plpgsql security definer set search_path = public as $$
 declare nv int;
 begin
   if p_ver = 0 then
-    insert into duel_rooms (code, a, b, doc, ver, deadline, seen_a, seen_b) values (p_code, p_a, p_b, p_doc, 1, p_deadline, p_seen_a, p_seen_b)
+    insert into duel_rooms (code, a, b, doc, ver, deadline, seen_a, seen_b, view_a, view_b) values (p_code, p_a, p_b, p_doc, 1, p_deadline, p_seen_a, p_seen_b, coalesce(p_view_a, ''), coalesce(p_view_b, ''))
       on conflict (code) do nothing returning ver into nv;
     if nv is null then return -1; end if;
-    insert into duel_secret (code, plans) values (p_code, coalesce(p_plans, '{}')) on conflict (code) do update set plans = excluded.plans;
     delete from duel_rooms where updated_at < now() - interval '1 day';   -- 오래된 방 정리
   else
     update duel_rooms set doc = p_doc, a = p_a, b = p_b, ver = ver + 1, deadline = p_deadline,
-      seen_a = coalesce(p_seen_a, seen_a), seen_b = coalesce(p_seen_b, seen_b), updated_at = now()
+      seen_a = coalesce(p_seen_a, seen_a), seen_b = coalesce(p_seen_b, seen_b), view_a = coalesce(p_view_a, ''), view_b = coalesce(p_view_b, ''), updated_at = now()
       where code = p_code and ver = p_ver returning ver into nv;
     if nv is null then return -1; end if;
-    insert into duel_secret (code, plans) values (p_code, coalesce(p_plans, '{}')) on conflict (code) do update set plans = excluded.plans;
   end if;
+  insert into duel_secret (code, plans, game) values (p_code, coalesce(p_plans, '{}'), coalesce(p_game, ''))
+    on conflict (code) do update set plans = excluded.plans, game = excluded.game;
   if p_result is not null then
     insert into duel_results (code, gid, winner, mode, a, b, forfeit)
       values (p_code, (p_result->>'gid')::int, p_result->>'winner', p_result->>'mode', (p_result->>'a')::uuid, (p_result->>'b')::uuid, p_result->>'forfeit');
@@ -104,8 +111,8 @@ begin
   return json_build_object('ok', true, 'medals', amt, 'res', res, 'winner', r.winner, 'seat', k, 'forfeit', r.forfeit);
 end $$;
 
-revoke all on function public.duel_commit(text, int, jsonb, uuid, uuid, timestamptz, timestamptz, timestamptz, jsonb, jsonb) from public, anon, authenticated;
-grant execute on function public.duel_commit(text, int, jsonb, uuid, uuid, timestamptz, timestamptz, timestamptz, jsonb, jsonb) to service_role;
+revoke all on function public.duel_commit(text, int, jsonb, uuid, uuid, timestamptz, timestamptz, timestamptz, jsonb, jsonb, text, text, text) from public, anon, authenticated;
+grant execute on function public.duel_commit(text, int, jsonb, uuid, uuid, timestamptz, timestamptz, timestamptz, jsonb, jsonb, text, text, text) to service_role;
 revoke all on function public.duel_poll(text, int) from public, anon;
 grant execute on function public.duel_poll(text, int) to authenticated;
 revoke all on function public.duel_mine() from public, anon;

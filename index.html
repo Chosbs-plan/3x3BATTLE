@@ -6981,6 +6981,8 @@ function PeerDB(myId, note) {
    PeerDB와 같은 모양(doc().set/get/update/onSnapshot). 방 상태는 서버(duel.sql)에 있고, 판정과 결과는 엣지 함수 duel이 한다.
    그래서 방장 브라우저가 판정하지 않고, 누가 새로고침하거나 앱을 껐다 켜도 같은 방으로 돌아온다(duel_mine).
    읽기는 duel_poll을 짧게 되풀이해 바뀐 판본(ver)만 받는다. 제한 시간이 지나면(due) tick을 불러 서버가 판정하게 한다 */
+/* 서버 대전에서 가려져 오는 카드(상대 손패와 덱). 이름과 그림 없이 뒷면으로만 보인다 */
+CARDS['?'] = { n: '?', t: 'sp', c: 0, d: '' };
 function ServerDB(note) {
   let code = null, ver = 0, cur = null, subs = [], timer = 0, fails = 0, tickAt = 0, oppOff = false, gen = 0;
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -9239,7 +9241,7 @@ function detailHTML(view, footer) {
 }
 /* 덱 보기: 덱과 손패에 남은 카드, 버린 카드를 종류별 장수로 보여 준다. 상대 손패가 드러나지 않게 덱과 손패는 합쳐서 센다 */
 function deckHTML(k) {
-  const p = G.P[k], mine = k === seat, left = [...p.deck, ...p.hand];
+  const p = G.P[k], mine = k === seat, left = p.pool ? p.pool.slice() : [...p.deck, ...p.hand].filter(id => id !== '?');   /* 서버 대전: 상대는 가려진 덱 대신 남은 카드 목록(pool)으로 */
   const grp = l => { const m = {}; l.forEach(id => { m[id] = (m[id] || 0) + 1; }); return Object.keys(m).sort((x, y) => CARDS[x].c - CARDS[y].c || (CARDS[x].n < CARDS[y].n ? -1 : 1)).map(id => `<span class="card mini t-${CARDS[id].t}" title="${esc(CARDS[id].d)}">${cardHTML(id, `<span class="cnt">×${m[id]}</span>`)}</span>`).join('') || '<span class="cap">없음</span>'; };
   return `<h2>${mine ? '내 덱' : '상대 덱'} · ${CLS[p.cls].n}</h2>
     <p class="cap">덱과 손패에 남은 카드 ${left.length}장${mine ? '' : ' · 손패는 따로 구분하지 않습니다'}</p><div class="minis dk">${grp(left)}</div>
